@@ -1,0 +1,56 @@
+{
+    "$schema": "../../tests.schema",
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnBeginDialog",
+                "actions": [
+                    {
+                        "$kind": "Microsoft.SetProperty",
+                        "property": "user.age",
+                        "value": 52
+                    },
+                    {
+                        "$kind": "Iciclecreek.CallJavascript",
+                        "script": "Functions.js",
+                        "function": "dogYears",
+                        "options": {
+                            "age": "=user.age"
+                        },
+                        "resultProperty": "$dogYears"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "Your age in dog years is ${$dogYears}."
+                    },
+                    {
+                        "$kind": "Iciclecreek.CallJavascript",
+                        "script": "Functions.js",
+                        "function": "catYears",
+                        "resultProperty": "$catYears"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "Your age in cat years is ${$catYears}."
+                    }
+                ]
+            }
+        ]
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "Hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "Your age in dog years is ${52*7}."
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "Your age in cat years is ${52*15}."
+        }
+    ]
+}

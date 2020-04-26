@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Tests\CallJavascriptTests\DogYears.dialog.schema" />
+    <None Remove="Tests\CatYears.dialog.schema" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Tests\CatYears.dialog.schema" />
+    <Content Include="Tests\DogYears.dialog.schema" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.9.0-local" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Iciclecreek.Bot.Dialogs.Javascript\Iciclecreek.Bot.Dialogs.Javascript.csproj" />
+  </ItemGroup>
+
+</Project>

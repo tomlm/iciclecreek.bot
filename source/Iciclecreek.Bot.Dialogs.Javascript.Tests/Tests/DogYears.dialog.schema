@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "DogYears",
+    "description": "Calculates dog years from 'age' argument",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "age": {
+            "type": "number",
+            "title": "Age",
+            "description": "The age parameter in human years."
+        },
+        "resultProperty": {
+            "$ref": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/definitions.schema#/definitions/stringExpression",
+            "title": "Property",
+            "description": "Property to store any value returned by the javascript function.",
+            "examples": [
+                "dialog.userName"
+            ]
+        }
+    },
+    "required": [
+        "age"
+    ]
+}
