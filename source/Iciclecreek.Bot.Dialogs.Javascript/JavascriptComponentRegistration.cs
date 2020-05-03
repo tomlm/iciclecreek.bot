@@ -3,14 +3,16 @@ using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Iciclecreek.Bot.Dialogs.Javascript
 {
     public class JavascriptComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
+        static JavascriptComponentRegistration()
+        {
+        }
+
         public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, SourceContext sourceContext)
         {
             yield break;
@@ -18,8 +20,10 @@ namespace Iciclecreek.Bot.Dialogs.Javascript
 
         public IEnumerable<DeclarativeType> GetDeclarativeTypes(ResourceExplorer resourceExplorer)
         {
-            resourceExplorer.AddResourceType("js");
-            yield return new DeclarativeType<CallJavascript>(CallJavascript.Kind);
+            JavascriptFunctions.AddJavascriptFunctions(resourceExplorer);
+
+            // yield return new DeclarativeType<CallJavascript>(CallJavascript.Kind);
+            yield break;
         }
     }
 }

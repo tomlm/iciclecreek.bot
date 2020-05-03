@@ -19,21 +19,21 @@
                         "options": {
                             "age": "=user.age"
                         },
-                        "resultProperty": "$dogYears"
+                        "resultProperty": "$dy"
                     },
                     {
                         "$kind": "Microsoft.SendActivity",
-                        "activity": "Your age in dog years is ${$dogYears}."
+                        "activity": "Your age in dog years is ${$dy}."
                     },
                     {
                         "$kind": "Iciclecreek.CallJavascript",
                         "script": "Functions.js",
                         "function": "catYears",
-                        "resultProperty": "$catYears"
+                        "resultProperty": "$cy"
                     },
                     {
                         "$kind": "Microsoft.SendActivity",
-                        "activity": "Your age in cat years is ${$catYears}."
+                        "activity": "Your age in cat years is ${$cy}."
                     }
                 ]
             }
@@ -46,11 +46,11 @@
         },
         {
             "$kind": "Microsoft.Test.AssertReply",
-            "text": "Your age in dog years is ${52*7}."
+            "text": "Your age in dog years is 364."
         },
         {
             "$kind": "Microsoft.Test.AssertReply",
-            "text": "Your age in cat years is ${52*15}."
+            "text": "Your age in cat years is 780."
         }
     ]
 }

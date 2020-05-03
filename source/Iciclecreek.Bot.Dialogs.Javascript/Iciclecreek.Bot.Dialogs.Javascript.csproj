@@ -13,9 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AdaptiveExpressions" Version="4.9.0-local" />
+      <Content Include="Iciclecreek.CallJavascript.schema.ignore" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Jint" Version="2.11.58" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.9.0-local" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.9.0-local001" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     </ItemGroup>
     

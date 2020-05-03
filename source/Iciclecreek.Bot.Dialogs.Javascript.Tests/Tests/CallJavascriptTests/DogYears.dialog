@@ -1,6 +1,6 @@
 {
     "$schema": "../../tests.schema",
     "$kind": "Iciclecreek.CallJavascript",
-    "script": "Functions.js",
-    "function": "catYears"
+    "script": "my.function.js",
+    "function": "dogYears"
 }
