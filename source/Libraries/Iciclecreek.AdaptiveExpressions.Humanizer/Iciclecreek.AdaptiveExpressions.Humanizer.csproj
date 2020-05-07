@@ -7,6 +7,50 @@
   <ItemGroup>
     <PackageReference Include="AdaptiveExpressions" Version="4.9.0-rc1" />
     <PackageReference Include="Humanizer" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.af" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.ar" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.bg" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.bn-BD" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.cs" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.da" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.de" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.el" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.es" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.fa" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.fi-FI" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.fr" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.fr-BE" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.he" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.hr" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.hu" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.hy" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.id" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.it" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.ko-KR" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.lv" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.ms-MY" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.mt" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.nb" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.nb-NO" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.nl" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.pl" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.pt" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.ro" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.ru" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.sk" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.sl" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.sr" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.sr-Latn" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.sv" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.th-TH" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.tr" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.uk" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.uz-Cyrl-UZ" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.uz-Latn-UZ" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.vi" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.zh-CN" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.zh-Hans" Version="2.8.11" />
+    <PackageReference Include="Humanizer.Core.zh-Hant" Version="2.8.11" />
   </ItemGroup>
 
 </Project>
