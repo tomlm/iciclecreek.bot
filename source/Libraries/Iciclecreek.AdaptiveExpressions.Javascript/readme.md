@@ -48,3 +48,9 @@ a function you simply use the namespace+function name with args.
 
 ```var expression = Expression.Parse("contoso.Add2Numbers(user.age, 7)");```
 
+
+# Internal Details
+This project uses **Jint** javascript interpreter to execute the javascript.
+
+This engine does not have access to the file system, or to the network.  Each file is loaded into it's own interpreter, so there is 
+no shared execution environment between javascript files.
