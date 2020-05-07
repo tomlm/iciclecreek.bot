@@ -8,8 +8,8 @@ This repo contains source code for a number of components for Bot Framework rela
 
  Examples of capabilities:
  
-* ``` humanizer.humanize(date) ``` => "yesterday" ```
-* ``` humanizer.humanize(date) ``` => "in 39 minutes" ```
+* ``` humanizer.humanize(date)``` => ```"yesterday" ```
+* ``` humanizer.humanize(date)``` => ```"in 39 minutes" ```
 
  [More Details](/tomlm/iciclecreek.bot/libraries/Iciclecreek.AdaptiveExpressions.Humanizer/readme.md) 
 
