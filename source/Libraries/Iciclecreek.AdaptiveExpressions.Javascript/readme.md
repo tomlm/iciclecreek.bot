@@ -1,4 +1,6 @@
-﻿# Javascript Functions for AdaptiveExpression
+![icon](../../../icon.png)
+
+# Javascript Functions for AdaptiveExpression
 This library provides the ability to call javascript functions from AdaptiveExpressions
 * [AdaptiveExpressions](https://github.com/botbuilder-dotnet/libaries/adaptiveExpressions)
 
