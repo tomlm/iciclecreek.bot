@@ -13,8 +13,6 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
 {
     public static class HumanizerFunctions
     {
-        public static string Locale { get; set; } = "turn.activity.locale";
-
         public static void Register()
         {
             // case functions
@@ -117,7 +115,7 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
                 return NumberToWordsExtension.ToWords(ParseInt(args[0]), culture: culture);
             });
 
-            Expression.Functions.Add($"humanizer.number2ordinal", (args) =>
+            Expression.Functions.Add($"humanizer.number2ordinalWords", (args) =>
             {
                 var culture = ParseCulture(args);
 
@@ -127,7 +125,7 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
                 return NumberToWordsExtension.ToOrdinalWords((Int32)ParseInt(args[0]), culture: culture);
             });
 
-            Expression.Functions.Add($"humanizer.ordinalize", (args) =>
+            Expression.Functions.Add($"humanizer.number2ordinal", (args) =>
             {
                 var culture = ParseCulture(args);
 

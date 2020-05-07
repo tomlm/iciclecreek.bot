@@ -233,15 +233,15 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine), Expression.Parse($"humanizer.number2words(integer, 'Masculine')").TryEvaluate(state).value);
             Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Feminine), Expression.Parse($"humanizer.number2words(integer, 'Feminine')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.integer.ToOrdinalWords(), Expression.Parse($"humanizer.number2ordinal(integer)").TryEvaluate(state).value);
-            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Neuter), Expression.Parse($"humanizer.number2ordinal(integer, 'Neuter')").TryEvaluate(state).value);
-            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine), Expression.Parse($"humanizer.number2ordinal(integer, 'Masculine')").TryEvaluate(state).value);
-            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Feminine), Expression.Parse($"humanizer.number2ordinal(integer, 'Feminine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(), Expression.Parse($"humanizer.number2ordinalWords(integer)").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Neuter), Expression.Parse($"humanizer.number2ordinalWords(integer, 'Neuter')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine), Expression.Parse($"humanizer.number2ordinalWords(integer, 'Masculine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Feminine), Expression.Parse($"humanizer.number2ordinalWords(integer, 'Feminine')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.str.Ordinalize(), Expression.Parse($"humanizer.ordinalize(str)").TryEvaluate(state).value);
-            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Neuter), Expression.Parse($"humanizer.ordinalize(str, 'Neuter')").TryEvaluate(state).value);
-            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine), Expression.Parse($"humanizer.ordinalize(str, 'Masculine')").TryEvaluate(state).value);
-            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Feminine), Expression.Parse($"humanizer.ordinalize(str, 'Feminine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(), Expression.Parse($"humanizer.number2ordinal(str)").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Neuter), Expression.Parse($"humanizer.number2ordinal(str, 'Neuter')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine), Expression.Parse($"humanizer.number2ordinal(str, 'Masculine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Feminine), Expression.Parse($"humanizer.number2ordinal(str, 'Feminine')").TryEvaluate(state).value);
 
             var culture = CultureInfo.GetCultureInfo("fr");
             Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer, 'fr')").TryEvaluate(state).value);
@@ -287,14 +287,14 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             {
                 var state = new
                 {
-                    integer = i,
+                    quantity = i,
                     name = "turtle"
                 };
 
-                Assert.AreEqual(state.name.ToQuantity(state.integer), Expression.Parse($"humanizer.toQuantity(name, integer)").TryEvaluate(state).value);
-                Assert.AreEqual(state.name.ToQuantity(state.integer, ShowQuantityAs.None), Expression.Parse($"humanizer.toQuantity(name, integer, 'None')").TryEvaluate(state).value);
-                Assert.AreEqual(state.name.ToQuantity(state.integer, ShowQuantityAs.Numeric), Expression.Parse($"humanizer.toQuantity(name, integer, 'Numeric')").TryEvaluate(state).value);
-                Assert.AreEqual(state.name.ToQuantity(state.integer, ShowQuantityAs.Words), Expression.Parse($"humanizer.toQuantity(name, integer, 'Words')").TryEvaluate(state).value);
+                Assert.AreEqual(state.name.ToQuantity(state.quantity), Expression.Parse($"humanizer.toQuantity(name, quantity)").TryEvaluate(state).value);
+                Assert.AreEqual(state.name.ToQuantity(state.quantity, ShowQuantityAs.None), Expression.Parse($"humanizer.toQuantity(name, quantity , 'None')").TryEvaluate(state).value);
+                Assert.AreEqual(state.name.ToQuantity(state.quantity, ShowQuantityAs.Numeric), Expression.Parse($"humanizer.toQuantity(name, quantity , 'Numeric')").TryEvaluate(state).value);
+                Assert.AreEqual(state.name.ToQuantity(state.quantity, ShowQuantityAs.Words), Expression.Parse($"humanizer.toQuantity(name, quantity , 'Words')").TryEvaluate(state).value);
             }
 
             Assert.AreEqual("cat".ToQuantity(10000, "N0"), Expression.Parse($"humanizer.toQuantity('cat', 10000, 'N0')").TryEvaluate(new object()).value);
