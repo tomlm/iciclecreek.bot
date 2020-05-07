@@ -1,4 +1,6 @@
-﻿# Humanizer Functions for AdaptiveExpression
+![icon](../../../icon.png)
+
+# Humanizer Functions for AdaptiveExpression
 This library provides humanizer functions to AdaptiveExpressions
 * [AdaptiveExpressions](https://github.com/botbuilder-dotnet/libaries/adaptiveExpressions)
 * [Humanizer](https://humanizr.net/) library which provides language libraries for converting standard data types into
@@ -108,10 +110,10 @@ Functions which map to dotnet standard format strings.
 
 | Function                     | Description     | Example                                     | Output       |
 |------------------------------|-----------------|---------------------------------------------|--------------|
-| **numberToString(format)**   | format number   | dotnet.numberToString(1.3, "C")             | "$1.30"      |
-| **intToString(format)**      | format integer  | dotnet.numberToString(1, "D2")              | "1"          |
-| **dateTimeToString(format)** | format dateTime | dotnet.dateTimeToString(date, "YYYY-MM-DD") | "2020-05-25" |
-| **timeSpanToString(format)** | format dateTime | dotnet.timeSpanToString(span, "N")          | "00:43:00"   |
+| **numberToString(format,?culture)**   | format number   | dotnet.numberToString(1.3, "C")             | "$1.30"      |
+| **intToString(format,?culture)**      | format integer  | dotnet.numberToString(1, "D2")              | "1"          |
+| **dateTimeToString(format,?culture)** | format dateTime | dotnet.dateTimeToString(date, "YYYY-MM-DD") | "2020-05-25" |
+| **timeSpanToString(format,?culture)** | format dateTime | dotnet.timeSpanToString(span, "N")          | "00:43:00"   |
 
 > NOTE: these functions are not part of humanizer, and are dotnet only, so they are in dotnet namespace.
 
