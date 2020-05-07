@@ -8,11 +8,10 @@ This repo contains source code for a number of components for Bot Framework rela
 
  Examples of capabilities:
  
- ``` humanizer.humanize(date) ``` => "yesterday"
+* ``` humanizer.humanize(date) ``` => "yesterday" ```
+* ``` humanizer.humanize(date) ``` => "in 39 minutes" ```
 
- ``` humanizer.humanize(date) ``` => "in 39 minutes"
-
- [More Details](/iciclecreek.bot/libraries/Iciclecreek.AdaptiveExpressions.Humanizer/readme.md) 
+ [More Details](/tomlm/iciclecreek.bot/libraries/Iciclecreek.AdaptiveExpressions.Humanizer/readme.md) 
 
 ## Iciclecreek.AdaptiveExpression.Javascript
 Library which extends AdaptiveExpressions with the ability to define custom functions via .js files.
@@ -30,5 +29,5 @@ function Add2Numbers(x , y)
 You can call it from adaptive expressions
  ``` contoso.Add2Numbers(13, user.age) ``` => 52
 
-[More Details](/iciclecreek.bot/source/libraries/Iciclecreek.AdaptiveExpressions.Javascript/readme.md) 
+[More Details](/tomlm/iciclecreek.bot/source/libraries/Iciclecreek.AdaptiveExpressions.Javascript/readme.md) 
 
