@@ -1,7 +1,7 @@
 # Iciclecreek Bot Framework Components
 This repo contains source code for a number of components for Bot Framework related projects.
 
-# Libraries
+# Nuget Libraries
 
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
