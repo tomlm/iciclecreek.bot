@@ -1,4 +1,6 @@
-﻿# Humanizer Functions for AdaptiveExpression
+![icon](../../../icon.png)
+
+# Humanizer Functions for AdaptiveExpression
 This library provides humanizer functions to AdaptiveExpressions
 * [AdaptiveExpressions](https://github.com/botbuilder-dotnet/libaries/adaptiveExpressions)
 * [Humanizer](https://humanizr.net/) library which provides language libraries for converting standard data types into
