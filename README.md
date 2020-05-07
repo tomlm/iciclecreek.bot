@@ -1,3 +1,5 @@
+![icon](icon.png)
+
 # Iciclecreek Bot Framework Components
 This repo contains source code for a number of components for Bot Framework related projects.
 
