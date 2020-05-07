@@ -2,11 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.9.0</Version>
+    <Version>4.9.0-rc4</Version>
+    <Description>Adds Humanizer functions to AdaptiveExpressions</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.AdaptiveExpressions.Humanizer</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive</PackageTags>
+    <AssemblyVersion>4.9.0.4</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveExpressions" Version="4.9.0-rc1" />
+    <PackageReference Include="AdaptiveExpressions" Version="4.9.0-rc4" />
     <PackageReference Include="Humanizer" Version="2.8.11" />
     <PackageReference Include="Humanizer.Core.af" Version="2.8.11" />
     <PackageReference Include="Humanizer.Core.ar" Version="2.8.11" />

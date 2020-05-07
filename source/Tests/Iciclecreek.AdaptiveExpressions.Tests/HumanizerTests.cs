@@ -247,21 +247,21 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer, 'fr')").TryEvaluate(state).value);
             Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2words(integer, 'Masculine', 'fr')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'fr')").TryEvaluate(state).value);
-            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'Masculine', 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinalWords(integer, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinalWords(integer, 'Masculine', 'fr')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'fr')").TryEvaluate(state).value);
-            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'Masculine', 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.number2ordinal(str, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(str, 'Masculine', 'fr')").TryEvaluate(state).value);
 
             Thread.CurrentThread.CurrentCulture = culture;
             Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer)").TryEvaluate(state).value);
             Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2words(integer, 'Masculine')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinal(integer)").TryEvaluate(state).value);
-            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'Masculine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinalWords(integer)").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinalWords(integer, 'Masculine')").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.ordinalize(str)").TryEvaluate(state).value);
-            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'Masculine')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.number2ordinal(str)").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(str, 'Masculine')").TryEvaluate(state).value);
         }
 
         [TestMethod]

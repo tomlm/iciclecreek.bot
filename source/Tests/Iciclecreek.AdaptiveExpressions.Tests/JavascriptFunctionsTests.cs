@@ -39,7 +39,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         public TestContext TestContext { get; set; }
 
         [ClassInitialize]
-        public static async Task ClassInitialize(TestContext context)
+        public static void ClassInitialize(TestContext context)
         {
             ResourceExplorer = new ResourceExplorer();
             ResourceExplorer.LoadProject(Path.Combine(GetProjectPath(), "Iciclecreek.AdaptiveExpressions.Tests.csproj"));
