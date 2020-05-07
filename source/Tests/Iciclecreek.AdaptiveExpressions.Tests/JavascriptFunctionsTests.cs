@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Iciclecreek.Bot.Dialogs.Javascript.Tests
+namespace Iciclecreek.AdaptiveExpressions.Tests
 {
     [TestClass]
     public class JavascriptFunctionsTests
@@ -42,7 +42,7 @@ namespace Iciclecreek.Bot.Dialogs.Javascript.Tests
         public static async Task ClassInitialize(TestContext context)
         {
             ResourceExplorer = new ResourceExplorer();
-            ResourceExplorer.LoadProject(Path.Combine(GetProjectPath(), "Iciclecreek.Bot.Dialogs.Javascript.Tests.csproj"));
+            ResourceExplorer.LoadProject(Path.Combine(GetProjectPath(), "Iciclecreek.AdaptiveExpressions.Tests.csproj"));
             JavascriptFunctions.AddJavascriptFunctions(ResourceExplorer);
         }
 

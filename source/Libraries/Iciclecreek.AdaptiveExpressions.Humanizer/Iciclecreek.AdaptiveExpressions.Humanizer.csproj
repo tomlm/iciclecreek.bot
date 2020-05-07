@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdaptiveExpressions" Version="4.9.0-rc1" />
+    <PackageReference Include="Humanizer" Version="2.8.11" />
+  </ItemGroup>
+
+</Project>

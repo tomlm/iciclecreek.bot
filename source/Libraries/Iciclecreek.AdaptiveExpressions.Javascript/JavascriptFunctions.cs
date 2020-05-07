@@ -8,7 +8,7 @@ using AdaptiveExpressions;
 using Jint;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 
-namespace Iciclecreek.Bot.Dialogs.Javascript
+namespace Iciclecreek.AdaptiveExpressions
 {
     /// <example>
     /// foo.function.js

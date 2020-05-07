@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Tests\CatYears.dialog.schema" />
+    <None Remove="Tests\my.function.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Tests\CallJavascriptTests\CatYears.dialog.schema" />
-    <Content Include="Tests\CallJavascriptTests\DogYears.dialog.schema" />
+    <Content Include="Tests\my.function.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Iciclecreek.Bot.Dialogs.Javascript\Iciclecreek.Bot.Dialogs.Javascript.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.AdaptiveExpressions.Humanizer\Iciclecreek.AdaptiveExpressions.Humanizer.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.AdaptiveExpressions.Javascript\Iciclecreek.AdaptiveExpressions.Javascript.csproj" />
   </ItemGroup>
 
 </Project>

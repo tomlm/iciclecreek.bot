@@ -5,7 +5,7 @@ using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Iciclecreek.Bot.Dialogs.Javascript
+namespace Iciclecreek.AdaptiveExpressions
 {
     public class JavascriptComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
