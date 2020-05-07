@@ -64,7 +64,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.date.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, 'fr')").TryEvaluate(state).value);
             Assert.AreEqual(state.date.Humanize(true, state.target, culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, target, 'fr')").TryEvaluate(state).value);
 
-            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
             Assert.AreEqual(state.date.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date)").TryEvaluate(state).value);
             Assert.AreEqual(state.date.Humanize(true, state.target, culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, target )").TryEvaluate(state).value);
         }
@@ -121,7 +121,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Abbreviated, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Abbreviated', 'fr')").TryEvaluate(state).value);
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Full, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Full', 'fr')").TryEvaluate(state).value);
 
-            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
             Assert.AreEqual(state.degrees.ToHeading(culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees)").TryEvaluate(state).value);
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Abbreviated, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Abbreviated')").TryEvaluate(state).value);
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Full, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Full')").TryEvaluate(state).value);
@@ -212,7 +212,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.span.Humanize(2, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,2,'fr')").TryEvaluate(state).value);
             Assert.AreEqual(state.span.Humanize(3, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,3,'fr')").TryEvaluate(state).value);
 
-            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
             Assert.AreEqual(state.span.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span)").TryEvaluate(state).value);
             Assert.AreEqual(state.span.Humanize(2, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,2)").TryEvaluate(state).value);
             Assert.AreEqual(state.span.Humanize(3, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,3)").TryEvaluate(state).value);
@@ -253,7 +253,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.number2ordinal(str, 'fr')").TryEvaluate(state).value);
             Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(str, 'Masculine', 'fr')").TryEvaluate(state).value);
 
-            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
             Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer)").TryEvaluate(state).value);
             Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2words(integer, 'Masculine')").TryEvaluate(state).value);
 
