@@ -3,6 +3,9 @@ using Antlr4.Runtime.Misc;
 using Humanizer;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 
@@ -10,6 +13,8 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
 {
     public static class HumanizerFunctions
     {
+        public static string Locale { get; set; } = "turn.activity.locale";
+
         public static void Register()
         {
             // case functions
@@ -21,17 +26,23 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             // humanize collections
             Expression.Functions.Add($"humanizer.humanizeList", (args) =>
             {
-                CollectionHumanizeExtensions.Humanize<dynamic>(args[0], args[1]);
+                CollectionHumanizeExtensions.Humanize<object>(args[0], args[1]);
                 return string.Empty;
             });
 
             // DateTime functions
-            Expression.Functions.Add($"humanizer.datetime", (args) =>
+            Expression.Functions.Add($"humanizer.humanizeDateTime", (args) =>
             {
-                return DateHumanizeExtensions.Humanize(ParseDate(args[0]), ParseDate(args.Skip(1).FirstOrDefault()));
+                var culture = ParseCulture(args);
+                var referenceDate = ParseDate((object)args.Skip(1).FirstOrDefault());
+
+                if (referenceDate.HasValue)
+                    return DateHumanizeExtensions.Humanize(ParseDate(args[0]), referenceDate.Value, culture);
+
+                return DateHumanizeExtensions.Humanize(ParseDate(args[0]), culture: culture);
             });
 
-            Expression.Functions.Add($"humanizer.datetimeOrdinal", (args) =>
+            Expression.Functions.Add($"humanizer.dateTimeToOrdinalWords", (args) =>
             {
                 if (args.Count == 2)
                 {
@@ -41,9 +52,11 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             });
 
             // timespan functions
-            Expression.Functions.Add($"humanizer.timespan", (args) =>
+            Expression.Functions.Add($"humanizer.humanizeTimeSpan", (args) =>
             {
-                return TimeSpanHumanizeExtensions.Humanize(timeSpan: ParseTimeSpan(args[0]), precision: (int)ParseInt(args.Skip(1).FirstOrDefault(), 1));
+                var culture = ParseCulture(args);
+                var precision = (int)ParseInt(args.Skip(1).FirstOrDefault(), 1);
+                return TimeSpanHumanizeExtensions.Humanize(timeSpan: ParseTimeSpan(args[0]), precision: precision, culture: culture);
             });
             Expression.Functions.Add($"humanizer.weeks", (args) => NumberToTimeSpanExtensions.Weeks(ParseNumber((object)args[0])));
             Expression.Functions.Add($"humanizer.days", (args) => NumberToTimeSpanExtensions.Days(ParseNumber((object)args[0])));
@@ -63,9 +76,11 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             // headings (float => North) "north" => float
             Expression.Functions.Add($"humanizer.degrees2heading", (args) =>
             {
-                if (args.Count >= 2)
-                    return HeadingExtensions.ToHeading(ParseNumber((object)args[0]), ParseEnum<HeadingStyle>(args.Skip(1).FirstOrDefault()));
-                return HeadingExtensions.ToHeading(ParseNumber((object)args[0]));
+                var culture = ParseCulture(args);
+
+                if (TryParseEnum<HeadingStyle>((object)args.Skip(1).FirstOrDefault(), out var style))
+                    return HeadingExtensions.ToHeading(ParseNumber((object)args[0]), style, culture: culture);
+                return HeadingExtensions.ToHeading(ParseNumber((object)args[0]), culture: culture);
             });
             Expression.Functions.Add($"humanizer.heading2degrees", (args) => HeadingExtensions.FromAbbreviatedHeading((string)args[0].ToString()));
 
@@ -96,25 +111,30 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             // numberToWords functions
             Expression.Functions.Add($"humanizer.number2words", (args) =>
             {
-                if (args.Count >= 2)
-                    return NumberToWordsExtension.ToWords(ParseInt(args[0]), ParseEnum<GrammaticalGender>(args.Skip(1).FirstOrDefault()));
-                return NumberToWordsExtension.ToWords(ParseInt(args[0]));
+                var culture = ParseCulture(args);
+                if (TryParseEnum<GrammaticalGender>((object)args.Skip(1).FirstOrDefault(), out var enm))
+                    return NumberToWordsExtension.ToWords(ParseInt(args[0]), enm, culture: culture);
+                return NumberToWordsExtension.ToWords(ParseInt(args[0]), culture: culture);
             });
 
             Expression.Functions.Add($"humanizer.number2ordinal", (args) =>
             {
-                if (args.Count >= 2)
-                    return NumberToWordsExtension.ToOrdinalWords((Int32)ParseInt(args[0]), ParseEnum<GrammaticalGender>(args.Skip(1).FirstOrDefault()));
+                var culture = ParseCulture(args);
 
-                return NumberToWordsExtension.ToOrdinalWords((Int32)ParseInt(args[0]));
+                if (TryParseEnum<GrammaticalGender>((object)args.Skip(1).FirstOrDefault(), out var gender))
+                    return NumberToWordsExtension.ToOrdinalWords((Int32)ParseInt(args[0]), gender, culture: culture);
+
+                return NumberToWordsExtension.ToOrdinalWords((Int32)ParseInt(args[0]), culture: culture);
             });
 
             Expression.Functions.Add($"humanizer.ordinalize", (args) =>
             {
-                if (args.Count >= 2)
-                    return OrdinalizeExtensions.Ordinalize((Int32)ParseInt(args[0]), ParseEnum<GrammaticalGender>(args.Skip(1).FirstOrDefault()));
+                var culture = ParseCulture(args);
 
-                return OrdinalizeExtensions.Ordinalize((Int32)ParseInt(args[0]));
+                if (TryParseEnum<GrammaticalGender>((object)args.Skip(1).FirstOrDefault(), out var gender))
+                    return OrdinalizeExtensions.Ordinalize((Int32)ParseInt(args[0]), gender, culture: culture);
+
+                return OrdinalizeExtensions.Ordinalize((Int32)ParseInt(args[0]), culture: culture);
             });
 
             // roman functions
@@ -157,20 +177,66 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
 
             // tupelize functions
             Expression.Functions.Add($"humanizer.tupleize", (args) => TupleizeExtensions.Tupleize((int)ParseInt(args[0])));
+
+            // dotnet format functions
+            Expression.Functions.Add($"dotnet.numberToString", (args) =>
+            {
+                var culture = ParseCulture(args);
+                var number = ParseNumber((object)args[0]);
+                var format = ((object)args[1]).ToString();
+                return number.ToString(format, culture);
+            });
+            Expression.Functions.Add($"dotnet.intToString", (args) =>
+            {
+                var culture = ParseCulture(args);
+                var integer = ParseInt((object)args[0]);
+                var format = ((object)args[1]).ToString();
+                return integer.ToString(format, culture);
+            });
+            Expression.Functions.Add($"dotnet.dateTimeToString", (args) =>
+            {
+                var culture = ParseCulture(args);
+                var dateTime = ParseDate((object)args[0]);
+                var format = ((object)args[1]).ToString();
+                return dateTime.Value.ToString(format, culture);
+            });
+            Expression.Functions.Add($"dotnet.timeSpanToString", (args) =>
+            {
+                var culture = ParseCulture(args);
+                var timeSpan = ParseTimeSpan((object)args[0]);
+                var format = ((object)args[1]).ToString();
+                return timeSpan.Value.ToString(format, culture);
+            });
         }
 
-        internal static T ParseEnum<T>(dynamic arg)
+        internal static bool TryParseEnum<T>(object arg, out T result)
+            where T : struct
+        {
+            result = default(T);
+
+            if (arg == null)
+            {
+                return false;
+            }
+
+            if (arg is T r)
+            {
+                result = r;
+                return true;
+            }
+
+            return Enum.TryParse<T>(arg.ToString(), out result);
+        }
+
+        internal static T ParseEnum<T>(object arg)
         {
             if (arg is T result)
                 return result;
 
-            if (arg is string str)
-                return (T)Enum.Parse(typeof(T), str);
-
-            throw new ArgumentNullException($"Not parsable as {typeof(T).FullName}");
+            return (T)Enum.Parse(typeof(T), ((object)arg).ToString());
         }
 
-        internal static T Parse<T>(dynamic arg, T def = default)
+        internal static T Parse<T>(object arg, T def = default)
         {
             if (arg == null)
             {
@@ -186,7 +252,7 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             return JObject.FromObject(arg).ToObject<T>();
         }
 
-        internal static DateTime? ParseDate(dynamic arg)
+        internal static DateTime? ParseDate(object arg)
         {
             if (arg is null)
             {
@@ -198,14 +264,15 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
 
             if (arg is string str)
             {
-                DateTime.TryParse(str, out result);
-                return result;
+                if (DateTime.TryParse(str, out result))
+                    return result;
+                return null;
             }
 
             return JObject.FromObject(arg).ToObject<DateTime>();
         }
 
-        internal static TimeSpan? ParseTimeSpan(dynamic arg)
+        internal static TimeSpan? ParseTimeSpan(object arg)
         {
             if (arg is null)
             {
@@ -224,30 +291,60 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
             return JObject.FromObject(arg).ToObject<TimeSpan>();
         }
 
-        internal static double ParseNumber(dynamic arg)
+        internal static double ParseNumber(object arg)
         {
             return Convert.ToDouble(arg);
         }
 
-        internal static Int64 ParseInt(dynamic arg, int def = 0)
+        internal static Int64 ParseInt(object arg, int def = 0)
         {
             if (arg == null)
             {
                 return def;
             }
 
-            return Convert.ToInt64(arg);
+            try
+            {
+                return Convert.ToInt64(arg);
+            }
+            catch
+            {
+                return def;
+            }
         }
 
-        internal static bool ParseBool(dynamic arg, bool def = false)
+        internal static bool ParseBool(object arg, bool def = false)
         {
             if (arg == null)
             {
                 return def;
             }
 
-            return Convert.ToBoolean(arg);
+            try
+            {
+                return Convert.ToBoolean(arg);
+            }
+            catch
+            {
+                return def;
+            }
         }
 
+        internal static CultureInfo ParseCulture(IEnumerable<object> args)
+        {
+            foreach (var arg in args.Reverse())
+            {
+                string culture = arg.ToString();
+                try
+                {
+                    return CultureInfo.GetCultureInfo(culture);
+                }
+                catch
+                {
+                    return Thread.CurrentThread.CurrentCulture;
+                }
+            }
+            return Thread.CurrentThread.CurrentCulture;
+        }
     }
 }

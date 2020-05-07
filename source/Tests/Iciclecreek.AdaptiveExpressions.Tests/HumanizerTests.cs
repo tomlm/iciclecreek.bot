@@ -25,6 +25,12 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             HumanizerFunctions.Register();
         }
 
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        }
+
         [TestMethod]
         public void ApplyCaseTests()
         {
@@ -37,7 +43,34 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         }
 
         [TestMethod]
-        public void DateTimeTests()
+        public void HumanizeDateTimeTests()
+        {
+            var start = DateTime.UtcNow - TimeSpan.FromHours(1);
+            var state = new
+            {
+                date = start,
+                target = start - TimeSpan.FromDays(365)
+            };
+
+            Assert.AreEqual(state.date.Humanize(), Expression.Parse($"humanizer.humanizeDateTime(date)").TryEvaluate(state).value);
+            Assert.AreEqual(state.date.Humanize(true, state.target), Expression.Parse($"humanizer.humanizeDateTime(date, target )").TryEvaluate(state).value);
+
+            var state2 = JObject.FromObject(state);
+
+            Assert.AreEqual(state.date.Humanize(), Expression.Parse($"humanizer.humanizeDateTime(date)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.date.Humanize(true, state.target), Expression.Parse($"humanizer.humanizeDateTime(date, target )").TryEvaluate(state2).value);
+
+            var culture = CultureInfo.GetCultureInfo("fr");
+            Assert.AreEqual(state.date.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.date.Humanize(true, state.target, culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, target, 'fr')").TryEvaluate(state).value);
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Assert.AreEqual(state.date.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date)").TryEvaluate(state).value);
+            Assert.AreEqual(state.date.Humanize(true, state.target, culture: culture), Expression.Parse($"humanizer.humanizeDateTime(date, target )").TryEvaluate(state).value);
+        }
+
+        [TestMethod]
+        public void DateTimeToOrdinalWordsTests()
         {
             var start = DateTime.UtcNow - TimeSpan.FromHours(1);
             var state = new
@@ -48,17 +81,13 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
 
             // Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("fr");
 
-            Assert.AreEqual(state.date.Humanize(), Expression.Parse($"humanizer.datetime(date)").TryEvaluate(state).value);
-            Assert.AreEqual(state.date.Humanize(true, state.target), Expression.Parse($"humanizer.datetime(date, target )").TryEvaluate(state).value);
-            Assert.AreEqual(state.target.ToOrdinalWords(), Expression.Parse($"humanizer.datetimeOrdinal(target)").TryEvaluate(state).value);
-            Assert.AreEqual(state.target.ToOrdinalWords(GrammaticalCase.Genitive), Expression.Parse($"humanizer.datetimeOrdinal(target, 'Genitive')").TryEvaluate(state).value);
+            Assert.AreEqual(state.target.ToOrdinalWords(), Expression.Parse($"humanizer.dateTimeToOrdinalWords(target)").TryEvaluate(state).value);
+            Assert.AreEqual(state.target.ToOrdinalWords(GrammaticalCase.Genitive), Expression.Parse($"humanizer.dateTimeToOrdinalWords(target, 'Genitive')").TryEvaluate(state).value);
 
             var state2 = JObject.FromObject(state);
 
-            Assert.AreEqual(state.date.Humanize(), Expression.Parse($"humanizer.datetime(date)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.date.Humanize(true, state.target), Expression.Parse($"humanizer.datetime(date, target )").TryEvaluate(state2).value);
-            Assert.AreEqual(state.target.ToOrdinalWords(), Expression.Parse($"humanizer.datetimeOrdinal(target)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.target.ToOrdinalWords(GrammaticalCase.Genitive), Expression.Parse($"humanizer.datetimeOrdinal(target, 'Genitive')").TryEvaluate(state2).value);
+            Assert.AreEqual(state.target.ToOrdinalWords(), Expression.Parse($"humanizer.dateTimeToOrdinalWords(target)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.target.ToOrdinalWords(GrammaticalCase.Genitive), Expression.Parse($"humanizer.dateTimeToOrdinalWords(target, 'Genitive')").TryEvaluate(state2).value);
         }
 
         [TestMethod]
@@ -86,6 +115,16 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.degrees.ToHeading(), Expression.Parse($"humanizer.degrees2heading(degrees)").TryEvaluate(state).value);
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Abbreviated), Expression.Parse($"humanizer.degrees2heading(degrees, 'Abbreviated')").TryEvaluate(state).value);
             Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Full), Expression.Parse($"humanizer.degrees2heading(degrees, 'Full')").TryEvaluate(state).value);
+
+            var culture = CultureInfo.GetCultureInfo("fr");
+            Assert.AreEqual(state.degrees.ToHeading(culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Abbreviated, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Abbreviated', 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Full, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Full', 'fr')").TryEvaluate(state).value);
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Assert.AreEqual(state.degrees.ToHeading(culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees)").TryEvaluate(state).value);
+            Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Abbreviated, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Abbreviated')").TryEvaluate(state).value);
+            Assert.AreEqual(state.degrees.ToHeading(HeadingStyle.Full, culture: culture), Expression.Parse($"humanizer.degrees2heading(degrees, 'Full')").TryEvaluate(state).value);
         }
 
         [TestMethod]
@@ -132,7 +171,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         }
 
         [TestMethod]
-        public void TimeSpanTests()
+        public void HumanizeTimeSpanTests()
         {
             var state = new
             {
@@ -140,33 +179,44 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
                 value = 1303.43d
             };
 
-            Assert.AreEqual(state.span.Humanize(), Expression.Parse($"humanizer.timespan(span)").TryEvaluate(state).value);
-            Assert.AreEqual(state.span.Humanize(2), Expression.Parse($"humanizer.timespan(span,2)").TryEvaluate(state).value);
-            Assert.AreEqual(state.span.Humanize(3), Expression.Parse($"humanizer.timespan(span,3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Weeks().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.weeks(value))").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Days().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.days(value))").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Hours().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.hours(value))").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Minutes().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.minutes(value))").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Seconds().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.seconds(value))").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Milliseconds().Humanize(), Expression.Parse($"humanizer.timespan(humanizer.milliseconds(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(span)").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(2), Expression.Parse($"humanizer.humanizeTimeSpan(span,2)").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(span,3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Weeks().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.weeks(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Days().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.days(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Hours().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.hours(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Minutes().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.minutes(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Seconds().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.seconds(value))").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Milliseconds().Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.milliseconds(value))").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.value.Weeks().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.weeks(value),3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Days().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.days(value),3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Hours().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.hours(value),3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Minutes().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.minutes(value),3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Seconds().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.seconds(value),3)").TryEvaluate(state).value);
-            Assert.AreEqual(state.value.Milliseconds().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.milliseconds(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Weeks().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.weeks(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Days().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.days(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Hours().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.hours(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Minutes().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.minutes(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Seconds().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.seconds(value),3)").TryEvaluate(state).value);
+            Assert.AreEqual(state.value.Milliseconds().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.milliseconds(value),3)").TryEvaluate(state).value);
 
             var state2 = JObject.FromObject(state);
-            Assert.AreEqual(state.span.Humanize(), Expression.Parse($"humanizer.timespan(span)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.span.Humanize(2), Expression.Parse($"humanizer.timespan(span,2)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.span.Humanize(3), Expression.Parse($"humanizer.timespan(span,3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Weeks().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.weeks(value), 3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Days().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.days(value), 3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Hours().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.hours(value), 3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Minutes().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.minutes(value), 3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Seconds().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.seconds(value), 3)").TryEvaluate(state2).value);
-            Assert.AreEqual(state.value.Milliseconds().Humanize(3), Expression.Parse($"humanizer.timespan(humanizer.milliseconds(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.span.Humanize(), Expression.Parse($"humanizer.humanizeTimeSpan(span)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.span.Humanize(2), Expression.Parse($"humanizer.humanizeTimeSpan(span,2)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.span.Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(span,3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Weeks().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.weeks(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Days().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.days(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Hours().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.hours(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Minutes().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.minutes(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Seconds().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.seconds(value), 3)").TryEvaluate(state2).value);
+            Assert.AreEqual(state.value.Milliseconds().Humanize(3), Expression.Parse($"humanizer.humanizeTimeSpan(humanizer.milliseconds(value), 3)").TryEvaluate(state2).value);
+
+            var culture = CultureInfo.GetCultureInfo("fr");
+            Assert.AreEqual(state.span.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(2, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,2,'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(3, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,3,'fr')").TryEvaluate(state).value);
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Assert.AreEqual(state.span.Humanize(culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span)").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(2, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,2)").TryEvaluate(state).value);
+            Assert.AreEqual(state.span.Humanize(3, culture: culture), Expression.Parse($"humanizer.humanizeTimeSpan(span,3)").TryEvaluate(state).value);
+
         }
 
         [TestMethod]
@@ -192,6 +242,26 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Neuter), Expression.Parse($"humanizer.ordinalize(str, 'Neuter')").TryEvaluate(state).value);
             Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine), Expression.Parse($"humanizer.ordinalize(str, 'Masculine')").TryEvaluate(state).value);
             Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Feminine), Expression.Parse($"humanizer.ordinalize(str, 'Feminine')").TryEvaluate(state).value);
+
+            var culture = CultureInfo.GetCultureInfo("fr");
+            Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2words(integer, 'Masculine', 'fr')").TryEvaluate(state).value);
+
+            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'Masculine', 'fr')").TryEvaluate(state).value);
+
+            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'fr')").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'Masculine', 'fr')").TryEvaluate(state).value);
+
+            Thread.CurrentThread.CurrentCulture = culture;
+            Assert.AreEqual(state.integer.ToWords(culture: culture), Expression.Parse($"humanizer.number2words(integer)").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2words(integer, 'Masculine')").TryEvaluate(state).value);
+
+            Assert.AreEqual(state.integer.ToOrdinalWords(culture: culture), Expression.Parse($"humanizer.number2ordinal(integer)").TryEvaluate(state).value);
+            Assert.AreEqual(state.integer.ToOrdinalWords(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.number2ordinal(integer, 'Masculine')").TryEvaluate(state).value);
+
+            Assert.AreEqual(state.str.Ordinalize(culture: culture), Expression.Parse($"humanizer.ordinalize(str)").TryEvaluate(state).value);
+            Assert.AreEqual(state.str.Ordinalize(GrammaticalGender.Masculine, culture: culture), Expression.Parse($"humanizer.ordinalize(str, 'Masculine')").TryEvaluate(state).value);
         }
 
         [TestMethod]
@@ -238,7 +308,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
                 value = "This is a long string with lots of text in it."
             };
 
-            for(int i=10; i < 15; i++)
+            for (int i = 10; i < 15; i++)
             {
                 Assert.AreEqual(state.value.Truncate(i), Expression.Parse($"humanizer.truncate(value, {i})").TryEvaluate(state).value);
                 Assert.AreEqual(state.value.Truncate(i, "..."), Expression.Parse($"humanizer.truncate(value, {i}, '...')").TryEvaluate(state).value);
