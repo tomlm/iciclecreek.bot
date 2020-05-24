@@ -1,4 +1,4 @@
-![icon](../../../icon.png)
+![icon](icon.png)
 
 # Comos Actions
 This library provides custom actions for Bot Framework/Composer to perform database operations against azure storage tables.
@@ -6,14 +6,21 @@ This library provides custom actions for Bot Framework/Composer to perform datab
 ## Installation
 To install into your project run the cli:
 
-```dotnet install Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage```
+```shell
+dotnet install Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
+```
 
 In your startup code add:
 
-```ComponentRegistration.Add(new AzureStorageComponentRegistration());```
+```csharp
+ComponentRegistration.Add(new AzureStorageComponentRegistration());
+```
 
 To add to your schema for usage in Bot Framework Composer from cli:
-```bf dialog:merge -p yourproj.proj -o your.schema```
+
+```shell
+bf dialog:merge -p yourproj.proj -o your.schema
+```
 
 ## Library
 This library adds actions for Azure Table Stores.
@@ -35,7 +42,7 @@ This library adds actions for Azure Table Stores.
 ```json
 {
     "$kind": "Iciclecreek.Table.CreateTable",
-    "connectionString": "UseDevelopmentStorage=true",
+    "connectionString": "=settings.connectionString",
     "table":"TestTableActions"
 },
 {
@@ -49,7 +56,7 @@ This library adds actions for Azure Table Stores.
 },
 {
     "$kind": "Iciclecreek.Table.EntityOperation",
-    "connectionString": "UseDevelopmentStorage=true",
+    "connectionString": "=settings.connectionString",
     "table":"TestTableActions",
     "operation": "InsertOrReplace",
     "entity": "=$entity",
@@ -61,7 +68,7 @@ This library adds actions for Azure Table Stores.
 },
 {
     "$kind": "Iciclecreek.Table.RetrieveEntity",
-    "connectionString": "UseDevelopmentStorage=true",
+    "connectionString": "=settings.connectionString",
     "table":"TestTableActions",
     "partitionKey": "xyz",
     "rowKey": "abc",

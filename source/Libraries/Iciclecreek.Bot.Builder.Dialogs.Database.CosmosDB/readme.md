@@ -1,4 +1,4 @@
-![icon](../../../icon.png)
+![icon](icon.png)
 
 # Comos Actions
 This library provides custom actions for Bot Framework/Composer to do operations against cosmos stores.
@@ -13,6 +13,7 @@ In your startup code add:
 ```ComponentRegistration.Add(new CosmosComponentRegistration());```
 
 To add to your schema for usage in Bot Framework Composer from cli:
+
 ```bf dialog:merge -p yourproj.proj -o your.schema```
 
 ## Library
