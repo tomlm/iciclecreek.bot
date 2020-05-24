@@ -1,6 +1,6 @@
 ![icon](icon.png)
 
-# Comos Actions
+# Azure Storage Table Actions
 This library provides custom actions for Bot Framework/Composer to perform database operations against azure storage tables.
 
 ## Installation
