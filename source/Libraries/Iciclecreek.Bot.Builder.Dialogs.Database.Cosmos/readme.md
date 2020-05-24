@@ -6,7 +6,7 @@ This library provides custom actions for Bot Framework/Composer to do operations
 ## Installation
 To install into your project run the cli:
 
-```dotnet install Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos```
+```dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos```
 
 In your startup code add:
 

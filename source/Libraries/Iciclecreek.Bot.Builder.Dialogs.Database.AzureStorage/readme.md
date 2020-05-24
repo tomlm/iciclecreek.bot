@@ -1,13 +1,13 @@
 ![icon](icon.png)
 
-# Comos Actions
+# Azure Storage Table Actions
 This library provides custom actions for Bot Framework/Composer to perform database operations against azure storage tables.
 
 ## Installation
 To install into your project run the cli:
 
 ```shell
-dotnet install Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
+dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
 ```
 
 In your startup code add:
