@@ -1,0 +1,119 @@
+﻿{
+    "$schema": "../../tests.schema",
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnBeginDialog",
+                "actions": [
+                    {
+                        "$kind": "Iciclecreek.Cosmos.CreateDatabase",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.CreateContainer",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "partitionKey": "/id"
+                    },
+                    {
+                        "$kind": "Microsoft.SetProperties",
+                        "assignments": [
+                            {
+                                "property": "dialog.entity.foo",
+                                "value": 13
+                            },
+                            {
+                                "property": "dialog.entity.id",
+                                "value": "bar"
+                            }
+                        ]
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.CreateItem",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "item": "=dialog.entity",
+                        "resultProperty": "dialog.entity2"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entity2.foo}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.GetItem",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "itemId": "=dialog.entity2.id",
+                        "partitionKey": "/id",
+                        "resultProperty": "dialog.entity3"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entity3.foo}"
+                    },
+                    {
+                        "$kind": "Microsoft.SetProperty",
+                        "property": "dialog.entity3.foo",
+                        "value": "=dialog.entity3.foo + 1"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.ReplaceItem",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "itemId": "=dialog.entity3.id",
+                        "item":"=dialog.Entity3",
+                        "resultProperty": "dialog.entity4"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.QueryItems",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "query": "SELECT * FROM c",
+                        "resultProperty": "dialog.entities"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entities[0].foo}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.DeleteContainer",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.DeleteDatabase",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb"
+                    }
+                ]
+            }
+        ]
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "13"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "13"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "14"
+        }
+    ]
+}

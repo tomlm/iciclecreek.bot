@@ -1,0 +1,57 @@
+﻿{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "Query Items",
+    "description": "Query cosmos container for items.",
+    "type": "object",
+    "required": [
+        "connectionString",
+        "database",
+        "container",
+        "query"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Optional id for the dialog"
+        },
+        "disabled": {
+            "$ref": "schema:#/definitions/booleanExpression",
+            "title": "Disabled",
+            "description": "Optional condition which if true will disable this action.",
+            "examples": [
+                true,
+                "=user.age > 3"
+            ]
+        },
+        "connectionString": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Connection String",
+            "description": "Database connection string."
+        },
+        "database": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Database",
+            "description": "The name of the database."
+        },
+        "container": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Container",
+            "description": "The name of the container."
+        },
+        "query": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Query",
+            "description": "The query to execute."
+        },
+        "resultProperty": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Property",
+            "description": "Property to store the result of command.",
+            "examples": [
+                "dialog.userRecord"
+            ]
+        }
+    }
+}

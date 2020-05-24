@@ -1,0 +1,116 @@
+﻿{
+    "$schema": "../../tests.schema",
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnBeginDialog",
+                "actions": [
+                    {
+                        "$kind": "Iciclecreek.Table.CreateTable",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions"
+                    },
+                    {
+                        "$kind": "Microsoft.SetProperties",
+                        "assignments": [
+                            {
+                                "property": "dialog.entity.partitionKey",
+                                "value": "xyz"
+                            },
+                            {
+                                "property": "dialog.entity.rowKey",
+                                "value": "abc"
+                            },
+                            {
+                                "property": "dialog.entity.foo",
+                                "value": 13
+                            }
+                        ]
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.EntityOperation",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions",
+                        "operation": "InsertOrReplace",
+                        "entity": "=dialog.entity",
+                        "resultProperty": "dialog.entity2"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entity2.foo}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.RetrieveEntity",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions",
+                        "partitionKey": "xyz",
+                        "rowKey": "abc",
+                        "resultProperty": "dialog.entity3"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entity3.foo}"
+                    },
+                    {
+                        "$kind": "Microsoft.SetProperty",
+                        "property": "dialog.entity3.foo",
+                        "value": "=dialog.entity3.foo + 1"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.EntityOperation",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions",
+                        "operation": "InsertOrReplace",
+                        "entity": "=dialog.entity3",
+                        "resultProperty": "dialog.entity4"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.RetrieveEntity",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions",
+                        "partitionKey": "xyz",
+                        "rowKey": "abc",
+                        "resultProperty": "dialog.entity5"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${dialog.entity5.foo}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.EntityOperation",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions",
+                        "operation": "Delete",
+                        "entity": "=dialog.entity5"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Table.DeleteTable",
+                        "connectionString": "UseDevelopmentStorage=true",
+                        "table":"TestTableActions"
+                    }
+                ]
+            }
+        ]
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "13"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "13"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "14"
+        }
+
+    ]
+}

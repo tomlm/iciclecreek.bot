@@ -1,0 +1,61 @@
+﻿{
+    "$schema": "../../tests.schema",
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnBeginDialog",
+                "actions": [
+                    {
+                        "$kind":"Iciclecreek.Sql.Execute",
+                        "connectionString" : "=settings.connectionString",
+                        "statements": [
+                            "CREATE TABLE COMPANY(",
+                            "   ID INT PRIMARY KEY     NOT NULL,",
+                            "   NAME           TEXT    NOT NULL",
+                            ");"
+                        ]
+                    },
+                    {
+                        "$kind":"Iciclecreek.Sql.Execute",
+                        "connectionString" : "=settings.connectionString",
+                        "statements": [
+                            "INSERT INTO COMPANY (ID,NAME)",
+                            "VALUES (1, 'Paul');"
+                        ]
+                    },
+                    {
+                        "$kind":"Iciclecreek.Sql.Execute",
+                        "connectionString" : "=settings.connectionString",
+                        "statements": [
+                            "SELECT NAME FROM COMPANY;"
+                        ],
+                        "resultProperty":"$names"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "Hi ${$names[0]}"
+                    },
+                    {
+                        "$kind":"Iciclecreek.Sql.Execute",
+                        "connectionString" : "=settings.connectionString",
+                        "statements": [
+                            "DROP TABLE COMPANY;"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "hi"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "Hi Paul"
+        }
+    ]
+}
