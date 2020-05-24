@@ -13,6 +13,11 @@ Library which adds components to Bot Framework and Bot Composer for doing CRUD o
 Library which adds components to Bot Framework and Bot Composer for doing CRUD operations against Azure CosmosDB document store.
 [More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos/)
 
+## Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
+Library which adds components to Bot Framework and Bot Composer for executing SQL statements using Microsoft.Data.SqlClient library.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient/)
+
+
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
 
