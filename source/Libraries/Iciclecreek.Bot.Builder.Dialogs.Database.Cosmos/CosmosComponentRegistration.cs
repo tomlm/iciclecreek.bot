@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder;
+﻿using AdaptiveExpressions.Converters;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
@@ -47,7 +48,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// <returns>enumeration of json converters.</returns>
         public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, SourceContext sourceContext)
         {
-            yield break;
+            yield return new ObjectExpressionConverter<object>();
         }
     }
 }
