@@ -32,6 +32,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             yield return new DeclarativeType<CreateItem>(CreateItem.Kind);
             yield return new DeclarativeType<QueryItems>(QueryItems.Kind);
             yield return new DeclarativeType<GetItem>(GetItem.Kind);
+            yield return new DeclarativeType<DeleteItem>(DeleteItem.Kind);
             yield return new DeclarativeType<ReplaceItem>(ReplaceItem.Kind);
 
             // graph
