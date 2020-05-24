@@ -1,10 +1,8 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
