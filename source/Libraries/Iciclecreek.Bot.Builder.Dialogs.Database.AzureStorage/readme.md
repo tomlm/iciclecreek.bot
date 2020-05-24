@@ -7,7 +7,7 @@ This library provides custom actions for Bot Framework/Composer to perform datab
 To install into your project run the cli:
 
 ```shell
-dotnet add Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
+dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
 ```
 
 In your startup code add:
