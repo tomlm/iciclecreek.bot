@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Database.Tests\Iciclecreek.Bot.Builder.Dialogs.Database.Tests.csproj", "{F7F3F8BC-A95F-48AD-AB77-50D68EBC7B10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.CosmosDB\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj", "{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj", "{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage", "libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj", "{78CF539F-356C-464D-BAD3-F1F73560772E}"
 EndProject
