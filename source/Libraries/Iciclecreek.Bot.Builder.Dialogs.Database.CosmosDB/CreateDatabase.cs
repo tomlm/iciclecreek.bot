@@ -10,18 +10,18 @@ using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Create cosmos db database
     /// </summary>
-    public class DeleteDatabase  : Dialog
+    public class CreateDatabase : Dialog
     {
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.Cosmos.DeleteDatabase";
+        public const string Kind = "Iciclecreek.Cosmos.CreateDatabase";
 
         [JsonConstructor]
-        public DeleteDatabase([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public CreateDatabase([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
         }
@@ -54,8 +54,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
             var connectionString = ConnectionString.GetValue(dc.State);
             var databaseName = Database.GetValue(dc.State);
             var client = CosmosClientCache.GetClient(connectionString);
-            var database = client.GetDatabase(databaseName);
-            var result = await database.DeleteAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            var result = await client.CreateDatabaseIfNotExistsAsync(databaseName);
             return await dc.EndDialogAsync(result: result.Resource, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }

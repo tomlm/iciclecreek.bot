@@ -22,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj" />
         <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.CosmosDB\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj" />
         <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient.csproj" />
     </ItemGroup>

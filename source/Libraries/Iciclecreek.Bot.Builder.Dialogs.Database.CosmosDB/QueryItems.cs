@@ -13,7 +13,7 @@ using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Create cosmos db item in container

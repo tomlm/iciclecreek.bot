@@ -10,7 +10,7 @@ using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Create cosmos db item in container

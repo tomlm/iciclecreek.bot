@@ -6,18 +6,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.Table
 {
     /// <summary>
-    /// Execute SQL against SqlClient.
+    /// Create cosmos db table
     /// </summary>
-    public class DeleteTable : Dialog
+    public class CreateTable : Dialog
     {
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.Table.DeleteTable";
+        public const string Kind = "Iciclecreek.Table.CreateTable";
 
         [JsonConstructor]
-        public DeleteTable([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public CreateTable([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
         }
@@ -58,9 +58,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
 
             // Create a table client for interacting with the table service 
             CloudTable table = tableClient.GetTableReference(tableName);
-            var result = await table.DeleteIfExistsAsync().ConfigureAwait(false);
+            var result = await table.CreateIfNotExistsAsync().ConfigureAwait(false);
 
             return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
-	}
+    }
 }

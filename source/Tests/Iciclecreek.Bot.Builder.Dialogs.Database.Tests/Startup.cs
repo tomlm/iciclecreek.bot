@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage;
 using Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos;
 using Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient;
 using Microsoft.Bot.Builder;
@@ -33,7 +34,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Tests
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
             ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
-            ComponentRegistration.Add(new CosmosDBComponentRegistration());
+            ComponentRegistration.Add(new AzureStorageComponentRegistration());
+            ComponentRegistration.Add(new CosmosComponentRegistration());
             ComponentRegistration.Add(new SqlClientComponentRegistration());
         }
 

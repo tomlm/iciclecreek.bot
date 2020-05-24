@@ -1,23 +1,27 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Cosmos;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
-    /// Create cosmos db table
+    /// Create cosmos db database
     /// </summary>
-    public class CreateTable : Dialog
+    public class DeleteDatabase  : Dialog
     {
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.Table.CreateTable";
+        public const string Kind = "Iciclecreek.Cosmos.DeleteDatabase";
 
         [JsonConstructor]
-        public CreateTable([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public DeleteDatabase([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
         }
@@ -37,8 +41,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
         /// <summary>
         /// Table name
         /// </summary>
-        [JsonProperty("table")]
-        public StringExpression Table { get; set; }
+        [JsonProperty("database")]
+        public StringExpression Database { get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -48,19 +52,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
             }
 
             var connectionString = ConnectionString.GetValue(dc.State);
-            var tableName = Table.GetValue(dc.State);
-
-            // Retrieve storage account information from connection string.
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
-
-            // Create a table client for interacting with the table service
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
-
-            // Create a table client for interacting with the table service 
-            CloudTable table = tableClient.GetTableReference(tableName);
-            var result = await table.CreateIfNotExistsAsync().ConfigureAwait(false);
-
-            return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var databaseName = Database.GetValue(dc.State);
+            var client = CosmosClientCache.GetClient(connectionString);
+            var database = client.GetDatabase(databaseName);
+            var result = await database.DeleteAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await dc.EndDialogAsync(result: result.Resource, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.CosmosDB\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj", "{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage", "libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj", "{78CF539F-356C-464D-BAD3-F1F73560772E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78CF539F-356C-464D-BAD3-F1F73560772E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78CF539F-356C-464D-BAD3-F1F73560772E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78CF539F-356C-464D-BAD3-F1F73560772E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78CF539F-356C-464D-BAD3-F1F73560772E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{491A6FB0-4138-441A-8C4C-4BA8522FDDC6} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{F7F3F8BC-A95F-48AD-AB77-50D68EBC7B10} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 		{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{78CF539F-356C-464D-BAD3-F1F73560772E} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}

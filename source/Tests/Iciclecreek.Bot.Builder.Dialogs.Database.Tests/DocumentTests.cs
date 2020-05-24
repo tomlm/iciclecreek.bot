@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB.Tests
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.DocumentDB.Tests
 {
     [TestClass]
     public class DocumentTests

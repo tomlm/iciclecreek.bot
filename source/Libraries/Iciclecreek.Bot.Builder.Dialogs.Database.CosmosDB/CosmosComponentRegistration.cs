@@ -1,6 +1,4 @@
-﻿using Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB;
-using Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table;
-using Microsoft.Bot.Builder;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
@@ -14,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
     /// <summary>
     /// Class which contains registration of components for CosmosDB.
     /// </summary>
-    public class CosmosDBComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class CosmosComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
         /// <summary>
         /// Gets declarative type registrations for QnAMAker.
@@ -23,12 +21,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// <returns>enumeration of DeclarativeTypes.</returns>
         public IEnumerable<DeclarativeType> GetDeclarativeTypes(ResourceExplorer resourceExplorer)
         {
-            // table
-            yield return new DeclarativeType<CreateTable>(CreateTable.Kind);
-            yield return new DeclarativeType<DeleteTable>(DeleteTable.Kind);
-            yield return new DeclarativeType<RetrieveEntity>(RetrieveEntity.Kind);
-            yield return new DeclarativeType<EntityOperation>(EntityOperation.Kind);
-
             // cosmos
             yield return new DeclarativeType<CreateDatabase>(CreateDatabase.Kind);
             yield return new DeclarativeType<DeleteDatabase>(DeleteDatabase.Kind);

@@ -10,7 +10,7 @@ using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json.Linq;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.Table
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.Table
 {
     /// <summary>
     /// Execute SQL against SqlClient.

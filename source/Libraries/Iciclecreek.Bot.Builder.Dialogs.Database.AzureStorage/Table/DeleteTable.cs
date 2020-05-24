@@ -1,27 +1,23 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Cosmos;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.Table
 {
     /// <summary>
-    /// Create cosmos db database
+    /// Execute SQL against SqlClient.
     /// </summary>
-    public class CreateDatabase : Dialog
+    public class DeleteTable : Dialog
     {
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.Cosmos.CreateDatabase";
+        public const string Kind = "Iciclecreek.Table.DeleteTable";
 
         [JsonConstructor]
-        public CreateDatabase([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public DeleteTable([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
         }
@@ -41,8 +37,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
         /// <summary>
         /// Table name
         /// </summary>
-        [JsonProperty("database")]
-        public StringExpression Database { get; set; }
+        [JsonProperty("table")]
+        public StringExpression Table { get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -52,10 +48,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
             }
 
             var connectionString = ConnectionString.GetValue(dc.State);
-            var databaseName = Database.GetValue(dc.State);
-            var client = CosmosClientCache.GetClient(connectionString);
-            var result = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-            return await dc.EndDialogAsync(result: result.Resource, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var tableName = Table.GetValue(dc.State);
+
+            // Retrieve storage account information from connection string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
+
+            // Create a table client for interacting with the table service
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
+
+            // Create a table client for interacting with the table service 
+            CloudTable table = tableClient.GetTableReference(tableName);
+            var result = await table.DeleteIfExistsAsync().ConfigureAwait(false);
+
+            return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
-    }
+	}
 }

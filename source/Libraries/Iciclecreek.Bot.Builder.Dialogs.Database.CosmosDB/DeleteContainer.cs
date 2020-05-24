@@ -1,16 +1,11 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Cosmos;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.DocumentDB
+namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Delete cosmos db container
