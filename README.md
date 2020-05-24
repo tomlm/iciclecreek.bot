@@ -5,6 +5,14 @@ This repo contains source code for a number of components for Bot Framework rela
 
 # Nuget Libraries
 
+## Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
+Library which adds components to Bot Framework and Bot Composer for doing CRUD operations against Azure Storage Tables.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage/)
+
+## Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
+Library which adds components to Bot Framework and Bot Composer for doing CRUD operations against Azure CosmosDB document store.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos/)
+
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
 
