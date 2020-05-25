@@ -1,15 +1,14 @@
 ﻿{
     "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
     "$role": "implements(Microsoft.IDialog)",
-    "title": "Replace Item",
-    "description": "Replace an item in a cosmos container.",
+    "title": "Upsert Item",
+    "description": "Create or update a cosmos item in a cosmos container.",
     "type": "object",
     "required": [
         "connectionString",
         "database",
         "container",
-        "item",
-        "itemId"
+        "item"
     ],
     "properties": {
         "id": {
@@ -44,12 +43,7 @@
         "item": {
             "$ref": "schema:#/definitions/objectExpression",
             "title": "Item",
-            "description": "The item to replace."
-        },
-        "itemId": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "ItemId",
-            "description": "The id of the item to replace."
+            "description": "The item to store."
         },
         "partitionKey": {
             "$ref": "schema:#/definitions/stringExpression",

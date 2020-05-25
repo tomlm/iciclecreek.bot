@@ -1,5 +1,6 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using System;
 using System.Runtime.CompilerServices;
@@ -12,13 +13,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
     /// <summary>
     /// Create cosmos db item in container
     /// </summary>
-    public class DeleteItem  : Dialog
+    public class UpsertItem : Dialog
     {
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.Cosmos.DeleteItem";
+        public const string Kind = "Iciclecreek.Cosmos.UpsertItem";
 
         [JsonConstructor]
-        public DeleteItem([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public UpsertItem([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
             this.RegisterSourceLocation(callerPath, callerLine);
         }
@@ -48,13 +49,25 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         public StringExpression Container { get; set; }
 
         /// <summary>
-        /// Item Id (default will be to look for id on the Item object itself)
+        /// Item 
         /// </summary>
-        [JsonProperty("itemId")]
-        public StringExpression ItemId { get; set; }
+        [JsonProperty("item")]
+        public ObjectExpression<object> Item { get; set; }
 
+        /// <summary>
+        /// PartitionKey value (optional)
+        /// </summary>
         [JsonProperty("partitionKey")]
-        public StringExpression PartitionKey{ get; set; }
+        public StringExpression PartitionKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the property path to store the query result in.
+        /// </summary>
+        /// <value>
+        /// The property path to store the dialog result in.
+        /// </value>
+        [JsonProperty("resultProperty")]
+        public StringExpression ResultProperty { get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -66,15 +79,21 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             var connectionString = ConnectionString.GetValue(dc.State);
             var databaseName = Database.GetValue(dc.State);
             var containerName = Container.GetValue(dc.State);
-            var itemId = ItemId?.GetValue(dc.State);
-            var partitionKey = PartitionKey.GetValue(dc.State);
+            var item = Item.GetValue(dc.State);
+            var partitionKeyValue = PartitionKey.GetValue(dc.State);
+            PartitionKey? partitionKey = (!String.IsNullOrEmpty(partitionKeyValue)) ? new PartitionKey(partitionKeyValue) : (PartitionKey?)null;
             var client = CosmosClientCache.GetClient(connectionString);
             var database = client.GetDatabase(databaseName);
             var container = database.GetContainer(containerName);
 
-            var result = await container.DeleteItemAsync<object>(itemId, new PartitionKey(partitionKey), cancellationToken: cancellationToken).ConfigureAwait(false);
+            var result = await container.UpsertItemAsync(item, partitionKey: partitionKey, cancellationToken: cancellationToken).ConfigureAwait(false);
             
-            return await dc.EndDialogAsync(result: result.Resource, cancellationToken: cancellationToken).ConfigureAwait(false);
+            if (this.ResultProperty != null)
+            {
+                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result.Resource);
+            }
+
+            return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -6,8 +6,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
@@ -63,6 +61,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         public StringExpression ItemId { get; set; }
 
         /// <summary>
+        /// PartitionKey value
+        /// </summary>
+        [JsonProperty("partitionKey")]
+        public StringExpression PartitionKey { get; set; }
+
+        /// <summary>
         /// Gets or sets the property path to store the query result in.
         /// </summary>
         /// <value>
@@ -83,12 +87,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             var containerName = Container.GetValue(dc.State);
             var item = Item.GetValue(dc.State);
             var itemId = ItemId?.GetValue(dc.State) ?? ObjectPath.GetPathValue<string>(item, "id") ?? ObjectPath.GetPathValue<string>(item, "Id");
+            var partitionKeyValue = PartitionKey.GetValue(dc.State);
+            PartitionKey? partitionKey = (partitionKeyValue != null) ? new PartitionKey(partitionKeyValue) : (PartitionKey?)null;
             var client = CosmosClientCache.GetClient(connectionString);
             var database = client.GetDatabase(databaseName);
             var container = database.GetContainer(containerName);
 
-            var result = await container.ReplaceItemAsync(item, itemId, cancellationToken: cancellationToken).ConfigureAwait(false);
-            
+            var result = await container.ReplaceItemAsync(item, itemId, partitionKey: partitionKey, cancellationToken: cancellationToken).ConfigureAwait(false);
+
             if (this.ResultProperty != null)
             {
                 dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result.Resource);

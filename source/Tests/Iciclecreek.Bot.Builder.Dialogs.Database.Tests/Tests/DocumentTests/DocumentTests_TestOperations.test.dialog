@@ -33,11 +33,12 @@
                         ]
                     },
                     {
-                        "$kind": "Iciclecreek.Cosmos.CreateItem",
+                        "$kind": "Iciclecreek.Cosmos.UpsertItem",
                         "connectionString": "=settings.cosmosConnectionString",
                         "database": "mydb",
                         "container": "mycont",
                         "item": "=dialog.entity",
+                        "partitionKey": "=dialog.entity.id",
                         "resultProperty": "dialog.entity2"
                     },
                     {
@@ -50,7 +51,7 @@
                         "database": "mydb",
                         "container": "mycont",
                         "itemId": "=dialog.entity2.id",
-                        "partitionKey": "/id",
+                        "partitionKey": "=dialog.entity2.id",
                         "resultProperty": "dialog.entity3"
                     },
                     {
@@ -68,7 +69,8 @@
                         "database": "mydb",
                         "container": "mycont",
                         "itemId": "=dialog.entity3.id",
-                        "item":"=dialog.Entity3",
+                        "item": "=dialog.Entity3",
+                        "partitionKey": "=dialog.entity3.id",
                         "resultProperty": "dialog.entity4"
                     },
                     {
@@ -82,6 +84,14 @@
                     {
                         "$kind": "Microsoft.SendActivity",
                         "activity": "${dialog.entities[0].foo}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Cosmos.DeleteItem",
+                        "connectionString": "=settings.cosmosConnectionString",
+                        "database": "mydb",
+                        "container": "mycont",
+                        "itemId": "bar",
+                        "partitionKey": "bar"
                     },
                     {
                         "$kind": "Iciclecreek.Cosmos.DeleteContainer",

@@ -45,6 +45,11 @@
             "title": "Item",
             "description": "The item to store."
         },
+        "partitionKey": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "PartitionKey",
+            "description": "The PartitionKey of the item to replace."
+        },
         "resultProperty": {
             "$ref": "schema:#/definitions/stringExpression",
             "title": "Property",

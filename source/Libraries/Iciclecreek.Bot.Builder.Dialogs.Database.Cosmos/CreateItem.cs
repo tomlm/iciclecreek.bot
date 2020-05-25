@@ -6,8 +6,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
@@ -57,6 +55,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         public ObjectExpression<object> Item { get; set; }
 
         /// <summary>
+        /// PartitionKey value
+        /// </summary>
+        [JsonProperty("partitionKey")]
+        public StringExpression PartitionKey { get; set; }
+
+        /// <summary>
         /// Gets or sets the property path to store the query result in.
         /// </summary>
         /// <value>
@@ -76,11 +80,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             var databaseName = Database.GetValue(dc.State);
             var containerName = Container.GetValue(dc.State);
             var item = Item.GetValue(dc.State);
+            var partitionKeyValue = PartitionKey.GetValue(dc.State);
+            PartitionKey? partitionKey = (!String.IsNullOrEmpty(partitionKeyValue)) ? new PartitionKey(partitionKeyValue) : (PartitionKey?)null;
             var client = CosmosClientCache.GetClient(connectionString);
             var database = client.GetDatabase(databaseName);
             var container = database.GetContainer(containerName);
 
-            var result = await container.CreateItemAsync(item, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var result = await container.CreateItemAsync(item, partitionKey: partitionKey, cancellationToken: cancellationToken).ConfigureAwait(false);
             
             if (this.ResultProperty != null)
             {

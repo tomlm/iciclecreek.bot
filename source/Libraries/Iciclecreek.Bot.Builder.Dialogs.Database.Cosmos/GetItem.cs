@@ -1,16 +1,11 @@
 ﻿using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
-using System.Collections.Generic;
+using System;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
@@ -84,20 +79,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             var databaseName = Database.GetValue(dc.State);
             var containerName = Container.GetValue(dc.State);
             var itemId = ItemId.GetValue(dc.State);
-            var partitionKey = PartitionKey.GetValue(dc.State);
+            var partitionKeyValue = PartitionKey.GetValue(dc.State);
+            PartitionKey partitionKey = new PartitionKey(partitionKeyValue);
             var client = CosmosClientCache.GetClient(connectionString);
             var database = client.GetDatabase(databaseName);
             var container = database.GetContainer(containerName);
-            var query = $"SELECT * FROM c WHERE c.id = '{itemId}'";
 
-            FeedIterator<object> queryResultSetIterator = container.GetItemQueryIterator<object>(new QueryDefinition(query));
-
-            FeedResponse<object> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-            var result = currentResultSet.FirstOrDefault();
+            var result = await container.ReadItemAsync<object>(id: itemId, partitionKey: partitionKey, cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (this.ResultProperty != null)
             {
-                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result);
+                dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result.Resource);
             }
 
             return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);

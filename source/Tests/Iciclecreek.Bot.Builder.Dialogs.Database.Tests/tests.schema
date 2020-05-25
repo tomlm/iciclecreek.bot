@@ -32,6 +32,9 @@
 			"$ref": "#/definitions/Iciclecreek.Cosmos.ReplaceItem"
 		},
 		{
+			"$ref": "#/definitions/Iciclecreek.Cosmos.UpsertItem"
+		},
+		{
 			"$ref": "#/definitions/Iciclecreek.Sql.Execute"
 		},
 		{
@@ -550,6 +553,11 @@
 					"title": "Item",
 					"description": "The item to store."
 				},
+				"partitionKey": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "PartitionKey",
+					"description": "The PartitionKey of the item to replace."
+				},
 				"resultProperty": {
 					"$ref": "#/definitions/stringExpression",
 					"title": "Property",
@@ -774,6 +782,7 @@
 				"database",
 				"container",
 				"itemId",
+				"partitionKey",
 				"$kind"
 			],
 			"additionalProperties": false,
@@ -978,8 +987,13 @@
 				},
 				"itemId": {
 					"$ref": "#/definitions/stringExpression",
-					"title": "itemId",
-					"description": "The itemId to replace."
+					"title": "ItemId",
+					"description": "The id of the item to replace."
+				},
+				"partitionKey": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "PartitionKey",
+					"description": "The PartitionKey of the item to replace."
 				},
 				"resultProperty": {
 					"$ref": "#/definitions/stringExpression",
@@ -995,6 +1009,87 @@
 					"type": "string",
 					"pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
 					"const": "Iciclecreek.Cosmos.ReplaceItem"
+				},
+				"$designer": {
+					"title": "Designer information",
+					"type": "object",
+					"description": "Extra information for the Bot Framework Composer."
+				}
+			}
+		},
+		"Iciclecreek.Cosmos.UpsertItem": {
+			"$role": "implements(Microsoft.IDialog)",
+			"title": "Upsert Item",
+			"description": "Create or update a cosmos item in a cosmos container.",
+			"type": "object",
+			"required": [
+				"connectionString",
+				"database",
+				"container",
+				"item",
+				"$kind"
+			],
+			"additionalProperties": false,
+			"patternProperties": {
+				"^\\$": {
+					"title": "Tooling property",
+					"description": "Open ended property for tooling."
+				}
+			},
+			"properties": {
+				"id": {
+					"type": "string",
+					"title": "Id",
+					"description": "Optional id for the dialog"
+				},
+				"disabled": {
+					"$ref": "#/definitions/booleanExpression",
+					"title": "Disabled",
+					"description": "Optional condition which if true will disable this action.",
+					"examples": [
+						true,
+						"=user.age > 3"
+					]
+				},
+				"connectionString": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "Connection String",
+					"description": "Database connection string."
+				},
+				"database": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "Database",
+					"description": "The name of the database."
+				},
+				"container": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "Container",
+					"description": "The name of the container."
+				},
+				"item": {
+					"$ref": "#/definitions/objectExpression",
+					"title": "Item",
+					"description": "The item to store."
+				},
+				"partitionKey": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "PartitionKey",
+					"description": "The PartitionKey of the item to replace."
+				},
+				"resultProperty": {
+					"$ref": "#/definitions/stringExpression",
+					"title": "Property",
+					"description": "Property to store the result of command.",
+					"examples": [
+						"dialog.userRecord"
+					]
+				},
+				"$kind": {
+					"title": "Kind of dialog object",
+					"description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+					"type": "string",
+					"pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+					"const": "Iciclecreek.Cosmos.UpsertItem"
 				},
 				"$designer": {
 					"title": "Designer information",
@@ -5057,30 +5152,6 @@
 					"$ref": "#/definitions/Microsoft.AdaptiveDialog"
 				},
 				{
-					"$ref": "#/definitions/Microsoft.Ask"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.AttachmentInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.ChoiceInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.ConfirmInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.DateTimeInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.NumberInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.OAuthInput"
-				},
-				{
-					"$ref": "#/definitions/Microsoft.TextInput"
-				},
-				{
 					"$ref": "#/definitions/Microsoft.BeginDialog"
 				},
 				{
@@ -5177,7 +5248,43 @@
 					"$ref": "#/definitions/Microsoft.UpdateActivity"
 				},
 				{
+					"$ref": "#/definitions/Microsoft.Ask"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.AttachmentInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.ChoiceInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.ConfirmInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.DateTimeInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.NumberInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.OAuthInput"
+				},
+				{
+					"$ref": "#/definitions/Microsoft.TextInput"
+				},
+				{
 					"$ref": "#/definitions/Microsoft.Test.AssertCondition"
+				},
+				{
+					"$ref": "#/definitions/Iciclecreek.Table.CreateTable"
+				},
+				{
+					"$ref": "#/definitions/Iciclecreek.Table.DeleteTable"
+				},
+				{
+					"$ref": "#/definitions/Iciclecreek.Table.EntityOperation"
+				},
+				{
+					"$ref": "#/definitions/Iciclecreek.Table.RetrieveEntity"
 				},
 				{
 					"$ref": "#/definitions/Iciclecreek.Cosmos.CreateContainer"
@@ -5207,16 +5314,7 @@
 					"$ref": "#/definitions/Iciclecreek.Cosmos.ReplaceItem"
 				},
 				{
-					"$ref": "#/definitions/Iciclecreek.Table.CreateTable"
-				},
-				{
-					"$ref": "#/definitions/Iciclecreek.Table.DeleteTable"
-				},
-				{
-					"$ref": "#/definitions/Iciclecreek.Table.EntityOperation"
-				},
-				{
-					"$ref": "#/definitions/Iciclecreek.Table.RetrieveEntity"
+					"$ref": "#/definitions/Iciclecreek.Cosmos.UpsertItem"
 				},
 				{
 					"$ref": "#/definitions/Iciclecreek.Sql.Execute"
