@@ -7,8 +7,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;
 using System.Linq;

@@ -6,8 +6,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Documents;
 using Microsoft.Azure.Cosmos;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos

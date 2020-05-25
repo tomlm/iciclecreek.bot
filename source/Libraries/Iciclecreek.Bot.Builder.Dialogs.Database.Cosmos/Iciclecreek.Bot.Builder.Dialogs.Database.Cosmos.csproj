@@ -37,7 +37,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.9.1" />
-        <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.7" />
         <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.9.1" />
     </ItemGroup>
 
