@@ -6,7 +6,7 @@ This command line tool uses reflection to generate .schema files for your custom
 ## Installation
 To install:
 
-```dotnet tool install componentschema```
+```dotnet tool install --global componentschema```
 
 In your project add System.Data.Annotations package
 
