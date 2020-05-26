@@ -6,8 +6,40 @@ This command line tool uses reflection to generate .schema files for your custom
 ## Installation
 To install:
 
-```dotnet tool install componentschema```
+```dotnet tool install --global componentschema```
 
+
+## Usage
+```
+ComponentSchema - Use reflection to generate .schema files for Bot Framework SDK/Composer
+
+Usage:
+ComponentSchema assembly [-o folder] [-registration]
+     assembly => path to .dll
+     folder => path to folder to generate .schema files
+     registration => generate ComponentRegistration.cs file
+
+All dialog classes with a public const string Kind constant will be output as [kind].schema files.
+
+Add annotations to your class and properties:
+     [DisplayName("title")]
+     [Description("description")]
+     [Required]
+     [DefaultValue(defaultValue)]
+     [StringLength(min,max)]
+     [MinLength(minLength)]
+     [MaxLength(maxLength)]
+     [Range(minValue, maxValue)]
+NOTE: add nuget package System.Data.Annotations to get attributes for annotations
+```
+
+## Output
+Each class will have a .schema file generated with name of the == value of $kind.
+It will also generate a ComponentRegistration class.
+ 
+
+
+## Annotations
 In your project add System.Data.Annotations package
 
 ```dotnet add package System.Data.Annotations```
@@ -40,7 +72,3 @@ Supported attributes
 | **[MinLength(minLength)]**       | put a constraint on the length of a property            |
 | **[MaxLength(maxLength)]**       | put a constriant on the lenght of a property            |
 
-## output
-Each class will have a .schema file generated with name of the == value of $kind.
-It will also generate a ComponentRegistration class.
- 
