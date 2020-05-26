@@ -1,43 +1,34 @@
-﻿{
-    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
-    "$role": "implements(Microsoft.IDialog)",
-    "title": "Delete Container",
-    "description": "Delete a cosmos container.",
-    "type": "object",
-    "required": [
-        "connectionString",
-        "database",
-        "container"
-    ],
-    "properties": {
-        "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "Optional id for the dialog"
-        },
-        "disabled": {
-            "$ref": "schema:#/definitions/booleanExpression",
-            "title": "Disabled",
-            "description": "Optional condition which if true will disable this action.",
-            "examples": [
-                true,
-                "=user.age > 3"
-            ]
-        },
-        "connectionString": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Connection String",
-            "description": "Database connection string."
-        },
-        "database": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Database",
-            "description": "The name of the database."
-        },
-        "container": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Container",
-            "description": "The name of the container."
-        }
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "DeleteContainer",
+  "description": "Delete a cosmos container",
+  "type": "object",
+  "required": [
+    "connectionString",
+    "database",
+    "container"
+  ],
+  "properties": {
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Disable action"
+    },
+    "connectionString": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Connection string",
+      "description": "Connection string for cosmosdb."
+    },
+    "database": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Database",
+      "description": "Database name."
+    },
+    "container": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Container",
+      "description": "Name of the Container."
     }
+  }
 }

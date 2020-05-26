@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GenSchema": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\source\\GitHub\\iciclecreek.bot\\source\\Libraries\\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos\\bin\\Debug\\netstandard2.0\\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.dll -o c:\\scratch\\test --registration"
+    }
+  }
+}

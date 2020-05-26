@@ -1,63 +1,50 @@
-﻿{
-    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
-    "$role": "implements(Microsoft.IDialog)",
-    "title": "Get Item",
-    "description": "Get Item by Id from cosmos container.",
-    "type": "object",
-    "required": [
-        "connectionString",
-        "database",
-        "container",
-        "itemId",
-        "partitionKey"
-    ],
-    "properties": {
-        "id": {
-            "type": "string",
-            "title": "Id",
-            "description": "Optional id for the dialog"
-        },
-        "disabled": {
-            "$ref": "schema:#/definitions/booleanExpression",
-            "title": "Disabled",
-            "description": "Optional condition which if true will disable this action.",
-            "examples": [
-                true,
-                "=user.age > 3"
-            ]
-        },
-        "connectionString": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Connection String",
-            "description": "Database connection string."
-        },
-        "database": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Database",
-            "description": "The name of the database."
-        },
-        "container": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Container",
-            "description": "The name of the container."
-        },
-        "itemId": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Item Id",
-            "description": "The id of the item to retrieve."
-        },
-        "partitionKey": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Partition Key",
-            "description": "The partitionKey of the item to retrieve."
-        },
-        "resultProperty": {
-            "$ref": "schema:#/definitions/stringExpression",
-            "title": "Property",
-            "description": "Property to store the result of command.",
-            "examples": [
-                "dialog.userRecord"
-            ]
-        }
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetItem",
+  "description": "Get item in a cosmos container",
+  "type": "object",
+  "required": [
+    "connectionString",
+    "database",
+    "container",
+    "itemId"
+  ],
+  "properties": {
+    "disabled": {
+      "$ref": "schema:#/definitions/booleanExpression",
+      "title": "Disabled",
+      "description": "Disable action"
+    },
+    "connectionString": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Connection string",
+      "description": "Connection string for cosmosdb."
+    },
+    "database": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Database",
+      "description": "Database name."
+    },
+    "container": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Container",
+      "description": "Name of the Container."
+    },
+    "itemId": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Item id",
+      "description": "Item id of the item to get."
+    },
+    "partitionKey": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Partition key",
+      "description": "PartitionKey of the item to get."
+    },
+    "resultProperty": {
+      "$ref": "schema:#/definitions/stringExpression",
+      "title": "Result property",
+      "description": "Property to put the result of this operation into."
     }
+  }
 }

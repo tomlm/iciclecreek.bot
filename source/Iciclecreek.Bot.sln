@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{94ECDBC2-C0D1-4067-A209-A548BD3B39D1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{24ECDBC2-C0D1-4067-A209-A548BD3B39D1}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveExpressions.Humanizer", "Libraries\Iciclecreek.AdaptiveExpressions.Humanizer\Iciclecreek.AdaptiveExpressions.Humanizer.csproj", "{FB2FD234-358E-426A-8B98-29B100D73B24}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveExpressions.Javascript", "Libraries\Iciclecreek.AdaptiveExpressions.Javascript\Iciclecreek.AdaptiveExpressions.Javascript.csproj", "{E19904E1-0447-46D8-937A-64C4F2002216}"
@@ -24,7 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj", "{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage", "libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj", "{78CF539F-356C-464D-BAD3-F1F73560772E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage", "libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj", "{78CF539F-356C-464D-BAD3-F1F73560772E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentSchema", "Tools\ComponentSchema\ComponentSchema.csproj", "{58EF5AA7-95F1-441E-9552-F94B140F9735}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +64,10 @@ Global
 		{78CF539F-356C-464D-BAD3-F1F73560772E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78CF539F-356C-464D-BAD3-F1F73560772E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78CF539F-356C-464D-BAD3-F1F73560772E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58EF5AA7-95F1-441E-9552-F94B140F9735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58EF5AA7-95F1-441E-9552-F94B140F9735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58EF5AA7-95F1-441E-9552-F94B140F9735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58EF5AA7-95F1-441E-9552-F94B140F9735}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +80,7 @@ Global
 		{F7F3F8BC-A95F-48AD-AB77-50D68EBC7B10} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 		{30C88B60-EC6E-4A4C-9F3E-38A5437BDBA7} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{78CF539F-356C-464D-BAD3-F1F73560772E} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{58EF5AA7-95F1-441E-9552-F94B140F9735} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}

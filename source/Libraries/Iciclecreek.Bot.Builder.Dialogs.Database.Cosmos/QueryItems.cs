@@ -10,12 +10,15 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Create cosmos db item in container
     /// </summary>
+    [Description("Query items in a cosmos container")]
     public class QueryItems : Dialog
     {
         [JsonProperty("$kind")]
@@ -31,30 +34,38 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// Gets or sets the disabled state for the action.
         /// </summary>
         [JsonProperty("disabled")]
+        [Description("Disable this action")]
         public BoolExpression Disabled { get; set; }
 
         /// <summary>
         /// Gets or sets the ConnectionString for querying the database.
         /// </summary>
         [JsonProperty("connectionString")]
+        [Description("Connection string for cosmosdb.")]
+        [Required]
         public StringExpression ConnectionString { get; set; }
 
         /// <summary>
         /// database name
         /// </summary>
         [JsonProperty("database")]
+        [Description("Database name.")]
+        [Required]
         public StringExpression Database { get; set; }
 
         /// <summary>
         /// Container name
         /// </summary>
         [JsonProperty("container")]
+        [Description("Name of the Container.")]
+        [Required]
         public StringExpression Container { get; set; }
 
         /// <summary>
         /// Query.
         /// </summary>
         [JsonProperty("query")]
+        [Description("CosmosDB query to execute.")]
         public StringExpression Query { get; set; }
 
         /// <summary>
@@ -64,6 +75,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// The property path to store the dialog result in.
         /// </value>
         [JsonProperty("resultProperty")]
+        [Description("Property to put the result of this operation into.")]
         public StringExpression ResultProperty { get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))

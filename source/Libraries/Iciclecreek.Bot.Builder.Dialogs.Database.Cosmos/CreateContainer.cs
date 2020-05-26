@@ -7,12 +7,15 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
 {
     /// <summary>
     /// Create cosmos db database
     /// </summary>
+    [Description("Create a container")]
     public class CreateContainer : Dialog
     {
         [JsonProperty("$kind")]
@@ -28,30 +31,38 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// Gets or sets the disabled state for the action.
         /// </summary>
         [JsonProperty("disabled")]
+        [Description("Disable this action")]
         public BoolExpression Disabled { get; set; }
 
         /// <summary>
         /// Gets or sets the ConnectionString for querying the database.
         /// </summary>
         [JsonProperty("connectionString")]
+        [Required]
         public StringExpression ConnectionString { get; set; }
 
         /// <summary>
         /// database name
         /// </summary>
         [JsonProperty("database")]
+        [Description("Name of the database")]
+        [Required]
         public StringExpression Database { get; set; }
 
         /// <summary>
         /// Container name
         /// </summary>
         [JsonProperty("container")]
+        [Description("Name of the Container.")]
+        [Required]
         public StringExpression Container { get; set; }
 
         /// <summary>
         /// PartitionKey (example: "/LastName")
         /// </summary>
         [JsonProperty("partitionKey")]
+        [Description("Name of the Container.")]
+        [Required]
         public StringExpression PartitionKey { get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
