@@ -35,6 +35,7 @@ This library adds actions for comos datastores.
 | Action                             | Description                      |
 |------------------------------------|----------------------------------|
 | **Iciclecreek.Cosmos.CreateItem**  | create an item in a Container    |
+| **Iciclecreek.Cosmos.UpsertItem**  | create or update an item in a Container    |
 | **Iciclecreek.Cosmos.GetItem**     | get an item from a Container     |
 | **Iciclecreek.Cosmos.ReplaceItem** | replace an item from a Container |
 | **Iciclecreek.Cosmos.DeleteItem**  | delete an item in a Container    |
