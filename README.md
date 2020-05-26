@@ -3,6 +3,13 @@
 # Iciclecreek Bot Framework Components
 This repo contains source code for a number of components for Bot Framework related projects.
 
+# Dotnet Tools
+
+## ComponentSchema
+CLI which generates Bot Framework SDK/Composer schema files from your code with reflection.
+[More Details](source/Tools/ComponentSchema/)
+
+
 # Nuget Libraries
 
 ## Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
