@@ -94,24 +94,36 @@ namespace Iciclecreek.Bot
                                 continue;
                             }
 
+                            var propName = property.Name;
+                            var jsonPropAttr = property.GetCustomAttribute<JsonPropertyAttribute>();
+                            if (jsonPropAttr != null)
+                            {
+                                propName = jsonPropAttr.PropertyName;
+                            }
+
                             dynamic propDef = new JObject();
+                            propDef.title = GetDisplayName(property, property.Name.Humanize());
+                            propDef.description = GetDescription(property, property.Name.Humanize());
+
                             switch (property.PropertyType.Name)
                             {
                                 case "Boolean":
+                                case "Bool":
                                 case "bool":
                                     propDef.type = "boolean";
                                     break;
                                 case "SByte":
-                                case "Int16":
-                                case "Int32":
-                                case "Int64":
                                 case "Byte":
+                                case "Int16":
                                 case "UInt16":
+                                case "Int32":
                                 case "UInt32":
+                                case "Int64":
                                 case "UInt64":
                                     propDef.type = "integer";
                                     break;
-
+                                case "Single":
+                                case "Double":
                                 case "float":
                                 case "double":
                                     propDef.type = "number";
@@ -121,44 +133,70 @@ namespace Iciclecreek.Bot
                                 case "string":
                                     propDef.type = "string";
                                     break;
-                                case "ObjectExpression`1":
-                                    propDef["$ref"] = "schema:#/definitions/objectExprssion";
+
+                                case "DateTime":
+                                    propDef.type = "string";
+                                    propDef.format = "date-time";
                                     break;
+
+                                case "TimeSpan":
+                                    propDef.type = "string";
+                                    propDef.format = "time";
+                                    break;
+
                                 case "BoolExpression":
                                     propDef["$ref"] = "schema:#/definitions/booleanExpression";
                                     break;
+
                                 case "StringExpression":
                                     propDef["$ref"] = "schema:#/definitions/stringExpression";
                                     break;
-                                case "ValueExpression":
-                                    propDef["$ref"] = "schema:#/definitions/valueExpression";
-                                    break;
+
                                 case "NumberExpresion":
                                     propDef["$ref"] = "schema:#/definitions/numberExpression";
                                     break;
-                                case "DateTime":
+
+                                case "DateTimeExpression":
                                     propDef["$ref"] = "schema:#/definitions/dateTimeExpression";
                                     break;
+
                                 case "IntegerExpression":
                                     propDef["$ref"] = "schema:#/definitions/IntegerExpression";
                                     break;
-                                case "ObjectExpression<object>":
+
+                                case "ValueExpression":
+                                    propDef["$ref"] = "schema:#/definitions/valueExpression";
+                                    break;
+                                
+                                case "ObjectExpression`1":
                                     propDef["$ref"] = "schema:#/definitions/objectExpression";
                                     break;
+
+                                case "EnumExpression`1":
+                                    propDef.oneOf = new JArray();
+                                    dynamic options = new JObject();
+                                    options.title = propDef.title;
+                                    options.description = propDef.description;
+                                    options["enum"] = new JArray(property.PropertyType.GetGenericArguments()[0].GetEnumNames());
+                                    propDef.oneOf.Add(options);
+                                    options = new JObject();
+                                    options["$ref"] = "schema:#/definitions/equalsExpression";
+                                    propDef.oneOf.Add(options);
+                                    break;
+                                    
                                 default:
-                                    Console.WriteLine($"Unknown type {property.PropertyType.Name}");
+                                    if (property.PropertyType.IsEnum)
+                                    {
+                                        propDef.type = "string";
+                                        propDef["enum"] = new JArray(property.PropertyType.GetEnumNames());
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"Unknown type {property.PropertyType.Name}");
+                                    }
                                     break;
                             }
 
-                            var propName = property.Name;
-                            var jsonPropAttr = property.GetCustomAttribute<JsonPropertyAttribute>();
-                            if (jsonPropAttr != null)
-                            {
-                                propName = jsonPropAttr.PropertyName;
-                            }
-
-                            propDef.title = GetDisplayName(property, property.Name.Humanize());
-                            propDef.description = GetDescription(property, property.Name.Humanize());
                             AddValidations(propDef, property);
 
                             if (GetRequired(property))
