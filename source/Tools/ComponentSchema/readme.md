@@ -30,8 +30,11 @@ Add annotations to your class and properties:
      [MinLength(minLength)]
      [MaxLength(maxLength)]
      [Range(minValue, maxValue)]
-NOTE: add nuget package System.Data.Annotations to get attributes for annotations
+     [Entity(entity, example1, example2)]
 ```
+NOTE: add nuget packages
+* ```System.Data.Annotations``` to basic attributes for annotations
+* ```Iciclecreek.Bot.Builder.Dialogs.Annotations``` to get EntityAttribute for describing entities
 
 ## Output
 Each class will have a .schema file generated with name of the == value of $kind.

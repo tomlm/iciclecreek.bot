@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <Version>4.9.0</Version>
+      <Description>Adds custom attributes for annotating dialog classes for ComponentSchema tool.</Description>
+      <Company>Iciclecreek</Company>
+      <Authors>Tom Laird-McConnell</Authors>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Annotations</PackageProjectUrl>
+      <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+      <PackageIcon>icon.png</PackageIcon>
+      <RepositoryType>git</RepositoryType>
+      <PackageTags>bot,adaptive</PackageTags>
+      <AssemblyVersion>4.9.0.0</AssemblyVersion>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+      <Copyright></Copyright>
+      <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="icon.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+</Project>

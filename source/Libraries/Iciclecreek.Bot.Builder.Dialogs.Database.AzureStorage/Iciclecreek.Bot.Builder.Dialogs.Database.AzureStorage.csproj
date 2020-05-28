@@ -36,8 +36,4 @@
         <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.9.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Blob\" />
-    </ItemGroup>
-
 </Project>

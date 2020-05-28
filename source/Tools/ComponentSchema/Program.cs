@@ -1,6 +1,9 @@
 ﻿using AdaptiveExpressions.Properties;
 using Humanizer;
+using Iciclecreek.Bot.Builder.Dialogs.Annotations;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -46,7 +49,11 @@ namespace Iciclecreek.Bot
                 Console.WriteLine("     [MinLength(minLength)]");
                 Console.WriteLine("     [MaxLength(maxLength)]");
                 Console.WriteLine("     [Range(minValue, maxValue)]");
-                Console.WriteLine("NOTE: add nuget package System.Data.Annotations to get attributes for annotations");
+                Console.WriteLine("     [Entity(entityName, example1, example2, example3, ...)]");
+                Console.WriteLine();
+                Console.WriteLine("NOTE: add nuget packages");
+                Console.WriteLine("* System.Data.Annotations - to get attributes for basic attributes");
+                Console.WriteLine("* Iciclecreek.Bot.Builder.Dialogs.Annotations - to get Entity() attribute");
                 return;
             }
 
@@ -63,12 +70,13 @@ namespace Iciclecreek.Bot
             var ns = assembly.GetName().Name;
 
             Dictionary<string, Type> kinds = new Dictionary<string, Type>();
-
             foreach (var type in assembly.ExportedTypes)
             {
                 // if it derives from dialog
                 if (typeof(Dialog).IsAssignableFrom(type))
                 {
+                    Dictionary<string, List<string>> examples = new Dictionary<string, List<string>>();
+
                     // if it has a kind property
                     var kindProperty = type.GetField("Kind");
                     string kind;
@@ -112,6 +120,7 @@ namespace Iciclecreek.Bot
                                 case "bool":
                                     propDef.type = "boolean";
                                     break;
+
                                 case "SByte":
                                 case "Byte":
                                 case "Int16":
@@ -122,6 +131,7 @@ namespace Iciclecreek.Bot
                                 case "UInt64":
                                     propDef.type = "integer";
                                     break;
+
                                 case "Single":
                                 case "Double":
                                 case "float":
@@ -132,6 +142,7 @@ namespace Iciclecreek.Bot
                                 case "String":
                                 case "string":
                                     propDef.type = "string";
+                                    AddStringDataTypes(propDef, property);
                                     break;
 
                                 case "DateTime":
@@ -150,6 +161,7 @@ namespace Iciclecreek.Bot
 
                                 case "StringExpression":
                                     propDef["$ref"] = "schema:#/definitions/stringExpression";
+                                    AddStringDataTypes(propDef, property);
                                     break;
 
                                 case "NumberExpresion":
@@ -167,7 +179,7 @@ namespace Iciclecreek.Bot
                                 case "ValueExpression":
                                     propDef["$ref"] = "schema:#/definitions/valueExpression";
                                     break;
-                                
+
                                 case "ObjectExpression`1":
                                     propDef["$ref"] = "schema:#/definitions/objectExpression";
                                     break;
@@ -183,7 +195,7 @@ namespace Iciclecreek.Bot
                                     options["$ref"] = "schema:#/definitions/equalsExpression";
                                     propDef.oneOf.Add(options);
                                     break;
-                                    
+
                                 default:
                                     if (property.PropertyType.IsEnum)
                                     {
@@ -199,6 +211,8 @@ namespace Iciclecreek.Bot
 
                             AddValidations(propDef, property);
 
+                            AddEntities(propDef, property, examples);
+
                             if (GetRequired(property))
                             {
                                 definition.required.Add(propName);
@@ -206,6 +220,13 @@ namespace Iciclecreek.Bot
 
                             definition.properties[propName] = propDef;
                         }
+
+                        if (examples.Any())
+                        {
+                            definition["$examples"] = JObject.FromObject(examples);
+                        }
+
+                        Console.WriteLine($"{kind}.schema");
 
                         var schemaFile = Path.Combine(outputFolder, $"{kind}.schema");
                         Console.WriteLine(schemaFile);
@@ -351,7 +372,82 @@ namespace Iciclecreek.Bot
             }
         }
 
+        private static void AddStringDataTypes(dynamic propDef, PropertyInfo property)
+        {
+            propDef.type = "string";
+            if (property.GetCustomAttribute<PhoneAttribute>() != null)
+            {
+                propDef.format = "phone";
+            }
+            else if (property.GetCustomAttribute<EmailAddressAttribute>() != null)
+            {
+                propDef.format = "email";
+            }
+            else if (property.GetCustomAttribute<UrlAttribute>() != null)
+            {
+                propDef.format = "uri";
+            }
+            else if (property.GetCustomAttribute<DataTypeAttribute>() != null)
+            {
+                var attr = property.GetCustomAttribute<DataTypeAttribute>();
+                switch (attr.DataType)
+                {
+                    case DataType.Url:
+                        propDef.format = "uri";
+                        break;
+                    case DataType.EmailAddress:
+                        propDef.format = "email";
+                        break;
+                    case DataType.PhoneNumber:
+                        propDef.format = "phone";
+                        break;
+                    case DataType.Date:
+                        propDef.format = "date";
+                        break;
+                    case DataType.Time:
+                        propDef.format = "time";
+                        break;
+                    case DataType.DateTime:
+                        propDef.format = "date-time";
+                        break;
+                }
+            }
+            else if (property.GetCustomAttribute<EnumDataTypeAttribute>() != null)
+            {
+                var attr = property.GetCustomAttribute<EnumDataTypeAttribute>();
+                propDef["enum"] = new JArray(attr.EnumType.GetEnumNames());
+            }
+
+            if (property.GetCustomAttribute<RegularExpressionAttribute>() != null)
+            {
+                propDef.pattern = property.GetCustomAttribute<RegularExpressionAttribute>().Pattern;
+            }
+        }
+
+        private static void AddEntities(dynamic propDef, PropertyInfo property, Dictionary<string, List<string>> entityExamples)
+        {
+            var attributes = property.GetCustomAttributes<EntityAttribute>();
+            if (attributes.Any())
+            {
+                var entities = new List<string>();
+                foreach (var entityAttr in attributes)
+                {
+                    var entityName = entityAttr.Entity.TrimStart('@').Trim();
+                    entities.Add(entityName);
+                    if (entityAttr.Examples != null && entityAttr.Examples.Any())
+                    {
+                        if (!entityExamples.TryGetValue(entityName, out List<string> examples))
+                        {
+                            examples = new List<string>();
+                            entityExamples[entityName] = examples;
+                        }
+
+                        examples.AddRange(entityAttr.Examples);
+                    }
+                }
+
+                propDef["$entities"] = JArray.FromObject(entities.Distinct().ToList());
+            }
+        }
     }
-
 }
-
