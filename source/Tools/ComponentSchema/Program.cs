@@ -30,7 +30,8 @@ namespace Iciclecreek.Bot
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("ComponentSchema - Use reflection to generate .schema files for Bot Framework SDK/Composer");
+                Console.WriteLine("ComponentSchema");
+                Console.WriteLine("Use reflection to generate .schema files for Bot Framework SDK/Composer");
                 Console.WriteLine();
                 Console.WriteLine("Usage:");
                 Console.WriteLine("ComponentSchema assembly [-o folder] [-registration]");
@@ -38,22 +39,31 @@ namespace Iciclecreek.Bot
                 Console.WriteLine("     folder => path to folder to generate .schema files");
                 Console.WriteLine("     registration => generate ComponentRegistration.cs file");
                 Console.WriteLine();
-                Console.WriteLine("All dialog classes with a public const string Kind constant will be output as [kind].schema files.");
+                Console.WriteLine("All dialog classes with a `public const string Kind` constant will be output as [kind].schema files.");
                 Console.WriteLine();
-                Console.WriteLine("Add annotations to your class and properties:");
+                Console.WriteLine("NOTE: add nuget packages");
+                Console.WriteLine("* System.Data.Annotations - to get basic attributes");
+                Console.WriteLine("* Iciclecreek.Bot.Builder.Dialogs.Annotations - to get Entity() attribute");
+                Console.WriteLine();
+                Console.WriteLine("Add annotations to your class and properties.");
+                Console.WriteLine("General Attributes:");
                 Console.WriteLine("     [DisplayName(\"title\")]");
                 Console.WriteLine("     [Description(\"description\")]");
+                Console.WriteLine("     [Entity(entityName, example1, example2, example3, ...)]");
                 Console.WriteLine("     [Required]");
                 Console.WriteLine("     [DefaultValue(defaultValue)]");
-                Console.WriteLine("     [StringLength(min,max)]");
                 Console.WriteLine("     [MinLength(minLength)]");
                 Console.WriteLine("     [MaxLength(maxLength)]");
                 Console.WriteLine("     [Range(minValue, maxValue)]");
-                Console.WriteLine("     [Entity(entityName, example1, example2, example3, ...)]");
                 Console.WriteLine();
-                Console.WriteLine("NOTE: add nuget packages");
-                Console.WriteLine("* System.Data.Annotations - to get attributes for basic attributes");
-                Console.WriteLine("* Iciclecreek.Bot.Builder.Dialogs.Annotations - to get Entity() attribute");
+                Console.WriteLine("String attributes:");
+                Console.WriteLine("     [StringLength(min,max)]");
+                Console.WriteLine("     [PhoneNumber]");
+                Console.WriteLine("     [EmailAddress]");
+                Console.WriteLine("     [Url]");
+                Console.WriteLine("     [RegularExpression()]");
+                Console.WriteLine("     [DataType]");
+                Console.WriteLine("     [EnumDataType]");
                 return;
             }
 

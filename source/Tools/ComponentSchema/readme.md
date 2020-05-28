@@ -20,28 +20,40 @@ ComponentSchema assembly [-o folder] [-registration]
      registration => generate ComponentRegistration.cs file
 
 All dialog classes with a public const string Kind constant will be output as [kind].schema files.
-
-Add annotations to your class and properties:
-     [DisplayName("title")]
-     [Description("description")]
-     [Required]
-     [DefaultValue(defaultValue)]
-     [StringLength(min,max)]
-     [MinLength(minLength)]
-     [MaxLength(maxLength)]
-     [Range(minValue, maxValue)]
-     [Entity(entity, example1, example2)]
 ```
+
 NOTE: add nuget packages
 * ```System.Data.Annotations``` to basic attributes for annotations
 * ```Iciclecreek.Bot.Builder.Dialogs.Annotations``` to get EntityAttribute for describing entities
 
+Add annotations to your class and properties.
+General Attributes:
+| Attribute                                      | Description                                                          |
+|------------------------------------------------|----------------------------------------------------------------------|
+| **[DisplayName(title)]**                       | Define title for property (default is property name)                 |
+| **[Description(description)]**                 | define description for property (Default is property name humanized) |
+| **[Entity(entityName,example1,example2,...)]** | Define entity mapping, with optional example utterances              |
+| **[Required]**                                 | Mark that the property is required                                   |
+| **[DefaultValue(defaultValue)]**               | Define a default value for the property                              |
+| **[MinLength(minLength)]**                     | Set the min length for the property                                  |
+| **[MaxLength(maxLength)]**                     | set the max length for the property                                  |
+| **[Range(minValue,maxValue)]**                 | Set min, max range for the property                                  |
+
+String attributes:
+| Attribute                   | Description                                                       |
+|-----------------------------|-------------------------------------------------------------------|
+| **[StringLength(min,max)]** | Set min, max length of string (can also use MinLength, MaxLength) |
+| **[PhoneNumber]**           | String is a phone number pattern                                  |
+| **[EmailAddress]**          | string is a email address pattern                                 |
+| **[Url]**                   | string is a url pattern                                           |
+| **[RegularExpression()]**   | string is a custom regular expression pattern                     |
+| **[DataType]**              | string is a given data type (subset for strings)                  |
+| **[EnumDataType]**          | string has well known values for auto-complete                    |
+
+
 ## Output
-Each class will have a .schema file generated with name of the == value of $kind.
-It will also generate a ComponentRegistration class.
+Each class will have a .schema file generated with name of the value of Kind.
  
-
-
 ## Annotations
 In your project add System.Data.Annotations package
 
@@ -50,28 +62,31 @@ In your project add System.Data.Annotations package
 This tool will generate .schema files for all public dialogs with a public const Kind.
 
 ```csharp
-    [Description("Create a container")]
-    public class MyAction : Dialog
+    [Description("This is an example")]
+    public class Example : Dialog
     {
-        [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.MyAction";
+        public const string Kind = "Test.Example";
 
-        [JsonProperty("disabled")]
-        [Description("Disable this action")]
-        public BoolExpression Disabled { get; set; }
+        [Description("The quoted text")]
+        [Entity("quotedString", "\"this is quoted\"")]
+        [RegularExpression("???-???-????")]
+        public string QuotedText { get; set; }
+
+        [Description("The amount")]
+        [Entity("unit", "1 lb", "two pounds", "three lbs")]
+        public float Amount { get; set; }
+
+        [Description("This is a string which consumes dates")]
+        [DataType(DataType.Date)]
+        [Entity("datetimev2", "next week")]
+        public string SomeDate { get; set; }
+
+        [Description("This is a phone number")]
+        [PhoneNumber]
+        [Entity("phone", "425-123-1234", "555-555-5432")]
+        public string Phone { get; set; }
+        
+        ...
     }
 ```
-
-Supported attributes
-
-| Attribute                        | Purpose                                                 |
-|----------------------------------|---------------------------------------------------------|
-| **[DisplayName("title")]**       | set alternate title (Default is name of class/property) |
-| **[Description("description")]** | set the description                                     |
-| **[Required]**                   | mark that a property is required                        |
-| **[DefaultValue(defaultValue)]** | set the default value for a property                    |
-| **[Range(minValue,maxValue)]**   | put a constraint on the min/max value for a number      |
-| **[StringLength(min,max)]**      | put a constraint on length string for a property        |
-| **[MinLength(minLength)]**       | put a constraint on the length of a property            |
-| **[MaxLength(maxLength)]**       | put a constriant on the lenght of a property            |
 
