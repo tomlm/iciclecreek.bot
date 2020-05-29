@@ -28,10 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Schemas\Iciclecreek.Cosmos.UpsertItem.schema" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="icon.png" Pack="true" PackagePath="" />
     </ItemGroup>
 

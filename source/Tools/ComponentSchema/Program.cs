@@ -71,6 +71,9 @@ namespace Iciclecreek.Bot
             var ns = assembly.GetName().Name;
 
             Dictionary<string, Type> kinds = new Dictionary<string, Type>();
+            List<Type> enumExpressionTypes = new List<Type>();
+            List<Type> objectExpressionTypes = new List<Type>();
+
             foreach (var type in assembly.ExportedTypes)
             {
                 // if it derives from dialog
@@ -113,6 +116,8 @@ namespace Iciclecreek.Bot
                             dynamic propDef = new JObject();
                             propDef.title = GetDisplayName(property, property.Name.Humanize());
                             propDef.description = GetDescription(property, property.Name.Humanize());
+
+                            var genericArgs = property.PropertyType.GetGenericArguments();
 
                             switch (property.PropertyType.Name)
                             {
@@ -183,14 +188,16 @@ namespace Iciclecreek.Bot
 
                                 case "ObjectExpression`1":
                                     propDef["$ref"] = "schema:#/definitions/objectExpression";
+                                    objectExpressionTypes.Add(genericArgs[0]);
                                     break;
 
                                 case "EnumExpression`1":
+                                    enumExpressionTypes.Add(genericArgs[0]);
                                     propDef.oneOf = new JArray();
                                     dynamic options = new JObject();
                                     options.title = propDef.title;
                                     options.description = propDef.description;
-                                    options["enum"] = new JArray(property.PropertyType.GetGenericArguments()[0].GetEnumNames());
+                                    options["enum"] = new JArray(genericArgs[0].GetEnumNames());
                                     propDef.oneOf.Add(options);
                                     options = new JObject();
                                     options["$ref"] = "schema:#/definitions/equalsExpression";
@@ -236,11 +243,11 @@ namespace Iciclecreek.Bot
                 var prefix = kinds.First().Key;
                 prefix = prefix.Substring(0, prefix.LastIndexOf('.')).Replace(".", "");
 
-                WriteComponentRegistration(outputFolder, ns, prefix, kinds);
+                WriteComponentRegistration(outputFolder, ns, prefix, kinds, enumExpressionTypes, objectExpressionTypes);
             }
         }
 
-        private static void WriteComponentRegistration(string outputFolder, String ns, string prefix, Dictionary<String, Type> kinds)
+        private static void WriteComponentRegistration(string outputFolder, String ns, string prefix, Dictionary<String, Type> kinds, IEnumerable<Type> enumTypes, IEnumerable<Type> objectTypes)
         {
             var filePath = Path.Combine(outputFolder, $"{prefix}ComponentRegistration.cs");
             Console.WriteLine(filePath);
@@ -268,6 +275,20 @@ namespace Iciclecreek.Bot
                     {
                         writer.WriteLine($"            yield return new DeclarativeType<{kv.Value.Name}>({kv.Value.Name}.Kind);");
                     }
+                    writer.WriteLine("        }");
+                    writer.WriteLine();
+                    writer.WriteLine("        public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, SourceContext sourceContext)");
+                    writer.WriteLine("        {");
+                    foreach (var enumType in enumTypes)
+                    {
+                        writer.WriteLine($"            yield return new EnumExpressionConverter<{enumType.Name}>();");
+                    }
+
+                    foreach (var objectType in objectTypes)
+                    {
+                        writer.WriteLine($"            yield return new ObjectExpressionConverter<{objectType.Name}>();");
+                    }
+                    writer.WriteLine($"            yield break;");
                     writer.WriteLine("        }");
                     writer.WriteLine("    }");
                     writer.WriteLine("}");
