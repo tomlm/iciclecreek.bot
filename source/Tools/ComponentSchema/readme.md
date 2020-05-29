@@ -22,17 +22,13 @@ ComponentSchema assembly [-o folder] [-registration]
 All dialog classes with a public const string Kind constant will be output as [kind].schema files.
 ```
 
-NOTE: add nuget packages
-* ```System.Data.Annotations``` to basic attributes for annotations
-* ```Iciclecreek.Bot.Builder.Dialogs.Annotations``` to get EntityAttribute for describing entities
-
 Add annotations to your class and properties.
+
 General Attributes:
 | Attribute                                      | Description                                                          |
 |------------------------------------------------|----------------------------------------------------------------------|
 | **[DisplayName(title)]**                       | Define title for property (default is property name)                 |
 | **[Description(description)]**                 | define description for property (Default is property name humanized) |
-| **[Entity(entityName,example1,example2,...)]** | Define entity mapping, with optional example utterances              |
 | **[Required]**                                 | Mark that the property is required                                   |
 | **[DefaultValue(defaultValue)]**               | Define a default value for the property                              |
 | **[MinLength(minLength)]**                     | Set the min length for the property                                  |
@@ -68,22 +64,18 @@ This tool will generate .schema files for all public dialogs with a public const
         public const string Kind = "Test.Example";
 
         [Description("The quoted text")]
-        [Entity("quotedString", "\"this is quoted\"")]
         [RegularExpression("???-???-????")]
         public string QuotedText { get; set; }
 
         [Description("The amount")]
-        [Entity("unit", "1 lb", "two pounds", "three lbs")]
         public float Amount { get; set; }
 
         [Description("This is a string which consumes dates")]
         [DataType(DataType.Date)]
-        [Entity("datetimev2", "next week")]
         public string SomeDate { get; set; }
 
         [Description("This is a phone number")]
         [PhoneNumber]
-        [Entity("phone", "425-123-1234", "555-555-5432")]
         public string Phone { get; set; }
         
         ...
