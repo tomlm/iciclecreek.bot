@@ -1,12 +1,7 @@
-﻿using AdaptiveExpressions.Properties;
-using Humanizer;
-using Iciclecreek.Bot.Builder.Dialogs.Annotations;
+﻿using Humanizer;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
-using Microsoft.Rest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +9,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace Iciclecreek.Bot
 {
@@ -41,15 +35,12 @@ namespace Iciclecreek.Bot
                 Console.WriteLine();
                 Console.WriteLine("All dialog classes with a `public const string Kind` constant will be output as [kind].schema files.");
                 Console.WriteLine();
-                Console.WriteLine("NOTE: add nuget packages");
-                Console.WriteLine("* System.Data.Annotations - to get basic attributes");
-                Console.WriteLine("* Iciclecreek.Bot.Builder.Dialogs.Annotations - to get Entity() attribute");
+                Console.WriteLine("NOTE: add System.Data.Annotations nuget packages");
                 Console.WriteLine();
                 Console.WriteLine("Add annotations to your class and properties.");
                 Console.WriteLine("General Attributes:");
                 Console.WriteLine("     [DisplayName(\"title\")]");
                 Console.WriteLine("     [Description(\"description\")]");
-                Console.WriteLine("     [Entity(entityName, example1, example2, example3, ...)]");
                 Console.WriteLine("     [Required]");
                 Console.WriteLine("     [DefaultValue(defaultValue)]");
                 Console.WriteLine("     [MinLength(minLength)]");
@@ -221,19 +212,12 @@ namespace Iciclecreek.Bot
 
                             AddValidations(propDef, property);
 
-                            AddEntities(propDef, property, examples);
-
                             if (GetRequired(property))
                             {
                                 definition.required.Add(propName);
                             }
 
                             definition.properties[propName] = propDef;
-                        }
-
-                        if (examples.Any())
-                        {
-                            definition["$examples"] = JObject.FromObject(examples);
                         }
 
                         Console.WriteLine($"{kind}.schema");
@@ -431,32 +415,6 @@ namespace Iciclecreek.Bot
             if (property.GetCustomAttribute<RegularExpressionAttribute>() != null)
             {
                 propDef.pattern = property.GetCustomAttribute<RegularExpressionAttribute>().Pattern;
-            }
-        }
-
-        private static void AddEntities(dynamic propDef, PropertyInfo property, Dictionary<string, List<string>> entityExamples)
-        {
-            var attributes = property.GetCustomAttributes<EntityAttribute>();
-            if (attributes.Any())
-            {
-                var entities = new List<string>();
-                foreach (var entityAttr in attributes)
-                {
-                    var entityName = entityAttr.Entity.TrimStart('@').Trim();
-                    entities.Add(entityName);
-                    if (entityAttr.Examples != null && entityAttr.Examples.Any())
-                    {
-                        if (!entityExamples.TryGetValue(entityName, out List<string> examples))
-                        {
-                            examples = new List<string>();
-                            entityExamples[entityName] = examples;
-                        }
-
-                        examples.AddRange(entityAttr.Examples);
-                    }
-                }
-
-                propDef["$entities"] = JArray.FromObject(entities.Distinct().ToList());
             }
         }
     }
