@@ -170,6 +170,10 @@ namespace Iciclecreek.Bot
                                     AddStringDataTypes(propDef, property);
                                     break;
 
+                                case "IntExpression":
+                                    propDef["$ref"] = "schema:#/definitions/integerExpression";
+                                    break;
+
                                 case "NumberExpresion":
                                     propDef["$ref"] = "schema:#/definitions/numberExpression";
                                     break;

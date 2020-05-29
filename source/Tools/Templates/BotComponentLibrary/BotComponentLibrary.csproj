@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <ContentTargetFolders>content</ContentTargetFolders>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,6 +12,10 @@
         <Content Include="**/*.lu" />
         <Content Include="**/*.schema" />
         <Content Include="**/*.qna" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="readme.md" />
     </ItemGroup>
 
     <ItemGroup>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BotComponentLibrary
 {
+    [DisplayName("Custom Action")]
     [Description("This is a custom action")]
     public class CustomAction : Dialog
     {
@@ -22,30 +23,60 @@ namespace BotComponentLibrary
             this.RegisterSourceLocation(callerPath, callerLine);
         }
 
-        /// <summary>
-        /// Gets or sets the disabled state for the action.
-        /// </summary>
-        [JsonProperty("disabled")]
         [Description("Disable this action")]
+        [JsonProperty("disabled")]
         public BoolExpression Disabled { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name property.
-        /// </summary>
-        [JsonProperty("name")]
         [Required]
+        [DisplayName("Name")]
+        [Description("This is the name property.")]
+        [JsonProperty("name")]
         public StringExpression Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the name property.
-        /// </summary>
-        [JsonProperty("age")]
+        [DisplayName("Age")]
+        [Description("This is the age property.")]
         [Required]
+        [Range(0, 120)]
+        [JsonProperty("age")]
         public IntExpression Age { get; set; }
 
-        public override Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, Object options = null, CancellationToken cancellationToken = default)
+        [DisplayName("Color")]
+        [Description("This is the color property.")]
+        [JsonProperty("color")]
+        public EnumExpression<ConsoleColor> Color { get; set; }
+
+        public async override Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, Object options = null, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (Disabled != null && this.Disabled.GetValue(dc))
+            {
+                return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            string text = "";
+            
+            // bind values
+            var name = Name?.GetValue(dc);
+            if (name != null)
+            {
+                text += $"Your name is:{name}. ";
+            }
+
+            var age = Age?.GetValue(dc);
+            if (age != null)
+            {
+                text += $"Your age is:{age}. ";
+            }
+
+            var color = Color?.GetValue(dc);
+            if (color != null)
+            {
+                text += $"Your color is:{color}. ";
+            }
+
+            // send a response.
+            await dc.Context.SendActivityAsync(text);
+
+            return await dc.EndDialogAsync(cancellationToken: cancellationToken).ConfigureAwait(false); 
         }
     }
 }

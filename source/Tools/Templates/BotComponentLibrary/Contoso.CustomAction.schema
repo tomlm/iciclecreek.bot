@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "CustomAction",
+  "description": "This is a custom action",
+  "type": "object",
+  "required": [
+    "name",
+    "age"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disable this action",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "name": {
+      "title": "Name",
+      "description": "This is the name property.",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "age": {
+      "title": "Age",
+      "description": "This is the age property.",
+      "$ref": "schema:#/definitions/integerExpression",
+      "minimum": 0,
+      "maximum": 120
+    },
+    "color": {
+      "title": "Color",
+      "description": "This is the color property.",
+      "oneOf": [
+        {
+          "title": "Color",
+          "description": "This is the color property.",
+          "enum": [
+            "Black",
+            "DarkBlue",
+            "DarkGreen",
+            "DarkCyan",
+            "DarkRed",
+            "DarkMagenta",
+            "DarkYellow",
+            "Gray",
+            "DarkGray",
+            "Blue",
+            "Green",
+            "Cyan",
+            "Red",
+            "Magenta",
+            "Yellow",
+            "White"
+          ]
+        },
+        {
+          "$ref": "schema:#/definitions/equalsExpression"
+        }
+      ]
+    }
+  }
+}
