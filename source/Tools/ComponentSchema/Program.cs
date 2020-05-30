@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Iciclecreek.Bot.Builder.Dialogs.Annotations;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -35,7 +36,8 @@ namespace Iciclecreek.Bot
                 Console.WriteLine();
                 Console.WriteLine("All dialog classes with a `public const string Kind` constant will be output as [kind].schema files.");
                 Console.WriteLine();
-                Console.WriteLine("NOTE: add System.Data.Annotations nuget packages");
+                Console.WriteLine("NOTE: ```dotnet add package System.Data.Annotations```");
+                Console.WriteLine("NOTE: ```dotnet add package Iciclecreek.Bot.Builder.Dialogs.Annotations```");
                 Console.WriteLine();
                 Console.WriteLine("Add annotations to your class and properties.");
                 Console.WriteLine("General Attributes:");
@@ -46,6 +48,7 @@ namespace Iciclecreek.Bot
                 Console.WriteLine("     [MinLength(minLength)]");
                 Console.WriteLine("     [MaxLength(maxLength)]");
                 Console.WriteLine("     [Range(minValue, maxValue)]");
+                Console.WriteLine("     [Examples(example1, example2,...)]");
                 Console.WriteLine();
                 Console.WriteLine("String attributes:");
                 Console.WriteLine("     [StringLength(min,max)]");
@@ -222,6 +225,7 @@ namespace Iciclecreek.Bot
                             }
 
                             AddValidations(propDef, property);
+                            AddExamples(propDef, property);
 
                             if (GetRequired(property))
                             {
@@ -255,7 +259,7 @@ namespace Iciclecreek.Bot
         {
             var filePath = Path.Combine(outputFolder, $"{prefix}ComponentRegistration.cs");
             Console.WriteLine(filePath);
-            using (var stream = File.OpenWrite(filePath))
+            using (var stream = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Truncate))
             {
                 using (var writer = new StreamWriter(stream))
                 {
@@ -440,6 +444,24 @@ namespace Iciclecreek.Bot
             if (property.GetCustomAttribute<RegularExpressionAttribute>() != null)
             {
                 propDef.pattern = property.GetCustomAttribute<RegularExpressionAttribute>().Pattern;
+            }
+        }
+
+        private static void AddExamples(dynamic propDef, PropertyInfo property)
+        {
+            var examples = property.GetCustomAttributes<ExamplesAttribute>();
+            if (examples != null && examples.Any())
+            {
+                List<object> exampleList = new List<object>();
+                foreach (var example in examples)
+                {
+                    exampleList.AddRange(example.Examples);
+                }
+
+                if (exampleList.Any())
+                {
+                    propDef.examples = new JArray(exampleList);
+                }
             }
         }
     }

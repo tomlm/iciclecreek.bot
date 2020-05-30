@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="updateSchema.cmd" />
       <Content Include="readme.md" />
     </ItemGroup>
 

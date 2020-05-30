@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <Version>4.9.7</Version>
+        <Version>4.9.10</Version>
         <Description>Generates component .schema from a DLL with dialogs with declarative Kinds.</Description>
         <Company>Iciclecreek</Company>
         <Authors>Tom Laird-McConnell</Authors>
@@ -13,7 +13,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryType>git</RepositoryType>
         <PackageTags>bot,adaptive,iciclecreek</PackageTags>
-        <AssemblyVersion>4.9.7.0</AssemblyVersion>
+        <AssemblyVersion>4.9.10.0</AssemblyVersion>
         <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
         <Copyright></Copyright>
         <PackAsTool>true</PackAsTool>
@@ -28,6 +28,7 @@
 
     <ItemGroup>
         <PackageReference Include="Humanizer" Version="2.8.11" />
+        <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Annotations" Version="4.9.1" />
         <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.9.1" />
     </ItemGroup>
 
