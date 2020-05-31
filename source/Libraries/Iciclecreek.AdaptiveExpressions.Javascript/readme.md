@@ -6,7 +6,7 @@ This library provides the ability to call javascript functions from AdaptiveExpr
 
 ## Installation
 To install 
-```dotnet install Iciclecreek.AdaptiveExpressions.Javascript```
+```dotnet add package Iciclecreek.AdaptiveExpressions.Javascript```
 
 ## Define functions
 Given a javascript with functions in it: 
@@ -34,7 +34,7 @@ ResourceExplorer change detection will reload the functions if the file changes.
 *In startup*
 ```
     ResourceExplorer resourceExplorer = new ResourceExplorer(...) ... ;
-    JavascriptFunctions.Register(resourceExplorer);
+    JavascriptFunctions.AddJavascriptFunctions(resourceExplorer);
 ``` 
 
 ## To call a function that has been added
