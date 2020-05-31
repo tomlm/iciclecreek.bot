@@ -62,5 +62,26 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             (result, error) = Expression.Parse("my.SnakeYears(user.age)").TryEvaluate(memory);
             Assert.AreEqual(52 * 21, Convert.ToInt32(result));
         }
+
+        [TestMethod]
+        public void TestReturnObject()
+        {
+            var (result, error) = Expression.Parse("my.returnObject()").TryEvaluate(new object());
+            dynamic r = result;
+            Assert.AreEqual(13, (int)r.num);
+            Assert.AreEqual("string", (string)r.str);
+            Assert.AreEqual(3, (int)r.complex.x);
+            Assert.AreEqual("y", (string)r.complex.y);
+        }
+
+        [TestMethod]
+        public void TestReturnArray()
+        {
+            var (result, error) = Expression.Parse("my.returnArray()").TryEvaluate(new object());
+            dynamic r = result;
+            Assert.AreEqual("x", (string)r[0]);
+            Assert.AreEqual("y", (string)r[1]);
+            Assert.AreEqual("z", (string)r[2]);
+        }
     }
 }

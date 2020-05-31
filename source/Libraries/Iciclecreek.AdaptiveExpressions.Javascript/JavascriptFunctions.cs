@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AdaptiveExpressions;
 using Jint;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.AdaptiveExpressions
 {
@@ -87,7 +88,8 @@ namespace Iciclecreek.AdaptiveExpressions
             {
                 Expression.Functions.Add($"{ns}.{function.Key}", (args) =>
                 {
-                    return engine.Invoke(function.Key, args?.Cast<object>().ToArray()).ToObject();
+                    var result = engine.Invoke(function.Key, args?.Cast<object>().ToArray()).ToObject();
+                    return JToken.FromObject(result); 
                 });
             }
             return engine;
