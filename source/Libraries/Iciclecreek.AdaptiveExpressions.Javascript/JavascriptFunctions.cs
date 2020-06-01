@@ -80,7 +80,8 @@ namespace Iciclecreek.AdaptiveExpressions
                 throw new Exception($"{ns} is not a valid namespace");
             }
 
-            Engine engine = new Engine((cfg) => cfg.AllowClr(typeof(Expression).Assembly));
+            // Engine engine = new Engine((cfg) => cfg.AllowClr(typeof(Expression).Assembly));
+            Engine engine = new Engine();
 
             // register expression() function so you can evaluate adaptive expressions from within javascript function.
             engine.SetValue("expression", new Func<string, object, object>((exp, state) => Expression.Parse(exp).TryEvaluate(state ?? new object()).value));
@@ -97,7 +98,9 @@ namespace Iciclecreek.AdaptiveExpressions
                 Expression.Functions.Add($"{ns}.{function.Key}", (args) =>
                 {
                     // invoke the javascript function and convert result to a JToken.
-                    return JToken.FromObject(engine.Invoke(function.Key, args?.Cast<object>().ToArray()).ToObject());
+                    var raw = engine.Invoke(function.Value.Value, args?.Cast<object>().ToArray());
+                    var result = raw.ToObject();
+                    return JToken.FromObject(result);
                 });
             }
             return engine;
