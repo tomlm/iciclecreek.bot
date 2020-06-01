@@ -1,4 +1,13 @@
-﻿function dogYears(memory) {
+﻿// Export functions
+let exports = {};
+exports.dogYears = dogYears;
+exports.catYears = catYears;
+exports.snakeYears = snakeYears;
+exports.returnObject = returnObject;
+exports.returnArray = returnArray;
+exports.tryEval = tryEval;
+
+function dogYears(memory) {
     return memory.age * 7;
 }
 
@@ -27,4 +36,9 @@ function returnArray() {
         "y",
         "z"
     ];
+}
+
+function tryEval() {
+    // evaluate adaptive expression...
+    return expression("add(arg1, arg2)", { "arg1": 15, "arg2": 35 });
 }

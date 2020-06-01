@@ -13,7 +13,11 @@ Given a javascript with functions in it:
 
 *Example: myfunctions.js*
 ```
-function Add2Numbers(x , y)
+// Export functions
+let exports = {};
+exports.add2Numbers = add2Numbers;
+
+function add2Numbers(x , y)
 {
     return x + y;
 }

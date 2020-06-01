@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
 using Jint;
+using Jint.Native;
+using Jint.Runtime.Interop;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json.Linq;
 
@@ -78,18 +80,24 @@ namespace Iciclecreek.AdaptiveExpressions
                 throw new Exception($"{ns} is not a valid namespace");
             }
 
-            Engine engine = new Engine();
-            var builtIns = engine.Global.GetOwnProperties().Select(p => p.Key).ToImmutableHashSet();
+            Engine engine = new Engine((cfg) => cfg.AllowClr(typeof(Expression).Assembly));
 
+            // register expression() function so you can evaluate adaptive expressions from within javascript function.
+            engine.SetValue("expression", new Func<string, object, object>((exp, state) => Expression.Parse(exp).TryEvaluate(state ?? new object()).value));
+
+            // load script
             engine.Execute(script);
 
-            var functions = engine.Global.GetOwnProperties().Where(p => !builtIns.Contains(p.Key));
-            foreach (var function in functions)
+            // do a delta of functions which were added.
+            var exports = engine.Global.GetProperty("exports").Value.AsObject();
+
+            // register each added function into Expression.Functions table
+            foreach (var function in exports.GetOwnProperties())
             {
                 Expression.Functions.Add($"{ns}.{function.Key}", (args) =>
                 {
-                    var result = engine.Invoke(function.Key, args?.Cast<object>().ToArray()).ToObject();
-                    return JToken.FromObject(result); 
+                    // invoke the javascript function and convert result to a JToken.
+                    return JToken.FromObject(engine.Invoke(function.Key, args?.Cast<object>().ToArray()).ToObject());
                 });
             }
             return engine;

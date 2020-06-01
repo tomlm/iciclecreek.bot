@@ -83,5 +83,12 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual("y", (string)r[1]);
             Assert.AreEqual("z", (string)r[2]);
         }
+
+        [TestMethod]
+        public void TestEvaluate()
+        {
+            var (result, error) = Expression.Parse("my.tryEval()").TryEvaluate(new object());
+            Assert.AreEqual(15 + 35, Convert.ToInt32(result));
+        }
     }
 }
