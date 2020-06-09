@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Tests\my.function.js" />
+    <None Remove="Tests\jsTest.function.js" />
+    <None Remove="Tests\pyTest.function.py" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Tests\my.function.js" />
+    <Content Include="Tests\pyTest.function.py" />
+    <Content Include="Tests\jsTest.function.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Iciclecreek.AdaptiveExpressions.Humanizer\Iciclecreek.AdaptiveExpressions.Humanizer.csproj" />
     <ProjectReference Include="..\..\Libraries\Iciclecreek.AdaptiveExpressions.Javascript\Iciclecreek.AdaptiveExpressions.Javascript.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.AdaptiveExpressions.Python\Iciclecreek.AdaptiveExpressions.Python.csproj" />
   </ItemGroup>
 
 </Project>
