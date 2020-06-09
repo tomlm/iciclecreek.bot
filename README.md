@@ -53,3 +53,19 @@ You can call it from adaptive expressions
 
 [More Details](source/Libraries/Iciclecreek.AdaptiveExpressions.Javascript)
 
+## Iciclecreek.AdaptiveExpression.Python
+Library which extends AdaptiveExpressions with the ability to define custom functions via .py files.
+
+Given python with function:
+
+*Example: contoso.py*
+```
+def Add2Numbers(x , y):
+    return x + y
+```
+
+You can call it from adaptive expressions
+ ``` contoso.Add2Numbers(13, user.age) ``` => 52
+
+[More Details](source/Libraries/Iciclecreek.AdaptiveExpressions.Python)
+
