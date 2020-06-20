@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
 using Jint;
 using Jint.Native;
+using Jint.Native.Json;
 using Jint.Runtime.Interop;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.AdaptiveExpressions
@@ -24,6 +27,8 @@ namespace Iciclecreek.AdaptiveExpressions
     /// </example>
     public static class JavascriptFunctions
     {
+        private static JsonSerializerSettings jsonSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented };
+
         /// <summary>
         /// Find all foo.function.js resources and mount as expression functions
         /// </summary>
@@ -82,6 +87,7 @@ namespace Iciclecreek.AdaptiveExpressions
 
             // Engine engine = new Engine((cfg) => cfg.AllowClr(typeof(Expression).Assembly));
             Engine engine = new Engine();
+            var parser = new JsonParser(engine);
 
             // register expression() function so you can evaluate adaptive expressions from within javascript function.
             engine.SetValue("expression", new Func<string, object, object>((exp, state) => Expression.Parse(exp).TryEvaluate(state ?? new object()).value));
@@ -97,9 +103,21 @@ namespace Iciclecreek.AdaptiveExpressions
             {
                 Expression.Functions.Add($"{ns}.{function.Key}", (args) =>
                 {
-                    // invoke the javascript function and convert result to a JToken.
-                    var raw = engine.Invoke(function.Value.Value, args?.Cast<object>().ToArray());
-                    var result = raw.ToObject();
+                    // build up function call to be evaluated.
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"{function.Key}(");
+                    int count = 0;
+                    foreach (var arg in args)
+                    {
+                        if (count++ > 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.AppendLine(JsonConvert.SerializeObject(arg, jsonSettings));
+                    }
+                    sb.AppendLine($")");
+                    var jsResult = engine.Eval.Invoke(JsValue.FromObject(engine, sb.ToString()));
+                    var result = jsResult.ToObject();
                     return JToken.FromObject(result);
                 });
             }

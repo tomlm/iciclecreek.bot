@@ -6,6 +6,8 @@ exports.snakeYears = snakeYears;
 exports.returnObject = returnObject;
 exports.returnArray = returnArray;
 exports.tryEval = tryEval;
+exports.getType = getType;
+exports.getTypeOfActivity = getTypeOfActivity;
 
 function dogYears(memory) {
     return memory.age * 7;
@@ -41,4 +43,12 @@ function returnArray() {
 function tryEval() {
     // evaluate adaptive expression...
     return expression("add(arg1, arg2)", { "arg1": 15, "arg2": 35 });
+}
+
+function getType(arg) {
+    return typeof arg;
+}
+
+function getTypeOfActivity(activity) {
+    return activity.conversation.id.length;
 }

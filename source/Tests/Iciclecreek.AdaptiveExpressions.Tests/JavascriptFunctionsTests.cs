@@ -1,7 +1,9 @@
 using AdaptiveExpressions;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
 using System.Linq;
@@ -72,6 +74,26 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual("string", (string)r.str);
             Assert.AreEqual(3, (int)r.complex.x);
             Assert.AreEqual("y", (string)r.complex.y);
+        }
+
+        [TestMethod]
+        public void TestReturnObjectType()
+        {
+            var (result, error) = Expression.Parse("jsTest.getType(arg)").TryEvaluate(new { arg = "test"} );
+            dynamic r = result;
+            Assert.AreEqual("string", (string)r);
+
+            Activity activity = new Activity(ActivityTypes.Message)
+            {
+                Conversation = new ConversationAccount()
+                {
+                    Id = "abc"
+                }
+            };
+            (result, error) = Expression.Parse("jsTest.getTypeOfActivity(arg)").TryEvaluate(new { arg = JToken.FromObject(activity) });
+            r = result;
+            //Assert.AreEqual("string", (string)r);
+            Assert.AreEqual(3, (int)r);
         }
 
         [TestMethod]

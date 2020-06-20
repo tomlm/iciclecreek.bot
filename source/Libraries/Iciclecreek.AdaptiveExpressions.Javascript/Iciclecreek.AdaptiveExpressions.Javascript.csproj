@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.9.5</Version>
+        <Version>4.9.6</Version>
         <Description>Adds Javascript functions to AdaptiveExpressions</Description>
         <Company>Iciclecreek</Company>
         <Authors>Tom Laird-McConnell</Authors>
@@ -12,7 +12,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryType>git</RepositoryType>
         <PackageTags>bot,adaptive,javascript</PackageTags>
-        <AssemblyVersion>4.9.5.0</AssemblyVersion>
+        <AssemblyVersion>4.9.6.0</AssemblyVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
         <Copyright></Copyright>
