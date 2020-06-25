@@ -1,6 +1,6 @@
 ![icon](icon.png)
 
-# Comos Actions
+# Recognizers
 This library provides custom recognizers for Bot Framework/Composer.
 
 ## Installation
@@ -17,7 +17,7 @@ To add to your schema for usage in Bot Framework Composer from cli:
 ```bf dialog:merge -p yourproj.proj -o your.schema```
 
 ## Library
-This library adds an entity recognizer to recognize quoted strings as a @QuotedText entity across 64 languages:
+This library adds an QuotedTextEntityRecognizer to recognize quoted strings as a @QuotedText entity across 64 languages:
 * Afrikaans
 * Albanian
 * Amharic
