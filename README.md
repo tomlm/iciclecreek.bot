@@ -24,6 +24,10 @@ Library which adds components to Bot Framework and Bot Composer for doing CRUD o
 Library which adds components to Bot Framework and Bot Composer for executing SQL statements using Microsoft.Data.SqlClient library.
 [More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient/)
 
+## Iciclecreek.Bot.Builder.Dialogs.Recognizers
+Library which adds components to Bot Framework and Bot Composer for custom recognizers.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recognizers/)
+
 
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
