@@ -17,6 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveExpress
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4808A2A0-ED3F-40BC-8870-1DD50ACB6943}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -38,7 +39,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotComponentLibrary", "Tools\Templates\BotComponentLibrary\BotComponentLibrary.csproj", "{EE2F750B-CE82-4E54-AF01-955B611F02FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.AdaptiveExpressions.Python", "Libraries\Iciclecreek.AdaptiveExpressions.Python\Iciclecreek.AdaptiveExpressions.Python.csproj", "{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveExpressions.Python", "Libraries\Iciclecreek.AdaptiveExpressions.Python\Iciclecreek.AdaptiveExpressions.Python.csproj", "{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers", "Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj", "{FB09C309-A33D-4B27-93CC-344FDDA150CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests.csproj", "{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +99,14 @@ Global
 		{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB09C309-A33D-4B27-93CC-344FDDA150CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB09C309-A33D-4B27-93CC-344FDDA150CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB09C309-A33D-4B27-93CC-344FDDA150CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB09C309-A33D-4B27-93CC-344FDDA150CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +125,8 @@ Global
 		{168833C1-F20E-4CDD-A145-4F256C9DE1F7} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 		{EE2F750B-CE82-4E54-AF01-955B611F02FF} = {168833C1-F20E-4CDD-A145-4F256C9DE1F7}
 		{51F3FD0D-14FA-4340-93DB-3BE20A5BF437} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{FB09C309-A33D-4B27-93CC-344FDDA150CF} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}
