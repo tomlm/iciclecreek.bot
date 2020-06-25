@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotComponentLibrary", "Tool
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveExpressions.Python", "Libraries\Iciclecreek.AdaptiveExpressions.Python\Iciclecreek.AdaptiveExpressions.Python.csproj", "{51F3FD0D-14FA-4340-93DB-3BE20A5BF437}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers", "Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj", "{FB09C309-A33D-4B27-93CC-344FDDA150CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj", "{FB09C309-A33D-4B27-93CC-344FDDA150CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests.csproj", "{392FD2FC-C2F9-452A-99D3-5C8CC87EEB5F}"
 EndProject
