@@ -1,0 +1,36 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "implements(Microsoft.IEntityRecognizer)",
+    "title": "Csv Entity Recognizer",
+    "description": "Recognizer which uses data from a CSV to recognize entities.",
+    "type": "object",
+    "required": [
+    ],
+    "properties": {
+        "url": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Url",
+            "description": "URL to csv file in format of TOKEN,TYPE,VALUE"
+        },
+        "entityTypes": {
+            "type": "array",
+            "oneOf": [
+                {
+                    "type": "array",
+                    "title": "Entity Types",
+                    "description": "Entity types to match."
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ],
+                },
+                {
+                    "$ref": "schema:#/definitions/equalsExpression",
+                    "title": "Expression",
+                    "description": "Expression to array of strings which are entity types."
+                }
+            ]
+        }
+    }
+}

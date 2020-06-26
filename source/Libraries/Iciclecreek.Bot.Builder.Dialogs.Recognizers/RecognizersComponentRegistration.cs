@@ -1,9 +1,10 @@
-﻿using Microsoft.Bot.Builder;
+﻿using System.Collections.Generic;
+using AdaptiveExpressions.Converters;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
 {
@@ -20,6 +21,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
         public IEnumerable<DeclarativeType> GetDeclarativeTypes(ResourceExplorer resourceExplorer)
         {
             yield return new DeclarativeType<QuotedTextEntityRecognizer>(QuotedTextEntityRecognizer.Kind);
+            yield return new DeclarativeType<PersonNameEntityRecognizer>(PersonNameEntityRecognizer.Kind);
+            yield return new DeclarativeType<CsvEntityRecognizer>(CsvEntityRecognizer.Kind);
         }
 
         /// <summary>
@@ -30,6 +33,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
         /// <returns>enumeration of json converters.</returns>
         public IEnumerable<JsonConverter> GetConverters(ResourceExplorer resourceExplorer, SourceContext sourceContext)
         {
+            yield return new ExpressionPropertyConverter<List<string>>();
             yield break;
         }
     }

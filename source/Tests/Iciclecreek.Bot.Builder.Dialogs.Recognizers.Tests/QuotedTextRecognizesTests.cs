@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
 {
     [TestClass]
-    public class RecognizersTests
+    public class QuotedTextRecognizesTests
     {
         private Recognizer _recognizer = new RegexRecognizer() { Entities = new EntityRecognizerSet() { new QuotedTextEntityRecognizer() } };
 

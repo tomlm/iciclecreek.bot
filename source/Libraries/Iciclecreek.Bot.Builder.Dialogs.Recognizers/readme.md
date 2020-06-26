@@ -17,7 +17,47 @@ To add to your schema for usage in Bot Framework Composer from cli:
 ```bf dialog:merge -p yourproj.proj -o your.schema```
 
 ## Library
-This library adds an QuotedTextEntityRecognizer to recognize quoted strings as a @QuotedText entity across 64 languages:
+This library adds recognizers:
+* **PersonNameEntityRecognizer** - Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith")
+* **QuotedTextEntityRecognizer** - Recognizes quoted strings as @QuotedText entities
+* **CsvTextEntityRecognizer** - Uses a .CSV file to define tokens to match to entities
+
+### PersonNameEntityRecognizer
+Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith"). You can optionally point it to a
+URL to extend matched given names and surnames.
+
+#### Sample Code
+```C#
+    var dialog = new AdaptiveDialog()
+    {
+        Recognizer = new RegexRecognizer()
+        {
+            Entities = new EntityRecognizerSet()
+            {
+                new PersonNamEntityRecognizer()
+            }
+        }
+        ...
+    }
+```
+
+#### Sample Json
+
+```json
+{
+    "$kind": "Microsoft.AdaptiveDialog",
+    "recognizer": {
+        "$kind":"Microsoft.RegexRecognizer",
+        "entities": [
+            {
+                "$kind":"Iciclecreek.PersonNameEntityRecognizer"
+            }
+        ]
+    }
+}
+```
+### QuotedTextEntityRecognizer
+Use the QuotedTextEntityRecognizer to recognize quoted strings as a @QuotedText entity across 64 languages:
 * Afrikaans
 * Albanian
 * Amharic
@@ -89,7 +129,7 @@ This library adds an QuotedTextEntityRecognizer to recognize quoted strings as a
 * Welsh
  
 
-## Sample Code
+#### Sample Code
 ```C#
     var dialog = new AdaptiveDialog()
     {
@@ -104,7 +144,7 @@ This library adds an QuotedTextEntityRecognizer to recognize quoted strings as a
     }
 ```
 
-## Sample Json
+#### Sample Json
 
 ```json
 {
@@ -114,6 +154,59 @@ This library adds an QuotedTextEntityRecognizer to recognize quoted strings as a
         "entities": [
             {
                 "$kind":"Iciclecreek.QuotedTextEntityRecognizer"
+            }
+        ]
+    }
+}
+```
+
+
+### CsvEntityRecognizer
+Use the CsvEntityRecognizer to easily define custom entities to recognize from a csv file.
+
+The CSV file should be in the format:
+
+**TOKEN,TYPE,VALUE1,..,VALUEN**
+
+The value columns are property paths which will be used to set modify the entity with the data in the value column.
+
+Example:
+TOKEN,TYPE,genus
+alligator,animal,reptile
+squirrel,animal,mammal
+...
+
+
+
+#### Sample Code
+```C#
+    var dialog = new AdaptiveDialog()
+    {
+        Recognizer = new RegexRecognizer()
+        {
+            Entities = new EntityRecognizerSet()
+            {
+                new CsvEntityRecognizer()
+                {
+                    Url = "http://contoso.com/animals.csv"
+                }
+            }
+        }
+        ...
+    }
+```
+
+#### Sample Json
+
+```json
+{
+    "$kind": "Microsoft.AdaptiveDialog",
+    "recognizer": {
+        "$kind":"Microsoft.RegexRecognizer",
+        "entities": [
+            {
+                "$kind":"Iciclecreek.CsvEntityRecognizer",
+                "Url": "http://contoso.com/animals.csv"
             }
         ]
     }
