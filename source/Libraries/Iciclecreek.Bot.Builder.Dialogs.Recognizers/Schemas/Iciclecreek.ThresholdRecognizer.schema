@@ -1,0 +1,25 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "implements(Microsoft.IRecognizer)",
+    "title": "Threshold Recognizer",
+    "description": "Recognizer which fires OnChooseIntent when inner recognizer scores are within a threshold.",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Optional unique id using with RecognizerSet. "
+        },
+        "threshold": {
+            "$ref": "schema:#/definitions/numberExpression",
+            "title": "Threshold",
+            "description": "Threshold to consider scores to be the same.",
+            "default": 0.1
+        },
+        "recognizer": {
+            "$kind": "Microsoft.IRecognizer",
+            "title": "Recognizer",
+            "description": "Input recognizer that interprets user input into intent and entities."
+        }
+    }
+}

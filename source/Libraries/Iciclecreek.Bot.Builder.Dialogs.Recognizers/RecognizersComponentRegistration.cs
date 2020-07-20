@@ -20,6 +20,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
         /// <returns>enumeration of DeclarativeTypes.</returns>
         public IEnumerable<DeclarativeType> GetDeclarativeTypes(ResourceExplorer resourceExplorer)
         {
+            yield return new DeclarativeType<ThresholdRecognizer>(ThresholdRecognizer.Kind);
             yield return new DeclarativeType<QuotedTextEntityRecognizer>(QuotedTextEntityRecognizer.Kind);
             yield return new DeclarativeType<PersonNameEntityRecognizer>(PersonNameEntityRecognizer.Kind);
             yield return new DeclarativeType<CsvEntityRecognizer>(CsvEntityRecognizer.Kind);
