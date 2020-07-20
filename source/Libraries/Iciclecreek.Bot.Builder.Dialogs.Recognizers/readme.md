@@ -171,9 +171,10 @@ The CSV file should be in the format:
 The value columns are property paths which will be used to set modify the entity with the data in the value column.
 
 Example:
-TOKEN,TYPE,genus
-alligator,animal,reptile
-squirrel,animal,mammal
+```
+TOKEN,TYPE,genus.class,genus.latin
+alligator,animal,reptile,alligator mississippiensis
+squirrel,animal,mammal,squirrus maximus
 ...
 
 

@@ -26,6 +26,9 @@ Library which adds components to Bot Framework and Bot Composer for executing SQ
 
 ## Iciclecreek.Bot.Builder.Dialogs.Recognizers
 Library which adds components to Bot Framework and Bot Composer for custom recognizers.
+* **PersonNameEntityRecognizer** - Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith")
+* **QuotedTextEntityRecognizer** - Recognizes quoted strings as @QuotedText entities
+* **CsvTextEntityRecognizer** - Uses a .CSV file to define tokens to match to entities
 [More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recognizers/)
 
 
