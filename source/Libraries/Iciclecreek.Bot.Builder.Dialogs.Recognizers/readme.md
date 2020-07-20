@@ -21,6 +21,8 @@ This library adds recognizers:
 * **PersonNameEntityRecognizer** - Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith")
 * **QuotedTextEntityRecognizer** - Recognizes quoted strings as @QuotedText entities
 * **CsvTextEntityRecognizer** - Uses a .CSV file to define tokens to match to entities
+* **ThresholdRecognizer** - Applies a threshold to intents, any intents which have scores which are within the threshold will trigger an OnChooseIntent event.
+
 
 ### PersonNameEntityRecognizer
 Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith"). You can optionally point it to a
@@ -212,4 +214,66 @@ squirrel,animal,mammal,squirrus maximus
         ]
     }
 }
+```
+
+### ThresholdRecognizer
+Applies a threshold to intents, any intents which have scores which are within the threshold will trigger an OnChooseIntent event.
+
+#### Sample Code
+```C#
+    var dialog = new AdaptiveDialog()
+    {
+        Recognizer = new ThresholdRecognizer()
+        {
+            Threshold = 1.0f,
+            Recgonizer = ...
+        }
+        ...
+    }
+```
+
+#### Sample Json
+
+```json
+{
+    "$kind": "Microsoft.AdaptiveDialog",
+    "recognizer": {
+        "$kind":"Iciclecreek.ThresholdRecognizer",
+        "threshold": 0.2,
+        "recognizer": {
+            ...
+        }
+    }
+}
+```
+
+#### Sample code for handling OnChooseIntent
+
+```C#
+    new OnChooseIntent()
+    {
+        Intents = new List<string> { "foo","bar" },
+        Actions = new List<Dialog>()
+        {
+            new SetProperty()
+            {
+                Property = "dialog.candidates",
+                Value = $"=turn.recognized.candidates"
+            },
+            new ChoiceInput()
+            {
+                    Choices = new ChoiceSet()
+                    {
+                        new Choice("foo"),
+                        new Choice("bar"),
+                    },
+                    Prompt = new ActivityTemplate("Which intent?")
+            },
+            new EmitEvent()
+            {
+                EventName = AdaptiveEvents.RecognizedIntent,
+                EventValue = "=first(where($candidates, c, c.intent == turn.lastResult)).result"
+            }
+        }
+    }
 ```
