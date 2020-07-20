@@ -54,6 +54,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
                 {
                     result.Intents.Add("None", new IntentScore() { Score = 1.0 });
                 }
+                else
+                {
+                    result.Intents.Add("low", new IntentScore() { Score = (float)0.01 });
+                }
 
                 return result;
             }
@@ -70,6 +74,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
                     .AssertReply("foo")
                 .Send("bar")
                     .AssertReply("bar")
+                .Send("blat")
+                    .AssertReply("none")
                 .Send("foo bar")
                     .AssertReply("Which intent? (1) foo or (2) bar")
                 .Send("1")
@@ -95,7 +101,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             await GetTestScript(new ThresholdRecognizer()
             {
                 Threshold = 0.5F,
-                Recognizer = new TestRecognizer(0.3F)
+                Recognizer = new TestRecognizer(0.2F)
             })
                 .Send("foo")
                     .AssertReply("foo")
