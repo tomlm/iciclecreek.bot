@@ -281,3 +281,16 @@ Applies a threshold to intents, any intents which have scores which are within t
         }
     }
 ```
+
+
+#### Sample code for generically handling OnChooseIntent
+If you don't have the Intents constraint, then you can programmatically ask for the intents ( or map the intents to human language) like this:
+
+```C#
+new ChoiceInput()
+{
+     Choices = "=select(dialog.candidates, result, result.intent)",
+     Prompt = new ActivityTemplate("Which intent?")
+},
+```
+
