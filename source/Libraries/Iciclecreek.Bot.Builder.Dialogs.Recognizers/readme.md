@@ -226,7 +226,7 @@ Applies a threshold to intents, any intents which have scores which are within t
         Recognizer = new ThresholdRecognizer()
         {
             Threshold = 1.0f,
-            Recgonizer = ...
+            Recognizer = ...
         }
         ...
     }
@@ -272,7 +272,11 @@ Applies a threshold to intents, any intents which have scores which are within t
             new EmitEvent()
             {
                 EventName = AdaptiveEvents.RecognizedIntent,
-                EventValue = "=first(where($candidates, c, c.intent == turn.lastResult)).result"
+                EventValue = "=first(where(dialog.candidates, c, c.intent == turn.lastResult)).result"
+            },
+            new DeleteProperty()
+            {  
+                Property = "dialog.candidates"
             }
         }
     }
