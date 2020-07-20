@@ -226,7 +226,7 @@ Applies a threshold to intents, any intents which have scores which are within t
         Recognizer = new ThresholdRecognizer()
         {
             Threshold = 1.0f,
-            Recgonizer = ...
+            Recognizer = ...
         }
         ...
     }
@@ -272,8 +272,25 @@ Applies a threshold to intents, any intents which have scores which are within t
             new EmitEvent()
             {
                 EventName = AdaptiveEvents.RecognizedIntent,
-                EventValue = "=first(where($candidates, c, c.intent == turn.lastResult)).result"
+                EventValue = "=first(where(dialog.candidates, c, c.intent == turn.lastResult)).result"
+            },
+            new DeleteProperty()
+            {  
+                Property = "dialog.candidates"
             }
         }
     }
 ```
+
+
+#### Sample code for generically handling OnChooseIntent
+If you don't have the Intents constraint, then you can programmatically ask for the intents ( or map the intents to human language) like this:
+
+```C#
+new ChoiceInput()
+{
+     Choices = "=select(dialog.candidates, result, result.intent)",
+     Prompt = new ActivityTemplate("Which intent?")
+},
+```
+
