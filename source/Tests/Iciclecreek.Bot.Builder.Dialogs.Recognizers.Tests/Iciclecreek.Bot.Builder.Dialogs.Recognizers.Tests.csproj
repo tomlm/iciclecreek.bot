@@ -11,18 +11,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.9.3-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.10.2-preview" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.9.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.10.2" />
     <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene\Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene.csproj" />
     <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.qna" />
   </ItemGroup>
 
 </Project>

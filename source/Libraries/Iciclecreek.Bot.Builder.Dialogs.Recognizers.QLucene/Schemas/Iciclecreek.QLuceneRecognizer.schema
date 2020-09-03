@@ -1,0 +1,82 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "implements(Microsoft.IRecognizer)",
+    "title": "QnA Lucene Recognizer",
+    "description": "Recognizer which uses Lucene to do QnA recognition..",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Optional unique id using with RecognizerSet. "
+        },
+        "recognizer": {
+            "$kind": "Microsoft.IRecognizer",
+            "title": "Recognizer",
+            "description": "Input recognizer that interprets user input into intent and entities."
+        },
+        "includeDialogNameInMetadata": {
+            "$ref": "schema:#/definitions/booleanExpression",
+            "title": "Include DialogName",
+            "description": "Set to true to include the dialog name in metadata.",
+            "default": false
+        },
+        "strictFilters": {
+            "$ref": "schema:#/definitions/arrayExpression",
+            "title": "Strict Filters",
+            "description": "Metadata filters to use when calling the QnA Maker KB.",
+            "items": {
+                "type": "object",
+                "title": "Metadata filters",
+                "description": "Metadata filters to use when querying QnA Maker KB.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Name to filter on.",
+                        "maximum": 100
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Value",
+                        "description": "Value to restrict filter.",
+                        "maximum": 100
+                    }
+                }
+            }
+        },
+        "metadata": {
+            "$ref": "schema:#/definitions/arrayExpression",
+            "title": "Metadata filters",
+            "description": "Metadata filters to use when calling the QnA Maker KB.",
+            "items": {
+                "type": "object",
+                "title": "Metadata filter",
+                "description": "Metadata filter to use when calling the QnA Maker KB.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name",
+                        "description": "Name of value to test."
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Value",
+                        "description": "Value to filter against."
+                    }
+                }
+            }
+        },
+        "context": {
+            "$ref": "schema:#/definitions/objectExpression",
+            "title": "QnARequestContext",
+            "description": "Context to use for ranking."
+        },
+        "threshold": {
+            "$ref": "schema:#/definitions/numberExpression",
+            "title": "Threshold",
+            "description": "Threshold to consider scores to be the same.",
+            "default": 0.1
+        }
+    }
+}

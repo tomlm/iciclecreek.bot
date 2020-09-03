@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Annotations\Iciclecreek.Bot.Builder.Dialogs.Annotations.csproj" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.9.1" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.10.2" />
 
     </ItemGroup>
 
