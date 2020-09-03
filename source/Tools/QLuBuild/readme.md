@@ -27,8 +27,8 @@ foo.dialog
 ```
 
 Where
-* ** {lang}.qna** file is the original markdown qna for that language
-* ** {lang}.qna.json** file is the qna in json form for that language
-* **.{lang}.qna.dialog is the QLuceneRecognizer bound to that the {lang}.qna.json file
-* **.qna.dialog is the a MultiLanguageRecognizer bound to each language recognizer for the qna.
+* **{lang}.qna** file is the original markdown qna for that language
+* **{lang}.qna.json** file is the qna in json form for that language
+* **.{lang}.qna.dialog** is the QLuceneRecognizer bound to that the {lang}.qna.json file
+* **.qna.dialog** is the a MultiLanguageRecognizer bound to each language recognizer for the qna.
 
