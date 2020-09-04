@@ -2,6 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions.Properties;
@@ -30,9 +33,35 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
         public const string Kind = "Iciclecreek.QLuceneRecognizer";
 
-        public QLuceneRecognizer()
+        public QLuceneRecognizer(string qnaJson = null)
         {
+            if (qnaJson != null)
+            {
+                lock (engines)
+                {
+                    // Create a SHA256   
+                    using (SHA256 sha256Hash = SHA256.Create())
+                    {
+                        // ComputeHash - returns byte array  
+                        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(qnaJson));
 
+                        // Convert byte array to a string   
+                        StringBuilder builder = new StringBuilder();
+                        for (int i = 0; i < bytes.Length; i++)
+                        {
+                            builder.Append(bytes[i].ToString("x2"));
+                        }
+                        this.ResourceId = builder.ToString();
+                    }
+
+                    if (!engines.ContainsKey(this.ResourceId))
+                    {
+                        Directory directory = new RAMDirectory();
+                        QLuceneEngine.CreateCatalog(qnaJson, directory);
+                        engines[ResourceId] = new QLuceneEngine(directory);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -146,37 +175,31 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
         private async Task<QLuceneEngine> GetEngine(DialogContext dialogContext)
         {
-            QLuceneEngine engine;
-
-            if (engines.TryGetValue(this.ResourceId, out engine))
+            if (engines.TryGetValue(this.ResourceId, out var engine))
             {
                 return engine;
             }
 
-            try
+            var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
+            Resource resource;
+            if (!resourceExplorer.TryGetResource(this.ResourceId + ".json", out resource))
             {
-                Monitor.Enter(_monitor);
+                resource = resourceExplorer.GetResource(this.ResourceId);
+            }
+
+            var json = await resource.ReadTextAsync().ConfigureAwait(false);
+
+            lock (engines)
+            {
                 if (engines.TryGetValue(this.ResourceId, out engine))
                 {
                     return engine;
                 }
-                var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
-                Resource resource;
-                if (!resourceExplorer.TryGetResource(this.ResourceId + ".json", out resource))
-                {
-                    resource = resourceExplorer.GetResource(this.ResourceId);
-                }
-
-                var json = await resource.ReadTextAsync().ConfigureAwait(false);
 
                 Directory directory = new RAMDirectory();
                 QLuceneEngine.CreateCatalog(json, directory);
                 engines[ResourceId] = new QLuceneEngine(directory);
                 return engines[ResourceId];
-            }
-            finally
-            {
-                Monitor.Exit(_monitor);
             }
         }
     }

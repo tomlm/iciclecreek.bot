@@ -102,28 +102,37 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             await script.ExecuteAsync(ResourceExplorer);
         }
 
-        private TestFlow CreateFlow(Dialog rootDialog)
+        [TestMethod]
+        public async Task TestQLuceneRecognizerCode()
         {
-            var storage = new MemoryStorage();
-            var userState = new UserState(storage);
-            var conversationState = new ConversationState(storage);
+            var resource = ResourceExplorer.GetResource("test.en-us.qna.json");
+            var json = await resource.ReadTextAsync();
 
-            var adapter = new TestAdapter(TestAdapter.CreateConversation(TestContext.TestName));
-            adapter
-                .UseStorage(storage)
-                .UseBotState(userState, conversationState)
-                .Use(new TranscriptLoggerMiddleware(new TraceTranscriptLogger(traceActivity: false)));
-
-            DialogManager dm = new DialogManager(rootDialog)
-                .UseResourceExplorer(ResourceExplorer)
-                .UseLanguageGeneration();
-
-            return new TestFlow(adapter, async (turnContext, cancellationToken) =>
+            await new TestScript()
             {
-                await dm.OnTurnAsync(turnContext, cancellationToken: cancellationToken).ConfigureAwait(false);
-            });
+                Dialog = new AdaptiveDialog()
+                {
+                    Recognizer = new QLuceneRecognizer(json),
+                    Triggers = new List<OnCondition>()
+                    {
+                        new OnIntent()
+                        {
+                            Intent = "QnAMatch",
+                            Actions = new List<Dialog>()
+                            {
+                                new SendActivity("${turn.recognized.entities.answer[0]}")
+                            }
+                        }
+                    }
+                }
+            }
+            .Send("Do you have a boyfriend")
+                .AssertReply("The only thing I'm committed to is being a great friend.")
+             .Send("Who created you?")
+                .AssertReply("People made me out of code and a dash of ingenuity.")
+            .Send("Do you want to get married ?")
+                .AssertReply("Definitely didn't see that coming!")
+            .ExecuteAsync(ResourceExplorer);
         }
-
-
     }
 }
