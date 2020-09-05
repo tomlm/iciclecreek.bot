@@ -143,7 +143,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                 List<dynamic> requestContexts = new List<dynamic>();
                 foreach (dynamic qna in (JArray)qnaKB.qnaList)
                 {
-                    if (qna.context.prompts != null)
+                    if (qna.context?.prompts != null)
                     {
                         foreach (dynamic prompt in qna.context.prompts)
                         {
