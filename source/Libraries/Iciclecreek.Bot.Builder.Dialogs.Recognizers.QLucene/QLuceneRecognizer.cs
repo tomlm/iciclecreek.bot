@@ -13,6 +13,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,9 +27,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
         private const string IntentPrefix = "intent=";
 
-        /// <summary>
-        /// Key used when adding the intent to the <see cref="RecognizerResult"/> intents collection.
+        /// The value type for a QnAMaker trace activity.
         /// </summary>
+        public const string TraceType = "https://www.iciclecreek.com/schemas/trace";
+
+        /// <summary>
+        /// The context label for a QnAMaker trace activity.
+        /// </summary>
+        public const string TraceLabel = "QLuceneRecognizer Trace";
+
         public const string QnAMatchIntent = "QnAMatch";
 
         public const string Kind = "Iciclecreek.QLuceneRecognizer";
@@ -77,16 +84,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
         /// <value>
         /// A bool or boolean expression.
         /// </value>
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         [JsonProperty("includeDialogNameInMetadata")]
-        public BoolExpression IncludeDialogNameInMetadata { get; set; } = true;
+        public BoolExpression IncludeDialogNameInMetadata { get; set; } = false;
 
         /// <summary>
         /// Gets or sets an expression to evaluate to set additional metadata name value pairs.
         /// </summary>
         /// <value>An expression to evaluate for pairs of metadata.</value>
-        [JsonProperty("metadata")]
-        public ArrayExpression<Metadata> Metadata { get; set; }
+        [JsonProperty("strictFilters")]
+        public ArrayExpression<Metadata> StrictFilters { get; set; }
 
         /// <summary>
         /// Gets or sets an expression to evaluate to set the context.
@@ -105,6 +112,20 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
         [JsonProperty("threshold")]
         public NumberExpression Threshold { get; set; } = 0.3F;
 
+        /// <summary>
+        /// Gets or sets the rankerType.
+        /// </summary>
+        /// <value>If QuestionOnly, only questions will be matched.</value>
+        [JsonProperty("rankerType")]
+        public StringExpression RankerType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the StrictFiltersCompountOperationType.
+        /// </summary>
+        /// <value>Set to AND or OR for boolean operator to use to combine strict filters.  Default is AND</value>
+        [JsonProperty("strictFiltersCompoundOperationType")]
+        public StringExpression StrictFiltersCompoundOperationType { get; set; }
+
         public async override Task<RecognizerResult> RecognizeAsync(DialogContext dialogContext, Activity activity, CancellationToken cancellationToken = default, Dictionary<System.String, System.String> telemetryProperties = null, Dictionary<System.String, System.Double> telemetryMetrics = null)
         {
             var qluceneEngine = await GetEngine(dialogContext).ConfigureAwait(false);
@@ -121,11 +142,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                 recognizerResult.Intents.Add("None", new IntentScore());
                 return recognizerResult;
             }
-
-            var filters = new List<Metadata>();
-            if (IncludeDialogNameInMetadata.GetValue(dialogContext.State))
+            var rankerType = RankerType?.GetValue(dialogContext.State);
+            var strictFiltersCompoundOperationType = StrictFiltersCompoundOperationType?.GetValue(dialogContext.State);
+            var strictFilters = new List<Metadata>();
+            var context = Context?.GetValue(dialogContext.State);
+            bool includeDialogNameInMetadata = IncludeDialogNameInMetadata.GetValue(dialogContext.State);
+            if (includeDialogNameInMetadata)
             {
-                filters.Add(new Metadata
+                strictFilters.Add(new Metadata
                 {
                     Name = "dialogName",
                     Value = dialogContext.ActiveDialog.Id
@@ -133,13 +157,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
             }
 
             // if there is $qna.metadata set add to filters
-            var externalMetadata = Metadata?.GetValue(dialogContext.State);
+            var externalMetadata = StrictFilters?.GetValue(dialogContext.State);
             if (externalMetadata != null)
             {
-                filters.AddRange(externalMetadata);
+                strictFilters.AddRange(externalMetadata);
             }
 
-            var topAnswer = qluceneEngine.GetAnswers(activity.Text, threshold: threshold);
+            var topAnswer = qluceneEngine.GetAnswers(activity.Text,
+                strictFilters: strictFilters.ToArray(),
+                context: context,
+                threshold: threshold,
+                rankerType: rankerType,
+                strictFiltersCompoundOperationType: strictFiltersCompoundOperationType);
 
             if (topAnswer != null)
             {
@@ -170,6 +199,22 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                 recognizerResult.Intents.Add("None", new IntentScore { Score = 1.0f });
             }
 
+            var traceInfo = new
+            {
+                recognizerResult,
+                options = new
+                {
+                    resourceId = ResourceId,
+                    scoreThreshold = threshold,
+                    context,
+                    rankerType,
+                    strictFilters = strictFilters.ToArray(),
+                    includeDialogNameInMetadata,
+                    strictFiltersCompoundOperationType
+                }
+            };
+
+            await dialogContext.Context.TraceActivityAsync(nameof(QLuceneRecognizer), traceInfo, TraceType, TraceLabel, cancellationToken).ConfigureAwait(false);
             return recognizerResult;
         }
 

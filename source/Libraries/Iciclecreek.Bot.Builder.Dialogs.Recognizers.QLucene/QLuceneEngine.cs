@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -40,8 +41,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
         /// <param name="strictFilters">Optional Filters against metadata which must match</param>
         /// <param name="context">Optional context for multi-turn</param>
         /// <param name="threshold">Threshold which needs to be matched to return results.</param>
+        /// <param name="rankerType">QuestionOnly|default (questionsAndAnswers)</param>
+        /// <param name="strictFiltersCompoundOperationType">"AND"| "OR", default is AND</param>
         /// <returns>The QueryResult</returns>
-        public QueryResult GetAnswers(string text, Metadata[] strictFilters = null, QnARequestContext context = null, float threshold = 0.3F)
+        public QueryResult GetAnswers(string text, Metadata[] strictFilters = null, QnARequestContext context = null, float threshold = 0.3F, string rankerType = null, string strictFiltersCompoundOperationType = null)
         {
             text = text.Trim('?', '*', ' ', '\t');
             var query = new BooleanQuery();
@@ -57,15 +60,36 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
             }
             else
             {
-                query.Add(_parser.Parse(text, "questions"), Occur.SHOULD);
+                switch (rankerType?.ToLower())
+                {
+                    case "questiononly":
+                        query.Add(_parser.Parse(text, "questions"), Occur.SHOULD);
+                        break;
+                    case "default":
+                    default:
+                        query.Add(_parser.Parse(text, "questionsAndAnswer"), Occur.SHOULD);
+                        break;
+                }
             }
 
-            if (strictFilters != null)
+            if (strictFilters != null && strictFilters.Any())
             {
+                var filterQuery = new BooleanQuery();
                 foreach (var metadata in strictFilters)
                 {
-                    query.Add(new TermQuery(new Term(metadata.Name, metadata.Value)), Occur.MUST);
+                    switch (strictFiltersCompoundOperationType?.ToLower())
+                    {
+                        case "or":
+                            filterQuery.Add(new TermQuery(new Term(metadata.Name, metadata.Value)), Occur.SHOULD);
+                            break;
+                        case "and":
+                        default:
+                            filterQuery.Add(new TermQuery(new Term(metadata.Name, metadata.Value)), Occur.MUST);
+                            break;
+                    }
                 }
+
+                query.Add(filterQuery, Occur.MUST);
             }
 
             var topDocs = _searcher.Search(query, 10);
@@ -74,7 +98,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                 var doc = _searcher.Doc(topDocs.ScoreDocs[0].Doc);
 
                 // System.Diagnostics.Debug.WriteLine(_searcher.Explain(query, topDocs.ScoreDocs[0].Doc));
-
                 var queryResult = new QueryResult()
                 {
                     Score = topDocs.ScoreDocs[0].Score
@@ -100,6 +123,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                             break;
                         case "answer":
                             queryResult.Answer = doc.GetValues("answer").FirstOrDefault();
+                            break;
+                        case "questionsAndAnswer":
                             break;
                         default:
                             filters.Add(field.Name, field.GetStringValue());
@@ -167,9 +192,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                         new TextField("answer", (string)qna.answer, Field.Store.YES),
                     };
 
+                    var sb = new StringBuilder();
+                    sb.AppendLine((string)qna.answer);
+
                     foreach (var question in (JArray)qna.questions)
                     {
                         doc.Add(new TextField("questions", (string)question.ToString(), Field.Store.YES));
+                        sb.AppendLine((string)question);
                     }
 
                     foreach (dynamic md in qna.metadata)
@@ -185,9 +214,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
                     doc.Add(new StringField("context", ((JToken)qna.context ?? new JObject()).ToString(), Field.Store.YES));
                     doc.Add(new StringField("prompts", ((JToken)qna.prompts ?? new JArray()).ToString(), Field.Store.YES));
+                    doc.Add(new TextField("questionsAndAnswer", sb.ToString(), Field.Store.NO));
                     indexWriter.AddDocument(doc);
                 }
-
             }
         }
     }

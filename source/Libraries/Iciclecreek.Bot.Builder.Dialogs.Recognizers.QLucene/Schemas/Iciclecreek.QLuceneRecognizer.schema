@@ -45,27 +45,43 @@
                 }
             }
         },
-        "metadata": {
-            "$ref": "schema:#/definitions/arrayExpression",
-            "title": "Metadata filters",
-            "description": "Metadata filters to use when calling the QnA Maker KB.",
-            "items": {
-                "type": "object",
-                "title": "Metadata filter",
-                "description": "Metadata filter to use when calling the QnA Maker KB.",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "title": "Name",
-                        "description": "Name of value to test."
-                    },
-                    "value": {
-                        "type": "string",
-                        "title": "Value",
-                        "description": "Value to filter against."
-                    }
+        "strictFiltersCompoundOperationType": {
+            "title": "Strict Filters Operation Type",
+            "description": "Set whether to combine filters with OR and AND semantics",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "title": "Ranker type",
+                    "description": "Type of Ranker.",
+                    "enum": [
+                        "AND",
+                        "OR"
+                    ],
+                    "default": "AND"
+                },
+                {
+                    "$ref": "schema:#/definitions/equalsExpression"
                 }
-            }
+            ]
+        },
+        "rankerType": {
+            "title": "Ranker Type",
+            "description": "Type of Ranker.",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "title": "Ranker type",
+                    "description": "Type of Ranker.",
+                    "enum": [
+                        "default",
+                        "questionOnly"
+                    ],
+                    "default": "default"
+                },
+                {
+                    "$ref": "schema:#/definitions/equalsExpression"
+                }
+            ]
         },
         "context": {
             "$ref": "schema:#/definitions/objectExpression",
