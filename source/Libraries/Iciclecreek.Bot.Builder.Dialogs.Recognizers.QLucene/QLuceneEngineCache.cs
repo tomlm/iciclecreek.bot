@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using Lucene.Net.Store;
 using Microsoft.Bot.Builder.Dialogs;
@@ -15,7 +16,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
             return engines[key];
         }
 
-        public static QLuceneEngine GetEngine(string key, string qnaJson)
+        public static QLuceneEngine GetEngine(string key, string qnaJson, Func<Directory> getDirectory = null)
         {
             if (engines.TryGetValue(key, out var engine))
             {
@@ -29,14 +30,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
                     return engine;
                 }
 
-                Directory directory = new RAMDirectory();
+                Directory directory = (getDirectory != null) ? getDirectory() : new RAMDirectory();
                 QLuceneEngine.CreateCatalog(qnaJson, directory);
                 engines[key] = new QLuceneEngine(directory);
                 return engines[key];
             }
         }
 
-        public static async Task<QLuceneEngine> GetEngine(DialogContext dialogContext, string resourceId)
+        public static async Task<QLuceneEngine> GetEngine(DialogContext dialogContext, string resourceId, Func<Directory> getDirectory = null)
         {
             if (!engines.TryGetValue(resourceId, out var engine))
             {
@@ -49,7 +50,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
                 var json = await resource.ReadTextAsync().ConfigureAwait(false);
 
-                return GetEngine(resourceId, json);
+                return GetEngine(resourceId, json, getDirectory);
             }
 
             return engine;
