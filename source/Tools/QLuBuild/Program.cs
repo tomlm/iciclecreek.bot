@@ -38,7 +38,7 @@ namespace QLuBuild
             {
                 // bf qnamaker:convert --in=MSMeeting-Facts.en-us.qna --out=MSMeeting-Facts.en-us.qna.json --force
                 var jsonPath = $"{file}.json";
-                await RunE("cmd", "/C", "bf", "qnamaker:convert", $"--in={file}", $"--out={jsonPath}", "--force");
+                await Cmd($"bf qnamaker:convert --in={file} --out={jsonPath} --force").Execute();
 
                 var dir = Path.GetDirectoryName(file);
                 var rootName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(file));
@@ -75,19 +75,6 @@ namespace QLuBuild
             }
 
             Console.WriteLine("Done");
-        }
-
-        public async Task<CommandResult> RunE(params string[] args)
-        {
-            var command = Run(args.First(), args.Skip(1).ToArray());
-            //            .RedirectStandardErrorTo(Console.OpenStandardOutput());
-            Console.WriteLine(command.ToString());
-            var result = await command.AsResult();
-            if (!String.IsNullOrWhiteSpace(result.StandardError))
-            {
-                throw new Exception(result.StandardError);
-            }
-            return result;
         }
     }
 }
