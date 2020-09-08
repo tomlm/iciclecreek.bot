@@ -2,7 +2,8 @@
   "profiles": {
     "QLuBuild": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\source\\GitHub\\iciclecreek.bot\\source\\Tests\\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests"
+      "commandLineArgs": "language-understanding",
+      "workingDirectory": "C:\\source\\GitHub\\meeting_assistant\\skills\\MSMeeting-Facts"
     }
   }
 }

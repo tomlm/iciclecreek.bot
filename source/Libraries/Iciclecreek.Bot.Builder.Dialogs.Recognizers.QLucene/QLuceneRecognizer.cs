@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Security.Cryptography;
@@ -8,11 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions.Properties;
-using Lucene.Net.Store;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
@@ -22,7 +19,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 {
     public class QLuceneRecognizer : Recognizer
     {
-        private static ConcurrentDictionary<string, QLuceneEngine> engines = new ConcurrentDictionary<string, QLuceneEngine>();
         private object _monitor = new object();
 
         private const string IntentPrefix = "intent=";
@@ -44,30 +40,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
         {
             if (qnaJson != null)
             {
-                lock (engines)
+                using (var sha256 = new SHA256Managed())
                 {
-                    // Create a SHA256   
-                    using (SHA256 sha256Hash = SHA256.Create())
-                    {
-                        // ComputeHash - returns byte array  
-                        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(qnaJson));
-
-                        // Convert byte array to a string   
-                        StringBuilder builder = new StringBuilder();
-                        for (int i = 0; i < bytes.Length; i++)
-                        {
-                            builder.Append(bytes[i].ToString("x2"));
-                        }
-                        this.ResourceId = builder.ToString();
-                    }
-
-                    if (!engines.ContainsKey(this.ResourceId))
-                    {
-                        Directory directory = new RAMDirectory();
-                        QLuceneEngine.CreateCatalog(qnaJson, directory);
-                        engines[ResourceId] = new QLuceneEngine(directory);
-                    }
+                    this.ResourceId = BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(qnaJson))).Replace("-", "");
                 }
+
+                QLuceneEngineCache.GetEngine(this.ResourceId, qnaJson);
             }
         }
 
@@ -128,7 +106,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
         public async override Task<RecognizerResult> RecognizeAsync(DialogContext dialogContext, Activity activity, CancellationToken cancellationToken = default, Dictionary<System.String, System.String> telemetryProperties = null, Dictionary<System.String, System.Double> telemetryMetrics = null)
         {
-            var qluceneEngine = await GetEngine(dialogContext).ConfigureAwait(false);
+            var qluceneEngine = await QLuceneEngineCache.GetEngine(dialogContext, this.ResourceId).ConfigureAwait(false);
 
             var threshold = Threshold.GetValue(dialogContext);
             var recognizerResult = new RecognizerResult
@@ -216,36 +194,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
 
             await dialogContext.Context.TraceActivityAsync(nameof(QLuceneRecognizer), traceInfo, TraceType, TraceLabel, cancellationToken).ConfigureAwait(false);
             return recognizerResult;
-        }
-
-        private async Task<QLuceneEngine> GetEngine(DialogContext dialogContext)
-        {
-            if (engines.TryGetValue(this.ResourceId, out var engine))
-            {
-                return engine;
-            }
-
-            var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
-            Resource resource;
-            if (!resourceExplorer.TryGetResource(this.ResourceId + ".json", out resource))
-            {
-                resource = resourceExplorer.GetResource(this.ResourceId);
-            }
-
-            var json = await resource.ReadTextAsync().ConfigureAwait(false);
-
-            lock (engines)
-            {
-                if (engines.TryGetValue(this.ResourceId, out engine))
-                {
-                    return engine;
-                }
-
-                Directory directory = new RAMDirectory();
-                QLuceneEngine.CreateCatalog(json, directory);
-                engines[ResourceId] = new QLuceneEngine(directory);
-                return engines[ResourceId];
-            }
         }
     }
 }

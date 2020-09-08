@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using CShellNet;
-using Medallion.Shell;
 using Newtonsoft.Json.Linq;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene;
 using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace QLuBuild
 {
@@ -29,17 +29,41 @@ namespace QLuBuild
                 Console.WriteLine("QLuBuild folder");
                 return;
             }
+            Echo = false;
 
             var folder = args[0];
 
-            Console.WriteLine("Building qna.json files...");
             var multiLanguageRecognizers = new Dictionary<string, JObject>();
             foreach (var file in Directory.EnumerateFiles(folder, "*.qna", SearchOption.AllDirectories))
             {
+                Console.Write($"{file}...");
                 // bf qnamaker:convert --in=MSMeeting-Facts.en-us.qna --out=MSMeeting-Facts.en-us.qna.json --force
                 var jsonPath = $"{file}.json";
-                await Cmd($"bf qnamaker:convert --in={file} --out={jsonPath} --force").Execute();
 
+                // convert qna => json file.
+                var source = File.ReadAllText(file);
+                var hash = ComputeSHA256Hash(source);
+                dynamic contents = null;
+
+                // figure out if the source file is different then the one which was used to create the .json file
+                if (File.Exists(jsonPath))
+                {
+                    contents = JsonConvert.DeserializeObject(File.ReadAllText(jsonPath));
+                    if ((string)contents.hash == hash)
+                    {
+                        Console.WriteLine($"(no change)");
+                        // we can skip to next file.
+                        continue;
+                    }
+                }
+
+                await Cmd($"bf qnamaker:convert --in={file} --out={jsonPath} --force").Execute(false);
+
+                contents = JsonConvert.DeserializeObject(File.ReadAllText(jsonPath));
+                contents.hash = hash;
+                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(contents, Formatting.Indented));
+
+                // Write file.{lang}.qna.dialog
                 var dir = Path.GetDirectoryName(file);
                 var rootName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(file));
                 var language = Path.GetExtension(Path.GetFileNameWithoutExtension(file)).Trim('.');
@@ -47,6 +71,16 @@ namespace QLuBuild
                 {
                     language = "en-us";
                 }
+
+                var languageRecognizerPath = $"{file}.dialog";
+                dynamic recognizer = new JObject();
+                recognizer["$kind"] = QLuceneRecognizer.Kind;
+                recognizer.id = Path.GetFileName(file);
+                recognizer.resourceId = Path.GetFileName(jsonPath);
+                File.WriteAllText(languageRecognizerPath, JsonConvert.SerializeObject(recognizer, Formatting.Indented));
+                Console.WriteLine($"done");
+
+                // update multi-language recognzier bookeeping.
                 var multiRecognizerPath = Path.Combine(dir, $"{rootName}.qna.dialog");
                 JObject recognizers;
                 if (!multiLanguageRecognizers.TryGetValue(multiRecognizerPath, out recognizers))
@@ -54,17 +88,10 @@ namespace QLuBuild
                     recognizers = new JObject();
                     multiLanguageRecognizers.Add(multiRecognizerPath, recognizers);
                 }
-                var languageRecognizerPath = Path.Combine(dir, $"{file}.dialog");
                 recognizers[language] = Path.GetFileNameWithoutExtension(languageRecognizerPath);
-
-                dynamic recognizer = new JObject();
-                recognizer["$kind"] = QLuceneRecognizer.Kind;
-                recognizer.id = Path.GetFileName(file);
-                recognizer.resourceId = Path.GetFileName(jsonPath);
-                Console.WriteLine(languageRecognizerPath);
-                File.WriteAllText(languageRecognizerPath, JsonConvert.SerializeObject(recognizer, Formatting.Indented));
             }
 
+            // Write multilanguage recognizer dialog file.qna.dialog
             foreach (var kv in multiLanguageRecognizers)
             {
                 dynamic multiRecognizer = new JObject();
@@ -73,8 +100,14 @@ namespace QLuBuild
                 Console.WriteLine(kv.Key);
                 File.WriteAllText(kv.Key, JsonConvert.SerializeObject(multiRecognizer, Formatting.Indented));
             }
+        }
 
-            Console.WriteLine("Done");
+        public static string ComputeSHA256Hash(string text)
+        {
+            using (var sha256 = new SHA256Managed())
+            {
+                return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "");
+            }
         }
     }
 }
