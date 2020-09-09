@@ -10,10 +10,11 @@
             "title": "Id",
             "description": "Optional unique id using with RecognizerSet. "
         },
-        "recognizer": {
-            "$kind": "Microsoft.IRecognizer",
-            "title": "Recognizer",
-            "description": "Input recognizer that interprets user input into intent and entities."
+        "knowledgeBase": {
+            "type": "string",
+            "title": "Knowledge base",
+            "description": "name of the .qna resource.",
+            "examples": [ "mykb.en-us.qna" ]
         },
         "includeDialogNameInMetadata": {
             "$ref": "schema:#/definitions/booleanExpression",

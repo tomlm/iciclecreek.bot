@@ -34,4 +34,9 @@
     <Content Include="**/*.qna" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="QLucene_TestRecognizer_cached.test.dialog" />
+    <None Remove="test.en-us.ram.qna" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,5 @@
+{
+  "$kind": "Iciclecreek.QLuceneRecognizer",
+  "id": "test-ram.en-us.qna",
+  "knowledgeBase": "test-ram.en-us.qna"
+}

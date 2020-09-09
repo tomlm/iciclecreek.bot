@@ -1,6 +1,6 @@
 {
   "$kind": "Microsoft.MultiLanguageRecognizer",
   "recognizers": {
-    "en-us": "test.en-us.qna"
+    "en-us": "test-cached.en-us.qna"
   }
 }

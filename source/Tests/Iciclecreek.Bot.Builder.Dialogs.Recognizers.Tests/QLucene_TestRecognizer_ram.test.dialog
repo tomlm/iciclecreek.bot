@@ -1,15 +1,18 @@
 {
     "$kind": "Microsoft.Test.Script",
-    "dialog":{
-        "$kind":"Microsoft.AdaptiveDialog",
-        "recognizer": "test.en-us.qna",
-        "triggers":[
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "recognizer": {
+            "$kind": "Iciclecreek.QLuceneRecognizer",
+            "knowledgeBase": "test-ram.en-us.qna"
+        },
+        "triggers": [
             {
-                "$kind":"Microsoft.OnIntent",
-                "intent":"QnAMatch",
-                "actions":[
+                "$kind": "Microsoft.OnIntent",
+                "intent": "QnAMatch",
+                "actions": [
                     {
-                        "$kind" : "Microsoft.SendActivity",
+                        "$kind": "Microsoft.SendActivity",
                         "activity": "${turn.recognized.entities.answer[0]}"
                     }
                 ]

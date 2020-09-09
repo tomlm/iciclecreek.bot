@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
+using Lucene.Net.Store;
+using System.Diagnostics;
 
 namespace QLuBuild
 {
@@ -26,18 +29,21 @@ namespace QLuBuild
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("QLuBuild folder");
+                Console.WriteLine("QLuBuild folder [--prebuild]");
+                Console.WriteLine("--prebuild - prebuild cached catalog in {qnaFile}.catalog folder.");
                 return;
             }
             Echo = false;
 
             var folder = args[0];
+            var prebuild = args.Where(a => a == "--prebuild").Any();
 
             var multiLanguageRecognizers = new Dictionary<string, JObject>();
-            foreach (var file in Directory.EnumerateFiles(folder, "*.qna", SearchOption.AllDirectories))
+            foreach (var file in System.IO.Directory.EnumerateFiles(folder, "*.qna", SearchOption.AllDirectories))
             {
-                Console.Write($"{file}...");
-                // bf qnamaker:convert --in=MSMeeting-Facts.en-us.qna --out=MSMeeting-Facts.en-us.qna.json --force
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                Console.Write($"Parsing {file}...");
                 var jsonPath = $"{file}.json";
 
                 // convert qna => json file.
@@ -59,9 +65,38 @@ namespace QLuBuild
 
                 await Cmd($"bf qnamaker:convert --in={file} --out={jsonPath} --force").Execute(false);
 
-                contents = JsonConvert.DeserializeObject(File.ReadAllText(jsonPath));
+                var json = File.ReadAllText(jsonPath);
+                contents = JsonConvert.DeserializeObject(json);
                 contents.hash = hash;
                 File.WriteAllText(jsonPath, JsonConvert.SerializeObject(contents, Formatting.Indented));
+                sw.Stop();
+                Console.WriteLine(sw.Elapsed);
+
+                if (prebuild)
+                {
+                    // build cached catalog
+                    sw.Restart();
+                    var catalogPath = $"{file}.catalog";
+                    Console.Write($"Creating {catalogPath}...");
+                    var catalogDirInfo = new DirectoryInfo(catalogPath);
+                    if (catalogDirInfo.Exists)
+                    {
+                        foreach (var catalogFile in catalogDirInfo.EnumerateFiles())
+                        {
+                            catalogFile.Delete();
+                        }
+                    }
+                    else
+                    {
+                        catalogDirInfo.Create();
+                    }
+
+                    QLuceneEngine.CreateCatalog(json, FSDirectory.Open(catalogPath));
+                    File.Delete(jsonPath);
+                    File.Delete(Path.Combine(Path.GetDirectoryName(jsonPath), "alterations_" + Path.GetFileName(jsonPath)));
+                    sw.Stop();
+                    Console.WriteLine(sw.Elapsed);
+                }
 
                 // Write file.{lang}.qna.dialog
                 var dir = Path.GetDirectoryName(file);
@@ -76,9 +111,9 @@ namespace QLuBuild
                 dynamic recognizer = new JObject();
                 recognizer["$kind"] = QLuceneRecognizer.Kind;
                 recognizer.id = Path.GetFileName(file);
-                recognizer.resourceId = Path.GetFileName(jsonPath);
+                recognizer.knowledgeBase = Path.GetFileName(file);
                 File.WriteAllText(languageRecognizerPath, JsonConvert.SerializeObject(recognizer, Formatting.Indented));
-                Console.WriteLine($"done");
+                Console.WriteLine(languageRecognizerPath);
 
                 // update multi-language recognzier bookeeping.
                 var multiRecognizerPath = Path.Combine(dir, $"{rootName}.qna.dialog");

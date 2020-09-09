@@ -60,7 +60,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             ResourceExplorer = new ResourceExplorer();
             ResourceExplorer.AddFolder(parent, monitorChanges: false);
 
-            var resource = ResourceExplorer.GetResource("test.en-us.qna.json");
+            var resource = ResourceExplorer.GetResource("test-ram.en-us.qna.json");
             Json = await resource.ReadTextAsync();
             IndexDirectory = new RAMDirectory();
             QLuceneEngine.CreateCatalog(Json, IndexDirectory);
@@ -89,9 +89,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         }
 
         [TestMethod]
-        public async Task TestQluceneRecognizer()
+        public async Task TestQluceneRecognizer_ram()
         {
-            var script = ResourceExplorer.LoadType<TestScript>("QLucene_TestRecognizer.test.dialog");
+            var script = ResourceExplorer.LoadType<TestScript>("QLucene_TestRecognizer_ram.test.dialog");
+            await script.ExecuteAsync(ResourceExplorer);
+        }
+
+        [TestMethod]
+        public async Task TestQluceneRecognizer_cached()
+        {
+            var script = ResourceExplorer.LoadType<TestScript>("QLucene_TestRecognizer_cached.test.dialog");
             await script.ExecuteAsync(ResourceExplorer);
         }
 
@@ -105,14 +112,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         [TestMethod]
         public async Task TestQLuceneRecognizerCode()
         {
-            var resource = ResourceExplorer.GetResource("test.en-us.qna.json");
+            var resource = ResourceExplorer.GetResource("test-ram.en-us.qna.json");
             var json = await resource.ReadTextAsync();
 
             await new TestScript()
             {
                 Dialog = new AdaptiveDialog()
                 {
-                    Recognizer = new QLuceneRecognizer(json),
+                    Recognizer = new QLuceneRecognizer(resource.Id, json),
                     Triggers = new List<OnCondition>()
                     {
                         new OnIntent()

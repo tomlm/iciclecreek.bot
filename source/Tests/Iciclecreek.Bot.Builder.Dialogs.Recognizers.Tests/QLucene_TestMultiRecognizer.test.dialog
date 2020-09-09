@@ -2,7 +2,7 @@
     "$kind":"Microsoft.Test.Script",
     "dialog":{
         "$kind":"Microsoft.AdaptiveDialog",
-        "recognizer": "test.qna",
+        "recognizer": "test-ram.qna",
         "triggers":[
             {
                 "$kind":"Microsoft.OnIntent",
