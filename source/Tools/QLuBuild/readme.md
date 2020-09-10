@@ -34,7 +34,7 @@ Where
 * **{lang}.qna.json** file is the qna in json form for that language 
 > (if --prebuild is not specified, the json file is indexed in RAMDirectory on the fly)
 * **{lang}.qna.catalog** folder containing the qna lucene index for that language 
-> (if --prebuild is specified)
+> (if --prebuild is specified, the content is indexed into the .qna.catalog folder)
 * **.{lang}.qna.dialog** is the QLuceneRecognizer bound to that the {lang}.qna.json file
 * **.qna.dialog** is the a MultiLanguageRecognizer bound to each language recognizer for the qna.
 
