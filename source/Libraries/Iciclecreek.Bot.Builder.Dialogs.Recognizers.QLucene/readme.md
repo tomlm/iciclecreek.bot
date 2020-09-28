@@ -27,7 +27,7 @@ recognizer for Bot Framework .qna files.
     {
         Recognizer = new QLuceneRecognizer()
         {
-            ResourceId = "foo.en-us.qna"
+            KnowledgeBase = "foo.en-us.qna"
         }
         ...
     }
@@ -40,7 +40,7 @@ recognizer for Bot Framework .qna files.
     "$kind": "Microsoft.AdaptiveDialog",
     "recognizer": {
         "$kind":"Iciclecrerek.QLuceneRecognizer",
-        "resourceId": "foo.en-us.qna"
+        "knowledgeBase": "foo.en-us.qna"
     },
     "triggers":[
         {
@@ -49,7 +49,7 @@ recognizer for Bot Framework .qna files.
             "actions":[
                 {
                     "$kind":"Microsoft.SendActivity"
-                    "activitiy": "${turn.recognized.entities.answer[0]}"
+                    "activity":"${turn.recognized.entities.answer[0]}"
                 }
             ]
         }
