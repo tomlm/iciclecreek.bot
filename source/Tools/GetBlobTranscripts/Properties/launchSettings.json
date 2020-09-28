@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GetBlobTranscripts": {
+      "commandName": "Project",
+      "commandLineArgs": "transcript-bot emulator d15f3820-f562-11ea-af51-eb7531e42933|livechat"
+    }
+  }
+}

@@ -54,48 +54,62 @@ namespace QLuBuild
                 // figure out if the source file is different then the one which was used to create the .json file
                 if (File.Exists(jsonPath))
                 {
-                    contents = JsonConvert.DeserializeObject(File.ReadAllText(jsonPath));
-                    if ((string)contents.hash == hash)
+                    try
                     {
-                        Console.WriteLine($"(no change)");
-                        // we can skip to next file.
-                        continue;
+                        contents = JsonConvert.DeserializeObject(File.ReadAllText(jsonPath));
+                        if ((string)contents.hash == hash)
+                        {
+                            Console.WriteLine($"(no change)");
+                            // we can skip to next file.
+                            continue;
+                        }
                     }
+                    catch (Exception err)
+                    {
+                    }
+                }
+
+                if (File.ReadAllText(file).Length == 0)
+                {
+                    File.WriteAllText(file, "\n\n\n");
                 }
 
                 await Cmd($"bf qnamaker:convert --in={file} --out={jsonPath} --force").Execute(false);
 
-                var json = File.ReadAllText(jsonPath);
-                contents = JsonConvert.DeserializeObject(json);
-                contents.hash = hash;
-                File.WriteAllText(jsonPath, JsonConvert.SerializeObject(contents, Formatting.Indented));
-                sw.Stop();
-                Console.WriteLine(sw.Elapsed);
-
-                if (prebuild)
+                if (File.Exists(jsonPath))
                 {
-                    // build cached catalog
-                    sw.Restart();
-                    var catalogPath = $"{file}.catalog";
-                    Console.Write($"Creating {catalogPath}...");
-                    var catalogDirInfo = new DirectoryInfo(catalogPath);
-                    if (catalogDirInfo.Exists)
-                    {
-                        foreach (var catalogFile in catalogDirInfo.EnumerateFiles())
-                        {
-                            catalogFile.Delete();
-                        }
-                    }
-                    else
-                    {
-                        catalogDirInfo.Create();
-                    }
-
-                    QLuceneEngine.CreateCatalog(json, FSDirectory.Open(catalogPath));
-                    File.Delete(jsonPath);
-                    File.Delete(Path.Combine(Path.GetDirectoryName(jsonPath), "alterations_" + Path.GetFileName(jsonPath)));
+                    var json = File.ReadAllText(jsonPath);
+                    contents = JsonConvert.DeserializeObject(json);
+                    contents.hash = hash;
+                    File.WriteAllText(jsonPath, JsonConvert.SerializeObject(contents, Formatting.Indented));
                     sw.Stop();
                     Console.WriteLine(sw.Elapsed);
+
+                    if (prebuild)
+                    {
+                        // build cached catalog
+                        sw.Restart();
+                        var catalogPath = $"{file}.catalog";
+                        Console.Write($"Creating {catalogPath}...");
+                        var catalogDirInfo = new DirectoryInfo(catalogPath);
+                        if (catalogDirInfo.Exists)
+                        {
+                            foreach (var catalogFile in catalogDirInfo.EnumerateFiles())
+                            {
+                                catalogFile.Delete();
+                            }
+                        }
+                        else
+                        {
+                            catalogDirInfo.Create();
+                        }
+
+                        QLuceneEngine.CreateCatalog(json, FSDirectory.Open(catalogPath));
+                        File.Delete(jsonPath);
+                        File.Delete(Path.Combine(Path.GetDirectoryName(jsonPath), "alterations_" + Path.GetFileName(jsonPath)));
+                        sw.Stop();
+                        Console.WriteLine(sw.Elapsed);
+                    }
                 }
 
                 // Write file.{lang}.qna.dialog
