@@ -1,32 +1,32 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
     "$role": "implements(Microsoft.IEntityRecognizer)",
     "title": "Person Nname Entity Recognizer",
     "description": "Recognizer which recognizes person names as @givenName, @surname or @fullname.",
     "type": "object",
     "properties": {
-        "givenNamesUrl" :{
+        "givenNamesUrl": {
             "$ref": "schema:#/definitions/stringExpression",
             "title": "Given Names Url",
             "description": "URL to csv file in format of NAME,[M|F|?]"
         },
-        "surnamesUrl" :{
+        "surnamesUrl": {
             "$ref": "schema:#/definitions/stringExpression",
             "title": "Surnames Url",
             "description": "URL to text file in format of SURNAME per line"
         },
-        "entityTypes" :{
-            "type":"array",
+        "entityTypes": {
+            "type": "array",
             "oneOf": [
                 {
-                    "type":"array",
+                    "type": "array",
                     "title": "Entity Types",
-                    "description": "Entity types to match."
-                    "items":[
-                    {
-                        "type":"string"
-                    }
-                    ],
+                    "description": "Entity types to match.",
+                    "items": [
+                        {
+                            "type": "string"
+                        }
+                    ]
                 },
                 {
                     "$ref": "schema:#/definitions/equalsExpression",

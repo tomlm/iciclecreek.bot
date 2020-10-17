@@ -18,12 +18,12 @@
                 {
                     "type": "array",
                     "title": "Entity Types",
-                    "description": "Entity types to match."
+                    "description": "Entity types to match.",
                     "items": [
                         {
                             "type": "string"
                         }
-                    ],
+                    ]
                 },
                 {
                     "$ref": "schema:#/definitions/equalsExpression",
