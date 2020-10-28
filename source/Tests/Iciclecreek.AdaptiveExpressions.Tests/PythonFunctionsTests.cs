@@ -51,7 +51,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         [TestMethod]
         public void CallFunctions()
         {
-            var (result, error) = Expression.Parse("pyTest.SnakeYears(10)").TryEvaluate(new object());
+            var (result, error) = Expression.Parse("pyTest.snakeYears(10)").TryEvaluate(new object());
             Assert.AreEqual(210, Convert.ToInt32(result));
 
             var memory = new
@@ -61,7 +61,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             (result, error) = Expression.Parse("pyTest.dogYears(user)").TryEvaluate(memory);
             Assert.AreEqual(52 * 7, Convert.ToInt32(result));
 
-            (result, error) = Expression.Parse("pyTest.SnakeYears(user.age)").TryEvaluate(memory);
+            (result, error) = Expression.Parse("pyTest.snakeYears(user.age)").TryEvaluate(memory);
             Assert.AreEqual(52 * 21, Convert.ToInt32(result));
         }
 

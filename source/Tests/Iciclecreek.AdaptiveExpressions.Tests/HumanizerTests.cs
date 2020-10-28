@@ -146,9 +146,9 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             Assert.AreEqual(state.singular.Pluralize(true), Expression.Parse($"humanizer.pluralize(singular, true)").TryEvaluate(state).value);
             Assert.AreEqual(state.person.Pluralize(false), Expression.Parse($"humanizer.pluralize(person)").TryEvaluate(state).value);
 
-            Assert.AreEqual(state.plural.Singularize(), Expression.Parse($"humanizer.Singularize(plural)").TryEvaluate(state).value);
-            Assert.AreEqual(state.plural.Singularize(false), Expression.Parse($"humanizer.Singularize(plural, false)").TryEvaluate(state).value);
-            Assert.AreEqual(state.plural.Singularize(false, true), Expression.Parse($"humanizer.Singularize(plural, false, true)").TryEvaluate(state).value);
+            Assert.AreEqual(state.plural.Singularize(), Expression.Parse($"humanizer.singularize(plural)").TryEvaluate(state).value);
+            Assert.AreEqual(state.plural.Singularize(false), Expression.Parse($"humanizer.singularize(plural, false)").TryEvaluate(state).value);
+            Assert.AreEqual(state.plural.Singularize(false, true), Expression.Parse($"humanizer.singularize(plural, false, true)").TryEvaluate(state).value);
 
             Assert.AreEqual(state.test.Camelize(), Expression.Parse($"humanizer.camelize(test)").TryEvaluate(state).value);
             Assert.AreEqual(state.test.Hyphenate(), Expression.Parse($"humanizer.hyphenate(test)").TryEvaluate(state).value);

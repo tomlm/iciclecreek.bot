@@ -2,16 +2,16 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Version>4.11.0-rc0</Version>
-        <Description>Adds SqlClient action to Bot Framework composer</Description>
+        <Description>Adds custom recognizers to Bot Framework and Bot Composer.</Description>
         <Company>Iciclecreek</Company>
         <Authors>Tom Laird-McConnell</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recognizers</PackageProjectUrl>
         <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryType>git</RepositoryType>
         <PackageTags>bot,adaptive</PackageTags>
-        <AssemblyVersion>4.11.0.0</AssemblyVersion>
+        <AssemblyVersion>4.11.0-rc0.0</AssemblyVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
         <Copyright></Copyright>
@@ -26,6 +26,17 @@
         <Content Include="**/*.qna" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Data\commonwords.txt" />
+      <None Remove="Data\givennames.csv" />
+      <None Remove="Data\surnames.csv" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Data\commonwords.txt" />
+      <EmbeddedResource Include="Data\givennames.csv" />
+      <EmbeddedResource Include="Data\surnames.csv" />
+    </ItemGroup>
 
     <ItemGroup>
         <None Include="icon.png" Pack="true" PackagePath="" />
@@ -33,7 +44,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0-rc0" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="1.1.3" />
     </ItemGroup>
 
 </Project>

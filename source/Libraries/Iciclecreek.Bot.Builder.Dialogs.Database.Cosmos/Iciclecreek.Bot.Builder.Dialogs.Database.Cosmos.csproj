@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.10.3</Version>
+        <Version>4.11.0-rc0</Version>
         <Description>Adds CosmosDB actions to Bot Framework composer</Description>
         <Company>Iciclecreek</Company>
         <Authors>Tom Laird-McConnell</Authors>
@@ -12,7 +12,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <RepositoryType>git</RepositoryType>
         <PackageTags>bot,adaptive</PackageTags>
-        <AssemblyVersion>4.10.3.0</AssemblyVersion>
+        <AssemblyVersion>4.11.0.0</AssemblyVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
         <Copyright></Copyright>
@@ -33,7 +33,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.9.1" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.10.3" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0-rc0" />
         <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     </ItemGroup>
 

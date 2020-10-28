@@ -51,7 +51,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         [TestMethod]
         public void CallFunctions()
         {
-            var (result, error) = Expression.Parse("jsTest.SnakeYears(10)").TryEvaluate(new object());
+            var (result, error) = Expression.Parse("jsTest.snakeYears(10)").TryEvaluate(new object());
             Assert.AreEqual(210, Convert.ToInt32(result));
 
             var memory = new
@@ -61,7 +61,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
             (result, error) = Expression.Parse("jsTest.dogYears(user)").TryEvaluate(memory);
             Assert.AreEqual(52 * 7, Convert.ToInt32(result));
 
-            (result, error) = Expression.Parse("jsTest.SnakeYears(user.age)").TryEvaluate(memory);
+            (result, error) = Expression.Parse("jsTest.snakeYears(user.age)").TryEvaluate(memory);
             Assert.AreEqual(52 * 21, Convert.ToInt32(result));
         }
 
@@ -79,7 +79,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
         [TestMethod]
         public void TestReturnObjectType()
         {
-            var (result, error) = Expression.Parse("jsTest.getType(arg)").TryEvaluate(new { arg = "test"} );
+            var (result, error) = Expression.Parse("jsTest.getType(arg)").TryEvaluate(new { arg = "test" });
             dynamic r = result;
             Assert.AreEqual("string", (string)r);
 
