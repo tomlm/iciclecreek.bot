@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [
+    "implements(Microsoft.ITrigger)",
+    "extends(Microsoft.OnCondition)"
+  ],
+  "type": "object",
+  "title": "OnGitHubMembershipEvent",
+  "description": "Trigger on github 'membership' webhook event.",
+  "properties": {
+    "action": {
+      "type": "string",
+      "title": "Action",
+      "description": "The github webhook action to trigger on",
+      "enum": [
+        "added",
+        "removed"
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [
+    "implements(Microsoft.ITrigger)",
+    "extends(Microsoft.OnCondition)"
+  ],
+  "type": "object",
+  "title": "OnGitHubIssuesEvent",
+  "description": "Trigger on github 'issues' webhook event.",
+  "properties": {
+    "action": {
+      "type": "string",
+      "title": "Action",
+      "description": "The github webhook action to trigger on",
+      "enum": [
+        "assigned",
+        "closed",
+        "deleted",
+        "demilestoned",
+        "edited",
+        "labeled",
+        "locked",
+        "milestoned",
+        "opened",
+        "pinned",
+        "reopened",
+        "transferred",
+        "unassigned",
+        "unlabeled",
+        "unlocked",
+        "unpinned"
+      ]
+    }
+  }
+}

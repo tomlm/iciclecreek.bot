@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$role": [
+    "implements(Microsoft.ITrigger)",
+    "extends(Microsoft.OnCondition)"
+  ],
+  "type": "object",
+  "title": "OnGitHubPullRequestEvent",
+  "description": "Trigger on github 'pull_request' webhook event.",
+  "properties": {
+    "action": {
+      "type": "string",
+      "title": "Action",
+      "description": "The github webhook action to trigger on",
+      "enum": [
+        "assigned",
+        "closed",
+        "edited",
+        "labeled",
+        "locked",
+        "merged",
+        "opened",
+        "ready_for_review",
+        "reopened",
+        "review_request_removed",
+        "review_requested",
+        "synchronize",
+        "unassigned",
+        "unlabeled",
+        "unlocked"
+      ]
+    }
+  }
+}
