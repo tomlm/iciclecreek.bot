@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'code_scanning_alert' webhook event.
     /// </summary>
-	public class OnGitHubCodeScanningAlertEvent: OnGitHubEvent
+	public class OnGitHubCodeScanningAlertEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -62,12 +62,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.alert != null"),
-                Expression.Parse("turn.activity.value.commit_oid != null"),
-                Expression.Parse("turn.activity.value.organization != null"),
-                Expression.Parse("turn.activity.value.ref != null"),
-                Expression.Parse("turn.activity.value.repository != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.alert)"),
+                Expression.Parse("exists(turn.activity.value.commit_oid)"),
+                Expression.Parse("exists(turn.activity.value.organization)"),
+                Expression.Parse("exists(turn.activity.value.ref)"),
+                Expression.Parse("exists(turn.activity.value.repository)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

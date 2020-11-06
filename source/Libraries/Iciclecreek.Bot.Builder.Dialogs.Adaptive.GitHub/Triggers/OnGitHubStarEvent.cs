@@ -45,25 +45,25 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         /// <returns>An <see cref="Expression"/> representing the activity.</returns>
         public override Expression GetExpression()
         {
-            Expression actionCondition;
-            if (!String.IsNullOrEmpty(this.Action))
-            {
-                actionCondition = Expression.Parse($"turn.activity.value.action == '{this.Action}''");
-            }
-            else
-            {
-                actionCondition = Expression.OrExpression(
-                    Expression.Parse("turn.activity.value.action == 'created'"),
-                    Expression.Parse("turn.activity.value.action == 'deleted'")
-                );
-            }
+
             var propertyCondition = Expression.AndExpression(
+                Expression.OrExpression(
+                    Expression.AndExpression(
+                        Expression.Parse("turn.activity.value.action == 'created'"),
+                        Expression.Parse("exists(turn.activity.value.starred_at)")),
+                    Expression.Parse("turn.activity.value.action == 'deleted'")
+                ),
                 Expression.Parse("exists(turn.activity.value.action)"),
                 Expression.Parse("exists(turn.activity.value.repository)"),
-                Expression.Parse("exists(turn.activity.value.sender)"),
-                Expression.Parse("exists(turn.activity.value.starred_at)")
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
-            return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
+
+            if (!String.IsNullOrEmpty(this.Action))
+            {
+                return Expression.AndExpression(base.GetExpression(), Expression.Parse($"turn.activity.value.action == '{this.Action}''"), propertyCondition);
+            }
+
+            return Expression.AndExpression(base.GetExpression(), propertyCondition);
         }
     }
 }

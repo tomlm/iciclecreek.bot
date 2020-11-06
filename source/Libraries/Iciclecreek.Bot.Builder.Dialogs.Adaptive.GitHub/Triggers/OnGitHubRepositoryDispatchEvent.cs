@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'repository_dispatch' webhook event.
     /// </summary>
-	public class OnGitHubRepositoryDispatchEvent: OnGitHubEvent
+	public class OnGitHubRepositoryDispatchEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -43,13 +43,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
             Expression actionCondition;
             actionCondition = Expression.Parse("turn.activity.value.action == 'on-demand-test'");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.branch != null"),
-                Expression.Parse("turn.activity.value.client_payload != null"),
-                Expression.Parse("turn.activity.value.installation != null"),
-                Expression.Parse("turn.activity.value.organization != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.branch)"),
+                Expression.Parse("exists(turn.activity.value.client_payload)"),
+                Expression.Parse("exists(turn.activity.value.installation)"),
+                Expression.Parse("exists(turn.activity.value.organization)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

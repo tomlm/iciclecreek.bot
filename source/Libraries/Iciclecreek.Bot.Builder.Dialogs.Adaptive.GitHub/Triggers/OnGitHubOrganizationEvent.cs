@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'organization' webhook event.
     /// </summary>
-	public class OnGitHubOrganizationEvent: OnGitHubEvent
+	public class OnGitHubOrganizationEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -61,10 +61,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.membership != null"),
-                Expression.Parse("turn.activity.value.organization != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.membership)"),
+                Expression.Parse("exists(turn.activity.value.organization)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

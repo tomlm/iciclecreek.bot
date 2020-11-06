@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'marketplace_purchase' webhook event.
     /// </summary>
-	public class OnGitHubMarketplacePurchaseEvent: OnGitHubEvent
+	public class OnGitHubMarketplacePurchaseEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -61,10 +61,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.effective_date != null"),
-                Expression.Parse("turn.activity.value.marketplace_purchase != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.effective_date)"),
+                Expression.Parse("exists(turn.activity.value.marketplace_purchase)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

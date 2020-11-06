@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'meta' webhook event.
     /// </summary>
-	public class OnGitHubMetaEvent: OnGitHubEvent
+	public class OnGitHubMetaEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -43,11 +43,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
             Expression actionCondition;
             actionCondition = Expression.Parse("turn.activity.value.action == 'deleted'");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.hook != null"),
-                Expression.Parse("turn.activity.value.hook_id != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.hook)"),
+                Expression.Parse("exists(turn.activity.value.hook_id)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'repository_import' webhook event.
     /// </summary>
-	public class OnGitHubRepositoryImportEvent: OnGitHubEvent
+	public class OnGitHubRepositoryImportEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -41,12 +41,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
 		public override Expression GetExpression()
 		{
             Expression actionCondition;
-            actionCondition = Expression.Parse("turn.activity.value.action == null");
+            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.organization != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null"),
-                Expression.Parse("turn.activity.value.status != null")
+                Expression.Parse("exists(turn.activity.value.organization)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)"),
+                Expression.Parse("exists(turn.activity.value.status)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

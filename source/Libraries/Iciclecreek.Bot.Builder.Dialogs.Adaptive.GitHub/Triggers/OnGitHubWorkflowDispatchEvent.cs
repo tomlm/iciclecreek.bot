@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'workflow_dispatch' webhook event.
     /// </summary>
-	public class OnGitHubWorkflowDispatchEvent: OnGitHubEvent
+	public class OnGitHubWorkflowDispatchEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -41,14 +41,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
 		public override Expression GetExpression()
 		{
             Expression actionCondition;
-            actionCondition = Expression.Parse("turn.activity.value.action == null");
+            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.inputs != null"),
-                Expression.Parse("turn.activity.value.organization != null"),
-                Expression.Parse("turn.activity.value.ref != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null"),
-                Expression.Parse("turn.activity.value.workflow != null")
+                Expression.Parse("exists(turn.activity.value.inputs)"),
+                Expression.Parse("exists(turn.activity.value.organization)"),
+                Expression.Parse("exists(turn.activity.value.ref)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)"),
+                Expression.Parse("exists(turn.activity.value.workflow)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

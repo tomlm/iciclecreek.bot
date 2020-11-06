@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'security_advisory' webhook event.
     /// </summary>
-	public class OnGitHubSecurityAdvisoryEvent: OnGitHubEvent
+	public class OnGitHubSecurityAdvisoryEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -59,8 +59,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.security_advisory != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.security_advisory)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

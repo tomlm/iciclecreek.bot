@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'installation' webhook event.
     /// </summary>
-	public class OnGitHubInstallationEvent: OnGitHubEvent
+	public class OnGitHubInstallationEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -61,10 +61,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.installation != null"),
-                Expression.Parse("turn.activity.value.repositories != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.installation)"),
+                Expression.Parse("exists(turn.activity.value.repositories)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

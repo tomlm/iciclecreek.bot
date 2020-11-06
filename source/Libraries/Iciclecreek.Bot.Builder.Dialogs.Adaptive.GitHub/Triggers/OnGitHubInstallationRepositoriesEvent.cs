@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'installation_repositories' webhook event.
     /// </summary>
-	public class OnGitHubInstallationRepositoriesEvent: OnGitHubEvent
+	public class OnGitHubInstallationRepositoriesEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -58,12 +58,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
                 );
             }
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.installation != null"),
-                Expression.Parse("turn.activity.value.repositories_added != null"),
-                Expression.Parse("turn.activity.value.repositories_removed != null"),
-                Expression.Parse("turn.activity.value.repository_selection != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.installation)"),
+                Expression.Parse("exists(turn.activity.value.repositories_added)"),
+                Expression.Parse("exists(turn.activity.value.repositories_removed)"),
+                Expression.Parse("exists(turn.activity.value.repository_selection)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}

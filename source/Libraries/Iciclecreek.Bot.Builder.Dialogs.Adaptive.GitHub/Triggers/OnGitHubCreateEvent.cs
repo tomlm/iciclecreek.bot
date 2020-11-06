@@ -41,14 +41,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         public override Expression GetExpression()
         {
             Expression actionCondition;
-            actionCondition = Expression.Parse("turn.activity.value.action == null");
+            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.master_branch != null"),
-                Expression.Parse("turn.activity.value.pusher_type != null"),
-                Expression.Parse("turn.activity.value.ref != null"),
-                Expression.Parse("turn.activity.value.ref_type != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.master_branch)"),
+                Expression.Parse("exists(turn.activity.value.pusher_type)"),
+                Expression.Parse("exists(turn.activity.value.ref)"),
+                Expression.Parse("exists(turn.activity.value.ref_type)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
         }

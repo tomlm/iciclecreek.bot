@@ -41,19 +41,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         public override Expression GetExpression()
         {
             Expression actionCondition;
-            actionCondition = Expression.Parse("turn.activity.value.action == null");
+            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.after != null"),
-                Expression.Parse("turn.activity.value.before != null"),
-                Expression.Parse("turn.activity.value.commits != null"),
-                Expression.Parse("turn.activity.value.compare != null"),
-                Expression.Parse("turn.activity.value.created != null"),
-                Expression.Parse("turn.activity.value.deleted != null"),
-                Expression.Parse("turn.activity.value.forced != null"),
-                Expression.Parse("turn.activity.value.pusher != null"),
-                Expression.Parse("turn.activity.value.ref != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.after)"),
+                Expression.Parse("exists(turn.activity.value.before)"),
+                Expression.Parse("exists(turn.activity.value.commits)"),
+                Expression.Parse("exists(turn.activity.value.compare)"),
+                Expression.Parse("exists(turn.activity.value.created)"),
+                Expression.Parse("exists(turn.activity.value.deleted)"),
+                Expression.Parse("exists(turn.activity.value.forced)"),
+                Expression.Parse("exists(turn.activity.value.pusher)"),
+                Expression.Parse("exists(turn.activity.value.ref)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
         }

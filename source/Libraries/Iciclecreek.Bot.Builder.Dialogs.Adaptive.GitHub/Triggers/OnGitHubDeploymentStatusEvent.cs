@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// <summary>
     /// Trigger on github 'deployment_status' webhook event.
     /// </summary>
-	public class OnGitHubDeploymentStatusEvent: OnGitHubEvent
+	public class OnGitHubDeploymentStatusEvent : OnGitHubEvent
 	{
 		/// <summary>
 		/// Class identifier.
@@ -43,11 +43,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
             Expression actionCondition;
             actionCondition = Expression.Parse("turn.activity.value.action == 'created'");
             var propertyCondition = Expression.AndExpression(
-                Expression.Parse("turn.activity.value.action != null"),
-                Expression.Parse("turn.activity.value.deployment != null"),
-                Expression.Parse("turn.activity.value.deployment_status != null"),
-                Expression.Parse("turn.activity.value.repository != null"),
-                Expression.Parse("turn.activity.value.sender != null")
+                Expression.Parse("exists(turn.activity.value.action)"),
+                Expression.Parse("exists(turn.activity.value.deployment)"),
+                Expression.Parse("exists(turn.activity.value.deployment_status)"),
+                Expression.Parse("exists(turn.activity.value.repository)"),
+                Expression.Parse("exists(turn.activity.value.sender)")
             );
             return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
 		}
