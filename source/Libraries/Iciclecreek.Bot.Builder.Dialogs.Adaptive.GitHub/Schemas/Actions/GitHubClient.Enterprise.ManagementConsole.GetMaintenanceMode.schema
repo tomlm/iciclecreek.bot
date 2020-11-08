@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetMaintenanceMode",
+  "description": "Get maintenance mode",
+  "type": "object",
+  "required": [
+    "managementConsolePassword"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "managementConsolePassword": {
+      "title": "Management console password",
+      "description": "Management console password",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    }
+  }
+}

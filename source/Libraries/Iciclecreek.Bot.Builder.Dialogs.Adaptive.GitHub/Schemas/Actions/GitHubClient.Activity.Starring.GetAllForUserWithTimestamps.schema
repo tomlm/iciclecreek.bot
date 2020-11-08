@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetAllForUserWithTimestamps",
+  "description": "Get all for user with timestamps",
+  "type": "object",
+  "required": [
+    "user"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "user": {
+      "title": "User",
+      "description": "User",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "request": {
+      "title": "Request",
+      "description": "Request",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
+    "options": {
+      "title": "Options",
+      "description": "Options",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetAllForOrg",
+  "description": "Get all for org",
+  "type": "object",
+  "required": [
+    "organization"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "organization": {
+      "title": "Organization",
+      "description": "Organization",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "options": {
+      "title": "Options",
+      "description": "Options",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

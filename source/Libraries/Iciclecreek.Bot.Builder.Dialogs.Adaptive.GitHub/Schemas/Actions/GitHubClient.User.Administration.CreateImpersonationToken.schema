@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "CreateImpersonationToken",
+  "description": "Create impersonation token",
+  "type": "object",
+  "required": [
+    "login",
+    "newImpersonationToken"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "login": {
+      "title": "Login",
+      "description": "Login",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "newImpersonationToken": {
+      "title": "New impersonation token",
+      "description": "New impersonation token",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

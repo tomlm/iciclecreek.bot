@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Edit",
+  "description": "Edit",
+  "type": "object",
+  "required": [
+    "environmentId",
+    "updatePreReceiveEnvironment"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "environmentId": {
+      "title": "Environment id",
+      "description": "Environment id"
+    },
+    "updatePreReceiveEnvironment": {
+      "title": "Update pre receive environment",
+      "description": "Update pre receive environment",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

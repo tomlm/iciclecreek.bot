@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Lock",
+  "description": "Lock",
+  "type": "object",
+  "required": [
+    "number"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "owner": {
+      "title": "Owner",
+      "description": "Owner",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "description": "Name",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "number": {
+      "title": "Number",
+      "description": "Number"
+    },
+    "repositoryId": {
+      "title": "Repository id",
+      "description": "Repository id"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "IsFollowing",
+  "description": "Is following",
+  "type": "object",
+  "required": [
+    "login",
+    "following"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "login": {
+      "title": "Login",
+      "description": "Login",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "following": {
+      "title": "Following",
+      "description": "Following",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    }
+  }
+}

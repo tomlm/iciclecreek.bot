@@ -49,13 +49,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             this.botId = botId;
             this.botName = botName;
             this.config = configuration;
-            this.Client = new GitHubClient(new ProductHeaderValue(nameof(GitHubAdapter), "1.0"));
+            this.Client = new Octokit.GitHubClient(new ProductHeaderValue(nameof(GitHubAdapter), "1.0"));
         }
 
         /// <summary>
         /// GitHubClient for making github API calls on behalf of your github app (bot).
         /// </summary>
-        public GitHubClient Client { get; set; }
+        public Octokit.GitHubClient Client { get; set; }
 
         /// <summary>
         /// handle a webhook call back and 
@@ -128,9 +128,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             {
                 context.TurnState.Add<IIdentity>(BotIdentityKey, claimsIdentity);
 
-                // The OAuthScope is also stored on the TurnState to get the correct AppCredentials if fetching a token is required.
-                //var scope = SkillValidation.IsSkillClaim(claimsIdentity.Claims) ? JwtTokenValidation.GetAppIdFromClaims(claimsIdentity.Claims) : GetBotFrameworkOAuthScope();
-                //context.TurnState.Add(OAuthScopeKey, scope);
                 context.TurnState.Add(this.Client);
                 context.TurnState.Add(callback);
 

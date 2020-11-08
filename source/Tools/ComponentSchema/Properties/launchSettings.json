@@ -2,8 +2,8 @@
   "profiles": {
     "GenSchema": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\source\\GitHub\\iciclecreek.bot\\source\\libraries\\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\\bin\\Debug\\netstandard2.0\\publish\\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.dll -o c:\\scratch\\test --registration",
-      "workingDirectory": "C:\\source\\GitHub\\iciclecreek.bot\\source\\libraries\\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\\bin\\Debug\\netstandard2.0\\"
+      "commandLineArgs": "Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.dll -o C:\\source\\GitHub\\iciclecreek.bot\\source\\Tests\\Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests\\..\\..\\Libraries\\Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub\\Schemas --registration",
+      "workingDirectory": "C:\\source\\GitHub\\iciclecreek.bot\\source\\Tests\\Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests\\bin\\Debug\\netcoreapp3.1\\"
     }
   }
 }

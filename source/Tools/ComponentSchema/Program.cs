@@ -257,9 +257,14 @@ namespace Iciclecreek.Bot
 
         private static void WriteComponentRegistration(string outputFolder, String ns, string prefix, Dictionary<String, Type> kinds, IEnumerable<Type> enumTypes, IEnumerable<Type> objectTypes)
         {
-            var filePath = Path.Combine(outputFolder, $"{prefix}ComponentRegistration.cs");
+            var filePath = Path.GetFullPath(Path.Combine(outputFolder, $"{prefix}ComponentRegistration.cs"));
             Console.WriteLine(filePath);
-            using (var stream = File.Open(filePath, FileMode.OpenOrCreate | FileMode.Truncate))
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            using (var stream = File.Open(filePath, FileMode.OpenOrCreate))
             {
                 using (var writer = new StreamWriter(stream))
                 {
@@ -281,7 +286,7 @@ namespace Iciclecreek.Bot
                     writer.WriteLine("        {");
                     foreach (var kv in kinds)
                     {
-                        writer.WriteLine($"            yield return new DeclarativeType<{kv.Value.Name}>({kv.Value.Name}.Kind);");
+                        writer.WriteLine($"            yield return new DeclarativeType<{kv.Value.FullName}>({kv.Value.FullName}.Kind);");
                     }
                     writer.WriteLine("        }");
                     writer.WriteLine();
@@ -289,12 +294,12 @@ namespace Iciclecreek.Bot
                     writer.WriteLine("        {");
                     foreach (var enumType in enumTypes)
                     {
-                        writer.WriteLine($"            yield return new EnumExpressionConverter<{enumType.Name}>();");
+                        writer.WriteLine($"            yield return new EnumExpressionConverter<{enumType.FullName}>();");
                     }
 
-                    foreach (var objectType in objectTypes)
+                    foreach (var objectType in objectTypes)//.Select(ot => ot.Name).Distinct(StringComparer.Ordinal))
                     {
-                        writer.WriteLine($"            yield return new ObjectExpressionConverter<{objectType.Name}>();");
+                        writer.WriteLine($"            yield return new ObjectExpressionConverter<{objectType.FullName}>();");
                     }
                     writer.WriteLine($"            yield break;");
                     writer.WriteLine("        }");

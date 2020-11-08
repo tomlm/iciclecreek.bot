@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "UpdatePreferences",
+  "description": "Update preferences",
+  "type": "object",
+  "required": [
+    "preferences"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "owner": {
+      "title": "Owner",
+      "description": "Owner",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "description": "Name",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "description": "Preferences",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
+    "repositoryId": {
+      "title": "Repository id",
+      "description": "Repository id"
+    }
+  }
+}

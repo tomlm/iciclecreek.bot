@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetAll",
+  "description": "Get all",
+  "type": "object",
+  "required": [
+    "columnId"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "columnId": {
+      "title": "Column id",
+      "description": "Column id"
+    },
+    "request": {
+      "title": "Request",
+      "description": "Request",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
+    "options": {
+      "title": "Options",
+      "description": "Options",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

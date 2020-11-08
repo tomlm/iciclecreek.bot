@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "Conceal",
+  "description": "Conceal",
+  "type": "object",
+  "required": [
+    "org",
+    "user"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "org": {
+      "title": "Org",
+      "description": "Org",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "user": {
+      "title": "User",
+      "description": "User",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    }
+  }
+}

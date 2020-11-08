@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "RenderArbitraryMarkdown",
+  "description": "Render arbitrary markdown",
+  "type": "object",
+  "required": [
+    "markdown"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "markdown": {
+      "title": "Markdown",
+      "description": "Markdown",
+      "$ref": "schema:#/definitions/objectExpression"
+    }
+  }
+}

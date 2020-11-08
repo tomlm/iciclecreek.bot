@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
+using AdaptiveExpressions.Properties;
+using Newtonsoft.Json;
+using Microsoft.Bot.Builder.Dialogs;
+using Octokit;
+using System.ComponentModel.DataAnnotations;
+
+namespace GitHubClient.Check.Run
+{
+    /// <summary>
+    /// Action to call GitHubClient.Check.Run.Update() API.
+    /// </summary>
+    public class Update : GitHubAction
+    {
+        /// <summary>
+        /// Class identifier.
+        /// </summary>
+        [JsonProperty("$kind")]
+        public const string Kind = "GitHubClient.Check.Run.Update";
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Update"/> class.
+        /// </summary>
+        /// <param name="callerPath">Optional, source file full path.</param>
+        /// <param name="callerLine">Optional, line number in source file.</param>
+        public Update([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        {
+           this.RegisterSourceLocation(callerPath, callerLine);
+        }
+
+        /// <summary>
+        /// (OPTIONAL) Gets or sets the expression for api argument owner.
+        /// </summary>
+        /// <value>
+        /// The value or expression to bind to the value for the argument.
+        /// </value>
+        [JsonProperty("owner")]
+        public StringExpression Owner  { get; set; }
+
+        /// <summary>
+        /// (OPTIONAL) Gets or sets the expression for api argument name.
+        /// </summary>
+        /// <value>
+        /// The value or expression to bind to the value for the argument.
+        /// </value>
+        [JsonProperty("name")]
+        public StringExpression Name  { get; set; }
+
+        /// <summary>
+        /// (REQUIRED) Gets or sets the expression for api argument checkRunId.
+        /// </summary>
+        /// <value>
+        /// The value or expression to bind to the value for the argument.
+        /// </value>
+        [Required()]
+        [JsonProperty("checkRunId")]
+        public IntExpression CheckRunId  { get; set; }
+
+        /// <summary>
+        /// (REQUIRED) Gets or sets the expression for api argument checkRunUpdate.
+        /// </summary>
+        /// <value>
+        /// The value or expression to bind to the value for the argument.
+        /// </value>
+        [Required()]
+        [JsonProperty("checkRunUpdate")]
+        public ObjectExpression<Octokit.CheckRunUpdate> CheckRunUpdate  { get; set; }
+
+        /// <summary>
+        /// (OPTIONAL) Gets or sets the expression for api argument repositoryId.
+        /// </summary>
+        /// <value>
+        /// The value or expression to bind to the value for the argument.
+        /// </value>
+        [JsonProperty("repositoryId")]
+        public IntExpression RepositoryId  { get; set; }
+
+        /// <inheritdoc/>
+        protected override async Task<object> CallGitHubApi(DialogContext dc, Octokit.GitHubClient gitHubClient, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Owner != null && Name != null && CheckRunId != null && CheckRunUpdate != null)
+            {
+                var ownerValue = Owner.GetValue(dc);
+                var nameValue = Name.GetValue(dc);
+                var checkRunIdValue = CheckRunId.GetValue(dc);
+                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc);
+                return await gitHubClient.Check.Run.Update(ownerValue, nameValue, (Int64)checkRunIdValue, checkRunUpdateValue).ConfigureAwait(false);
+            }
+            if (RepositoryId != null && CheckRunId != null && CheckRunUpdate != null)
+            {
+                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var checkRunIdValue = CheckRunId.GetValue(dc);
+                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc);
+                return await gitHubClient.Check.Run.Update((Int64)repositoryIdValue, (Int64)checkRunIdValue, checkRunUpdateValue).ConfigureAwait(false);
+            }
+
+            throw new ArgumentNullException("Required [checkRunId,checkRunUpdate] arguments missing for GitHubClient.Check.Run.Update");
+        }
+    }
+}

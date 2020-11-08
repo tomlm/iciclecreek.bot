@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+  "$role": "implements(Microsoft.IDialog)",
+  "title": "GetRawContentByRef",
+  "description": "Get raw content by ref",
+  "type": "object",
+  "required": [
+    "owner",
+    "name",
+    "path",
+    "reference"
+  ],
+  "properties": {
+    "disabled": {
+      "title": "Disabled",
+      "description": "Disabled",
+      "$ref": "schema:#/definitions/booleanExpression"
+    },
+    "resultProperty": {
+      "title": "Result property",
+      "description": "Result property",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "owner": {
+      "title": "Owner",
+      "description": "Owner",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "description": "Name",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "path": {
+      "title": "Path",
+      "description": "Path",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "reference": {
+      "title": "Reference",
+      "description": "Reference",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    }
+  }
+}
