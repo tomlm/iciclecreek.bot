@@ -21,7 +21,7 @@ namespace GitHubClient.Repository
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.GetAllTeams";
+        public const string Kind = "GitHub.Repository.GetAllTeams";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllTeams"/> class.

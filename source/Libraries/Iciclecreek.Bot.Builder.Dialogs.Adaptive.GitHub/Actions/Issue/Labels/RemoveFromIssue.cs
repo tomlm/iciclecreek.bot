@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Labels
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Labels.RemoveFromIssue";
+        public const string Kind = "GitHub.Issue.Labels.RemoveFromIssue";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveFromIssue"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Issue
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Lock";
+        public const string Kind = "GitHub.Issue.Lock";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Lock"/> class.

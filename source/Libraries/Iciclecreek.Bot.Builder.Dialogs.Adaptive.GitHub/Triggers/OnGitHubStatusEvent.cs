@@ -14,11 +14,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// </summary>
 	public class OnGitHubStatusEvent : OnGitHubEvent
     {
+        private Expression _expression = null;
+
         /// <summary>
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public new const string Kind = "Iciclecreek.OnGitHubStatusEvent";
+        public new const string Kind = "GitHub.OnStatusEvent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OnGitHubStatusEvent"/> class.
@@ -40,22 +42,27 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         /// <returns>An <see cref="Expression"/> representing the activity.</returns>
         public override Expression GetExpression()
         {
-            Expression actionCondition;
-            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
-            var propertyCondition = Expression.AndExpression(
-                Expression.Parse("exists(turn.activity.value.branches)"),
-                Expression.Parse("exists(turn.activity.value.commit)"),
-                Expression.Parse("exists(turn.activity.value.context)"),
-                Expression.Parse("exists(turn.activity.value.created_at)"),
-                Expression.Parse("exists(turn.activity.value.id)"),
-                Expression.Parse("exists(turn.activity.value.name)"),
-                Expression.Parse("exists(turn.activity.value.repository)"),
-                Expression.Parse("exists(turn.activity.value.sender)"),
-                Expression.Parse("exists(turn.activity.value.sha)"),
-                Expression.Parse("exists(turn.activity.value.state)"),
-                Expression.Parse("exists(turn.activity.value.updated_at)")
-            );
-            return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
+            if (_expression == null)
+            {
+                Expression actionCondition;
+                actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
+                var propertyCondition = Expression.AndExpression(
+                    Expression.Parse("exists(turn.activity.value.branches)"),
+                    Expression.Parse("exists(turn.activity.value.commit)"),
+                    Expression.Parse("exists(turn.activity.value.context)"),
+                    Expression.Parse("exists(turn.activity.value.created_at)"),
+                    Expression.Parse("exists(turn.activity.value.id)"),
+                    Expression.Parse("exists(turn.activity.value.name)"),
+                    Expression.Parse("exists(turn.activity.value.repository)"),
+                    Expression.Parse("exists(turn.activity.value.sender)"),
+                    Expression.Parse("exists(turn.activity.value.sha)"),
+                    Expression.Parse("exists(turn.activity.value.state)"),
+                    Expression.Parse("exists(turn.activity.value.updated_at)")
+                );
+                _expression = Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
+            }
+
+            return _expression;
         }
     }
 }

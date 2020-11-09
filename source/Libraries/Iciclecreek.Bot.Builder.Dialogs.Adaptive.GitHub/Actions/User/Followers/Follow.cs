@@ -21,7 +21,7 @@ namespace GitHubClient.User.Followers
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Followers.Follow";
+        public const string Kind = "GitHub.User.Followers.Follow";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Follow"/> class.

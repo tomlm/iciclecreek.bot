@@ -21,7 +21,7 @@ namespace GitHubClient.Activity.Watching
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Activity.Watching.GetAllForUser";
+        public const string Kind = "GitHub.Activity.Watching.GetAllForUser";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForUser"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.AdminStats
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.AdminStats.GetStatisticsComments";
+        public const string Kind = "GitHub.Enterprise.AdminStats.GetStatisticsComments";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetStatisticsComments"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.User.Email
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Email.Add";
+        public const string Kind = "GitHub.User.Email.Add";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Add"/> class.

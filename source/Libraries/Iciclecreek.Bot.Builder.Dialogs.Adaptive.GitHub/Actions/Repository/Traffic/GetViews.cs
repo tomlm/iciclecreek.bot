@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Traffic
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Traffic.GetViews";
+        public const string Kind = "GitHub.Repository.Traffic.GetViews";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetViews"/> class.

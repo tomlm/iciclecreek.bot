@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Project
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Project.CreateForOrganization";
+        public const string Kind = "GitHub.Repository.Project.CreateForOrganization";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateForOrganization"/> class.

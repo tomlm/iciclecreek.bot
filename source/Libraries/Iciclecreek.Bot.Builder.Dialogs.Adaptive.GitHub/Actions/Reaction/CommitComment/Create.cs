@@ -21,7 +21,7 @@ namespace GitHubClient.Reaction.CommitComment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Reaction.CommitComment.Create";
+        public const string Kind = "GitHub.Reaction.CommitComment.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Activity.Starring
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Activity.Starring.GetAllForCurrent";
+        public const string Kind = "GitHub.Activity.Starring.GetAllForCurrent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForCurrent"/> class.

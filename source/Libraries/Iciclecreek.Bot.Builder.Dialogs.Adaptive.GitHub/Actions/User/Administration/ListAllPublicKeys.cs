@@ -21,7 +21,7 @@ namespace GitHubClient.User.Administration
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Administration.ListAllPublicKeys";
+        public const string Kind = "GitHub.User.Administration.ListAllPublicKeys";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListAllPublicKeys"/> class.

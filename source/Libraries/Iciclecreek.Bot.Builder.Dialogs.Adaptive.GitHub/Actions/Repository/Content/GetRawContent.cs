@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Content
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Content.GetRawContent";
+        public const string Kind = "GitHub.Repository.Content.GetRawContent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetRawContent"/> class.

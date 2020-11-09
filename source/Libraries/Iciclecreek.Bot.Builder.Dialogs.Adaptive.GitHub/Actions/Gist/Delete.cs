@@ -21,7 +21,7 @@ namespace GitHubClient.Gist
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Gist.Delete";
+        public const string Kind = "GitHub.Gist.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

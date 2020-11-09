@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Hook
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Hook.Ping";
+        public const string Kind = "GitHub.Organization.Hook.Ping";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ping"/> class.

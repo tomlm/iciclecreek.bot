@@ -21,7 +21,7 @@ namespace GitHubClient.User.Administration
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Administration.Unsuspend";
+        public const string Kind = "GitHub.User.Administration.Unsuspend";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Unsuspend"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.GitHubApps
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.GitHubApps.GetInstallationForCurrent";
+        public const string Kind = "GitHub.GitHubApps.GetInstallationForCurrent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetInstallationForCurrent"/> class.

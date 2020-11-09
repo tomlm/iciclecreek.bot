@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.ManagementConsole
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.ManagementConsole.GetMaintenanceMode";
+        public const string Kind = "GitHub.Enterprise.ManagementConsole.GetMaintenanceMode";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetMaintenanceMode"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Assignee
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Assignee.AddAssignees";
+        public const string Kind = "GitHub.Issue.Assignee.AddAssignees";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddAssignees"/> class.

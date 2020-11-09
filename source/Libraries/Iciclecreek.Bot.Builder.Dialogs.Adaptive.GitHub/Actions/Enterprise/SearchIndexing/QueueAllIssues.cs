@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.SearchIndexing
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.SearchIndexing.QueueAllIssues";
+        public const string Kind = "GitHub.Enterprise.SearchIndexing.QueueAllIssues";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="QueueAllIssues"/> class.

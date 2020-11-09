@@ -21,7 +21,7 @@ namespace GitHubClient.User.GpgKey
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.GpgKey.Delete";
+        public const string Kind = "GitHub.User.GpgKey.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Miscellaneous
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Miscellaneous.GetAllEmojis";
+        public const string Kind = "GitHub.Miscellaneous.GetAllEmojis";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllEmojis"/> class.

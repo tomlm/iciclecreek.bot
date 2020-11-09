@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Labels
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Labels.GetAllForIssue";
+        public const string Kind = "GitHub.Issue.Labels.GetAllForIssue";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForIssue"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Organization
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.GetAllForUser";
+        public const string Kind = "GitHub.Organization.GetAllForUser";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForUser"/> class.

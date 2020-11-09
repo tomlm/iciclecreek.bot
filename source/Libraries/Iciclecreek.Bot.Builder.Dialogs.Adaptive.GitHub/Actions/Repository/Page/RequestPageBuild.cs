@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Page
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Page.RequestPageBuild";
+        public const string Kind = "GitHub.Repository.Page.RequestPageBuild";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestPageBuild"/> class.

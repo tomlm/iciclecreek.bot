@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Statistics
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Statistics.GetCodeFrequency";
+        public const string Kind = "GitHub.Repository.Statistics.GetCodeFrequency";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetCodeFrequency"/> class.

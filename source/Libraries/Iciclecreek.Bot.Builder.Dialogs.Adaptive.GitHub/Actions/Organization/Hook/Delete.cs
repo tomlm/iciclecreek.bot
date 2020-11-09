@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Hook
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Hook.Delete";
+        public const string Kind = "GitHub.Organization.Hook.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

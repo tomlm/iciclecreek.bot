@@ -22,6 +22,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Selectors;
 using Microsoft.Bot.Builder.Dialogs.Memory;
+using System.Diagnostics;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
 {
@@ -128,11 +129,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
                 var payload = File.ReadAllText(jsonFile);
                 await adapter.ProcessWebhookPayloadAsync(null, payload, async (tc, ct) =>
                 {
-                    System.Diagnostics.Debug.WriteLine(name);
-                    System.Diagnostics.Debug.WriteLine((string)((dynamic)tc.Activity.Value).action);
-                    System.Diagnostics.Debug.WriteLine((string)((dynamic)tc.Activity.Value).signature);
-                    System.Diagnostics.Debug.WriteLine(String.Join(",", ((JObject)tc.Activity.Value).Properties().Select(p => p.Name).Where(p => p != "signature").OrderBy(p => p)));
-                    System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tc.Activity, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented }));
+                    //System.Diagnostics.Debug.WriteLine(name);
+                    //System.Diagnostics.Debug.WriteLine((string)((dynamic)tc.Activity.Value).action);
+                    //System.Diagnostics.Debug.WriteLine((string)((dynamic)tc.Activity.Value).signature);
+                    //System.Diagnostics.Debug.WriteLine(String.Join(",", ((JObject)tc.Activity.Value).Properties().Select(p => p.Name).Where(p => p != "signature").OrderBy(p => p)));
+                    //System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(tc.Activity, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented }));
 
                     // should return with correct trigger name
                     try
@@ -149,6 +150,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
                 });
             }
         }
+
+        //[TestMethod]
+        //public async Task TestPerf()
+        //{
+        //    Stopwatch sw = new Stopwatch();
+        //    sw.Start();
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        await TestTrigger("OnGithubCheckRunEvent");
+        //    }
+        //    sw.Stop();
+        //    Assert.Fail(sw.Elapsed.ToString());
+        //}
 
         [TestMethod]
         public async Task OnGithubCheckRunEvent()
@@ -211,12 +225,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
         }
 
         [TestMethod]
-        public async Task OnGitHubEvent()
-        {
-            await TestTrigger("OnGitHubEvent");
-        }
-
-        [TestMethod]
         public async Task OnGitHubForkEvent()
         {
             await TestTrigger("OnGitHubForkEvent");
@@ -255,8 +263,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
         [TestMethod]
         public async Task OnGitHubIssuesEvent()
         {
-            System.Diagnostics.Debug.WriteLine(new OnGitHubIssuesEvent().GetExpression());
-            System.Diagnostics.Debug.WriteLine(new OnGitHubEvent().GetExpression());
             await TestTrigger("OnGitHubIssuesEvent");
         }
 

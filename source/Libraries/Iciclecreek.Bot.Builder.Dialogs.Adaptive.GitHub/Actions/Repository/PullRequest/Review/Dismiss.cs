@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.PullRequest.Review
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.PullRequest.Review.Dismiss";
+        public const string Kind = "GitHub.Repository.PullRequest.Review.Dismiss";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dismiss"/> class.

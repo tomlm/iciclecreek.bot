@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Hook
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Hook.Edit";
+        public const string Kind = "GitHub.Organization.Hook.Edit";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Edit"/> class.

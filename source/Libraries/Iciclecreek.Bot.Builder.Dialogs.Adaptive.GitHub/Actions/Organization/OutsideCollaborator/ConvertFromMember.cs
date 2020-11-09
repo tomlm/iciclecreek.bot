@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.OutsideCollaborator
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.OutsideCollaborator.ConvertFromMember";
+        public const string Kind = "GitHub.Organization.OutsideCollaborator.ConvertFromMember";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConvertFromMember"/> class.

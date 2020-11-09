@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Hooks
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Hooks.GetAll";
+        public const string Kind = "GitHub.Repository.Hooks.GetAll";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAll"/> class.

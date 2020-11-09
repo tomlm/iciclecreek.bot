@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Commit
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Commit.Get";
+        public const string Kind = "GitHub.Repository.Commit.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

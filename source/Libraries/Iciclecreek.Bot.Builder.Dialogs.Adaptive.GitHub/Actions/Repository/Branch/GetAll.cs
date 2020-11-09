@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Branch
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Branch.GetAll";
+        public const string Kind = "GitHub.Repository.Branch.GetAll";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAll"/> class.

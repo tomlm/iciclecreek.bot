@@ -21,7 +21,7 @@ namespace GitHubClient.Activity.Events
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Activity.Events.GetAllUserPerformedPublic";
+        public const string Kind = "GitHub.Activity.Events.GetAllUserPerformedPublic";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllUserPerformedPublic"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Project.Card
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Project.Card.Move";
+        public const string Kind = "GitHub.Repository.Project.Card.Move";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Move"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Invitation
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Invitation.GetAllForCurrent";
+        public const string Kind = "GitHub.Repository.Invitation.GetAllForCurrent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForCurrent"/> class.

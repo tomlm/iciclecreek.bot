@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.OutsideCollaborator
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.OutsideCollaborator.Delete";
+        public const string Kind = "GitHub.Organization.OutsideCollaborator.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

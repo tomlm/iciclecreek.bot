@@ -21,7 +21,7 @@ namespace GitHubClient.Gist
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Gist.Edit";
+        public const string Kind = "GitHub.Gist.Edit";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Edit"/> class.

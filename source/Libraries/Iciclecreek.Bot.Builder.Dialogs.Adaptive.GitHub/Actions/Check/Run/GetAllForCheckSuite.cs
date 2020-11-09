@@ -21,7 +21,7 @@ namespace GitHubClient.Check.Run
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Check.Run.GetAllForCheckSuite";
+        public const string Kind = "GitHub.Check.Run.GetAllForCheckSuite";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForCheckSuite"/> class.

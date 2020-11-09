@@ -21,7 +21,7 @@ namespace GitHubClient.User.Administration
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Administration.Rename";
+        public const string Kind = "GitHub.User.Administration.Rename";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Rename"/> class.

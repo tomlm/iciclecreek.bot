@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Merging
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Merging.Create";
+        public const string Kind = "GitHub.Repository.Merging.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

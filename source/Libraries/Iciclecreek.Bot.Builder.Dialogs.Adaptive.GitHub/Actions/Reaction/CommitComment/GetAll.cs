@@ -21,7 +21,7 @@ namespace GitHubClient.Reaction.CommitComment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Reaction.CommitComment.GetAll";
+        public const string Kind = "GitHub.Reaction.CommitComment.GetAll";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAll"/> class.

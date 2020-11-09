@@ -21,7 +21,7 @@ namespace GitHubClient.Search
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Search.SearchLabels";
+        public const string Kind = "GitHub.Search.SearchLabels";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchLabels"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.User.GitSshKey
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.GitSshKey.Get";
+        public const string Kind = "GitHub.User.GitSshKey.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

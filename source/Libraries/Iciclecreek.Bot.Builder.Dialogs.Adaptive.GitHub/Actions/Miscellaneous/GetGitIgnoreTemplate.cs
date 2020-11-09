@@ -21,7 +21,7 @@ namespace GitHubClient.Miscellaneous
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Miscellaneous.GetGitIgnoreTemplate";
+        public const string Kind = "GitHub.Miscellaneous.GetGitIgnoreTemplate";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetGitIgnoreTemplate"/> class.

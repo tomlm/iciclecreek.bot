@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Content
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Content.GetReadme";
+        public const string Kind = "GitHub.Repository.Content.GetReadme";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetReadme"/> class.

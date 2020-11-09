@@ -11,11 +11,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
 {
     public class OnGitHubEvent : OnEventActivity
     {
+        private Expression _expression = null;
+
         /// <summary>
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public new const string Kind = "Iciclecreek.OnGitHubEvent";
+        public new const string Kind = "GitHub.OnEvent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OnEventActivity"/> class.
@@ -36,8 +38,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         /// <returns>An <see cref="Expression"/> representing the activity.</returns>
         public override Expression GetExpression()
         {
-            // add constraints for activity type
-            return Expression.AndExpression(Expression.Parse($"{TurnPath.Activity}.name == 'GitHub'"), base.GetExpression());
+            if (_expression == null)
+            {
+                // add constraints for activity type
+                _expression = Expression.AndExpression(Expression.Parse($"{TurnPath.Activity}.name == 'GitHub'"), base.GetExpression());
+            }
+
+            return _expression;
         }
     }
 }

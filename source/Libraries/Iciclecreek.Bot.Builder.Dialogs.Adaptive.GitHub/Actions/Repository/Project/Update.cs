@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Project
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Project.Update";
+        public const string Kind = "GitHub.Repository.Project.Update";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Update"/> class.

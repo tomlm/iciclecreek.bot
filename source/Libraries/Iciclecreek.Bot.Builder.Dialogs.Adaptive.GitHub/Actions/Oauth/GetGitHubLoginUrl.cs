@@ -21,7 +21,7 @@ namespace GitHubClient.Oauth
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Oauth.GetGitHubLoginUrl";
+        public const string Kind = "GitHub.Oauth.GetGitHubLoginUrl";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetGitHubLoginUrl"/> class.

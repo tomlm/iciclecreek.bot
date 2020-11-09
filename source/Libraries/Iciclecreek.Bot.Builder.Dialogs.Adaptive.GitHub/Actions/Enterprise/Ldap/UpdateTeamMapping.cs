@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.Ldap
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.Ldap.UpdateTeamMapping";
+        public const string Kind = "GitHub.Enterprise.Ldap.UpdateTeamMapping";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateTeamMapping"/> class.

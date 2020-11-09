@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Member
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Member.GetAllPendingInvitations";
+        public const string Kind = "GitHub.Organization.Member.GetAllPendingInvitations";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllPendingInvitations"/> class.

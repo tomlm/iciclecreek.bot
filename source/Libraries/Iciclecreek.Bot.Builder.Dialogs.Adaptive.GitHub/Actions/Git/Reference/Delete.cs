@@ -21,7 +21,7 @@ namespace GitHubClient.Git.Reference
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Git.Reference.Delete";
+        public const string Kind = "GitHub.Git.Reference.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

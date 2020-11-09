@@ -14,11 +14,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// </summary>
 	public class OnGitHubCreateEvent : OnGitHubEvent
     {
+        private Expression _expression = null;
+
         /// <summary>
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public new const string Kind = "Iciclecreek.OnGitHubCreateEvent";
+        public new const string Kind = "GitHub.OnCreateEvent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OnGitHubCreateEvent"/> class.
@@ -40,17 +42,22 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         /// <returns>An <see cref="Expression"/> representing the activity.</returns>
         public override Expression GetExpression()
         {
-            Expression actionCondition;
-            actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
-            var propertyCondition = Expression.AndExpression(
-                Expression.Parse("exists(turn.activity.value.master_branch)"),
-                Expression.Parse("exists(turn.activity.value.pusher_type)"),
-                Expression.Parse("exists(turn.activity.value.ref)"),
-                Expression.Parse("exists(turn.activity.value.ref_type)"),
-                Expression.Parse("exists(turn.activity.value.repository)"),
-                Expression.Parse("exists(turn.activity.value.sender)")
-            );
-            return Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
+            if (_expression == null)
+            {
+                Expression actionCondition;
+                actionCondition = Expression.Parse("!exists(turn.activity.value.action)");
+                var propertyCondition = Expression.AndExpression(
+                    Expression.Parse("exists(turn.activity.value.master_branch)"),
+                    Expression.Parse("exists(turn.activity.value.pusher_type)"),
+                    Expression.Parse("exists(turn.activity.value.ref)"),
+                    Expression.Parse("exists(turn.activity.value.ref_type)"),
+                    Expression.Parse("exists(turn.activity.value.repository)"),
+                    Expression.Parse("exists(turn.activity.value.sender)")
+                );
+                _expression = Expression.AndExpression(base.GetExpression(), actionCondition, propertyCondition);
+            }
+
+            return _expression;
         }
     }
 }

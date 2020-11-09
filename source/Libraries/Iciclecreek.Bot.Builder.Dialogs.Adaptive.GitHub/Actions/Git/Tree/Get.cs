@@ -21,7 +21,7 @@ namespace GitHubClient.Git.Tree
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Git.Tree.Get";
+        public const string Kind = "GitHub.Git.Tree.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

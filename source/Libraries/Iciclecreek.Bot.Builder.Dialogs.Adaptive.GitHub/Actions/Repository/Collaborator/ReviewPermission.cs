@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Collaborator
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Collaborator.ReviewPermission";
+        public const string Kind = "GitHub.Repository.Collaborator.ReviewPermission";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReviewPermission"/> class.

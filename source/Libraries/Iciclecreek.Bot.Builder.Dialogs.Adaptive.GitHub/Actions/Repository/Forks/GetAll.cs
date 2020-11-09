@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Forks
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Forks.GetAll";
+        public const string Kind = "GitHub.Repository.Forks.GetAll";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAll"/> class.

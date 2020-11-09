@@ -21,7 +21,7 @@ namespace GitHubClient.PullRequest.Review
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.PullRequest.Review.Create";
+        public const string Kind = "GitHub.PullRequest.Review.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

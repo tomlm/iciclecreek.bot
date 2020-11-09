@@ -21,7 +21,7 @@ namespace GitHubClient.Issue
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Get";
+        public const string Kind = "GitHub.Issue.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

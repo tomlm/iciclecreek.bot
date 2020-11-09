@@ -21,7 +21,7 @@ namespace GitHubClient.PullRequest.ReviewComment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.PullRequest.ReviewComment.Edit";
+        public const string Kind = "GitHub.PullRequest.ReviewComment.Edit";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Edit"/> class.

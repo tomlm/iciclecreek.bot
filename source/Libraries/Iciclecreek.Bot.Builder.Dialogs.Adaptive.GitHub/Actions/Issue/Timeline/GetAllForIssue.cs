@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Timeline
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Timeline.GetAllForIssue";
+        public const string Kind = "GitHub.Issue.Timeline.GetAllForIssue";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForIssue"/> class.

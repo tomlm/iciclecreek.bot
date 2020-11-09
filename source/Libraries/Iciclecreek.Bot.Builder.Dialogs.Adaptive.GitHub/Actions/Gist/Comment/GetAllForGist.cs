@@ -21,7 +21,7 @@ namespace GitHubClient.Gist.Comment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Gist.Comment.GetAllForGist";
+        public const string Kind = "GitHub.Gist.Comment.GetAllForGist";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForGist"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.Organization
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.Organization.Create";
+        public const string Kind = "GitHub.Enterprise.Organization.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

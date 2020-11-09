@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Member
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Member.CheckMemberPublic";
+        public const string Kind = "GitHub.Organization.Member.CheckMemberPublic";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CheckMemberPublic"/> class.

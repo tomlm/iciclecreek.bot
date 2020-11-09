@@ -21,7 +21,7 @@ namespace GitHubClient.Check.Suite
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Check.Suite.UpdatePreferences";
+        public const string Kind = "GitHub.Check.Suite.UpdatePreferences";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdatePreferences"/> class.

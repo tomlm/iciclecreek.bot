@@ -21,7 +21,7 @@ namespace GitHubClient.Git.Tag
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Git.Tag.Get";
+        public const string Kind = "GitHub.Git.Tag.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

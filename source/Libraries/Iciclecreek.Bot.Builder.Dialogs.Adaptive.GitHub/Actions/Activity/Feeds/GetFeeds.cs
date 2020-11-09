@@ -21,7 +21,7 @@ namespace GitHubClient.Activity.Feeds
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Activity.Feeds.GetFeeds";
+        public const string Kind = "GitHub.Activity.Feeds.GetFeeds";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetFeeds"/> class.

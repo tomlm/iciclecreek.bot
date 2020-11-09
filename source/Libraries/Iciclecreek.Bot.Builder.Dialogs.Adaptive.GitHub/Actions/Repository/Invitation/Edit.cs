@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Invitation
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Invitation.Edit";
+        public const string Kind = "GitHub.Repository.Invitation.Edit";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Edit"/> class.

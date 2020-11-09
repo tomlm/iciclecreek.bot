@@ -21,7 +21,7 @@ namespace GitHubClient.PullRequest
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.PullRequest.GetAllForRepository";
+        public const string Kind = "GitHub.PullRequest.GetAllForRepository";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForRepository"/> class.

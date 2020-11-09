@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Deployment.Status
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Deployment.Status.Create";
+        public const string Kind = "GitHub.Repository.Deployment.Status.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

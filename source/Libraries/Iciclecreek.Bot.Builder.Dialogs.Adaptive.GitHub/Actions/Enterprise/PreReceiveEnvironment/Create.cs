@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.PreReceiveEnvironment.Create";
+        public const string Kind = "GitHub.Enterprise.PreReceiveEnvironment.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

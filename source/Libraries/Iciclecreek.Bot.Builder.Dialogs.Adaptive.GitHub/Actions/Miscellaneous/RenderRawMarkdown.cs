@@ -21,7 +21,7 @@ namespace GitHubClient.Miscellaneous
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Miscellaneous.RenderRawMarkdown";
+        public const string Kind = "GitHub.Miscellaneous.RenderRawMarkdown";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RenderRawMarkdown"/> class.

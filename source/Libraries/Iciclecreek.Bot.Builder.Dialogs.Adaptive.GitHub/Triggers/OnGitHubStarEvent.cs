@@ -14,11 +14,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
     /// </summary>
 	public class OnGitHubStarEvent : OnGitHubEvent
     {
+        private Expression _expression = null;
+
         /// <summary>
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public new const string Kind = "Iciclecreek.OnGitHubStarEvent";
+        public new const string Kind = "GitHub.OnStarEvent";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OnGitHubStarEvent"/> class.
@@ -45,25 +47,29 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.Triggers
         /// <returns>An <see cref="Expression"/> representing the activity.</returns>
         public override Expression GetExpression()
         {
-
-            var propertyCondition = Expression.AndExpression(
-                Expression.OrExpression(
-                    Expression.AndExpression(
-                        Expression.Parse("turn.activity.value.action == 'created'"),
-                        Expression.Parse("exists(turn.activity.value.starred_at)")),
-                    Expression.Parse("turn.activity.value.action == 'deleted'")
-                ),
-                Expression.Parse("exists(turn.activity.value.action)"),
-                Expression.Parse("exists(turn.activity.value.repository)"),
-                Expression.Parse("exists(turn.activity.value.sender)")
-            );
-
-            if (!String.IsNullOrEmpty(this.Action))
+            if (_expression == null)
             {
-                return Expression.AndExpression(base.GetExpression(), Expression.Parse($"turn.activity.value.action == '{this.Action}''"), propertyCondition);
+                var propertyCondition = Expression.AndExpression(
+                    Expression.OrExpression(
+                        Expression.AndExpression(
+                            Expression.Parse("turn.activity.value.action == 'created'"),
+                            Expression.Parse("exists(turn.activity.value.starred_at)")),
+                        Expression.Parse("turn.activity.value.action == 'deleted'")
+                    ),
+                    Expression.Parse("exists(turn.activity.value.action)"),
+                    Expression.Parse("exists(turn.activity.value.repository)"),
+                    Expression.Parse("exists(turn.activity.value.sender)")
+                );
+
+                if (!String.IsNullOrEmpty(this.Action))
+                {
+                    return Expression.AndExpression(base.GetExpression(), Expression.Parse($"turn.activity.value.action == '{this.Action}''"), propertyCondition);
+                }
+
+                _expression = Expression.AndExpression(base.GetExpression(), propertyCondition);
             }
 
-            return Expression.AndExpression(base.GetExpression(), propertyCondition);
+            return _expression;
         }
     }
 }

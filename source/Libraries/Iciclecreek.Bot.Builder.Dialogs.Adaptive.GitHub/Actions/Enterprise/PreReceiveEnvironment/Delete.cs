@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.PreReceiveEnvironment.Delete";
+        public const string Kind = "GitHub.Enterprise.PreReceiveEnvironment.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

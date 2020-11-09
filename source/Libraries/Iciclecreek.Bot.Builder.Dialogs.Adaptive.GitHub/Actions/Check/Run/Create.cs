@@ -21,7 +21,7 @@ namespace GitHubClient.Check.Run
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Check.Run.Create";
+        public const string Kind = "GitHub.Check.Run.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Branch
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Branch.AddProtectedBranchUserRestrictions";
+        public const string Kind = "GitHub.Repository.Branch.AddProtectedBranchUserRestrictions";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddProtectedBranchUserRestrictions"/> class.

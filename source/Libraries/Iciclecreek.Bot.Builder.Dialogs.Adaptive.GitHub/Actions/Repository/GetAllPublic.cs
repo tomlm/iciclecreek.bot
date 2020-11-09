@@ -21,7 +21,7 @@ namespace GitHubClient.Repository
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.GetAllPublic";
+        public const string Kind = "GitHub.Repository.GetAllPublic";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllPublic"/> class.

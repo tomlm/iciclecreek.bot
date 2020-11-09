@@ -21,7 +21,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Enterprise.PreReceiveEnvironment.TriggerDownload";
+        public const string Kind = "GitHub.Enterprise.PreReceiveEnvironment.TriggerDownload";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TriggerDownload"/> class.

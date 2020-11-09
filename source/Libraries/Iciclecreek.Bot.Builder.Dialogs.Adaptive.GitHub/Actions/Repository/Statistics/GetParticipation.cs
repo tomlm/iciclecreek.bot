@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.Statistics
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.Statistics.GetParticipation";
+        public const string Kind = "GitHub.Repository.Statistics.GetParticipation";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetParticipation"/> class.

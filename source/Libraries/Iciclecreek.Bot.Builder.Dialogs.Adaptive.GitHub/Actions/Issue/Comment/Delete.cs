@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Comment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Comment.Delete";
+        public const string Kind = "GitHub.Issue.Comment.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Activity.Notifications
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Activity.Notifications.Get";
+        public const string Kind = "GitHub.Activity.Notifications.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.

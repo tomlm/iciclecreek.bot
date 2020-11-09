@@ -21,7 +21,7 @@ namespace GitHubClient.Miscellaneous
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Miscellaneous.GetLicense";
+        public const string Kind = "GitHub.Miscellaneous.GetLicense";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetLicense"/> class.

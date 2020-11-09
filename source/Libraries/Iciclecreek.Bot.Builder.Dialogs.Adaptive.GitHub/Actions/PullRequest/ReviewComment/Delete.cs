@@ -21,7 +21,7 @@ namespace GitHubClient.PullRequest.ReviewComment
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.PullRequest.ReviewComment.Delete";
+        public const string Kind = "GitHub.PullRequest.ReviewComment.Delete";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Delete"/> class.

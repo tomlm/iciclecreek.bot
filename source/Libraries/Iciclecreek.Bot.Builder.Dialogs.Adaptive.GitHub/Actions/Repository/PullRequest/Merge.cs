@@ -21,7 +21,7 @@ namespace GitHubClient.Repository.PullRequest
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Repository.PullRequest.Merge";
+        public const string Kind = "GitHub.Repository.PullRequest.Merge";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Merge"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.User
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.User.Get";
+        public const string Kind = "GitHub.User.Get";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Get"/> class.
@@ -30,7 +30,7 @@ namespace GitHubClient.User
         /// <param name="callerLine">Optional, line number in source file.</param>
         public Get([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
         {
-           this.RegisterSourceLocation(callerPath, callerLine);
+            this.RegisterSourceLocation(callerPath, callerLine);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace GitHubClient.User
         /// </value>
         [Required()]
         [JsonProperty("login")]
-        public StringExpression Login  { get; set; }
+        public StringExpression Login { get; set; }
 
         /// <inheritdoc/>
         protected override async Task<object> CallGitHubApi(DialogContext dc, Octokit.GitHubClient gitHubClient, CancellationToken cancellationToken = default(CancellationToken))

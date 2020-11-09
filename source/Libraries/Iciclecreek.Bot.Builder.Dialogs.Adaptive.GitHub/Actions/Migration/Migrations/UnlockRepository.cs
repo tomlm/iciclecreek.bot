@@ -21,7 +21,7 @@ namespace GitHubClient.Migration.Migrations
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Migration.Migrations.UnlockRepository";
+        public const string Kind = "GitHub.Migration.Migrations.UnlockRepository";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnlockRepository"/> class.

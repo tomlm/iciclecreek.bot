@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Assignee
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Assignee.GetAllForRepository";
+        public const string Kind = "GitHub.Issue.Assignee.GetAllForRepository";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForRepository"/> class.

@@ -21,7 +21,7 @@ namespace GitHubClient.Git.Blob
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Git.Blob.Create";
+        public const string Kind = "GitHub.Git.Blob.Create";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Create"/> class.

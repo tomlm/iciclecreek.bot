@@ -21,7 +21,7 @@ namespace GitHubClient.Organization.Team
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Organization.Team.Update";
+        public const string Kind = "GitHub.Organization.Team.Update";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Update"/> class.

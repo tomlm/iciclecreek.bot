@@ -21,7 +21,7 @@ namespace GitHubClient.Issue.Milestone
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "GitHubClient.Issue.Milestone.GetAllForRepository";
+        public const string Kind = "GitHub.Issue.Milestone.GetAllForRepository";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetAllForRepository"/> class.
