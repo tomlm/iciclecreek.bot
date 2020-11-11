@@ -1,31 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.0-rc0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.0-rc0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0-rc0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.11.0-rc0-preview" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
-        <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
-        <PackageReference Include="coverlet.collector" Version="1.2.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.11.0-preview" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj" />
-        <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj" />
-        <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0-rc0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Testing" Version="4.11.0-rc0.preview" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage\Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos\Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos.csproj" />
+    <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient\Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient.csproj" />
+  </ItemGroup>
 
 </Project>
