@@ -107,8 +107,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.Github.Tests
                     }
             };
 
-            adapter = (GitHubAdapter)new GitHubAdapter(new ConfigurationBuilder().Build(), nameof(TriggerTests), nameof(TriggerTests))
-                .UseStorage(new MemoryStorage())
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>()
+                {
+                   {"MicrosoftAppId", context.TestName },
+                    {"BotId", context.TestName },
+                }).Build();
+
+            adapter = (GitHubAdapter)new GitHubAdapter(config, new Octokit.GitHubClient(new Octokit.ProductHeaderValue("test")))
+                 .UseStorage(new MemoryStorage())
                 .UseBotState(new UserState(new MemoryStorage()), new ConversationState(new MemoryStorage()))
                 // .Use(new TranscriptLoggerMiddleware(new TraceTranscriptLogger(traceActivity: true)))
                 .Use(new RegisterClassMiddleware<ResourceExplorer>(new ResourceExplorer()));

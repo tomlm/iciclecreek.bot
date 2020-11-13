@@ -8,6 +8,12 @@ namespace RepoBot
 {
     public partial class BotSettings
     {
-        public string StorageConnectionString { get; set; }
+        public string AzureWebJobsStorage { get; set; }
+
+        public string BotId { get; set; }
+
+        public string MicrosoftAppId { get; set; }
+
+        public string MicrosoftAppPassword { get; set; }
     }
 }

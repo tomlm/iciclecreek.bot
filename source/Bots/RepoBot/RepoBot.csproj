@@ -16,9 +16,11 @@
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.4" />
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.3" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.11.0" />
     <PackageReference Include="Microsoft.Bot.Builder.ApplicationInsights" Version="4.11.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Azure" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Blobs" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Queues" Version="4.11.0-preview" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Debugging" Version="4.11.0-preview" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.0" />
@@ -34,32 +36,17 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="**/*.settings.*json" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="*.settings.*json" Exclude="bin/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="**/*.dialog" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="**/*.lg" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="**/*.lu" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="**/*.schema" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="**/*.qna" Exclude="bin/**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Dialogs/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub\Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="appsettings.Development.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>

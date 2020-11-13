@@ -41,15 +41,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
     public class GitHubAdapter : BotAdapter
     {
         private IConfiguration config;
-        private string botId;
-        private string botName;
 
-        public GitHubAdapter(IConfiguration configuration, string botId, string botName)
+        public const string ChannelId = "github";
+
+        public GitHubAdapter(IConfiguration configuration, Octokit.GitHubClient client)
         {
-            this.botId = botId;
-            this.botName = botName;
             this.config = configuration;
-            this.Client = new Octokit.GitHubClient(new ProductHeaderValue(nameof(GitHubAdapter), "1.0"));
+            this.Client = client;
         }
 
         /// <summary>
@@ -69,7 +67,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
         {
             ClaimsIdentity identity = new ClaimsIdentity();
             var secret = config.GetValue<string>("github:secret");
-            if (secret != null)
+            if (!String.IsNullOrEmpty(secret))
             {
                 using (var sha = SHA256.Create())
                 {
@@ -96,7 +94,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             // payload.signature = String.Join(",", ((IEnumerable<JProperty>)payload.Properties()).Select(p => p.Name).OrderBy(p => p));
 
             var activity = (Schema.Activity)Schema.Activity.CreateEventActivity();
-            activity.ChannelId = "github";
+            activity.ChannelId = ChannelId;
             activity.Conversation = new Schema.ConversationAccount()
             {
                 Id = payload.repository?.id ?? "unknown",
@@ -110,12 +108,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             };
             activity.Recipient = new Schema.ChannelAccount()
             {
-                Id = this.botId,
-                Name = this.botName
+                Id = this.config.GetValue<string>("MicrosoftAppId") ?? "unknown",
+                Name = this.config.GetValue<string>("BotId") ?? this.config.GetValue<string>("MicrosoftAppId") ?? "unknown"
             };
 
+            activity.Locale = "en-us";
             activity.Value = payload;
             activity.Name = "GitHub";
+            // activity.DeliveryMode = DeliveryModes.ExpectReplies;
 
             return this.ProcessActivityAsync(identity, activity, callback, cancellationToken);
         }
@@ -127,7 +127,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             using (var context = new TurnContext(this, activity))
             {
                 context.TurnState.Add<IIdentity>(BotIdentityKey, claimsIdentity);
-
+                context.TurnState.Add(this.config);
                 context.TurnState.Add(this.Client);
                 context.TurnState.Add(callback);
 
@@ -153,11 +153,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             }
         }
 
-        public object UseState(MemoryStorage memoryStorage)
-        {
-            throw new NotImplementedException();
-        }
-
         public override Task DeleteActivityAsync(ITurnContext turnContext, ConversationReference reference, CancellationToken cancellationToken)
         {
             throw new NotSupportedException("Github API doesn't support DeleteActivity semantics, use ((GithubAdapter)turncontext.Adapter).Client to make API calls.");
@@ -165,7 +160,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
 
         public override Task<ResourceResponse[]> SendActivitiesAsync(ITurnContext turnContext, Schema.Activity[] activities, CancellationToken cancellationToken)
         {
-            throw new NotSupportedException("Github API doesn't support SendActivity semantics, use ((GithubAdapter)turncontext.Adapter).Client to make API calls.");
+            List<ResourceResponse> responses = new List<ResourceResponse>();
+            foreach (var activity in activities)
+            {
+                System.Diagnostics.Debug.WriteLine($"SEND [{activity.Type}] {activity.Text}");
+                responses.Add(new ResourceResponse());
+            }
+            return Task.FromResult(responses.ToArray());
         }
 
         public override Task<ResourceResponse> UpdateActivityAsync(ITurnContext turnContext, Schema.Activity activity, CancellationToken cancellationToken)

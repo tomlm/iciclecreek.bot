@@ -1,25 +1,20 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 using Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.Azure.Blobs;
+using Microsoft.Bot.Builder.Azure.Queues;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
-using Microsoft.Bot.Builder.Integration.ApplicationInsights.Core;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.IO;
-using System.Reflection;
+using Octokit;
+using System.Threading;
+using System.Threading.Tasks;
 
 [assembly: FunctionsStartup(typeof(RepoBot.Startup))]
 
@@ -30,64 +25,62 @@ namespace RepoBot
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var context = builder.GetContext();
-            bool isAzure = Environment.GetEnvironmentVariable("HOME") != null;
+            var services = builder.Services;
 
             // Adaptive component registration
             ComponentRegistration.Add(new DialogsComponentRegistration());
             ComponentRegistration.Add(new DeclarativeComponentRegistration());
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
+            ComponentRegistration.Add(new GithubComponentRegsitration());
 
-            builder.Services.AddLogging();
-            builder.Services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
-            builder.Services.AddSingleton<AuthenticationConfiguration>();
-            builder.Services.AddSingleton<IStorage>((s) =>
+            services.AddSingleton<BotSettings>((s) =>
             {
-                var botSettings = s.GetService<BotSettings>();
-                if (botSettings?.StorageConnectionString != null)
-                {
-                    return new AzureBlobStorage(botSettings?.StorageConnectionString, "bot");
-                }
-                else
-                {
-                    return new MemoryStorage();
-                }
-            });
-            builder.Services.AddSingleton<UserState>(s => new UserState(s.GetService<IStorage>()));
-            builder.Services.AddSingleton<ConversationState>(s => new ConversationState(s.GetService<IStorage>()));
-            builder.Services.AddSingleton((s) => new ResourceExplorer().AddFolder(context.ApplicationRootPath));
-            builder.Services.AddSingleton<GitHubAdapter>();
-            builder.Services.AddSingleton<IBotFrameworkHttpAdapter>(s =>
-            {
-                // Retrieve required dependencies
-                IConfiguration configuration = s.GetService<IConfiguration>();
-                IStorage storage = s.GetService<IStorage>();
-                UserState userState = s.GetService<UserState>();
-                ConversationState conversationState = s.GetService<ConversationState>();
-                TelemetryInitializerMiddleware telemetryInitializerMiddleware = s.GetService<TelemetryInitializerMiddleware>();
                 var botSettings = new BotSettings();
-                configuration.GetSection(nameof(BotSettings)).Bind(botSettings);
-                var adapter = new BotFrameworkHttpAdapter(new ConfigurationCredentialProvider(configuration))
-                  .UseStorage(storage)
-                  .UseBotState(userState, conversationState)
-                  .Use(new RegisterClassMiddleware<IConfiguration>(configuration))
-                  // .Use(s.GetService<TelemetryInitializerMiddleware>())
-                  // .Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(botSettings?.BlobStorageConnectionString, "transcripts")))
-                  .Use(new ShowTypingMiddleware());
+                s.GetService<IConfiguration>().Bind(botSettings);
+                return botSettings;
+            });
+            services.AddLogging();
+            services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
+            services.AddSingleton<AuthenticationConfiguration>();
+            services.AddSingleton<Octokit.GitHubClient>((s) => new Octokit.GitHubClient(new ProductHeaderValue(s.GetService<BotSettings>().MicrosoftAppId, "1.0")));
+            services.AddSingleton<IStorage>((s) => new BlobsStorage(s.GetService<BotSettings>().AzureWebJobsStorage, s.GetService<BotSettings>().BotId.ToLower()));
+            services.AddSingleton<UserState>(s => new UserState(s.GetService<IStorage>()));
+            services.AddSingleton<ConversationState>(s => new ConversationState(s.GetService<IStorage>()));
+            services.AddSingleton<QueueStorage>((s) => (QueueStorage)new AzureQueueStorage(s.GetService<BotSettings>().AzureWebJobsStorage, "activities"));
+            services.AddSingleton<GitHubAdapter>((s) =>
+            {
+                // create github adapter for processing webhooks
+                return (GitHubAdapter)new GitHubAdapter(s.GetService<IConfiguration>(), s.GetService<Octokit.GitHubClient>())
+                    .UseStorage(s.GetService<IStorage>())
+                    .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
+                    .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()));
+            });
+            services.AddSingleton<BotFrameworkHttpAdapter>(s =>
+            {
+                // create botframework adapter for processing conversations with users.
+                var adapter = new BotFrameworkHttpAdapter(s.GetService<ICredentialProvider>())
+                    .Use(new RegisterClassMiddleware<IConfiguration>(s.GetService<IConfiguration>()))
+                    .UseStorage(s.GetService<IStorage>())
+                    .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
+                    .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()))
+                    .Use(new ShowTypingMiddleware());
 
                 adapter.OnTurnError = async (turnContext, exception) =>
                 {
                     await turnContext.SendActivityAsync(exception.Message).ConfigureAwait(false);
+                    var conversationState = turnContext.TurnState.Get<ConversationState>();
                     await conversationState.ClearStateAsync(turnContext).ConfigureAwait(false);
                     await conversationState.SaveChangesAsync(turnContext).ConfigureAwait(false);
                 };
 
-                return (IBotFrameworkHttpAdapter)adapter;
+                return (BotFrameworkHttpAdapter)adapter;
             });
-            builder.Services.AddSingleton<IBot>((s) =>
+            services.AddSingleton<IBot>((s) =>
             {
-                var botSettings = s.GetService<BotSettings>();
-                var resourceExplorer = s.GetService<ResourceExplorer>();
+                // create bot using resourceexplorer and .dialog file
+                var resourceExplorer = new ResourceExplorer()
+                    .AddFolder(context.ApplicationRootPath);
 
                 var bot = new Bot()
                     .UseResourceExplorer(resourceExplorer)
@@ -97,36 +90,13 @@ namespace RepoBot
                 return (IBot)bot;
             });
         }
+    }
 
-        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+    public class Bot : DialogManager, IBot
+    {
+        Task IBot.OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            FunctionsHostBuilderContext context = builder.GetContext();
-
-            var builtConfig = builder.ConfigurationBuilder.Build();
-            var keyVaultEndpoint = builtConfig["AzureKeyVaultEndpoint"];
-
-            if (!string.IsNullOrEmpty(keyVaultEndpoint))
-            {
-                // using Key Vault, either local dev or deployed
-                var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                builder.ConfigurationBuilder
-                    .AddJsonFile(Path.Combine(context.ApplicationRootPath, "local.settings.json"), true)
-                    .AddAzureKeyVault(keyVaultEndpoint)
-                    .AddEnvironmentVariables()
-                    .Build();
-            }
-            else
-            {
-                // local dev no Key Vault
-                builder.ConfigurationBuilder
-                   .AddJsonFile(Path.Combine(context.ApplicationRootPath, "local.settings.json"), true)
-                   .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
-                   .AddEnvironmentVariables()
-                   .Build();
-            }
+            return base.OnTurnAsync(turnContext, cancellationToken);
         }
-
     }
 }
