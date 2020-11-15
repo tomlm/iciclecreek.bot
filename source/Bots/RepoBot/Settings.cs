@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder.Azure;
 
 namespace RepoBot
 {
-    public partial class BotSettings
+    public partial class Settings
     {
         public string AzureWebJobsStorage { get; set; }
 

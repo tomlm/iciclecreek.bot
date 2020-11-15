@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
     /// <summary>
     /// Class which contains registration of components for github.
     /// </summary>
-    public class GithubComponentRegsitration : ComponentRegistration, IComponentDeclarativeTypes
+    public class GithubComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
         /// <summary>
         /// Gets declarative type registrations.

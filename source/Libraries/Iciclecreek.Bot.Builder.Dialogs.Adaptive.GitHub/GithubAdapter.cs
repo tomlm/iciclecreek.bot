@@ -81,7 +81,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
                         hashBytes = hash.ComputeHash(textBytes);
                     }
 
-                    var payloadHash = $"sha256='{BitConverter.ToString(hashBytes).Replace(" -", "")}'";
+                    var payloadHash = $"sha256={BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}";
                     if (payloadHash != signature)
                     {
                         throw new AuthorizationException(HttpStatusCode.Unauthorized, null);
@@ -91,9 +91,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
 
             dynamic payload = JsonConvert.DeserializeObject(body);
 
-            // payload.signature = String.Join(",", ((IEnumerable<JProperty>)payload.Properties()).Select(p => p.Name).OrderBy(p => p));
-
             var activity = (Schema.Activity)Schema.Activity.CreateEventActivity();
+            activity.Name = "GitHub";
             activity.ChannelId = ChannelId;
             activity.Conversation = new Schema.ConversationAccount()
             {
@@ -114,8 +113,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
 
             activity.Locale = "en-us";
             activity.Value = payload;
-            activity.Name = "GitHub";
-            // activity.DeliveryMode = DeliveryModes.ExpectReplies;
+
+            // System.Diagnostics.Debug.WriteLine(JsonConvert.SerializeObject(activity, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore }));
 
             return this.ProcessActivityAsync(identity, activity, callback, cancellationToken);
         }

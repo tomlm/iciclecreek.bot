@@ -4,12 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
-using System.Net;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +30,8 @@ namespace RepoBot
         {
             log.LogInformation($"GitHubWebHook endpoint triggered.");
             var body = await req.ReadAsStringAsync();
-            var response = await _adapter.ProcessWebhookPayloadAsync(null, body, _bot.OnTurnAsync, default(CancellationToken)).ConfigureAwait(false);
+            var signature = req.Headers["X-Hub-Signature-256"].FirstOrDefault();
+            var response = await _adapter.ProcessWebhookPayloadAsync(signature, body, _bot.OnTurnAsync, default(CancellationToken)).ConfigureAwait(false);
             return new OkResult();
         }
     }
