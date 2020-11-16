@@ -1,62 +1,68 @@
 {
-    "$schema": "../schemas/bot.schema",
-    "$kind": "Microsoft.AdaptiveDialog",
-    "id": "RepoBot",
-    "generator": "RepoBot.lg",
-    "recognizer": {
-        "$kind": "Microsoft.RegexRecognizer",
-        "intents": [
-            {
-                "intent": "greeting",
-                "pattern": "(hi|hello)"
-            }
-        ]
-    },
-    "autoEndDialog": false,
-    "defaultResultProperty": "dialog.result",
-    "triggers": [
-        {
-            "$kind": "Microsoft.OnConversationUpdateActivity",
-            "actions": [
-                {
-                    "$kind": "Microsoft.Foreach",
-                    "itemsProperty": "turn.Activity.membersAdded",
-                    "actions": [
-                        {
-                            "$kind": "Microsoft.IfCondition",
-                            "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
-                            "actions": [
-                                {
-                                    "$kind": "Microsoft.SendActivity",
-                                    "activity": "${WelcomeUser()}"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "$kind": "Microsoft.OnIntent",
-            "intent": "greeting",
-            "actions": [
-                {
-                    "$kind": "Microsoft.SendActivity",
-                    "activity": "${Greeting()}"
-                }
-            ]
-        },
-        {
-            "$kind": "GitHub.OnIssueCommentEvent",
-            "condition": "turn.activity.value.user.login != 'RepoBot'",
-            "actions": [
-                {
-                    "$kind": "GitHub.Issue.Comment.Create",
-                    "repositoryId": "=turn.activity.value.repository.id",
-                    "number": "=turn.activity.value.issue.id",
-                    "newComment": "You said:\n${turn.activity.value.comment.body}"
-                }
-            ]
-        }
+  "$schema": "../schemas/bot.schema",
+  "$kind": "Microsoft.AdaptiveDialog",
+  "id": "RepoBot",
+  "generator": "RepoBot.lg",
+  "recognizer": {
+    "$kind": "Microsoft.RegexRecognizer",
+    "intents": [
+      {
+        "intent": "OnGreetingIntent",
+        "pattern": "(hi|hello)"
+      }
     ]
+  },
+  "autoEndDialog": false,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "activity": "${WelcomeUser()}"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "$designer": {
+        "name": "OnConversationUpdateActivity"
+      }
+    },
+    {
+      "$kind": "Microsoft.OnIntent",
+      "intent": "OnGreetingIntent",
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "activity": "${Greeting()}"
+        }
+      ],
+      "$designer": {
+        "name": "OnGreetingIntent"
+      }
+    },
+    {
+      "$kind": "GitHub.OnIssueCommentEvent",
+      "condition": "turn.activity.value.user.login != 'RepoBot'",
+      "actions": [
+        {
+          "$kind": "GitHub.Issue.Comment.Create",
+          "repositoryId": "=turn.activity.value.repository.id",
+          "number": "=turn.activity.value.issue.id",
+          "newComment": "You said:\n${turn.activity.value.comment.body}"
+        }
+      ]
+    }
+  ]
 }
