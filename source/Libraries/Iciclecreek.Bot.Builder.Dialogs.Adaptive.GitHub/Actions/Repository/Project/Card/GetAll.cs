@@ -66,26 +66,26 @@ namespace GitHubClient.Repository.Project.Card
         {
             if (ColumnId != null && Request != null && Options != null)
             {
-                var columnIdValue = ColumnId.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var columnIdValue = ColumnId.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.GetAll((Int32)columnIdValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (ColumnId != null && Options != null)
             {
-                var columnIdValue = ColumnId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var columnIdValue = ColumnId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.GetAll((Int32)columnIdValue, optionsValue).ConfigureAwait(false);
             }
             if (ColumnId != null && Request != null)
             {
-                var columnIdValue = ColumnId.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var columnIdValue = ColumnId.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.GetAll((Int32)columnIdValue, requestValue).ConfigureAwait(false);
             }
             if (ColumnId != null)
             {
-                var columnIdValue = ColumnId.GetValue(dc);
+                var columnIdValue = ColumnId.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.GetAll((Int32)columnIdValue).ConfigureAwait(false);
             }
 

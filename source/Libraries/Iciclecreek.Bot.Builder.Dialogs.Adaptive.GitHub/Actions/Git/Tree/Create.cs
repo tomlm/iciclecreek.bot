@@ -75,15 +75,15 @@ namespace GitHubClient.Git.Tree
         {
             if (Owner != null && Name != null && NewTree != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newTreeValue = NewTree.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newTreeValue = NewTree.GetValue(dc.State);
                 return await gitHubClient.Git.Tree.Create(ownerValue, nameValue, newTreeValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewTree != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newTreeValue = NewTree.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newTreeValue = NewTree.GetValue(dc.State);
                 return await gitHubClient.Git.Tree.Create((Int64)repositoryIdValue, newTreeValue).ConfigureAwait(false);
             }
 

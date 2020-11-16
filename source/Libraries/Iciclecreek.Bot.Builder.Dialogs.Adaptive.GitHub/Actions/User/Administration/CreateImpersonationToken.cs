@@ -58,8 +58,8 @@ namespace GitHubClient.User.Administration
         {
             if (Login != null && NewImpersonationToken != null)
             {
-                var loginValue = Login.GetValue(dc);
-                var newImpersonationTokenValue = NewImpersonationToken.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
+                var newImpersonationTokenValue = NewImpersonationToken.GetValue(dc.State);
                 return await gitHubClient.User.Administration.CreateImpersonationToken(loginValue, newImpersonationTokenValue).ConfigureAwait(false);
             }
 

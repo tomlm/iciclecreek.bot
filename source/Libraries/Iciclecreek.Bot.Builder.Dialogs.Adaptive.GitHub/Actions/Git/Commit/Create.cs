@@ -75,15 +75,15 @@ namespace GitHubClient.Git.Commit
         {
             if (Owner != null && Name != null && Commit != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var commitValue = Commit.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var commitValue = Commit.GetValue(dc.State);
                 return await gitHubClient.Git.Commit.Create(ownerValue, nameValue, commitValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Commit != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var commitValue = Commit.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var commitValue = Commit.GetValue(dc.State);
                 return await gitHubClient.Git.Commit.Create((Int64)repositoryIdValue, commitValue).ConfigureAwait(false);
             }
 

@@ -85,17 +85,17 @@ namespace GitHubClient.Git.Reference
         {
             if (Owner != null && Name != null && Reference != null && ReferenceUpdate != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var referenceUpdateValue = ReferenceUpdate.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var referenceUpdateValue = ReferenceUpdate.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.Update(ownerValue, nameValue, referenceValue, referenceUpdateValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Reference != null && ReferenceUpdate != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var referenceUpdateValue = ReferenceUpdate.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var referenceUpdateValue = ReferenceUpdate.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.Update((Int64)repositoryIdValue, referenceValue, referenceUpdateValue).ConfigureAwait(false);
             }
 

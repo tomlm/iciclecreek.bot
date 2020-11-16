@@ -57,13 +57,13 @@ namespace GitHubClient.User.GitSshKey
         {
             if (UserName != null && Options != null)
             {
-                var userNameValue = UserName.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userNameValue = UserName.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.User.GitSshKey.GetAll(userNameValue, optionsValue).ConfigureAwait(false);
             }
             if (UserName != null)
             {
-                var userNameValue = UserName.GetValue(dc);
+                var userNameValue = UserName.GetValue(dc.State);
                 return await gitHubClient.User.GitSshKey.GetAll(userNameValue).ConfigureAwait(false);
             }
 

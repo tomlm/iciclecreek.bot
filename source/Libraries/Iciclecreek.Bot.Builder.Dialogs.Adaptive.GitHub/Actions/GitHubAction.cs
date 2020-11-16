@@ -61,7 +61,7 @@ namespace GitHubClient
         /// (The default value is to use 'settings.github.privatekey' as the value.)
         /// </value>
         [JsonProperty("githubPrivateKey")]
-        public StringExpression GitHubPrivateKey { get; set; } = "=settings.github.privateKey";
+        public StringExpression GitHubPrivateKey { get; set; } = "=settings.github.appPrivateKey";
 
         /// <summary>
         /// Gets or sets the GitHub ApplicationId to use to make calls with bot App credentials.
@@ -149,7 +149,7 @@ namespace GitHubClient
                 };
             }
 
-            throw new ArgumentNullException("Required [id] arguments missing for GitHubClient.Activity.Notifications.Get");
+            return new Octokit.GitHubClient(new ProductHeaderValue(productName));
         }
     }
 }

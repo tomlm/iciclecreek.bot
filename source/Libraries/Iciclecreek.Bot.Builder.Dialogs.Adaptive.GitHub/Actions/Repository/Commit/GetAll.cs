@@ -83,54 +83,54 @@ namespace GitHubClient.Repository.Commit
         {
             if (Owner != null && Name != null && Request != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll(ownerValue, nameValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll(ownerValue, nameValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Request != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll(ownerValue, nameValue, requestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Request != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll((Int64)repositoryIdValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll((Int64)repositoryIdValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Request != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll((Int64)repositoryIdValue, requestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.GetAll((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

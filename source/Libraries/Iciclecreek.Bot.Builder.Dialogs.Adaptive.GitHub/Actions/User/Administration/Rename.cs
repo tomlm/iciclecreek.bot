@@ -58,8 +58,8 @@ namespace GitHubClient.User.Administration
         {
             if (Login != null && UserRename != null)
             {
-                var loginValue = Login.GetValue(dc);
-                var userRenameValue = UserRename.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
+                var userRenameValue = UserRename.GetValue(dc.State);
                 return await gitHubClient.User.Administration.Rename(loginValue, userRenameValue).ConfigureAwait(false);
             }
 

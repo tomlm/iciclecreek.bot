@@ -84,30 +84,30 @@ namespace GitHubClient.Repository.Comment
         {
             if (Owner != null && Name != null && Sha != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.GetAllForCommit(ownerValue, nameValue, shaValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Sha != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.GetAllForCommit(ownerValue, nameValue, shaValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Sha != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.GetAllForCommit((Int64)repositoryIdValue, shaValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Sha != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.GetAllForCommit((Int64)repositoryIdValue, shaValue).ConfigureAwait(false);
             }
 

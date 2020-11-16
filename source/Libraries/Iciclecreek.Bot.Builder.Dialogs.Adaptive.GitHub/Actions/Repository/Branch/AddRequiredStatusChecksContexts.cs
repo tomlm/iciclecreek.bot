@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Branch
         {
             if (Owner != null && Name != null && Branch != null && Contexts != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var contextsValue = Contexts.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var contextsValue = Contexts.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.AddRequiredStatusChecksContexts(ownerValue, nameValue, branchValue, contextsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Branch != null && Contexts != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var contextsValue = Contexts.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var contextsValue = Contexts.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.AddRequiredStatusChecksContexts((Int64)repositoryIdValue, branchValue, contextsValue).ConfigureAwait(false);
             }
 

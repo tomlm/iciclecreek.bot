@@ -57,13 +57,13 @@ namespace GitHubClient.Gist.Comment
         {
             if (GistId != null && Options != null)
             {
-                var gistIdValue = GistId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var gistIdValue = GistId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Gist.Comment.GetAllForGist(gistIdValue, optionsValue).ConfigureAwait(false);
             }
             if (GistId != null)
             {
-                var gistIdValue = GistId.GetValue(dc);
+                var gistIdValue = GistId.GetValue(dc.State);
                 return await gitHubClient.Gist.Comment.GetAllForGist(gistIdValue).ConfigureAwait(false);
             }
 

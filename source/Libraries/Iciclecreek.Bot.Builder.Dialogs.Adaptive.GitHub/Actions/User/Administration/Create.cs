@@ -48,7 +48,7 @@ namespace GitHubClient.User.Administration
         {
             if (NewUser != null)
             {
-                var newUserValue = NewUser.GetValue(dc);
+                var newUserValue = NewUser.GetValue(dc.State);
                 return await gitHubClient.User.Administration.Create(newUserValue).ConfigureAwait(false);
             }
 

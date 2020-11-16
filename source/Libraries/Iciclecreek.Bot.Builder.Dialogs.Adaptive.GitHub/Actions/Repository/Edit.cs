@@ -75,15 +75,15 @@ namespace GitHubClient.Repository
         {
             if (Owner != null && Name != null && Update != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var updateValue = Update.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var updateValue = Update.GetValue(dc.State);
                 return await gitHubClient.Repository.Edit(ownerValue, nameValue, updateValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Update != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var updateValue = Update.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var updateValue = Update.GetValue(dc.State);
                 return await gitHubClient.Repository.Edit((Int64)repositoryIdValue, updateValue).ConfigureAwait(false);
             }
 

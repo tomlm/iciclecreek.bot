@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Forks
         {
             if (Owner != null && Name != null && Fork != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var forkValue = Fork.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var forkValue = Fork.GetValue(dc.State);
                 return await gitHubClient.Repository.Forks.Create(ownerValue, nameValue, forkValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Fork != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var forkValue = Fork.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var forkValue = Fork.GetValue(dc.State);
                 return await gitHubClient.Repository.Forks.Create((Int64)repositoryIdValue, forkValue).ConfigureAwait(false);
             }
 

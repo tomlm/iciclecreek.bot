@@ -48,7 +48,7 @@ namespace GitHubClient.User.Followers
         {
             if (Login != null)
             {
-                var loginValue = Login.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
                 return await gitHubClient.User.Followers.Follow(loginValue).ConfigureAwait(false);
             }
 

@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Comment
         {
             if (Owner != null && Name != null && Sha != null && NewCommitComment != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
-                var newCommitCommentValue = NewCommitComment.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
+                var newCommitCommentValue = NewCommitComment.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.Create(ownerValue, nameValue, shaValue, newCommitCommentValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Sha != null && NewCommitComment != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var shaValue = Sha.GetValue(dc);
-                var newCommitCommentValue = NewCommitComment.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var shaValue = Sha.GetValue(dc.State);
+                var newCommitCommentValue = NewCommitComment.GetValue(dc.State);
                 return await gitHubClient.Repository.Comment.Create((Int64)repositoryIdValue, shaValue, newCommitCommentValue).ConfigureAwait(false);
             }
 

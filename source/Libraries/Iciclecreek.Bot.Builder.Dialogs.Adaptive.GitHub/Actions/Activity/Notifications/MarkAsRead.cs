@@ -56,12 +56,12 @@ namespace GitHubClient.Activity.Notifications
         {
             if (MarkAsReadRequest != null)
             {
-                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc);
+                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsRead(markAsReadRequestValue);
             }
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsRead((Int32)idValue);
             }
             else

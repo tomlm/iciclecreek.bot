@@ -58,8 +58,8 @@ namespace GitHubClient.Enterprise.Ldap
         {
             if (TeamId != null && NewLdapMapping != null)
             {
-                var teamIdValue = TeamId.GetValue(dc);
-                var newLdapMappingValue = NewLdapMapping.GetValue(dc);
+                var teamIdValue = TeamId.GetValue(dc.State);
+                var newLdapMappingValue = NewLdapMapping.GetValue(dc.State);
                 return await gitHubClient.Enterprise.Ldap.UpdateTeamMapping((Int32)teamIdValue, newLdapMappingValue).ConfigureAwait(false);
             }
 

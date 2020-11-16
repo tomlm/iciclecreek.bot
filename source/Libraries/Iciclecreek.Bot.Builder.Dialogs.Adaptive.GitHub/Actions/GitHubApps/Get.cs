@@ -48,7 +48,7 @@ namespace GitHubClient.GitHubApps
         {
             if (Slug != null)
             {
-                var slugValue = Slug.GetValue(dc);
+                var slugValue = Slug.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.Get(slugValue).ConfigureAwait(false);
             }
 

@@ -66,26 +66,26 @@ namespace GitHubClient.Repository.Project
         {
             if (Organization != null && Request != null && Options != null)
             {
-                var organizationValue = Organization.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.GetAllForOrganization(organizationValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (Organization != null && Request != null)
             {
-                var organizationValue = Organization.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.GetAllForOrganization(organizationValue, requestValue).ConfigureAwait(false);
             }
             if (Organization != null && Options != null)
             {
-                var organizationValue = Organization.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.GetAllForOrganization(organizationValue, optionsValue).ConfigureAwait(false);
             }
             if (Organization != null)
             {
-                var organizationValue = Organization.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.GetAllForOrganization(organizationValue).ConfigureAwait(false);
             }
 

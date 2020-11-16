@@ -68,9 +68,9 @@ namespace GitHubClient.Repository.Invitation
         {
             if (RepositoryId != null && InvitationId != null && Permissions != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var invitationIdValue = InvitationId.GetValue(dc);
-                var permissionsValue = Permissions.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var invitationIdValue = InvitationId.GetValue(dc.State);
+                var permissionsValue = Permissions.GetValue(dc.State);
                 return await gitHubClient.Repository.Invitation.Edit((Int64)repositoryIdValue, (Int32)invitationIdValue, permissionsValue).ConfigureAwait(false);
             }
 

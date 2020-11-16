@@ -75,15 +75,15 @@ namespace GitHubClient.Git.Blob
         {
             if (Owner != null && Name != null && NewBlob != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newBlobValue = NewBlob.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newBlobValue = NewBlob.GetValue(dc.State);
                 return await gitHubClient.Git.Blob.Create(ownerValue, nameValue, newBlobValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewBlob != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newBlobValue = NewBlob.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newBlobValue = NewBlob.GetValue(dc.State);
                 return await gitHubClient.Git.Blob.Create((Int64)repositoryIdValue, newBlobValue).ConfigureAwait(false);
             }
 

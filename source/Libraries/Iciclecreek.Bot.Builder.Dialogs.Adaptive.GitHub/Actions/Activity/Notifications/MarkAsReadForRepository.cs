@@ -74,26 +74,26 @@ namespace GitHubClient.Activity.Notifications
         {
             if (Owner != null && Name != null && MarkAsReadRequest != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsReadForRepository(ownerValue, nameValue, markAsReadRequestValue);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsReadForRepository(ownerValue, nameValue);
             }
             if (RepositoryId != null && MarkAsReadRequest != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var markAsReadRequestValue = MarkAsReadRequest.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsReadForRepository((Int64)repositoryIdValue, markAsReadRequestValue);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.MarkAsReadForRepository((Int64)repositoryIdValue);
             }
 

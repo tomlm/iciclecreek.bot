@@ -48,7 +48,7 @@ namespace GitHubClient.User
         {
             if (Login != null)
             {
-                var loginValue = Login.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
                 return await gitHubClient.User.Get(loginValue).ConfigureAwait(false);
             }
 

@@ -48,7 +48,7 @@ namespace GitHubClient.Miscellaneous
         {
             if (TemplateName != null)
             {
-                var templateNameValue = TemplateName.GetValue(dc);
+                var templateNameValue = TemplateName.GetValue(dc.State);
                 return await gitHubClient.Miscellaneous.GetGitIgnoreTemplate(templateNameValue).ConfigureAwait(false);
             }
 

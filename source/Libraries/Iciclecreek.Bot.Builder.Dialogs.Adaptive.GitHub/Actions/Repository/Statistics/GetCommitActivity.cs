@@ -74,26 +74,26 @@ namespace GitHubClient.Repository.Statistics
         {
             if (Owner != null && Name != null && CancellationToken != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var cancellationTokenValue = CancellationToken.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var cancellationTokenValue = CancellationToken.GetValue(dc.State);
                 return await gitHubClient.Repository.Statistics.GetCommitActivity(ownerValue, nameValue, cancellationTokenValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.Statistics.GetCommitActivity(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && CancellationToken != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var cancellationTokenValue = CancellationToken.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var cancellationTokenValue = CancellationToken.GetValue(dc.State);
                 return await gitHubClient.Repository.Statistics.GetCommitActivity((Int64)repositoryIdValue, cancellationTokenValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.Statistics.GetCommitActivity((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

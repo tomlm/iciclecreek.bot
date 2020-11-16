@@ -48,7 +48,7 @@ namespace GitHubClient.User.GpgKey
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.User.GpgKey.Delete((Int32)idValue);
             }
 

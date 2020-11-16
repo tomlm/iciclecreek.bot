@@ -48,7 +48,7 @@ namespace GitHubClient.Oauth
         {
             if (Request != null)
             {
-                var requestValue = Request.GetValue(dc);
+                var requestValue = Request.GetValue(dc.State);
                 return gitHubClient.Oauth.GetGitHubLoginUrl(requestValue);
             }
 

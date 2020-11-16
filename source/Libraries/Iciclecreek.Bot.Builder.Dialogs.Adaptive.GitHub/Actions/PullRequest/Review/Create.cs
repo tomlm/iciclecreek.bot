@@ -85,17 +85,17 @@ namespace GitHubClient.PullRequest.Review
         {
             if (Owner != null && Name != null && Number != null && Review != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewValue = Review.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewValue = Review.GetValue(dc.State);
                 return await gitHubClient.PullRequest.Review.Create(ownerValue, nameValue, (Int32)numberValue, reviewValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && Review != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewValue = Review.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewValue = Review.GetValue(dc.State);
                 return await gitHubClient.PullRequest.Review.Create((Int64)repositoryIdValue, (Int32)numberValue, reviewValue).ConfigureAwait(false);
             }
 

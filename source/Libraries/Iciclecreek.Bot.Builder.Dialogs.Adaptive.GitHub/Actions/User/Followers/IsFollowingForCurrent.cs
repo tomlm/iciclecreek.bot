@@ -48,7 +48,7 @@ namespace GitHubClient.User.Followers
         {
             if (Following != null)
             {
-                var followingValue = Following.GetValue(dc);
+                var followingValue = Following.GetValue(dc.State);
                 return await gitHubClient.User.Followers.IsFollowingForCurrent(followingValue).ConfigureAwait(false);
             }
 

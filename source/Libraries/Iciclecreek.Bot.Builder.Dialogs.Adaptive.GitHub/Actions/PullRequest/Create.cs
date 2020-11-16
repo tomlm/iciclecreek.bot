@@ -75,15 +75,15 @@ namespace GitHubClient.PullRequest
         {
             if (Owner != null && Name != null && NewPullRequest != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newPullRequestValue = NewPullRequest.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newPullRequestValue = NewPullRequest.GetValue(dc.State);
                 return await gitHubClient.PullRequest.Create(ownerValue, nameValue, newPullRequestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewPullRequest != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newPullRequestValue = NewPullRequest.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newPullRequestValue = NewPullRequest.GetValue(dc.State);
                 return await gitHubClient.PullRequest.Create((Int64)repositoryIdValue, newPullRequestValue).ConfigureAwait(false);
             }
 

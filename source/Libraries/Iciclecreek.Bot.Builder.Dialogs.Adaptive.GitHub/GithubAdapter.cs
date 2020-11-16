@@ -44,16 +44,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
 
         public const string ChannelId = "github";
 
-        public GitHubAdapter(IConfiguration configuration, Octokit.GitHubClient client)
+        public GitHubAdapter(IConfiguration configuration)
         {
             this.config = configuration;
-            this.Client = client;
         }
-
-        /// <summary>
-        /// GitHubClient for making github API calls on behalf of your github app (bot).
-        /// </summary>
-        public Octokit.GitHubClient Client { get; set; }
 
         /// <summary>
         /// handle a webhook call back and 
@@ -66,7 +60,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
         public virtual Task<InvokeResponse> ProcessWebhookPayloadAsync(string signature, string body, BotCallbackHandler callback, CancellationToken cancellationToken = default)
         {
             ClaimsIdentity identity = new ClaimsIdentity();
-            var secret = config.GetValue<string>("github:secret");
+            var secret = config.GetValue<string>("GitHub:WebhookSecret");
             if (!String.IsNullOrEmpty(secret))
             {
                 using (var sha = SHA256.Create())
@@ -81,8 +75,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
                         hashBytes = hash.ComputeHash(textBytes);
                     }
 
-                    var payloadHash = $"sha256={BitConverter.ToString(hashBytes).Replace("-", "").ToLower()}";
-                    if (payloadHash != signature)
+                    var payloadHash = $"sha256={BitConverter.ToString(hashBytes).Replace("-", "")}";
+                    if (String.Compare(payloadHash, signature, ignoreCase:true) != 0)
                     {
                         throw new AuthorizationException(HttpStatusCode.Unauthorized, null);
                     }
@@ -127,7 +121,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub
             {
                 context.TurnState.Add<IIdentity>(BotIdentityKey, claimsIdentity);
                 context.TurnState.Add(this.config);
-                context.TurnState.Add(this.Client);
                 context.TurnState.Add(callback);
 
                 await RunPipelineAsync(context, callback, cancellationToken).ConfigureAwait(false);

@@ -66,26 +66,26 @@ namespace GitHubClient.Organization.OutsideCollaborator
         {
             if (Org != null && Filter != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.OutsideCollaborator.GetAll(orgValue, filterValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.OutsideCollaborator.GetAll(orgValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Filter != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
                 return await gitHubClient.Organization.OutsideCollaborator.GetAll(orgValue, filterValue).ConfigureAwait(false);
             }
             if (Org != null)
             {
-                var orgValue = Org.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
                 return await gitHubClient.Organization.OutsideCollaborator.GetAll(orgValue).ConfigureAwait(false);
             }
 

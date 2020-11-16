@@ -84,30 +84,30 @@ namespace GitHubClient.Issue.Timeline
         {
             if (Owner != null && Repo != null && Number != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var repoValue = Repo.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var repoValue = Repo.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Issue.Timeline.GetAllForIssue(ownerValue, repoValue, (Int32)numberValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Repo != null && Number != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var repoValue = Repo.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var repoValue = Repo.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
                 return await gitHubClient.Issue.Timeline.GetAllForIssue(ownerValue, repoValue, (Int32)numberValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Issue.Timeline.GetAllForIssue((Int64)repositoryIdValue, (Int32)numberValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
                 return await gitHubClient.Issue.Timeline.GetAllForIssue((Int64)repositoryIdValue, (Int32)numberValue).ConfigureAwait(false);
             }
 

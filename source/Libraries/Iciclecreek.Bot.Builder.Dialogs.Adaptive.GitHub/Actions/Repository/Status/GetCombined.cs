@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Status
         {
             if (Owner != null && Name != null && Reference != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Status.GetCombined(ownerValue, nameValue, referenceValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Reference != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Status.GetCombined((Int64)repositoryIdValue, referenceValue).ConfigureAwait(false);
             }
 

@@ -68,9 +68,9 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Login != null && Request != null)
             {
-                var idValue = Id.GetValue(dc);
-                var loginValue = Login.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var loginValue = Login.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.AddOrEditMembership((Int32)idValue, loginValue, requestValue).ConfigureAwait(false);
             }
 

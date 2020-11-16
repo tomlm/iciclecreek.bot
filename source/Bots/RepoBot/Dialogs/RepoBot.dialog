@@ -47,11 +47,14 @@
             ]
         },
         {
-            "$kind": "GitHub.OnPublicEvent",
-            "actions":[
+            "$kind": "GitHub.OnIssueCommentEvent",
+            "condition": "turn.activity.value.user.login != 'RepoBot'",
+            "actions": [
                 {
-                    "$kind": "Microsoft.SendActivity",
-                    "activity": "${AcknowledgePublicEvent()}"
+                    "$kind": "GitHub.Issue.Comment.Create",
+                    "repositoryId": "=turn.activity.value.repository.id",
+                    "number": "=turn.activity.value.issue.id",
+                    "newComment": "You said:\n${turn.activity.value.comment.body}"
                 }
             ]
         }

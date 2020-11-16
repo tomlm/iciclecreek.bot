@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project
         {
             if (RepositoryId != null && NewProject != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newProjectValue = NewProject.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newProjectValue = NewProject.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.CreateForRepository((Int64)repositoryIdValue, newProjectValue).ConfigureAwait(false);
             }
 

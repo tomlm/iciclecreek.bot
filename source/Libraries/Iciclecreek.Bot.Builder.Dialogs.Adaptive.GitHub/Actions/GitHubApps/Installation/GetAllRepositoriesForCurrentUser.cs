@@ -57,13 +57,13 @@ namespace GitHubClient.GitHubApps.Installation
         {
             if (InstallationId != null && Options != null)
             {
-                var installationIdValue = InstallationId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var installationIdValue = InstallationId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.Installation.GetAllRepositoriesForCurrentUser((Int64)installationIdValue, optionsValue).ConfigureAwait(false);
             }
             if (InstallationId != null)
             {
-                var installationIdValue = InstallationId.GetValue(dc);
+                var installationIdValue = InstallationId.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.Installation.GetAllRepositoriesForCurrentUser((Int64)installationIdValue).ConfigureAwait(false);
             }
 

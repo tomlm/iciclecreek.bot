@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Team != null)
             {
-                var idValue = Id.GetValue(dc);
-                var teamValue = Team.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var teamValue = Team.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.Update((Int32)idValue, teamValue).ConfigureAwait(false);
             }
 

@@ -56,18 +56,18 @@ namespace GitHubClient.Gist
         {
             if (Since != null && Options != null)
             {
-                var sinceValue = Since.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var sinceValue = Since.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAll(sinceValue, optionsValue).ConfigureAwait(false);
             }
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAll(optionsValue).ConfigureAwait(false);
             }
             if (Since != null)
             {
-                var sinceValue = Since.GetValue(dc);
+                var sinceValue = Since.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAll(sinceValue).ConfigureAwait(false);
             }
             else

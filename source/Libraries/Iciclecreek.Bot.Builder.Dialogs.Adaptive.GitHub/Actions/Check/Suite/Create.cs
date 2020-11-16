@@ -75,15 +75,15 @@ namespace GitHubClient.Check.Suite
         {
             if (Owner != null && Name != null && NewCheckSuite != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newCheckSuiteValue = NewCheckSuite.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newCheckSuiteValue = NewCheckSuite.GetValue(dc.State);
                 return await gitHubClient.Check.Suite.Create(ownerValue, nameValue, newCheckSuiteValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewCheckSuite != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newCheckSuiteValue = NewCheckSuite.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newCheckSuiteValue = NewCheckSuite.GetValue(dc.State);
                 return await gitHubClient.Check.Suite.Create((Int64)repositoryIdValue, newCheckSuiteValue).ConfigureAwait(false);
             }
 

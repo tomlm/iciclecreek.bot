@@ -92,58 +92,58 @@ namespace GitHubClient.Repository.Content
         {
             if (Owner != null && Name != null && ArchiveFormat != null && Reference != null && Timeout != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var timeoutValue = Timeout.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var timeoutValue = Timeout.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive(ownerValue, nameValue, archiveFormatValue, referenceValue, timeoutValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && ArchiveFormat != null && Reference != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive(ownerValue, nameValue, archiveFormatValue, referenceValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && ArchiveFormat != null && Reference != null && Timeout != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var timeoutValue = Timeout.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var timeoutValue = Timeout.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive((Int64)repositoryIdValue, archiveFormatValue, referenceValue, timeoutValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && ArchiveFormat != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive(ownerValue, nameValue, archiveFormatValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && ArchiveFormat != null && Reference != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive((Int64)repositoryIdValue, archiveFormatValue, referenceValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && ArchiveFormat != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var archiveFormatValue = ArchiveFormat.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var archiveFormatValue = ArchiveFormat.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive((Int64)repositoryIdValue, archiveFormatValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetArchive((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

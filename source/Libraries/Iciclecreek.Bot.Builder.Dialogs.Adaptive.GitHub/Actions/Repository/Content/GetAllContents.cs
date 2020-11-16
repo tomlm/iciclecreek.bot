@@ -74,26 +74,26 @@ namespace GitHubClient.Repository.Content
         {
             if (Owner != null && Name != null && Path != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContents(ownerValue, nameValue, pathValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Path != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContents((Int64)repositoryIdValue, pathValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContents(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContents((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

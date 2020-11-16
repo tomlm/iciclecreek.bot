@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Status
         {
             if (Owner != null && Name != null && Reference != null && NewCommitStatus != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var newCommitStatusValue = NewCommitStatus.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var newCommitStatusValue = NewCommitStatus.GetValue(dc.State);
                 return await gitHubClient.Repository.Status.Create(ownerValue, nameValue, referenceValue, newCommitStatusValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Reference != null && NewCommitStatus != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
-                var newCommitStatusValue = NewCommitStatus.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
+                var newCommitStatusValue = NewCommitStatus.GetValue(dc.State);
                 return await gitHubClient.Repository.Status.Create((Int64)repositoryIdValue, referenceValue, newCommitStatusValue).ConfigureAwait(false);
             }
 

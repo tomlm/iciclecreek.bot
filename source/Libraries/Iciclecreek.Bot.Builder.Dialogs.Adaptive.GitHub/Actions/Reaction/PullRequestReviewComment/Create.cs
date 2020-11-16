@@ -85,17 +85,17 @@ namespace GitHubClient.Reaction.PullRequestReviewComment
         {
             if (Owner != null && Name != null && Number != null && Reaction != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reactionValue = Reaction.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reactionValue = Reaction.GetValue(dc.State);
                 return await gitHubClient.Reaction.PullRequestReviewComment.Create(ownerValue, nameValue, (Int32)numberValue, reactionValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && Reaction != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reactionValue = Reaction.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reactionValue = Reaction.GetValue(dc.State);
                 return await gitHubClient.Reaction.PullRequestReviewComment.Create((Int64)repositoryIdValue, (Int32)numberValue, reactionValue).ConfigureAwait(false);
             }
 

@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Merging
         {
             if (Owner != null && Name != null && Merge != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var mergeValue = Merge.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var mergeValue = Merge.GetValue(dc.State);
                 return await gitHubClient.Repository.Merging.Create(ownerValue, nameValue, mergeValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Merge != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var mergeValue = Merge.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var mergeValue = Merge.GetValue(dc.State);
                 return await gitHubClient.Repository.Merging.Create((Int64)repositoryIdValue, mergeValue).ConfigureAwait(false);
             }
 

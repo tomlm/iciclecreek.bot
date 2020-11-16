@@ -77,17 +77,17 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Organization != null && RepoName != null && Permission != null)
             {
-                var idValue = Id.GetValue(dc);
-                var organizationValue = Organization.GetValue(dc);
-                var repoNameValue = RepoName.GetValue(dc);
-                var permissionValue = Permission.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var organizationValue = Organization.GetValue(dc.State);
+                var repoNameValue = RepoName.GetValue(dc.State);
+                var permissionValue = Permission.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.AddRepository((Int32)idValue, organizationValue, repoNameValue, permissionValue).ConfigureAwait(false);
             }
             if (Id != null && Organization != null && RepoName != null)
             {
-                var idValue = Id.GetValue(dc);
-                var organizationValue = Organization.GetValue(dc);
-                var repoNameValue = RepoName.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var organizationValue = Organization.GetValue(dc.State);
+                var repoNameValue = RepoName.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.AddRepository((Int32)idValue, organizationValue, repoNameValue).ConfigureAwait(false);
             }
 

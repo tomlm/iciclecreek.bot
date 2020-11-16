@@ -48,7 +48,7 @@ namespace GitHubClient.GitHubApps
         {
             if (InstallationId != null)
             {
-                var installationIdValue = InstallationId.GetValue(dc);
+                var installationIdValue = InstallationId.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetInstallation((Int64)installationIdValue).ConfigureAwait(false);
             }
 

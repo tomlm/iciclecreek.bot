@@ -47,7 +47,7 @@ namespace GitHubClient.GitHubApps
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetAllInstallationsForCurrent(optionsValue).ConfigureAwait(false);
             }
             else

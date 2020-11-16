@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Hook
         {
             if (Org != null && HookId != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
                 return await gitHubClient.Organization.Hook.Get(orgValue, (Int32)hookIdValue).ConfigureAwait(false);
             }
 

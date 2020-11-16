@@ -48,7 +48,7 @@ namespace GitHubClient.Gist
         {
             if (NewGist != null)
             {
-                var newGistValue = NewGist.GetValue(dc);
+                var newGistValue = NewGist.GetValue(dc.State);
                 return await gitHubClient.Gist.Create(newGistValue).ConfigureAwait(false);
             }
 

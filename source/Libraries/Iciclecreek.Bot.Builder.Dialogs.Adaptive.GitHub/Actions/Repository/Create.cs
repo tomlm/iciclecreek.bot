@@ -57,13 +57,13 @@ namespace GitHubClient.Repository
         {
             if (OrganizationLogin != null && NewRepository != null)
             {
-                var organizationLoginValue = OrganizationLogin.GetValue(dc);
-                var newRepositoryValue = NewRepository.GetValue(dc);
+                var organizationLoginValue = OrganizationLogin.GetValue(dc.State);
+                var newRepositoryValue = NewRepository.GetValue(dc.State);
                 return await gitHubClient.Repository.Create(organizationLoginValue, newRepositoryValue).ConfigureAwait(false);
             }
             if (NewRepository != null)
             {
-                var newRepositoryValue = NewRepository.GetValue(dc);
+                var newRepositoryValue = NewRepository.GetValue(dc.State);
                 return await gitHubClient.Repository.Create(newRepositoryValue).ConfigureAwait(false);
             }
 

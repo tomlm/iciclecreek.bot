@@ -75,15 +75,15 @@ namespace GitHubClient.Check.Run
         {
             if (Owner != null && Name != null && NewCheckRun != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newCheckRunValue = NewCheckRun.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newCheckRunValue = NewCheckRun.GetValue(dc.State);
                 return await gitHubClient.Check.Run.Create(ownerValue, nameValue, newCheckRunValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewCheckRun != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newCheckRunValue = NewCheckRun.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newCheckRunValue = NewCheckRun.GetValue(dc.State);
                 return await gitHubClient.Check.Run.Create((Int64)repositoryIdValue, newCheckRunValue).ConfigureAwait(false);
             }
 

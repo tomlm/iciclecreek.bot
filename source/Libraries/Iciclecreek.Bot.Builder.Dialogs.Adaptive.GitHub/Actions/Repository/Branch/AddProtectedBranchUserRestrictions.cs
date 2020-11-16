@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Branch
         {
             if (Owner != null && Name != null && Branch != null && Users != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var usersValue = Users.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var usersValue = Users.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.AddProtectedBranchUserRestrictions(ownerValue, nameValue, branchValue, usersValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Branch != null && Users != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var usersValue = Users.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var usersValue = Users.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.AddProtectedBranchUserRestrictions((Int64)repositoryIdValue, branchValue, usersValue).ConfigureAwait(false);
             }
 

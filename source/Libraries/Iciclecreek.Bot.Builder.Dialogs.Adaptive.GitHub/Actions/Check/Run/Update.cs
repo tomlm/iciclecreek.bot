@@ -85,17 +85,17 @@ namespace GitHubClient.Check.Run
         {
             if (Owner != null && Name != null && CheckRunId != null && CheckRunUpdate != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var checkRunIdValue = CheckRunId.GetValue(dc);
-                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var checkRunIdValue = CheckRunId.GetValue(dc.State);
+                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc.State);
                 return await gitHubClient.Check.Run.Update(ownerValue, nameValue, (Int64)checkRunIdValue, checkRunUpdateValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && CheckRunId != null && CheckRunUpdate != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var checkRunIdValue = CheckRunId.GetValue(dc);
-                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var checkRunIdValue = CheckRunId.GetValue(dc.State);
+                var checkRunUpdateValue = CheckRunUpdate.GetValue(dc.State);
                 return await gitHubClient.Check.Run.Update((Int64)repositoryIdValue, (Int64)checkRunIdValue, checkRunUpdateValue).ConfigureAwait(false);
             }
 

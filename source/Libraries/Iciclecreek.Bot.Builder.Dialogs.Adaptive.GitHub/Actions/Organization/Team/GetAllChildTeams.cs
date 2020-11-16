@@ -57,13 +57,13 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Options != null)
             {
-                var idValue = Id.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllChildTeams((Int32)idValue, optionsValue).ConfigureAwait(false);
             }
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllChildTeams((Int32)idValue).ConfigureAwait(false);
             }
 

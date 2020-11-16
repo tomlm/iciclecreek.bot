@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder.Azure.Queues;
 using Microsoft.Bot.Builder.BotFramework;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
+using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
@@ -45,7 +46,6 @@ namespace RepoBot
             services.AddLogging();
             services.AddSingleton<ICredentialProvider, ConfigurationCredentialProvider>();
             services.AddSingleton<AuthenticationConfiguration>();
-            services.AddSingleton<Octokit.GitHubClient>((s) => new Octokit.GitHubClient(new ProductHeaderValue(s.GetService<Settings>().MicrosoftAppId, "1.0")));
             services.AddSingleton<IStorage>((s) => new BlobsStorage(s.GetService<Settings>().AzureWebJobsStorage, s.GetService<Settings>().BotId.ToLower()));
             services.AddSingleton<UserState>(s => new UserState(s.GetService<IStorage>()));
             services.AddSingleton<ConversationState>(s => new ConversationState(s.GetService<IStorage>()));
@@ -65,6 +65,7 @@ namespace RepoBot
                     .Use(new RegisterClassMiddleware<IConfiguration>(s.GetService<IConfiguration>()))
                     .UseStorage(s.GetService<IStorage>())
                     .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
+                    .UseDebugger(5001)
                     .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()))
                     .Use(new ShowTypingMiddleware());
 
@@ -83,7 +84,7 @@ namespace RepoBot
             services.AddSingleton<GitHubAdapter>((s) =>
             {
                 // create github adapter for processing webhooks
-                return (GitHubAdapter)new GitHubAdapter(s.GetService<IConfiguration>(), s.GetService<Octokit.GitHubClient>())
+                return (GitHubAdapter)new GitHubAdapter(s.GetService<IConfiguration>())
                     .UseStorage(s.GetService<IStorage>())
                     .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
                     .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()));

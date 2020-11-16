@@ -84,30 +84,30 @@ namespace GitHubClient.Repository.Collaborator
         {
             if (Owner != null && Name != null && User != null && Permission != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var userValue = User.GetValue(dc);
-                var permissionValue = Permission.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
+                var permissionValue = Permission.GetValue(dc.State);
                 return await gitHubClient.Repository.Collaborator.Add(ownerValue, nameValue, userValue, permissionValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && User != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return gitHubClient.Repository.Collaborator.Add(ownerValue, nameValue, userValue);
             }
             if (RepositoryId != null && User != null && Permission != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var userValue = User.GetValue(dc);
-                var permissionValue = Permission.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
+                var permissionValue = Permission.GetValue(dc.State);
                 return await gitHubClient.Repository.Collaborator.Add((Int64)repositoryIdValue, userValue, permissionValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && User != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return gitHubClient.Repository.Collaborator.Add((Int64)repositoryIdValue, userValue);
             }
 

@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.OutsideCollaborator
         {
             if (Org != null && User != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Organization.OutsideCollaborator.ConvertFromMember(orgValue, userValue).ConfigureAwait(false);
             }
 

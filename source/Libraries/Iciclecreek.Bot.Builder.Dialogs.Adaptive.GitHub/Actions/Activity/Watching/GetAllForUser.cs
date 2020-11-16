@@ -57,13 +57,13 @@ namespace GitHubClient.Activity.Watching
         {
             if (User != null && Options != null)
             {
-                var userValue = User.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.GetAllForUser(userValue, optionsValue).ConfigureAwait(false);
             }
             if (User != null)
             {
-                var userValue = User.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.GetAllForUser(userValue).ConfigureAwait(false);
             }
 

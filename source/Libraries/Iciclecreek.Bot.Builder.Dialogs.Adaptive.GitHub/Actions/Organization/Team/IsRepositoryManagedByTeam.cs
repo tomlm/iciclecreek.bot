@@ -68,9 +68,9 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Owner != null && Repo != null)
             {
-                var idValue = Id.GetValue(dc);
-                var ownerValue = Owner.GetValue(dc);
-                var repoValue = Repo.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var ownerValue = Owner.GetValue(dc.State);
+                var repoValue = Repo.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.IsRepositoryManagedByTeam((Int32)idValue, ownerValue, repoValue).ConfigureAwait(false);
             }
 

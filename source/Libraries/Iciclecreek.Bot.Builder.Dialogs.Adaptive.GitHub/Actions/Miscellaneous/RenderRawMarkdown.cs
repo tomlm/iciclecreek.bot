@@ -48,7 +48,7 @@ namespace GitHubClient.Miscellaneous
         {
             if (Markdown != null)
             {
-                var markdownValue = Markdown.GetValue(dc);
+                var markdownValue = Markdown.GetValue(dc.State);
                 return await gitHubClient.Miscellaneous.RenderRawMarkdown(markdownValue).ConfigureAwait(false);
             }
 

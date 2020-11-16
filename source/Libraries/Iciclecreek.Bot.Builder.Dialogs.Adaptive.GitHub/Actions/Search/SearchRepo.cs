@@ -48,7 +48,7 @@ namespace GitHubClient.Search
         {
             if (Search != null)
             {
-                var searchValue = Search.GetValue(dc);
+                var searchValue = Search.GetValue(dc.State);
                 return await gitHubClient.Search.SearchRepo(searchValue).ConfigureAwait(false);
             }
 

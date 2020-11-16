@@ -48,7 +48,7 @@ namespace GitHubClient.Repository.Project.Column
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Column.Delete((Int32)idValue).ConfigureAwait(false);
             }
 

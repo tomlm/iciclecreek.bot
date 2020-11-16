@@ -57,13 +57,13 @@ namespace GitHubClient.Organization.Hook
         {
             if (Org != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Hook.GetAll(orgValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null)
             {
-                var orgValue = Org.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
                 return await gitHubClient.Organization.Hook.GetAll(orgValue).ConfigureAwait(false);
             }
 

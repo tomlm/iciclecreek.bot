@@ -74,26 +74,26 @@ namespace GitHubClient.Repository.DeployKeys
         {
             if (Owner != null && Name != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.GetAll(ownerValue, nameValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.GetAll(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.GetAll((Int64)repositoryIdValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.GetAll((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

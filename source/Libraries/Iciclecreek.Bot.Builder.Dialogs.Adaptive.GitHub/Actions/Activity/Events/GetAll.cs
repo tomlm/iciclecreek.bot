@@ -47,7 +47,7 @@ namespace GitHubClient.Activity.Events
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Activity.Events.GetAll(optionsValue).ConfigureAwait(false);
             }
             else

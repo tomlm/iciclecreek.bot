@@ -47,7 +47,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Enterprise.PreReceiveEnvironment.GetAll(optionsValue).ConfigureAwait(false);
             }
             else

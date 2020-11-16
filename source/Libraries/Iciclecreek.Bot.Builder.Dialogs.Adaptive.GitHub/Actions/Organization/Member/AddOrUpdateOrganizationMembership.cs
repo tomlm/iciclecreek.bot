@@ -68,9 +68,9 @@ namespace GitHubClient.Organization.Member
         {
             if (Org != null && User != null && AddOrUpdateRequest != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var userValue = User.GetValue(dc);
-                var addOrUpdateRequestValue = AddOrUpdateRequest.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
+                var addOrUpdateRequestValue = AddOrUpdateRequest.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.AddOrUpdateOrganizationMembership(orgValue, userValue, addOrUpdateRequestValue).ConfigureAwait(false);
             }
 

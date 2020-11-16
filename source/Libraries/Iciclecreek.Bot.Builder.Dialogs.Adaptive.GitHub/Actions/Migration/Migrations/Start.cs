@@ -58,8 +58,8 @@ namespace GitHubClient.Migration.Migrations
         {
             if (Org != null && Migration != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var migrationValue = Migration.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var migrationValue = Migration.GetValue(dc.State);
                 return await gitHubClient.Migration.Migrations.Start(orgValue, migrationValue).ConfigureAwait(false);
             }
 

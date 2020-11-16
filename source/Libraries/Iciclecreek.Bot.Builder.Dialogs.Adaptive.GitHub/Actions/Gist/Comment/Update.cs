@@ -68,9 +68,9 @@ namespace GitHubClient.Gist.Comment
         {
             if (GistId != null && CommentId != null && Comment != null)
             {
-                var gistIdValue = GistId.GetValue(dc);
-                var commentIdValue = CommentId.GetValue(dc);
-                var commentValue = Comment.GetValue(dc);
+                var gistIdValue = GistId.GetValue(dc.State);
+                var commentIdValue = CommentId.GetValue(dc.State);
+                var commentValue = Comment.GetValue(dc.State);
                 return await gitHubClient.Gist.Comment.Update(gistIdValue, (Int32)commentIdValue, commentValue).ConfigureAwait(false);
             }
 

@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.ManagementConsole
         {
             if (ManagementConsolePassword != null)
             {
-                var managementConsolePasswordValue = ManagementConsolePassword.GetValue(dc);
+                var managementConsolePasswordValue = ManagementConsolePassword.GetValue(dc.State);
                 return await gitHubClient.Enterprise.ManagementConsole.GetMaintenanceMode(managementConsolePasswordValue).ConfigureAwait(false);
             }
 

@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.Ldap
         {
             if (TeamId != null)
             {
-                var teamIdValue = TeamId.GetValue(dc);
+                var teamIdValue = TeamId.GetValue(dc.State);
                 return await gitHubClient.Enterprise.Ldap.QueueSyncTeamMapping((Int32)teamIdValue).ConfigureAwait(false);
             }
 

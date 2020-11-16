@@ -66,26 +66,26 @@ namespace GitHubClient.Gist
         {
             if (User != null && Since != null && Options != null)
             {
-                var userValue = User.GetValue(dc);
-                var sinceValue = Since.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var sinceValue = Since.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAllForUser(userValue, sinceValue, optionsValue).ConfigureAwait(false);
             }
             if (User != null && Options != null)
             {
-                var userValue = User.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAllForUser(userValue, optionsValue).ConfigureAwait(false);
             }
             if (User != null && Since != null)
             {
-                var userValue = User.GetValue(dc);
-                var sinceValue = Since.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var sinceValue = Since.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAllForUser(userValue, sinceValue).ConfigureAwait(false);
             }
             if (User != null)
             {
-                var userValue = User.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Gist.GetAllForUser(userValue).ConfigureAwait(false);
             }
 

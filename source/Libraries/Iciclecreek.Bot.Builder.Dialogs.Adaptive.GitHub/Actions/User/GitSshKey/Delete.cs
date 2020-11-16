@@ -48,7 +48,7 @@ namespace GitHubClient.User.GitSshKey
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.User.GitSshKey.Delete((Int32)idValue);
             }
 

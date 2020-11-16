@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Hooks
         {
             if (Owner != null && Name != null && HookId != null && Hook != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
-                var hookValue = Hook.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
+                var hookValue = Hook.GetValue(dc.State);
                 return await gitHubClient.Repository.Hooks.Edit(ownerValue, nameValue, (Int32)hookIdValue, hookValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && HookId != null && Hook != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
-                var hookValue = Hook.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
+                var hookValue = Hook.GetValue(dc.State);
                 return await gitHubClient.Repository.Hooks.Edit((Int64)repositoryIdValue, (Int32)hookIdValue, hookValue).ConfigureAwait(false);
             }
 

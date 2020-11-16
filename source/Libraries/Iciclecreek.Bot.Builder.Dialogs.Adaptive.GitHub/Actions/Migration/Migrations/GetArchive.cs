@@ -58,8 +58,8 @@ namespace GitHubClient.Migration.Migrations
         {
             if (Org != null && Id != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var idValue = Id.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var idValue = Id.GetValue(dc.State);
                 return await gitHubClient.Migration.Migrations.GetArchive(orgValue, (Int32)idValue).ConfigureAwait(false);
             }
 

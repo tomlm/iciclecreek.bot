@@ -47,7 +47,7 @@ namespace GitHubClient.Miscellaneous
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Miscellaneous.GetAllLicenses(optionsValue).ConfigureAwait(false);
             }
             else

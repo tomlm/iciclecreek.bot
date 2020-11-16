@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Hooks
         {
             if (Owner != null && Name != null && HookId != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
                 return gitHubClient.Repository.Hooks.Delete(ownerValue, nameValue, (Int32)hookIdValue);
             }
             if (RepositoryId != null && HookId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
                 return gitHubClient.Repository.Hooks.Delete((Int64)repositoryIdValue, (Int32)hookIdValue);
             }
 

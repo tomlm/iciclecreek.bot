@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.SearchIndexing
         {
             if (Owner != null)
             {
-                var ownerValue = Owner.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
                 return await gitHubClient.Enterprise.SearchIndexing.QueueAll(ownerValue).ConfigureAwait(false);
             }
 

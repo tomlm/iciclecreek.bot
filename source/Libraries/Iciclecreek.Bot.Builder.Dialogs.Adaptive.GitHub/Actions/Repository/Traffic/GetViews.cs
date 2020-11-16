@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Traffic
         {
             if (Owner != null && Name != null && Per != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var perValue = Per.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var perValue = Per.GetValue(dc.State);
                 return await gitHubClient.Repository.Traffic.GetViews(ownerValue, nameValue, perValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Per != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var perValue = Per.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var perValue = Per.GetValue(dc.State);
                 return await gitHubClient.Repository.Traffic.GetViews((Int64)repositoryIdValue, perValue).ConfigureAwait(false);
             }
 

@@ -75,15 +75,15 @@ namespace GitHubClient.Repository
         {
             if (Owner != null && Name != null && RepositoryTransfer != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var repositoryTransferValue = RepositoryTransfer.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var repositoryTransferValue = RepositoryTransfer.GetValue(dc.State);
                 return await gitHubClient.Repository.Transfer(ownerValue, nameValue, repositoryTransferValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && RepositoryTransfer != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var repositoryTransferValue = RepositoryTransfer.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var repositoryTransferValue = RepositoryTransfer.GetValue(dc.State);
                 return await gitHubClient.Repository.Transfer((Int64)repositoryIdValue, repositoryTransferValue).ConfigureAwait(false);
             }
 

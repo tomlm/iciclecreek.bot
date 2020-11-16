@@ -75,15 +75,15 @@ namespace GitHubClient.Activity.Watching
         {
             if (Owner != null && Name != null && NewSubscription != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newSubscriptionValue = NewSubscription.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newSubscriptionValue = NewSubscription.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.WatchRepo(ownerValue, nameValue, newSubscriptionValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewSubscription != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newSubscriptionValue = NewSubscription.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newSubscriptionValue = NewSubscription.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.WatchRepo((Int64)repositoryIdValue, newSubscriptionValue).ConfigureAwait(false);
             }
 

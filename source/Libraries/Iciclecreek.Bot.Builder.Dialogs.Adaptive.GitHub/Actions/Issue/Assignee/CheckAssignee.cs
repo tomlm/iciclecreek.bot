@@ -75,15 +75,15 @@ namespace GitHubClient.Issue.Assignee
         {
             if (Owner != null && Name != null && Assignee != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var assigneeValue = Assignee.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var assigneeValue = Assignee.GetValue(dc.State);
                 return await gitHubClient.Issue.Assignee.CheckAssignee(ownerValue, nameValue, assigneeValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Assignee != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var assigneeValue = Assignee.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var assigneeValue = Assignee.GetValue(dc.State);
                 return await gitHubClient.Issue.Assignee.CheckAssignee((Int64)repositoryIdValue, assigneeValue).ConfigureAwait(false);
             }
 

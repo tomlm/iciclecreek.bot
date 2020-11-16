@@ -48,7 +48,7 @@ namespace GitHubClient.Repository.Project.Card
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.Get((Int32)idValue).ConfigureAwait(false);
             }
 

@@ -58,8 +58,8 @@ namespace GitHubClient.Gist.Comment
         {
             if (GistId != null && CommentId != null)
             {
-                var gistIdValue = GistId.GetValue(dc);
-                var commentIdValue = CommentId.GetValue(dc);
+                var gistIdValue = GistId.GetValue(dc.State);
+                var commentIdValue = CommentId.GetValue(dc.State);
                 return gitHubClient.Gist.Comment.Delete(gistIdValue, (Int32)commentIdValue);
             }
 

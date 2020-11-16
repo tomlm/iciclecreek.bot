@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project.Card
         {
             if (Id != null && Position != null)
             {
-                var idValue = Id.GetValue(dc);
-                var positionValue = Position.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var positionValue = Position.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.Move((Int32)idValue, positionValue).ConfigureAwait(false);
             }
 

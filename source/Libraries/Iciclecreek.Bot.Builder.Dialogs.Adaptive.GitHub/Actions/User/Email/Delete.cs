@@ -48,7 +48,7 @@ namespace GitHubClient.User.Email
         {
             if (EmailAddresses != null)
             {
-                var emailAddressesValue = EmailAddresses.GetValue(dc);
+                var emailAddressesValue = EmailAddresses.GetValue(dc.State);
                 return gitHubClient.User.Email.Delete(emailAddressesValue);
             }
 

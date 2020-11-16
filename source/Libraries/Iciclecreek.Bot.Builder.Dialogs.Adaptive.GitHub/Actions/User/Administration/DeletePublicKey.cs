@@ -48,7 +48,7 @@ namespace GitHubClient.User.Administration
         {
             if (KeyId != null)
             {
-                var keyIdValue = KeyId.GetValue(dc);
+                var keyIdValue = KeyId.GetValue(dc.State);
                 return gitHubClient.User.Administration.DeletePublicKey((Int32)keyIdValue);
             }
 

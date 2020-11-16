@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Invitation
         {
             if (RepositoryId != null && InvitationId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var invitationIdValue = InvitationId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var invitationIdValue = InvitationId.GetValue(dc.State);
                 return await gitHubClient.Repository.Invitation.Delete((Int64)repositoryIdValue, (Int32)invitationIdValue).ConfigureAwait(false);
             }
 

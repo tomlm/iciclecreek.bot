@@ -84,30 +84,30 @@ namespace GitHubClient.Repository.Content
         {
             if (Owner != null && Name != null && Path != null && Reference != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContentsByRef(ownerValue, nameValue, pathValue, referenceValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Path != null && Reference != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContentsByRef((Int64)repositoryIdValue, pathValue, referenceValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Reference != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContentsByRef(ownerValue, nameValue, referenceValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Reference != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetAllContentsByRef((Int64)repositoryIdValue, referenceValue).ConfigureAwait(false);
             }
 

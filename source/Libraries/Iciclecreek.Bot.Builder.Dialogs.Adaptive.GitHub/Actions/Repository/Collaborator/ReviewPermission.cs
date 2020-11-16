@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.Collaborator
         {
             if (Owner != null && Name != null && User != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Repository.Collaborator.ReviewPermission(ownerValue, nameValue, userValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && User != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Repository.Collaborator.ReviewPermission((Int64)repositoryIdValue, userValue).ConfigureAwait(false);
             }
 

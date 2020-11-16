@@ -93,47 +93,47 @@ namespace GitHubClient.Check.Run
         {
             if (Owner != null && Name != null && CheckSuiteId != null && CheckRunRequest != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
-                var checkRunRequestValue = CheckRunRequest.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
+                var checkRunRequestValue = CheckRunRequest.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite(ownerValue, nameValue, (Int64)checkSuiteIdValue, checkRunRequestValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && CheckSuiteId != null && CheckRunRequest != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
-                var checkRunRequestValue = CheckRunRequest.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
+                var checkRunRequestValue = CheckRunRequest.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite(ownerValue, nameValue, (Int64)checkSuiteIdValue, checkRunRequestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && CheckSuiteId != null && CheckRunRequest != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
-                var checkRunRequestValue = CheckRunRequest.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
+                var checkRunRequestValue = CheckRunRequest.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite((Int64)repositoryIdValue, (Int64)checkSuiteIdValue, checkRunRequestValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && CheckSuiteId != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite(ownerValue, nameValue, (Int64)checkSuiteIdValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && CheckSuiteId != null && CheckRunRequest != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
-                var checkRunRequestValue = CheckRunRequest.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
+                var checkRunRequestValue = CheckRunRequest.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite((Int64)repositoryIdValue, (Int64)checkSuiteIdValue, checkRunRequestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && CheckSuiteId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var checkSuiteIdValue = CheckSuiteId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var checkSuiteIdValue = CheckSuiteId.GetValue(dc.State);
                 return await gitHubClient.Check.Run.GetAllForCheckSuite((Int64)repositoryIdValue, (Int64)checkSuiteIdValue).ConfigureAwait(false);
             }
 

@@ -47,7 +47,7 @@ namespace GitHubClient.User.Email
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.User.Email.GetAll(optionsValue).ConfigureAwait(false);
             }
             else

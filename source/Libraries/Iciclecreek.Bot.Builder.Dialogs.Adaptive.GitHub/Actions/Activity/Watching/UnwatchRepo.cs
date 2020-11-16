@@ -65,13 +65,13 @@ namespace GitHubClient.Activity.Watching
         {
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.UnwatchRepo(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Activity.Watching.UnwatchRepo((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

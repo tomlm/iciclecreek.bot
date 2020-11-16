@@ -48,7 +48,7 @@ namespace GitHubClient.Repository.Invitation
         {
             if (InvitationId != null)
             {
-                var invitationIdValue = InvitationId.GetValue(dc);
+                var invitationIdValue = InvitationId.GetValue(dc.State);
                 return await gitHubClient.Repository.Invitation.Accept((Int32)invitationIdValue).ConfigureAwait(false);
             }
 

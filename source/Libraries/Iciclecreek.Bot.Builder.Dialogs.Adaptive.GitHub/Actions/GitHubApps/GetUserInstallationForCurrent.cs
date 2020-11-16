@@ -48,7 +48,7 @@ namespace GitHubClient.GitHubApps
         {
             if (User != null)
             {
-                var userValue = User.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetUserInstallationForCurrent(userValue).ConfigureAwait(false);
             }
 

@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.Ldap
         {
             if (UserName != null)
             {
-                var userNameValue = UserName.GetValue(dc);
+                var userNameValue = UserName.GetValue(dc.State);
                 return await gitHubClient.Enterprise.Ldap.QueueSyncUserMapping(userNameValue).ConfigureAwait(false);
             }
 

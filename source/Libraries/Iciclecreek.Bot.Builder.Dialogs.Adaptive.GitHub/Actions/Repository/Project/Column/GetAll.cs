@@ -57,13 +57,13 @@ namespace GitHubClient.Repository.Project.Column
         {
             if (ProjectId != null && Options != null)
             {
-                var projectIdValue = ProjectId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var projectIdValue = ProjectId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Column.GetAll((Int32)projectIdValue, optionsValue).ConfigureAwait(false);
             }
             if (ProjectId != null)
             {
-                var projectIdValue = ProjectId.GetValue(dc);
+                var projectIdValue = ProjectId.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Column.GetAll((Int32)projectIdValue).ConfigureAwait(false);
             }
 

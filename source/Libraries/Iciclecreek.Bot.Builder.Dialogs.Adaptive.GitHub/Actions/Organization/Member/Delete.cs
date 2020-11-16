@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Member
         {
             if (Org != null && User != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var userValue = User.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var userValue = User.GetValue(dc.State);
                 return gitHubClient.Organization.Member.Delete(orgValue, userValue);
             }
 

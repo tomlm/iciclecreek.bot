@@ -75,15 +75,15 @@ namespace GitHubClient.Issue.Events
         {
             if (Owner != null && Name != null && EventId != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var eventIdValue = EventId.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var eventIdValue = EventId.GetValue(dc.State);
                 return await gitHubClient.Issue.Events.Get(ownerValue, nameValue, (Int64)eventIdValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && EventId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var eventIdValue = EventId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var eventIdValue = EventId.GetValue(dc.State);
                 return await gitHubClient.Issue.Events.Get((Int64)repositoryIdValue, (Int64)eventIdValue).ConfigureAwait(false);
             }
 

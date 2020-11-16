@@ -78,10 +78,10 @@ namespace GitHubClient.Issue.Assignee
         {
             if (Owner != null && Name != null && Number != null && Assignees != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var assigneesValue = Assignees.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var assigneesValue = Assignees.GetValue(dc.State);
                 return await gitHubClient.Issue.Assignee.AddAssignees(ownerValue, nameValue, (Int32)numberValue, assigneesValue).ConfigureAwait(false);
             }
 

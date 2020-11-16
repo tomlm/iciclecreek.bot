@@ -78,10 +78,10 @@ namespace GitHubClient.Repository.Content
         {
             if (Owner != null && Name != null && Path != null && Reference != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
-                var referenceValue = Reference.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
+                var referenceValue = Reference.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.GetRawContentByRef(ownerValue, nameValue, pathValue, referenceValue).ConfigureAwait(false);
             }
 

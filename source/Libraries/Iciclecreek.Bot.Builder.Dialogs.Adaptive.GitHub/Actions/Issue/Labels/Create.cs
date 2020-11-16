@@ -75,15 +75,15 @@ namespace GitHubClient.Issue.Labels
         {
             if (Owner != null && Name != null && NewLabel != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newLabelValue = NewLabel.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newLabelValue = NewLabel.GetValue(dc.State);
                 return await gitHubClient.Issue.Labels.Create(ownerValue, nameValue, newLabelValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewLabel != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newLabelValue = NewLabel.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newLabelValue = NewLabel.GetValue(dc.State);
                 return await gitHubClient.Issue.Labels.Create((Int64)repositoryIdValue, newLabelValue).ConfigureAwait(false);
             }
 

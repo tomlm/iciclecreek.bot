@@ -48,7 +48,7 @@ namespace GitHubClient.GitHubApps
         {
             if (Organization != null)
             {
-                var organizationValue = Organization.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetOrganizationInstallationForCurrent(organizationValue).ConfigureAwait(false);
             }
 

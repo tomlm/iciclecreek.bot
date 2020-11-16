@@ -75,15 +75,15 @@ namespace GitHubClient.Issue
         {
             if (Owner != null && Name != null && NewIssue != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newIssueValue = NewIssue.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newIssueValue = NewIssue.GetValue(dc.State);
                 return await gitHubClient.Issue.Create(ownerValue, nameValue, newIssueValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewIssue != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newIssueValue = NewIssue.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newIssueValue = NewIssue.GetValue(dc.State);
                 return await gitHubClient.Issue.Create((Int64)repositoryIdValue, newIssueValue).ConfigureAwait(false);
             }
 

@@ -58,8 +58,8 @@ namespace GitHubClient.Activity.Starring
         {
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Activity.Starring.StarRepo(ownerValue, nameValue).ConfigureAwait(false);
             }
 

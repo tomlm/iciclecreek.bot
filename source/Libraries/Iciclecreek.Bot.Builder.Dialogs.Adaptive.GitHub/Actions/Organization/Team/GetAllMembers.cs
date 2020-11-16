@@ -66,26 +66,26 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Request != null && Options != null)
             {
-                var idValue = Id.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllMembers((Int32)idValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (Id != null && Options != null)
             {
-                var idValue = Id.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllMembers((Int32)idValue, optionsValue).ConfigureAwait(false);
             }
             if (Id != null && Request != null)
             {
-                var idValue = Id.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllMembers((Int32)idValue, requestValue).ConfigureAwait(false);
             }
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.GetAllMembers((Int32)idValue).ConfigureAwait(false);
             }
 

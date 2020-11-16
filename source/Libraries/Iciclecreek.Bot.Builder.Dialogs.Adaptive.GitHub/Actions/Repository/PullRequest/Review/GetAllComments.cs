@@ -94,34 +94,34 @@ namespace GitHubClient.Repository.PullRequest.Review
         {
             if (Owner != null && Name != null && Number != null && ReviewId != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.GetAllComments(ownerValue, nameValue, (Int32)numberValue, (Int64)reviewIdValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Number != null && ReviewId != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.GetAllComments(ownerValue, nameValue, (Int32)numberValue, (Int64)reviewIdValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && ReviewId != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.GetAllComments((Int64)repositoryIdValue, (Int32)numberValue, (Int64)reviewIdValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && ReviewId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.GetAllComments((Int64)repositoryIdValue, (Int32)numberValue, (Int64)reviewIdValue).ConfigureAwait(false);
             }
 

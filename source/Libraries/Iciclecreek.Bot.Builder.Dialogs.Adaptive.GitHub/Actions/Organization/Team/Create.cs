@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Team
         {
             if (Org != null && Team != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var teamValue = Team.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var teamValue = Team.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.Create(orgValue, teamValue).ConfigureAwait(false);
             }
 

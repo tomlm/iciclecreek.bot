@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null && Login != null)
             {
-                var idValue = Id.GetValue(dc);
-                var loginValue = Login.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var loginValue = Login.GetValue(dc.State);
                 return await gitHubClient.Organization.Team.RemoveMembership((Int32)idValue, loginValue).ConfigureAwait(false);
             }
 

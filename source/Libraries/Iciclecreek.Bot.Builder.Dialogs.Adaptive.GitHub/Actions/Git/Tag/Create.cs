@@ -75,15 +75,15 @@ namespace GitHubClient.Git.Tag
         {
             if (Owner != null && Name != null && Tag != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var tagValue = Tag.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var tagValue = Tag.GetValue(dc.State);
                 return await gitHubClient.Git.Tag.Create(ownerValue, nameValue, tagValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Tag != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var tagValue = Tag.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var tagValue = Tag.GetValue(dc.State);
                 return await gitHubClient.Git.Tag.Create((Int64)repositoryIdValue, tagValue).ConfigureAwait(false);
             }
 

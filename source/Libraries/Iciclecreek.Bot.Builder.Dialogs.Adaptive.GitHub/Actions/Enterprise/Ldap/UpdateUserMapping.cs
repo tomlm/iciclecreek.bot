@@ -58,8 +58,8 @@ namespace GitHubClient.Enterprise.Ldap
         {
             if (UserName != null && NewLdapMapping != null)
             {
-                var userNameValue = UserName.GetValue(dc);
-                var newLdapMappingValue = NewLdapMapping.GetValue(dc);
+                var userNameValue = UserName.GetValue(dc.State);
+                var newLdapMappingValue = NewLdapMapping.GetValue(dc.State);
                 return await gitHubClient.Enterprise.Ldap.UpdateUserMapping(userNameValue, newLdapMappingValue).ConfigureAwait(false);
             }
 

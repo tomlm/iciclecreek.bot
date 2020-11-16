@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Branch
         {
             if (Owner != null && Name != null && Branch != null && Teams != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var teamsValue = Teams.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var teamsValue = Teams.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.DeleteProtectedBranchTeamRestrictions(ownerValue, nameValue, branchValue, teamsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Branch != null && Teams != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var branchValue = Branch.GetValue(dc);
-                var teamsValue = Teams.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var branchValue = Branch.GetValue(dc.State);
+                var teamsValue = Teams.GetValue(dc.State);
                 return await gitHubClient.Repository.Branch.DeleteProtectedBranchTeamRestrictions((Int64)repositoryIdValue, branchValue, teamsValue).ConfigureAwait(false);
             }
 

@@ -84,30 +84,30 @@ namespace GitHubClient.Git.Reference
         {
             if (Owner != null && Name != null && SubNamespace != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var subNamespaceValue = SubNamespace.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var subNamespaceValue = SubNamespace.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.GetAllForSubNamespace(ownerValue, nameValue, subNamespaceValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && SubNamespace != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var subNamespaceValue = SubNamespace.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var subNamespaceValue = SubNamespace.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.GetAllForSubNamespace(ownerValue, nameValue, subNamespaceValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && SubNamespace != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var subNamespaceValue = SubNamespace.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var subNamespaceValue = SubNamespace.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.GetAllForSubNamespace((Int64)repositoryIdValue, subNamespaceValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && SubNamespace != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var subNamespaceValue = SubNamespace.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var subNamespaceValue = SubNamespace.GetValue(dc.State);
                 return await gitHubClient.Git.Reference.GetAllForSubNamespace((Int64)repositoryIdValue, subNamespaceValue).ConfigureAwait(false);
             }
 

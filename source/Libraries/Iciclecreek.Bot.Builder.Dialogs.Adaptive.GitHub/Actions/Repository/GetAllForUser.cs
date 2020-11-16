@@ -57,13 +57,13 @@ namespace GitHubClient.Repository
         {
             if (Login != null && Options != null)
             {
-                var loginValue = Login.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllForUser(loginValue, optionsValue).ConfigureAwait(false);
             }
             if (Login != null)
             {
-                var loginValue = Login.GetValue(dc);
+                var loginValue = Login.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllForUser(loginValue).ConfigureAwait(false);
             }
 

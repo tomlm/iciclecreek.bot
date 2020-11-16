@@ -84,30 +84,30 @@ namespace GitHubClient.Repository.Deployment.Status
         {
             if (Owner != null && Name != null && DeploymentId != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.GetAll(ownerValue, nameValue, (Int32)deploymentIdValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && DeploymentId != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.GetAll(ownerValue, nameValue, (Int32)deploymentIdValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && DeploymentId != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.GetAll((Int64)repositoryIdValue, (Int32)deploymentIdValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && DeploymentId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.GetAll((Int64)repositoryIdValue, (Int32)deploymentIdValue).ConfigureAwait(false);
             }
 

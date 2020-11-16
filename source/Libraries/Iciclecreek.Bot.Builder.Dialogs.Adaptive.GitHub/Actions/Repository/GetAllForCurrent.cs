@@ -56,18 +56,18 @@ namespace GitHubClient.Repository
         {
             if (Request != null && Options != null)
             {
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllForCurrent(requestValue, optionsValue).ConfigureAwait(false);
             }
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllForCurrent(optionsValue).ConfigureAwait(false);
             }
             if (Request != null)
             {
-                var requestValue = Request.GetValue(dc);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllForCurrent(requestValue).ConfigureAwait(false);
             }
             else

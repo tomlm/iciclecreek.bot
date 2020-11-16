@@ -47,7 +47,7 @@ namespace GitHubClient.Repository
         {
             if (Request != null)
             {
-                var requestValue = Request.GetValue(dc);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllPublic(requestValue).ConfigureAwait(false);
             }
             else

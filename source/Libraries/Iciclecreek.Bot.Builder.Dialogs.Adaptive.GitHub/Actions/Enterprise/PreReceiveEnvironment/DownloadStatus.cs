@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         {
             if (EnvironmentId != null)
             {
-                var environmentIdValue = EnvironmentId.GetValue(dc);
+                var environmentIdValue = EnvironmentId.GetValue(dc.State);
                 return await gitHubClient.Enterprise.PreReceiveEnvironment.DownloadStatus((Int64)environmentIdValue).ConfigureAwait(false);
             }
 

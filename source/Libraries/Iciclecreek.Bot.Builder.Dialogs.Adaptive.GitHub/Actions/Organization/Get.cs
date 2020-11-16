@@ -48,7 +48,7 @@ namespace GitHubClient.Organization
         {
             if (Org != null)
             {
-                var orgValue = Org.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
                 return await gitHubClient.Organization.Get(orgValue).ConfigureAwait(false);
             }
 

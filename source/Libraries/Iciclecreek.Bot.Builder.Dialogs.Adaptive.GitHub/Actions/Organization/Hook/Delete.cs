@@ -58,8 +58,8 @@ namespace GitHubClient.Organization.Hook
         {
             if (Org != null && HookId != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var hookIdValue = HookId.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var hookIdValue = HookId.GetValue(dc.State);
                 return gitHubClient.Organization.Hook.Delete(orgValue, (Int32)hookIdValue);
             }
 

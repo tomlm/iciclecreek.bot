@@ -57,13 +57,13 @@ namespace GitHubClient.Enterprise.SearchIndexing
         {
             if (Owner != null && Repository != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var repositoryValue = Repository.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var repositoryValue = Repository.GetValue(dc.State);
                 return await gitHubClient.Enterprise.SearchIndexing.QueueAllIssues(ownerValue, repositoryValue).ConfigureAwait(false);
             }
             if (Owner != null)
             {
-                var ownerValue = Owner.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
                 return await gitHubClient.Enterprise.SearchIndexing.QueueAllIssues(ownerValue).ConfigureAwait(false);
             }
 

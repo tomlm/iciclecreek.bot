@@ -75,15 +75,15 @@ namespace GitHubClient.Issue.Comment
         {
             if (Owner != null && Name != null && Id != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var idValue = Id.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Issue.Comment.Delete(ownerValue, nameValue, (Int32)idValue);
             }
             if (RepositoryId != null && Id != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var idValue = Id.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Issue.Comment.Delete((Int64)repositoryIdValue, (Int32)idValue);
             }
 

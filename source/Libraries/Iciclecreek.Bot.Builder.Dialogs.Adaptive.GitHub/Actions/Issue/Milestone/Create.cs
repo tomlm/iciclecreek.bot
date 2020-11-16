@@ -75,15 +75,15 @@ namespace GitHubClient.Issue.Milestone
         {
             if (Owner != null && Name != null && NewMilestone != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newMilestoneValue = NewMilestone.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newMilestoneValue = NewMilestone.GetValue(dc.State);
                 return await gitHubClient.Issue.Milestone.Create(ownerValue, nameValue, newMilestoneValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewMilestone != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newMilestoneValue = NewMilestone.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newMilestoneValue = NewMilestone.GetValue(dc.State);
                 return await gitHubClient.Issue.Milestone.Create((Int64)repositoryIdValue, newMilestoneValue).ConfigureAwait(false);
             }
 

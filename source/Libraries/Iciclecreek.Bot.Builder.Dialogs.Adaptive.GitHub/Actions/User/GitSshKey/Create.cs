@@ -48,7 +48,7 @@ namespace GitHubClient.User.GitSshKey
         {
             if (NewKey != null)
             {
-                var newKeyValue = NewKey.GetValue(dc);
+                var newKeyValue = NewKey.GetValue(dc.State);
                 return await gitHubClient.User.GitSshKey.Create(newKeyValue).ConfigureAwait(false);
             }
 

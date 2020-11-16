@@ -66,26 +66,26 @@ namespace GitHubClient.Activity.Starring
         {
             if (User != null && Request != null && Options != null)
             {
-                var userValue = User.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Activity.Starring.GetAllForUserWithTimestamps(userValue, requestValue, optionsValue).ConfigureAwait(false);
             }
             if (User != null && Options != null)
             {
-                var userValue = User.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Activity.Starring.GetAllForUserWithTimestamps(userValue, optionsValue).ConfigureAwait(false);
             }
             if (User != null && Request != null)
             {
-                var userValue = User.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Activity.Starring.GetAllForUserWithTimestamps(userValue, requestValue).ConfigureAwait(false);
             }
             if (User != null)
             {
-                var userValue = User.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.Activity.Starring.GetAllForUserWithTimestamps(userValue).ConfigureAwait(false);
             }
 

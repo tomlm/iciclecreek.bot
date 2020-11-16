@@ -58,8 +58,8 @@ namespace GitHubClient.Activity.Notifications
         {
             if (Id != null && ThreadSubscription != null)
             {
-                var idValue = Id.GetValue(dc);
-                var threadSubscriptionValue = ThreadSubscription.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var threadSubscriptionValue = ThreadSubscription.GetValue(dc.State);
                 return await gitHubClient.Activity.Notifications.SetThreadSubscription((Int32)idValue, threadSubscriptionValue).ConfigureAwait(false);
             }
 

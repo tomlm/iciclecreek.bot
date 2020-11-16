@@ -83,54 +83,54 @@ namespace GitHubClient.Repository
         {
             if (Owner != null && Name != null && IncludeAnonymous != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var includeAnonymousValue = IncludeAnonymous.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var includeAnonymousValue = IncludeAnonymous.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors(ownerValue, nameValue, includeAnonymousValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors(ownerValue, nameValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null && IncludeAnonymous != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var includeAnonymousValue = IncludeAnonymous.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var includeAnonymousValue = IncludeAnonymous.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors(ownerValue, nameValue, includeAnonymousValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && IncludeAnonymous != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var includeAnonymousValue = IncludeAnonymous.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var includeAnonymousValue = IncludeAnonymous.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors((Int64)repositoryIdValue, includeAnonymousValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors(ownerValue, nameValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Options != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors((Int64)repositoryIdValue, optionsValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && IncludeAnonymous != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var includeAnonymousValue = IncludeAnonymous.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var includeAnonymousValue = IncludeAnonymous.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors((Int64)repositoryIdValue, includeAnonymousValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.Repository.GetAllContributors((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

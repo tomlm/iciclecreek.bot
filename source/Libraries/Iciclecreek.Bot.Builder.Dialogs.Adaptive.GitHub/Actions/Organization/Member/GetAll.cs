@@ -75,54 +75,54 @@ namespace GitHubClient.Organization.Member
         {
             if (Org != null && Filter != null && Role != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
-                var roleValue = Role.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
+                var roleValue = Role.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, filterValue, roleValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Filter != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, filterValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Role != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var roleValue = Role.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var roleValue = Role.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, roleValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Filter != null && Role != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
-                var roleValue = Role.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
+                var roleValue = Role.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, filterValue, roleValue).ConfigureAwait(false);
             }
             if (Org != null && Options != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, optionsValue).ConfigureAwait(false);
             }
             if (Org != null && Filter != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var filterValue = Filter.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var filterValue = Filter.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, filterValue).ConfigureAwait(false);
             }
             if (Org != null && Role != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var roleValue = Role.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var roleValue = Role.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue, roleValue).ConfigureAwait(false);
             }
             if (Org != null)
             {
-                var orgValue = Org.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
                 return await gitHubClient.Organization.Member.GetAll(orgValue).ConfigureAwait(false);
             }
 

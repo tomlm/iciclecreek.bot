@@ -47,7 +47,7 @@ namespace GitHubClient.User.GitSshKey
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.User.GitSshKey.GetAllForCurrent(optionsValue).ConfigureAwait(false);
             }
             else

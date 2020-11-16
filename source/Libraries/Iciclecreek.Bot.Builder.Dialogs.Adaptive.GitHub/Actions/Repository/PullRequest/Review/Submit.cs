@@ -95,19 +95,19 @@ namespace GitHubClient.Repository.PullRequest.Review
         {
             if (Owner != null && Name != null && Number != null && ReviewId != null && SubmitMessage != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
-                var submitMessageValue = SubmitMessage.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
+                var submitMessageValue = SubmitMessage.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.Submit(ownerValue, nameValue, (Int32)numberValue, (Int64)reviewIdValue, submitMessageValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && ReviewId != null && SubmitMessage != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var reviewIdValue = ReviewId.GetValue(dc);
-                var submitMessageValue = SubmitMessage.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var reviewIdValue = ReviewId.GetValue(dc.State);
+                var submitMessageValue = SubmitMessage.GetValue(dc.State);
                 return await gitHubClient.Repository.PullRequest.Review.Submit((Int64)repositoryIdValue, (Int32)numberValue, (Int64)reviewIdValue, submitMessageValue).ConfigureAwait(false);
             }
 

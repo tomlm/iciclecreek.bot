@@ -58,8 +58,8 @@ namespace GitHubClient.Migration.Migrations
         {
             if (Org != null && Id != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var idValue = Id.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Migration.Migrations.DeleteArchive(orgValue, (Int32)idValue);
             }
 

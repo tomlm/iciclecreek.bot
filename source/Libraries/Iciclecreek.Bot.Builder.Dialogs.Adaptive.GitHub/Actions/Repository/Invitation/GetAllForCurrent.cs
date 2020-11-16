@@ -47,7 +47,7 @@ namespace GitHubClient.Repository.Invitation
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Repository.Invitation.GetAllForCurrent(optionsValue).ConfigureAwait(false);
             }
             else

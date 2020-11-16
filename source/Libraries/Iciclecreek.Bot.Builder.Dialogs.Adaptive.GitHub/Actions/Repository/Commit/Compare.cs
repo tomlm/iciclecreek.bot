@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Commit
         {
             if (Owner != null && Name != null && Base != null && Head != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var baseValue = Base.GetValue(dc);
-                var headValue = Head.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var baseValue = Base.GetValue(dc.State);
+                var headValue = Head.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.Compare(ownerValue, nameValue, baseValue, headValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Base != null && Head != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var baseValue = Base.GetValue(dc);
-                var headValue = Head.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var baseValue = Base.GetValue(dc.State);
+                var headValue = Head.GetValue(dc.State);
                 return await gitHubClient.Repository.Commit.Compare((Int64)repositoryIdValue, baseValue, headValue).ConfigureAwait(false);
             }
 

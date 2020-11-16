@@ -48,7 +48,7 @@ namespace GitHubClient.Reaction
         {
             if (Number != null)
             {
-                var numberValue = Number.GetValue(dc);
+                var numberValue = Number.GetValue(dc.State);
                 return gitHubClient.Reaction.Delete((Int32)numberValue);
             }
 

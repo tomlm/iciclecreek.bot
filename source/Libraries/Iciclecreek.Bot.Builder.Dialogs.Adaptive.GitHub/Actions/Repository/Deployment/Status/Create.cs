@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Deployment.Status
         {
             if (Owner != null && Name != null && DeploymentId != null && NewDeploymentStatus != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
-                var newDeploymentStatusValue = NewDeploymentStatus.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
+                var newDeploymentStatusValue = NewDeploymentStatus.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.Create(ownerValue, nameValue, (Int32)deploymentIdValue, newDeploymentStatusValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && DeploymentId != null && NewDeploymentStatus != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var deploymentIdValue = DeploymentId.GetValue(dc);
-                var newDeploymentStatusValue = NewDeploymentStatus.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var deploymentIdValue = DeploymentId.GetValue(dc.State);
+                var newDeploymentStatusValue = NewDeploymentStatus.GetValue(dc.State);
                 return await gitHubClient.Repository.Deployment.Status.Create((Int64)repositoryIdValue, (Int32)deploymentIdValue, newDeploymentStatusValue).ConfigureAwait(false);
             }
 

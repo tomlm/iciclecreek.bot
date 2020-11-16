@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project.Card
         {
             if (ColumnId != null && NewProjectCard != null)
             {
-                var columnIdValue = ColumnId.GetValue(dc);
-                var newProjectCardValue = NewProjectCard.GetValue(dc);
+                var columnIdValue = ColumnId.GetValue(dc.State);
+                var newProjectCardValue = NewProjectCard.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Card.Create((Int32)columnIdValue, newProjectCardValue).ConfigureAwait(false);
             }
 

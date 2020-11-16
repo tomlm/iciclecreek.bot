@@ -58,8 +58,8 @@ namespace GitHubClient.Gist
         {
             if (Id != null && GistUpdate != null)
             {
-                var idValue = Id.GetValue(dc);
-                var gistUpdateValue = GistUpdate.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var gistUpdateValue = GistUpdate.GetValue(dc.State);
                 return await gitHubClient.Gist.Edit(idValue, gistUpdateValue).ConfigureAwait(false);
             }
 

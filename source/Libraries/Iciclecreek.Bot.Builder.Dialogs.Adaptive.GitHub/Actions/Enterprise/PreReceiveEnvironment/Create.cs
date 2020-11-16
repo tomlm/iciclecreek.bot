@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.PreReceiveEnvironment
         {
             if (NewPreReceiveEnvironment != null)
             {
-                var newPreReceiveEnvironmentValue = NewPreReceiveEnvironment.GetValue(dc);
+                var newPreReceiveEnvironmentValue = NewPreReceiveEnvironment.GetValue(dc.State);
                 return await gitHubClient.Enterprise.PreReceiveEnvironment.Create(newPreReceiveEnvironmentValue).ConfigureAwait(false);
             }
 

@@ -47,7 +47,7 @@ namespace GitHubClient.Organization
         {
             if (Options != null)
             {
-                var optionsValue = Options.GetValue(dc);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Organization.GetAllForCurrent(optionsValue).ConfigureAwait(false);
             }
             else

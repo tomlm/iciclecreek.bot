@@ -85,17 +85,17 @@ namespace GitHubClient.Repository.Content
         {
             if (Owner != null && Name != null && Path != null && Request != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.UpdateFile(ownerValue, nameValue, pathValue, requestValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Path != null && Request != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var pathValue = Path.GetValue(dc);
-                var requestValue = Request.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var pathValue = Path.GetValue(dc.State);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Repository.Content.UpdateFile((Int64)repositoryIdValue, pathValue, requestValue).ConfigureAwait(false);
             }
 

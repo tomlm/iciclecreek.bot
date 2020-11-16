@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project
         {
             if (Organization != null && NewProject != null)
             {
-                var organizationValue = Organization.GetValue(dc);
-                var newProjectValue = NewProject.GetValue(dc);
+                var organizationValue = Organization.GetValue(dc.State);
+                var newProjectValue = NewProject.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.CreateForOrganization(organizationValue, newProjectValue).ConfigureAwait(false);
             }
 

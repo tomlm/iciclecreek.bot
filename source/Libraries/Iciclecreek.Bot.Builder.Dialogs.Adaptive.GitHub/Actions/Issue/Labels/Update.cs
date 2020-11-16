@@ -85,17 +85,17 @@ namespace GitHubClient.Issue.Labels
         {
             if (Owner != null && Name != null && LabelName != null && LabelUpdate != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var labelNameValue = LabelName.GetValue(dc);
-                var labelUpdateValue = LabelUpdate.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var labelNameValue = LabelName.GetValue(dc.State);
+                var labelUpdateValue = LabelUpdate.GetValue(dc.State);
                 return await gitHubClient.Issue.Labels.Update(ownerValue, nameValue, labelNameValue, labelUpdateValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && LabelName != null && LabelUpdate != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var labelNameValue = LabelName.GetValue(dc);
-                var labelUpdateValue = LabelUpdate.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var labelNameValue = LabelName.GetValue(dc.State);
+                var labelUpdateValue = LabelUpdate.GetValue(dc.State);
                 return await gitHubClient.Issue.Labels.Update((Int64)repositoryIdValue, labelNameValue, labelUpdateValue).ConfigureAwait(false);
             }
 

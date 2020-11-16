@@ -48,7 +48,7 @@ namespace GitHubClient.Enterprise.Organization
         {
             if (NewOrganization != null)
             {
-                var newOrganizationValue = NewOrganization.GetValue(dc);
+                var newOrganizationValue = NewOrganization.GetValue(dc.State);
                 return await gitHubClient.Enterprise.Organization.Create(newOrganizationValue).ConfigureAwait(false);
             }
 

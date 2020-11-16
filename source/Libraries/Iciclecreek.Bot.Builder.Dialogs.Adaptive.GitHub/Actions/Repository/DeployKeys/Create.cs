@@ -75,15 +75,15 @@ namespace GitHubClient.Repository.DeployKeys
         {
             if (Owner != null && Name != null && NewDeployKey != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var newDeployKeyValue = NewDeployKey.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var newDeployKeyValue = NewDeployKey.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.Create(ownerValue, nameValue, newDeployKeyValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && NewDeployKey != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var newDeployKeyValue = NewDeployKey.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var newDeployKeyValue = NewDeployKey.GetValue(dc.State);
                 return await gitHubClient.Repository.DeployKeys.Create((Int64)repositoryIdValue, newDeployKeyValue).ConfigureAwait(false);
             }
 

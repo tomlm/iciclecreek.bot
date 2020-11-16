@@ -68,9 +68,9 @@ namespace GitHubClient.Migration.Migrations
         {
             if (Org != null && Id != null && Repo != null)
             {
-                var orgValue = Org.GetValue(dc);
-                var idValue = Id.GetValue(dc);
-                var repoValue = Repo.GetValue(dc);
+                var orgValue = Org.GetValue(dc.State);
+                var idValue = Id.GetValue(dc.State);
+                var repoValue = Repo.GetValue(dc.State);
                 return gitHubClient.Migration.Migrations.UnlockRepository(orgValue, (Int32)idValue, repoValue);
             }
 

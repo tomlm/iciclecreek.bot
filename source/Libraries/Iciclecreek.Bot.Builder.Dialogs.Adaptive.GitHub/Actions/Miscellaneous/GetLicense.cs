@@ -48,7 +48,7 @@ namespace GitHubClient.Miscellaneous
         {
             if (Key != null)
             {
-                var keyValue = Key.GetValue(dc);
+                var keyValue = Key.GetValue(dc.State);
                 return await gitHubClient.Miscellaneous.GetLicense(keyValue).ConfigureAwait(false);
             }
 

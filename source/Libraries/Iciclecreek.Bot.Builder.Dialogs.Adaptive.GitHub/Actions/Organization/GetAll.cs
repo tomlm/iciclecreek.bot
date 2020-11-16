@@ -47,7 +47,7 @@ namespace GitHubClient.Organization
         {
             if (Request != null)
             {
-                var requestValue = Request.GetValue(dc);
+                var requestValue = Request.GetValue(dc.State);
                 return await gitHubClient.Organization.GetAll(requestValue).ConfigureAwait(false);
             }
             else

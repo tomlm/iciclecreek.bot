@@ -48,7 +48,7 @@ namespace GitHubClient.Organization.Team
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Organization.Team.Delete((Int32)idValue);
             }
 

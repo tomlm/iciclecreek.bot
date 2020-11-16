@@ -48,7 +48,7 @@ namespace GitHubClient.User.GpgKey
         {
             if (NewGpgKey != null)
             {
-                var newGpgKeyValue = NewGpgKey.GetValue(dc);
+                var newGpgKeyValue = NewGpgKey.GetValue(dc.State);
                 return await gitHubClient.User.GpgKey.Create(newGpgKeyValue).ConfigureAwait(false);
             }
 

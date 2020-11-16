@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project.Column
         {
             if (ProjectId != null && NewProjectColumn != null)
             {
-                var projectIdValue = ProjectId.GetValue(dc);
-                var newProjectColumnValue = NewProjectColumn.GetValue(dc);
+                var projectIdValue = ProjectId.GetValue(dc.State);
+                var newProjectColumnValue = NewProjectColumn.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Column.Create((Int32)projectIdValue, newProjectColumnValue).ConfigureAwait(false);
             }
 

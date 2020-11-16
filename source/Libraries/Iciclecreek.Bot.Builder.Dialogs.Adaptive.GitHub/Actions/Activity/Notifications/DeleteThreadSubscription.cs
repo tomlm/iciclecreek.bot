@@ -48,7 +48,7 @@ namespace GitHubClient.Activity.Notifications
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Activity.Notifications.DeleteThreadSubscription((Int32)idValue);
             }
 

@@ -58,8 +58,8 @@ namespace GitHubClient.Repository.Project.Column
         {
             if (Id != null && ProjectColumnUpdate != null)
             {
-                var idValue = Id.GetValue(dc);
-                var projectColumnUpdateValue = ProjectColumnUpdate.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
+                var projectColumnUpdateValue = ProjectColumnUpdate.GetValue(dc.State);
                 return await gitHubClient.Repository.Project.Column.Update((Int32)idValue, projectColumnUpdateValue).ConfigureAwait(false);
             }
 

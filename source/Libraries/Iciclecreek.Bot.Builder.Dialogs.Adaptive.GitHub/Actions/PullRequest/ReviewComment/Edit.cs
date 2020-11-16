@@ -85,17 +85,17 @@ namespace GitHubClient.PullRequest.ReviewComment
         {
             if (Owner != null && Name != null && Number != null && Comment != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var commentValue = Comment.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var commentValue = Comment.GetValue(dc.State);
                 return await gitHubClient.PullRequest.ReviewComment.Edit(ownerValue, nameValue, (Int32)numberValue, commentValue).ConfigureAwait(false);
             }
             if (RepositoryId != null && Number != null && Comment != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
-                var numberValue = Number.GetValue(dc);
-                var commentValue = Comment.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
+                var numberValue = Number.GetValue(dc.State);
+                var commentValue = Comment.GetValue(dc.State);
                 return await gitHubClient.PullRequest.ReviewComment.Edit((Int64)repositoryIdValue, (Int32)numberValue, commentValue).ConfigureAwait(false);
             }
 

@@ -65,13 +65,13 @@ namespace GitHubClient.GitHubApps
         {
             if (Owner != null && Repo != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var repoValue = Repo.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var repoValue = Repo.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetRepositoryInstallationForCurrent(ownerValue, repoValue).ConfigureAwait(false);
             }
             if (RepositoryId != null)
             {
-                var repositoryIdValue = RepositoryId.GetValue(dc);
+                var repositoryIdValue = RepositoryId.GetValue(dc.State);
                 return await gitHubClient.GitHubApps.GetRepositoryInstallationForCurrent((Int64)repositoryIdValue).ConfigureAwait(false);
             }
 

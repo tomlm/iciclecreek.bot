@@ -48,7 +48,7 @@ namespace GitHubClient.Gist
         {
             if (Id != null)
             {
-                var idValue = Id.GetValue(dc);
+                var idValue = Id.GetValue(dc.State);
                 return gitHubClient.Gist.Star(idValue);
             }
 

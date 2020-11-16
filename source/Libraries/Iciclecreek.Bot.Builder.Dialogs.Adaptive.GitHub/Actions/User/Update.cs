@@ -48,7 +48,7 @@ namespace GitHubClient.User
         {
             if (User != null)
             {
-                var userValue = User.GetValue(dc);
+                var userValue = User.GetValue(dc.State);
                 return await gitHubClient.User.Update(userValue).ConfigureAwait(false);
             }
 

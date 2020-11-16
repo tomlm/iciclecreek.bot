@@ -67,15 +67,15 @@ namespace GitHubClient.Activity.Events
         {
             if (Owner != null && Name != null && Options != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
-                var optionsValue = Options.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
+                var optionsValue = Options.GetValue(dc.State);
                 return await gitHubClient.Activity.Events.GetAllForRepositoryNetwork(ownerValue, nameValue, optionsValue).ConfigureAwait(false);
             }
             if (Owner != null && Name != null)
             {
-                var ownerValue = Owner.GetValue(dc);
-                var nameValue = Name.GetValue(dc);
+                var ownerValue = Owner.GetValue(dc.State);
+                var nameValue = Name.GetValue(dc.State);
                 return await gitHubClient.Activity.Events.GetAllForRepositoryNetwork(ownerValue, nameValue).ConfigureAwait(false);
             }
 
