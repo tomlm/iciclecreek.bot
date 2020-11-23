@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Lucene.Net.Analysis;
 using Newtonsoft.Json.Linq;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
     /// Represents a Value

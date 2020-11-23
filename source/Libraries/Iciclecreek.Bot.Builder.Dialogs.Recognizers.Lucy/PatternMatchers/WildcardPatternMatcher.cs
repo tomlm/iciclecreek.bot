@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     /// <summary>
     /// Will match any unclaimed tokens

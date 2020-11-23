@@ -8,9 +8,9 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
-    public class LupaModel
+    public class LucyModel
     {
         public Dictionary<string, string> Macros { get; set; }
 

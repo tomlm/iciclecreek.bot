@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     /// <summary>
-    /// Matches ZeroOrMore (token)* ordinality
+    /// Matches OneOrMore (token)+ ordinality
     /// </summary>
-    public class ZeroOrMorePatternMatcher : PatternMatcher
+    public class OneOrMorePatternMatcher : PatternMatcher
     {
-        public ZeroOrMorePatternMatcher()
+        public OneOrMorePatternMatcher()
         {
         }
 
-        public ZeroOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
+        public OneOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
         {
             PatternMatchers.AddRange(patternMatchers);
         }
@@ -22,40 +22,42 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();
 
         /// <summary>
-        /// Always returns true, but will advance start for each match.
+        /// Returns true if thre is 1 match, and always advacnces the start
         /// </summary>
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, int start)
         {
-            MatchResult matchResult = new MatchResult()
-            {
-                Matched = true,
-                NextStart = start
-            };
+            MatchResult matchResult = new MatchResult();
 
             bool found = false;
             do
             {
                 found = false;
-
                 foreach (var patternMatcher in PatternMatchers)
                 {
                     var result = patternMatcher.Matches(context, start);
                     if (result.Matched)
                     {
-                        start = result.NextStart;
-                        matchResult.NextStart = result.NextStart;
                         found = true;
+                        start = result.NextStart;
+
+                        if (result.NextStart > matchResult.NextStart)
+                        {
+                            matchResult.NextStart = result.NextStart;
+                        }
+
+                        matchResult.Matched = true;
+                        break;
                     }
                 }
-            }
-            while (found);
+
+            } while (found);
 
             return matchResult;
         }
 
-        public override string ToString() => $"ZeroOrMore({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"OneOrMore({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

@@ -16,15 +16,15 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
-    public class LupaRecognizer : Recognizer
+    public class LucyRecognizer : Recognizer
     {
         private Lazy<Analyzer> exactAnalyzer;
 
         private Lazy<Analyzer> fuzzyAnalyzer;
 
-        public LupaRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
         {
             exactAnalyzer = new Lazy<Analyzer>(() => new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48, CreateStopWords()));
@@ -46,7 +46,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
         }
 
         [JsonProperty("model")]
-        public ObjectExpression<LupaModel> Model { get; set; }
+        public ObjectExpression<LucyModel> Model { get; set; }
 
         [JsonProperty("externalEntityRecognizer")]
         public Recognizer ExternalEntityRecognizer { get; set; }

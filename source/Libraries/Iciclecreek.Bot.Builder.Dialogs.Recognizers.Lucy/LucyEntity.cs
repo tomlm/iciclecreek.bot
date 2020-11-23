@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
     /// Entities which are tracked in a MatchContext
     /// </summary>
-    public class LupaEntity
+    public class LucyEntity
     {
         // name of the entity type
         public string Type { get; set; }

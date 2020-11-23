@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     public enum Ordinality
     {

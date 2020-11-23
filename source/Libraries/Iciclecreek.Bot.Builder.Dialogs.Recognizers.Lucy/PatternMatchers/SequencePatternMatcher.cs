@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucene.Net.Analysis;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     /// <summary>
     /// PatternMatcher which evaluates a sequence of PatterMatchers

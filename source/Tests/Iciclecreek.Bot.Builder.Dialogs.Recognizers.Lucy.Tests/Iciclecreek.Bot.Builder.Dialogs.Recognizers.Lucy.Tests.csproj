@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuPa\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.csproj" />
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj" />
   </ItemGroup>
 
 </Project>

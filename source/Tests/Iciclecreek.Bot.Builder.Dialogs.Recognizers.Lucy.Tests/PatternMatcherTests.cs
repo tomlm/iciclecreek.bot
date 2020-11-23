@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Phonetic;
 using Lucene.Net.Analysis.Phonetic.Language.Bm;
@@ -14,7 +14,7 @@ using Lucene.Net.Util;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 {
     [TestClass]
     public class PatternMatcherTests
@@ -45,14 +45,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void CreatesTextTokens()
         {
-            var engine = new LupaEngine(exactAnalyzer.Value, fuzzyAnalyzer.Value)
+            var engine = new LucyEngine(exactAnalyzer.Value, fuzzyAnalyzer.Value)
             {
                 IncludeInternalEntites = true
             };
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
@@ -79,7 +79,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void TokenPatternMatcherTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -96,7 +96,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -107,7 +107,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void FuzzyTokenPatternMatcherTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -126,7 +126,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n"+LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n"+LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -137,7 +137,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void PatternParser_FuzzyModifierTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -155,7 +155,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -166,7 +166,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void PatternParser_OneOfModifierTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -184,7 +184,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -193,7 +193,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             text = "this is a nottest notdog notfrog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(0, entities.Count);
@@ -202,7 +202,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void PatternParser_OneOrMoreModifierTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -220,7 +220,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -231,7 +231,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void PatternParser_ZeroOrMoreModifierTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -249,7 +249,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -268,7 +268,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void PatternParser_ZeroOrOneModifierTests()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -286,7 +286,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n"+LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n"+LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -295,7 +295,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             text = "this is a test dog frog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -306,7 +306,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void CanonicalValuesTest()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -327,7 +327,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(2, entities.Count);
@@ -343,7 +343,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void WildcardPatternTest()
         {
-            var engine = new LupaEngine(new LupaModel()
+            var engine = new LucyEngine(new LucyModel()
             {
                 Entities = new List<EntityModel>()
                 {
@@ -360,7 +360,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "my name is joe smith";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@name").ToList();
             Assert.AreEqual(1, entities.Count);

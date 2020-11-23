@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     /// <summary>
     /// Will match if there is an existing entity @foo at given start location

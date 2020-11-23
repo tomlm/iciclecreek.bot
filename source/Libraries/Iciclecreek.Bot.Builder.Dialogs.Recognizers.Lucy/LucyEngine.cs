@@ -4,35 +4,35 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime.Atn;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Util;
 using NuGet.Packaging;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
-    /// LupaEngine uses a LupaModel to do LU pattern matching for entities.
+    /// LucyEngine uses a LucyModel to do LU pattern matching for entities.
     /// </summary>
-    public class LupaEngine
+    public class LucyEngine
     {
-        private LupaModel _lupaModel;
+        private LucyModel _lupaModel;
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
 
-        public LupaEngine(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
+        public LucyEngine(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
         {
-            this._lupaModel = new LupaModel();
+            this._lupaModel = new LucyModel();
             this._exactAnalyzer = exactAnalyzer;
             this._fuzzyAnalyzer = fuzzyAnalyzer;
 
             LoadModel();
         }
 
-        public LupaEngine(LupaModel model, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
+        public LucyEngine(LucyModel model, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
         {
             this._lupaModel = model;
             this._exactAnalyzer = exactAnalyzer;
@@ -45,7 +45,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
         public bool IncludeInternalEntites { get; set; }
 
-        public IEnumerable<LupaEntity> MatchEntities(string text, IEnumerable<LupaEntity> externalEntities = null)
+        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null)
         {
             var context = new MatchContext()
             {
@@ -80,7 +80,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
                         if (matchResult.Matched)
                         {
                             // add it to the entities.
-                            context.Entities.Add(new LupaEntity()
+                            context.Entities.Add(new LucyEntity()
                             {
                                 Type = entityPattern.Name,
                                 Resolution = entityPattern.Resolution,
@@ -106,7 +106,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
                                                             entity.Start == tokenEntity.Start))
                         {
                             // then make it a wildcard entity
-                            context.Entities.Add(new LupaEntity()
+                            context.Entities.Add(new LucyEntity()
                             {
                                 Type = WildcardPatternMatcher.ENTITYTYPE,
                                 Resolution = tokenEntity.Text,
@@ -136,7 +136,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
         /// <param name="text">original text</param>
         /// <param name="entities">entities</param>
         /// <returns></returns>
-        public static string FormatResults(string text, IEnumerable<LupaEntity> entities)
+        public static string FormatResults(string text, IEnumerable<LucyEntity> entities)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(text);
@@ -148,7 +148,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
             return sb.ToString();
         }
 
-        private static string FormatEntities(string text, IEnumerable<LupaEntity> entities)
+        private static string FormatEntities(string text, IEnumerable<LucyEntity> entities)
         {
             StringBuilder sb = new StringBuilder();
             int last = 0;
@@ -200,7 +200,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
             return pattern;
         }
 
-        public IEnumerable<LupaEntity> Tokenize(string text)
+        public IEnumerable<LucyEntity> Tokenize(string text)
         {
             var tokens = new List<Token>();
 
@@ -227,7 +227,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
                             skipFuzzy = true;
                         }
 
-                        yield return new LupaEntity()
+                        yield return new LucyEntity()
                         {
                             Type = TokenPatternMatcher.ENTITYTYPE,
                             Text = token,
@@ -245,7 +245,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
                                     var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
                                     fuzzyTokenStream.Reset();
                                     fuzzyTokenStream.IncrementToken();
-                                    yield return new LupaEntity()
+                                    yield return new LucyEntity()
                                     {
                                         Type = FuzzyTokenPatternMatcher.ENTITYTYPE,
                                         Text = fuzzyTermAtt.ToString(),

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
     /// Data structure used to track entities that have been computed over the text.
@@ -18,9 +18,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
         public string Text { get; set; }
 
-        public HashSet<LupaEntity> Entities { get; set; } = new HashSet<LupaEntity>(new EntityTokenComparer());
+        public HashSet<LucyEntity> Entities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
 
-        public IEnumerable<LupaEntity> FindNextEntities(string entityType, int start, int slop = 0)
+        public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start, int slop = 0)
         {
             return this.Entities.Where(entityToken =>
                 entityToken.Type == entityType &&

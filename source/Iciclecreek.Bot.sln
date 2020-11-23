@@ -57,9 +57,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{69BDBCF0-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepoBot", "Bots\RepoBot\RepoBot.csproj", "{BA948957-71F8-4A46-B6C5-B56C11BF1367}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuPa\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.csproj", "{39AA4C94-D224-42F1-A40B-1997A24EC61B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj", "{39AA4C94-D224-42F1-A40B-1997A24EC61B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

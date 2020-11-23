@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
     /// Class which represents a rule to execute, and the Entity to create if it matches.

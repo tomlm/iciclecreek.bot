@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.TokenAttributes;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     public abstract class PatternMatcher
     {

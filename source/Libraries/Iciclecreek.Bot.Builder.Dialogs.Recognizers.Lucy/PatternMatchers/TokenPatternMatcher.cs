@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Bot.Builder.Dialogs.Memory.Scopes;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers
 {
     /// <summary>
     /// Will match if htere is a @Token that matches.
