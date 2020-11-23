@@ -7,18 +7,20 @@ using Microsoft.Bot.Builder.Dialogs.Memory.Scopes;
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers
 {
     /// <summary>
-    /// Will match if htere is a @Text or @FuzzyText that matches.
+    /// Will match if htere is a @Token that matches.
     /// </summary>
-    public class FuzzyTextPatternMatcher : PatternMatcher
+    public class TokenPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "@FuzzyText";
+        public const string ENTITYTYPE = "@Token";
 
-        public FuzzyTextPatternMatcher(string textToken)
+        public TokenPatternMatcher(string textToken)
         {
             this.Token = textToken;
         }
 
         public string Token { get; set; }
+
+        public bool FuzzyMatch { get; set; }
 
         public override MatchResult Matches(MatchContext utterance, int start)
         {
@@ -33,7 +35,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Match
             return matchResult;
         }
 
-        public override string ToString() => $"FuzzyText({Token})";
+        public override string ToString() => $"Text({Token})";
 
     }
 }

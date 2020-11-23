@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Antlr4.Runtime.Atn;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
@@ -61,7 +62,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
             // foreach text token
             foreach (var textEntity in matchContext.Entities
-                                        .Where(entity => entity.Type == TextPatternMatcher.ENTITYTYPE)
+                                        .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
                                         .OrderBy(entity => entity.Start))
             {
                 // foreach entity pattern
@@ -86,6 +87,39 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
             }
 
             return matchContext.Entities;
+        }
+
+        public static string FormatResults(string text, IEnumerable<LupaEntity> entities)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(text);
+            foreach(var grp in entities.Where(e => e.Type != FuzzyTokenPatternMatcher.ENTITYTYPE && e.Type != TokenPatternMatcher.ENTITYTYPE).GroupBy(entity => entity.Type))
+            {
+                sb.AppendLine(FormatEntities(text, grp));
+            }
+
+            return sb.ToString();
+        }
+
+        private static string FormatEntities(string text, IEnumerable<LupaEntity> entities)
+        {
+            StringBuilder sb = new StringBuilder();
+            int last = 0;
+            foreach(var entity in entities)
+            {
+                sb.Append(new String(' ', entity.Start - last));
+                if (entity.End == entity.Start + 1)
+                {
+                    sb.Append("^");
+                }
+                else
+                {
+                    sb.Append($"^{new String('_', entity.End - entity.Start - 2)}^");
+                }
+                last = entity.End;
+            }
+            sb.Append($"{new String(' ', text.Length - last)} {entities.First().Type}");
+            return sb.ToString();
         }
 
         private void LoadModel()
@@ -148,7 +182,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
                         yield return new LupaEntity()
                         {
-                            Type = TextPatternMatcher.ENTITYTYPE,
+                            Type = TokenPatternMatcher.ENTITYTYPE,
                             Text = token,
                             Start = offsetAtt.StartOffset,
                             End = offsetAtt.EndOffset
@@ -166,7 +200,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
                                     fuzzyTokenStream.IncrementToken();
                                     yield return new LupaEntity()
                                     {
-                                        Type = FuzzyTextPatternMatcher.ENTITYTYPE,
+                                        Type = FuzzyTokenPatternMatcher.ENTITYTYPE,
                                         Text = fuzzyTermAtt.ToString(),
                                         Start = offsetAtt.StartOffset,
                                         End = offsetAtt.EndOffset

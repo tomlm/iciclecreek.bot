@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
@@ -40,7 +41,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
             })
         );
 
-
         [TestMethod]
         public void CreatesTextTokens()
         {
@@ -48,14 +48,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            var entities = results.Where(e => e.Type == TextPatternMatcher.ENTITYTYPE).ToList();
+            var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
             Assert.AreEqual("this", entities[0].Text);
             Assert.AreEqual("is", entities[1].Text);
             Assert.AreEqual("a", entities[2].Text);
             Assert.AreEqual("test", entities[3].Text);
 
-            entities = results.Where(e => e.Type == FuzzyTextPatternMatcher.ENTITYTYPE).ToList();
+            entities = results.Where(e => e.Type == FuzzyTokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
             Assert.AreEqual("this", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
             Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
@@ -113,6 +113,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n"+LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -141,6 +142,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -169,6 +171,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -197,6 +200,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -225,6 +229,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -261,6 +266,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n"+LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -269,6 +275,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             text = "this is a test dog frog";
             results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -300,6 +307,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(2, entities.Count);

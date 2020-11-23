@@ -234,7 +234,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                     while (tokenStream.IncrementToken())
                     {
                         string token = termAtt.ToString();
-                        sequence.PatternMatchers.Add(new TextPatternMatcher(token));
+                        sequence.PatternMatchers.Add(new TokenPatternMatcher(token));
                     }
                 }
             }
@@ -276,7 +276,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                             oneOf = new OneOfPatternMatcher();
                         }
 
-                        oneOf.PatternMatchers.Add(new FuzzyTextPatternMatcher(token));
+                        oneOf.PatternMatchers.Add(new FuzzyTokenPatternMatcher(token));
                     }
 
                     if (oneOf != null && oneOf.PatternMatchers.Any())
