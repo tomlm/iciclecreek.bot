@@ -19,39 +19,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
     [TestClass]
     public class PatternMatcherTests
     {
-        private static CharArraySet CreateStopWords(string[] stopWords = null)
-        {
-            return CharArraySet.UnmodifiableSet(new CharArraySet(LuceneVersion.LUCENE_48, stopWords ?? Array.Empty<string>(), false));
-        }
-
-        public static Lazy<Analyzer> exactAnalyzer = new Lazy<Analyzer>(() => new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48, CreateStopWords()));
-
-        public static Lazy<Analyzer> fuzzyAnalyzer = new Lazy<Analyzer>(() =>
-            Analyzer.NewAnonymous((field, textReader) =>
-            {
-                Tokenizer tokenizer = new StandardTokenizer(LuceneVersion.LUCENE_48, textReader);
-                // TokenStream stream = new DoubleMetaphoneFilter(tokenizer, 6, false);
-                var factory = new BeiderMorseFilterFactory(new Dictionary<string, string>()
-                {
-                    { "nameType", NameType.GENERIC.ToString()},
-                    { "ruleType", RuleType.APPROX.ToString() },
-                    { "languageSet", "auto"}
-                });
-                TokenStream stream = factory.Create(tokenizer);
-                return new TokenStreamComponents(tokenizer, stream);
-            })
-        );
-
         [TestMethod]
         public void CreatesTextTokens()
         {
-            var engine = new LucyEngine(exactAnalyzer.Value, fuzzyAnalyzer.Value)
-            {
-                IncludeInternalEntites = true
-            };
+            var engine = new LucyEngine(new LucyModel());
 
             string text = "this is a test";
-            var results = engine.MatchEntities(text, null);
+            var results = engine.MatchEntities(text, includeTokens: true);
             Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
@@ -92,7 +66,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
@@ -121,8 +95,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
@@ -150,8 +123,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
@@ -179,8 +151,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
@@ -215,8 +186,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
@@ -244,8 +214,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
@@ -281,8 +250,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
@@ -323,7 +291,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
@@ -356,7 +324,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         }
                     }
                 }
-            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            });
 
             string text = "my name is joe smith";
             var results = engine.MatchEntities(text, null);

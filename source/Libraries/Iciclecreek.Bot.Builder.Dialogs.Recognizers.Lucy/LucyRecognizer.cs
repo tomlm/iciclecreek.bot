@@ -20,29 +20,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     public class LucyRecognizer : Recognizer
     {
-        private Lazy<Analyzer> exactAnalyzer;
-
-        private Lazy<Analyzer> fuzzyAnalyzer;
-
         public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
         {
-            exactAnalyzer = new Lazy<Analyzer>(() => new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48, CreateStopWords()));
-
-            fuzzyAnalyzer = new Lazy<Analyzer>(() => Analyzer.NewAnonymous((field, textReader) =>
-                {
-                    Tokenizer tokenizer = new StandardTokenizer(LuceneVersion.LUCENE_48, textReader);
-                    // TokenStream stream = new DoubleMetaphoneFilter(tokenizer, 6, false);
-                    var factory = new BeiderMorseFilterFactory(new Dictionary<string, string>()
-                    {
-                        { "nameType", NameType.GENERIC.ToString()},
-                        { "ruleType", RuleType.APPROX.ToString() },
-                        { "languageSet", "auto"}
-                    });
-                    TokenStream stream = factory.Create(tokenizer);
-                    return new TokenStreamComponents(tokenizer, stream);
-                })
-            );
         }
 
         [JsonProperty("model")]
@@ -64,15 +44,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         protected async virtual Task<RecognizerResult> _RecognizeAsync(DialogContext dialogContext, Activity activity, CancellationToken cancellationToken = default)
         {
-
-
             await Task.Delay(0);
             return null;
-        }
-
-        private CharArraySet CreateStopWords(string[] stopWords = null)
-        {
-            return CharArraySet.UnmodifiableSet(new CharArraySet(LuceneVersion.LUCENE_48, stopWords ?? Array.Empty<string>(), false));
         }
     }
 }

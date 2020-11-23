@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,11 @@ using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Core;
+using Lucene.Net.Analysis.Phonetic;
+using Lucene.Net.Analysis.Phonetic.Language.Bm;
+using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis.TokenAttributes;
+using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 using NuGet.Packaging;
 
@@ -23,29 +28,44 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
 
-        public LucyEngine(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
-        {
-            this._lupaModel = new LucyModel();
-            this._exactAnalyzer = exactAnalyzer;
-            this._fuzzyAnalyzer = fuzzyAnalyzer;
-
-            LoadModel();
-        }
-
-        public LucyEngine(LucyModel model, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
+        public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null)
         {
             this._lupaModel = model;
-            this._exactAnalyzer = exactAnalyzer;
-            this._fuzzyAnalyzer = fuzzyAnalyzer;
+
+            this._exactAnalyzer = exactAnalyzer ??
+                new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.UnmodifiableSet(new CharArraySet(LuceneVersion.LUCENE_48, Array.Empty<string>(), false)));
+
+            this._fuzzyAnalyzer = fuzzyAnalyzer ??
+                Analyzer.NewAnonymous((field, textReader) =>
+                {
+                    Tokenizer tokenizer = new StandardTokenizer(LuceneVersion.LUCENE_48, textReader);
+                    // TokenStream stream = new DoubleMetaphoneFilter(tokenizer, 6, false);
+                    var factory = new BeiderMorseFilterFactory(new Dictionary<string, string>()
+                        {
+                            { "nameType", NameType.GENERIC.ToString()},
+                            { "ruleType", RuleType.APPROX.ToString() },
+                            { "languageSet", "auto"}
+                        });
+                    TokenStream stream = factory.Create(tokenizer);
+                    return new TokenStreamComponents(tokenizer, stream);
+                });
 
             LoadModel();
         }
 
+        /// <summary>
+        /// Patterns to match
+        /// </summary>
         public List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
 
-        public bool IncludeInternalEntites { get; set; }
-
-        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null)
+        /// <summary>
+        /// Match entities in given text
+        /// </summary>
+        /// <param name="text">text to match against.</param>
+        /// <param name="externalEntities">externally provided entities</param>
+        /// <param name="includeTokens">include tokens in results</param>
+        /// <returns>entities</returns>
+        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeTokens = false)
         {
             var context = new MatchContext()
             {
@@ -73,8 +93,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
+                        context.EntityPattern = entityPattern;
                         // see if it matches at this textEntity starting position.
                         var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
+
+                        Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
 
                         // if it matches
                         if (matchResult.Matched)
@@ -120,7 +143,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             } while (count != context.Entities.Count);
 
             // filter out internal entities
-            if (IncludeInternalEntites)
+            if (includeTokens)
             {
                 return context.Entities;
             }

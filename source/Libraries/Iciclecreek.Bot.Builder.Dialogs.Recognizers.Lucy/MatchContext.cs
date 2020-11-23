@@ -18,7 +18,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public string Text { get; set; }
 
+        /// <summary>
+        /// All of the current recognized entities
+        /// </summary>
         public HashSet<LucyEntity> Entities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+
+        /// <summary>
+        /// Current entity pattern being evaluated
+        /// </summary>
+        public EntityPattern EntityPattern { get; set; }
 
         public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start, int slop = 0)
         {
