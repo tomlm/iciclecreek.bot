@@ -59,7 +59,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepoBot", "Bots\RepoBot\Rep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuLu", "libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuLu\Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuLu.csproj", "{6F515C08-1A31-4115-95AD-0F5F897014EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuLuBuild", "Tools\LuLuBuild\LuLuBuild.csproj", "{FFF671A6-D95F-44F8-A111-554B21E50FDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuLuBuild", "Tools\LuLuBuild\LuLuBuild.csproj", "{FFF671A6-D95F-44F8-A111-554B21E50FDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.LuPa\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.csproj", "{39AA4C94-D224-42F1-A40B-1997A24EC61B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests", "tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -151,6 +155,14 @@ Global
 		{FFF671A6-D95F-44F8-A111-554B21E50FDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFF671A6-D95F-44F8-A111-554B21E50FDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFF671A6-D95F-44F8-A111-554B21E50FDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39AA4C94-D224-42F1-A40B-1997A24EC61B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39AA4C94-D224-42F1-A40B-1997A24EC61B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39AA4C94-D224-42F1-A40B-1997A24EC61B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39AA4C94-D224-42F1-A40B-1997A24EC61B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +190,8 @@ Global
 		{BA948957-71F8-4A46-B6C5-B56C11BF1367} = {69BDBCF0-EBF9-404D-8187-109F8142251E}
 		{6F515C08-1A31-4115-95AD-0F5F897014EA} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{FFF671A6-D95F-44F8-A111-554B21E50FDD} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
+		{39AA4C94-D224-42F1-A40B-1997A24EC61B} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}

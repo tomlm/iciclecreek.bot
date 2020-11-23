@@ -1,0 +1,155 @@
+# synonyms are simply macros that will expand when used in a pattern
+synonyms:
+  - name: $clear
+    values: [clear, forget, reset, delete]
+
+  - name: $is
+    values: [is, to, equals]
+
+  - name: $set
+    values: [set, change]
+
+  - name: $show
+    values: [show, what is]
+
+  - name: $name
+    values: [name, nom de plum]
+
+  - name: $departing
+    values: [departing, from, leaving, taking off]
+
+  - name: $destination
+    values: [arriving, destination, to, landing]
+
+  - name: $flight
+    values: [flight, trip, fly, travel, itinerary]
+
+entities:
+  # @airportCode entity
+  - name: "@airportCode"
+    patterns: 
+      - [LAX, "los angeles"]
+      - [DSM, "des moines"]
+      - [OHR, "o'hare","ohare"]
+      - [MID, "midway"]
+      - ORD
+
+  # @city entity
+  - name: "@city"
+    # fuzzyMatch means it will use match on things that sound the same, aka seatle == seattle
+    fuzzyMatch: true
+    patterns:
+      # array in a pattern is [resolution=normalizedValue, alias1, alias2]
+      - [los angeles, city of angeles, LA, L.A.]
+      - des moines
+      - chicago
+      - [seattle, emerald city]
+
+  # @placeAndTime entity is one or more of (@airport | @city | @date)
+  - name: "@placeAndTime"
+    patterns:
+      - "(@airportCode|@city|@datetimev2)+"
+
+  #destination is slot reference + @placeAndTime
+  - name: "@destination"
+    patterns:
+      - $destination @placeAndTime
+      - $destination (@airportCode|@city)+ on @datetimev2
+
+  - name: "@clear_destination"
+    patterns:
+      - $clear @destination
+
+  #departure is slot reference + @placeAndTime
+  - name: "@departure"
+    patterns:
+      - $departing @placeAndTime
+
+  - name: "@clear_departure"
+    patterns:
+      - $clear $departing
+      - $clear (@airportCode|@city|@datetimeV2)+
+
+  #trip
+
+  ## Trip is flight reference plus destination/departure/placeAndTime information
+  - name: "@trip"
+    patterns:
+      - $flight (@departure|@destination|@placeAndTime)+
+
+  - name: "@show_trip"
+    patterns:
+      - $show (my|the)? flight (@departure|@destination|@placeAndTime)*
+
+  - name: "@delete_trip"
+    patterns:
+      - $clear (my|the)? flight (@departure|@destination|@placeAndTime)*
+
+  # @mention entity
+  - name: "@mention"
+    patterns:
+      # regex pattern starts and ends with / 
+      - /(?:(@[a-zA-Z0-9_]*))/
+
+  # @hashtag entity 
+  - name: "@hashtag"
+    patterns:
+      # regex pattern starts and ends with / 
+      - /(?:(#[a-zA-Z0-9_]*))/
+
+  #age property
+  - name: "@userage"
+    patterns:
+      - "@age"
+      - ($set)? age (to)? (@age|@number)
+      - (my)? age (is)? (@age|@number)
+
+  - name: "@show_userage"
+    patterns:
+      - $show (my)? age
+      - how old am I
+      - what is (my)? age
+
+  - name: "@clear_age"
+    patterns:
+      - $clear (my)? age
+      - I am ageless
+
+  #height property
+  - name: "@height"
+    patterns:
+      - height ($is)? (@dimension|@number)
+      - ($set)? height (to)? (@dimension|@number)
+      - (@dimension|@number) tall
+
+  #width
+  - name: "@width"
+    patterns:
+      - width (equals)? (@dimension|@number)
+      - (@dimension|@number) wide
+
+  #size
+  - name: "@size"
+    patterns:
+      - "(@width|@dimension|@number) (by|x)? (@height|@dimension|@number)"
+      - "(@height|@dimension|@number) (by|x)? (@width|@dimension|@number)"
+
+  #name property
+  - name: "@name"
+    patterns:
+      - (my)? $name ($is)? (@QuotedText|*)
+      - call me (@QuotedText|*)
+      - (@QuotedText|*) (is my)? name
+      - change my name (to)? (@QuotedText|*)
+
+intents:
+  - name: match
+    examples:
+      - book a flight from new york to SEA on friday 
+      - the box is 12 inches wide by 14
+      - it is 15 feet tall
+      - my name is Boba Fett
+      - you can call me Boba
+      - people call me "john wick"
+      - change my flight to new york
+      - show me my flight 
