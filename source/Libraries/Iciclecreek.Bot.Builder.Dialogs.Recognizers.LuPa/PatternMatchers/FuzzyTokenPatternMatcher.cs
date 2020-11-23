@@ -20,11 +20,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Match
 
         public string Token { get; set; }
 
-        public override MatchResult Matches(MatchContext utterance, int start)
+        public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = new MatchResult();
-            var entityToken = utterance.FindNextEntities(ENTITYTYPE, start).FirstOrDefault();
-            if (entityToken.Text == Token)
+            var entityToken = context.FindNextEntities(ENTITYTYPE, start).FirstOrDefault();
+            if (entityToken?.Text == Token)
             {
                 matchResult.Matched = true;
                 matchResult.NextStart = entityToken.End;
@@ -33,7 +33,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Match
             return matchResult;
         }
 
-        public override string ToString() => $"FuzzyText({Token})";
+        public override string ToString() => $"FuzzyToken({Token})";
 
     }
 }

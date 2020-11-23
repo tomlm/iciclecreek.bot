@@ -25,5 +25,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
         // index of first char outside of token, length = end-start
         public int End { get; set; }
+
+        public override string ToString() => $"{Type} [{Start},{End}]";
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Phonetic;
@@ -44,10 +45,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         [TestMethod]
         public void CreatesTextTokens()
         {
-            var engine = new LupaEngine(exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            var engine = new LupaEngine(exactAnalyzer.Value, fuzzyAnalyzer.Value)
+            {
+                IncludeInternalEntites = true
+            };
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
             Assert.AreEqual("this", entities[0].Text);
@@ -61,10 +67,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
             Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
             Assert.AreEqual("a", text.Substring(entities[2].Start, entities[2].End - entities[2].Start));
             Assert.AreEqual("test", text.Substring(entities[3].Start, entities[3].End - entities[3].Start));
+
+            entities = results.Where(e => e.Type == WildcardPatternMatcher.ENTITYTYPE).ToList();
+            Assert.AreEqual(4, entities.Count);
+            Assert.AreEqual("this", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+            Assert.AreEqual("a", text.Substring(entities[2].Start, entities[2].End - entities[2].Start));
+            Assert.AreEqual("test", text.Substring(entities[3].Start, entities[3].End - entities[3].Start));
         }
 
         [TestMethod]
-        public void TextPatternMatcherTests()
+        public void TokenPatternMatcherTests()
         {
             var engine = new LupaEngine(new LupaModel()
             {
@@ -79,11 +92,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
                         }
                     }
                 }
-            },
-            exactAnalyzer.Value, fuzzyAnalyzer.Value);
+            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
 
             var entities = results.Where(e => e.Type == "@test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -92,7 +105,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
         }
 
         [TestMethod]
-        public void FuzzyTextPatternMatcherTests()
+        public void FuzzyTokenPatternMatcherTests()
         {
             var engine = new LupaEngine(new LupaModel()
             {
@@ -177,6 +190,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("@test", entities[0].Type);
             Assert.AreEqual("a test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+
+            text = "this is a nottest notdog notfrog";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+
+            entities = results.Where(e => e.Type == "@test").ToList();
+            Assert.AreEqual(0, entities.Count);
         }
 
         [TestMethod]
@@ -318,6 +338,35 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
             Assert.AreEqual("@test", entities[1].Type);
             Assert.AreEqual("DSM", entities[1].Resolution);
             Assert.AreEqual("dez moiynes", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+        }
+
+        [TestMethod]
+        public void WildcardPatternTest()
+        {
+            var engine = new LupaEngine(new LupaModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel()
+                    {
+                        Name = "@name",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "name is ___"
+                        }
+                    }
+                }
+            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
+
+            string text = "my name is joe smith";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LupaEngine.FormatResults(text, results));
+
+            var entities = results.Where(e => e.Type == "@name").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("@name", entities[0].Type);
+            Assert.AreEqual("joe", entities[0].Text);
+            Assert.AreEqual("joe", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
     }
 }

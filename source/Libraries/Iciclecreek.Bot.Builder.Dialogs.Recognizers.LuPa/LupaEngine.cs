@@ -43,57 +43,104 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
         public List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
 
+        public bool IncludeInternalEntites { get; set; }
+
         public IEnumerable<LupaEntity> MatchEntities(string text, IEnumerable<LupaEntity> externalEntities = null)
         {
-            HashSet<LupaEntity> entities = new HashSet<LupaEntity>();
-
-            var matchContext = new MatchContext()
+            var context = new MatchContext()
             {
                 Text = text
             };
 
             if (externalEntities != null)
             {
-                matchContext.Entities.AddRange(externalEntities);
+                context.Entities.AddRange(externalEntities);
             }
 
-            // add all  @Text and @FuzzyText entities
-            matchContext.Entities.AddRange(Tokenize(text));
+            // add all  @Token and @FuzzyToken entities
+            context.Entities.AddRange(Tokenize(text));
 
-            // foreach text token
-            foreach (var textEntity in matchContext.Entities
-                                        .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
-                                        .OrderBy(entity => entity.Start))
+            int count = 0;
+            do
             {
-                // foreach entity pattern
-                foreach (var entityPattern in EntityPatterns)
-                {
-                    // see if it matches at this textEntity starting position.
-                    var matchResult = entityPattern.PatternMatcher.Matches(matchContext, textEntity.Start);
+                count = context.Entities.Count;
 
-                    // if it matches
-                    if (matchResult.Matched)
+                // foreach text token
+                foreach (var textEntity in context.Entities
+                                            .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
+                                            .OrderBy(entity => entity.Start))
+                {
+                    // foreach entity pattern
+                    foreach (var entityPattern in EntityPatterns)
                     {
-                        // add it to the entities.
-                        matchContext.Entities.Add(new LupaEntity()
+                        // see if it matches at this textEntity starting position.
+                        var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
+
+                        // if it matches
+                        if (matchResult.Matched)
                         {
-                            Type = entityPattern.Name,
-                            Resolution = entityPattern.Resolution,
-                            Start = textEntity.Start,
-                            End = matchResult.NextStart
-                        });
+                            // add it to the entities.
+                            context.Entities.Add(new LupaEntity()
+                            {
+                                Type = entityPattern.Name,
+                                Resolution = entityPattern.Resolution,
+                                Start = textEntity.Start,
+                                End = matchResult.NextStart
+                            });
+                        }
                     }
                 }
+
+                if (count == context.Entities.Count)
+                {
+                    // add in wildcard tokens
+
+                    // get all tokenentities
+                    foreach (var tokenEntity in context.Entities
+                            .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
+                            .OrderBy(entity => entity.Start).ToList())
+                    {
+                        // if there are no entities for a token
+                        if (!context.Entities.Any(entity => entity.Type != TokenPatternMatcher.ENTITYTYPE &&
+                                                            entity.Type != FuzzyTokenPatternMatcher.ENTITYTYPE &&
+                                                            entity.Start == tokenEntity.Start))
+                        {
+                            // then make it a wildcard entity
+                            context.Entities.Add(new LupaEntity()
+                            {
+                                Type = WildcardPatternMatcher.ENTITYTYPE,
+                                Resolution = tokenEntity.Text,
+                                Start = tokenEntity.Start,
+                                Text = tokenEntity.Text,
+                                End = tokenEntity.End
+                            });
+                        }
+                    }
+                }
+            } while (count != context.Entities.Count);
+
+            // filter out internal entities
+            if (IncludeInternalEntites)
+            {
+                return context.Entities;
             }
 
-            return matchContext.Entities;
+            return context.Entities.Where(entity => entity.Type != TokenPatternMatcher.ENTITYTYPE &&
+                                                    entity.Type != FuzzyTokenPatternMatcher.ENTITYTYPE &&
+                                                    entity.Type != WildcardPatternMatcher.ENTITYTYPE).ToList();
         }
 
+        /// <summary>
+        /// Format entities as fixed width string.
+        /// </summary>
+        /// <param name="text">original text</param>
+        /// <param name="entities">entities</param>
+        /// <returns></returns>
         public static string FormatResults(string text, IEnumerable<LupaEntity> entities)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(text);
-            foreach(var grp in entities.Where(e => e.Type != FuzzyTokenPatternMatcher.ENTITYTYPE && e.Type != TokenPatternMatcher.ENTITYTYPE).GroupBy(entity => entity.Type))
+            foreach (var grp in entities.GroupBy(entity => entity.Type))
             {
                 sb.AppendLine(FormatEntities(text, grp));
             }
@@ -105,7 +152,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
         {
             StringBuilder sb = new StringBuilder();
             int last = 0;
-            foreach(var entity in entities)
+            foreach (var entity in entities)
             {
                 sb.Append(new String(' ', entity.Start - last));
                 if (entity.End == entity.Start + 1)

@@ -32,7 +32,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
         public static PatternMatcher Parse(string pattern, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool fuzzyMatch = false)
         {
             SequencePatternMatcher sequence = new SequencePatternMatcher();
-
+            pattern = pattern.Replace("___", "@wildcard");
             bool inVariations = false;
             bool inModifiers = false;
             bool modifierFuzzyMatch = false;
@@ -203,7 +203,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
             {
                 if (variation.FirstOrDefault() == '@')
                 {
-                    patternMatchers.Add(new EntityPatternMatcher(variation));
+                    if (variation == "@wildcard")
+                    {
+                        patternMatchers.Add(new WildcardPatternMatcher());
+                    }
+                    else
+                    {
+                        patternMatchers.Add(new EntityPatternMatcher(variation));
+                    }
                 }
                 else
                 {
@@ -234,7 +241,23 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                     while (tokenStream.IncrementToken())
                     {
                         string token = termAtt.ToString();
-                        sequence.PatternMatchers.Add(new TokenPatternMatcher(token));
+
+                        if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '@')
+                        {
+                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
+                            if (token == WildcardPatternMatcher.ENTITYTYPE)
+                            {
+                                sequence.PatternMatchers.Add(new WildcardPatternMatcher());
+                            }
+                            else
+                            {
+                                sequence.PatternMatchers.Add(new EntityPatternMatcher(token));
+                            }
+                        }
+                        else
+                        {
+                            sequence.PatternMatchers.Add(new TokenPatternMatcher(token));
+                        }
                     }
                 }
             }

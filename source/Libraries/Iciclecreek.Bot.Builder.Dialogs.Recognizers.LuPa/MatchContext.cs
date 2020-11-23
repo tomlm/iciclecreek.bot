@@ -20,12 +20,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
 
         public HashSet<LupaEntity> Entities { get; set; } = new HashSet<LupaEntity>(new EntityTokenComparer());
 
-        public IEnumerable<LupaEntity> FindNextEntities(string entityType, int start, int slop = 10)
+        public IEnumerable<LupaEntity> FindNextEntities(string entityType, int start, int slop = 0)
         {
             return this.Entities.Where(entityToken =>
                 entityToken.Type == entityType &&
                 entityToken.Start >= start &&
-                entityToken.Start <= (start + slop));
+                entityToken.Start <= (start + slop + 1));
         }
     }
 }

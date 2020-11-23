@@ -24,16 +24,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
         /// <summary>
         /// Always returns true, but will find the largest span for the matchresult.start 
         /// </summary>
-        /// <param name="utterance"></param>
+        /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext utterance, int start)
+        public override MatchResult Matches(MatchContext context, int start)
         {
             MatchResult matchResult = new MatchResult();
 
             foreach (var patternMatch in PatternMatchers)
             {
-                var result = patternMatch.Matches(utterance, start);
+                var result = patternMatch.Matches(context, start);
                 if (result.Matched)
                 {
                     matchResult.Matched = true;

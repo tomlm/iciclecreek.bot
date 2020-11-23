@@ -30,14 +30,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
         /// <summary>
         /// If a matcher in the sequence doesn't match, then it doesn't match
         /// </summary>
-        /// <param name="utterance"></param>
+        /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext utterance, int start)
+        public override MatchResult Matches(MatchContext context, int start)
         {
             foreach (var patternMatcher in PatternMatchers)
             {
-                var matchResult = patternMatcher.Matches(utterance, start);
+                var matchResult = patternMatcher.Matches(context, start);
                 if (!matchResult.Matched)
                 {
                     return matchResult;

@@ -28,10 +28,21 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa
             this.PatternMatcher = pattern;
         }
 
+        /// <summary>
+        /// name of the entity
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Resolution to use for the entity
+        /// </summary>
         public string Resolution { get; set; }
 
+        /// <summary>
+        /// Pattern to evalute for this name/resolution
+        /// </summary>
         public PatternMatcher PatternMatcher { get; set; }
+
+        public override string ToString() => $"{Name} => {PatternMatcher}";
     }
 }

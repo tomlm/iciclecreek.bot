@@ -24,10 +24,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
         /// <summary>
         /// Returns true if thre is 1 match, and always advacnces the start
         /// </summary>
-        /// <param name="utterance"></param>
+        /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext utterance, int start)
+        public override MatchResult Matches(MatchContext context, int start)
         {
             MatchResult matchResult = new MatchResult();
 
@@ -37,7 +37,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                 found = false;
                 foreach (var patternMatcher in PatternMatchers)
                 {
-                    var result = patternMatcher.Matches(utterance, start);
+                    var result = patternMatcher.Matches(context, start);
                     if (result.Matched)
                     {
                         found = true;
