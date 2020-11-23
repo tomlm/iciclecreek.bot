@@ -8,13 +8,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
     /// <summary>
     /// Matches One (token|token|token) ordinality
     /// </summary>
-    class OnePatternMatcher : PatternMatcher
+    class OneOfPatternMatcher : PatternMatcher
     {
-        public OnePatternMatcher()
+        public OneOfPatternMatcher()
         {
         }
 
-        public OnePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
+        public OneOfPatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
         {
             PatternMatchers.AddRange(patternMatchers);
         }
@@ -49,7 +49,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
             return matchResult;
         }
 
-        public override string ToString() => $"One({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"OneOf({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
 
     }
 }

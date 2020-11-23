@@ -159,26 +159,39 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                     }
                 }
             }
-
+            if (sequence.PatternMatchers.Count == 1)
+            {
+                Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
+                return sequence.PatternMatchers.Single();
+            }
             Trace.TraceInformation($"{pattern}:\n\t{sequence}");
             return sequence;
         }
 
         private static void FinishVariations(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, SequencePatternMatcher sequence, bool modifierFuzzyMatch, Ordinality modifierOrdinality, List<string> variations)
         {
+            var patternMatchers = CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch);
+
             switch (modifierOrdinality)
             {
                 case Ordinality.ZeroOrOne:
-                    sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch)));
+                    sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(patternMatchers));
                     break;
                 case Ordinality.ZeroOrMore:
-                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch)));
+                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(patternMatchers));
                     break;
                 case Ordinality.One:
-                    sequence.PatternMatchers.Add(new OnePatternMatcher(CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch)));
+                    if (patternMatchers.Count == 1)
+                    {
+                        sequence.PatternMatchers.Add(patternMatchers.Single());
+                    }
+                    else
+                    {
+                        sequence.PatternMatchers.Add(new OneOfPatternMatcher(patternMatchers));
+                    }
                     break;
                 case Ordinality.OneOrMore:
-                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch)));
+                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(patternMatchers));
                     break;
             }
         }
@@ -228,16 +241,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
 
             if (sequence.PatternMatchers.Count == 1)
             {
-                return sequence.PatternMatchers.First();
+                return sequence.PatternMatchers.Single();
             }
 
             return sequence;
         }
 
+        // NOTE: FuzzyAnalyzer can return multiple possible tokens for the same segment, so we collect them into One() clauses
+        // Sequence(One(x1,x2,x3),One(y1,y2,y3))
         private static PatternMatcher CreateFuzzyTextPatternMatcher(string text, Analyzer analyzer)
         {
             var sequence = new SequencePatternMatcher();
-            OnePatternMatcher oneOf = null;
+            OneOfPatternMatcher oneOf = null;
             var start = -1;
             using (TextReader reader = new StringReader(text))
             {
@@ -258,7 +273,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
                             {
                                 sequence.PatternMatchers.Add(oneOf);
                             }
-                            oneOf = new OnePatternMatcher();
+                            oneOf = new OneOfPatternMatcher();
                         }
 
                         oneOf.PatternMatchers.Add(new FuzzyTextPatternMatcher(token));
@@ -266,13 +281,21 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.PatternMatchers
 
                     if (oneOf != null && oneOf.PatternMatchers.Any())
                     {
-                        sequence.PatternMatchers.Add(oneOf);
+                        if (oneOf.PatternMatchers.Count == 1)
+                        {
+                            sequence.PatternMatchers.Add(oneOf.PatternMatchers.Single());
+                        }
+                        else
+                        {
+                            sequence.PatternMatchers.Add(oneOf);
+                        }
                     }
                 }
             }
+
             if (sequence.PatternMatchers.Count == 1)
             {
-                return sequence.PatternMatchers.First();
+                return sequence.PatternMatchers.Single();
             }
             return sequence;
         }

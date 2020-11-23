@@ -296,11 +296,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
                         }
                     }
                 }
-            },
-                exactAnalyzer.Value,
-                fuzzyAnalyzer.Value);
+            }, exactAnalyzer.Value, fuzzyAnalyzer.Value);
 
-            string text = "flight from seattle to des moiynes";
+            string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
 
             var entities = results.Where(e => e.Type == "@test").ToList();
@@ -311,7 +309,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lupa.Tests
 
             Assert.AreEqual("@test", entities[1].Type);
             Assert.AreEqual("DSM", entities[1].Resolution);
-            Assert.AreEqual("des moiynes", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+            Assert.AreEqual("dez moiynes", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
         }
     }
 }
