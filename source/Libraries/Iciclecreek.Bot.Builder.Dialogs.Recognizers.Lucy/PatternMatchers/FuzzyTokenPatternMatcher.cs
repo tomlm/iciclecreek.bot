@@ -11,7 +11,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Match
     /// </summary>
     public class FuzzyTokenPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "@FuzzyToken";
+        public const string ENTITYTYPE = "FuzzyToken";
 
         public FuzzyTokenPatternMatcher(string textToken)
         {
@@ -33,7 +33,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Match
             return matchResult;
         }
 
-        public override string ToString() => $"FuzzyToken({Token})";
+        public override string ToString() => $"{Token}~";
 
     }
 }

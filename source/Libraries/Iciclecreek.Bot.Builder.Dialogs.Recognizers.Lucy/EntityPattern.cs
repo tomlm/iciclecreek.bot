@@ -17,13 +17,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public EntityPattern(string name, PatternMatcher pattern)
         {
-            this.Name = name;
+            this.Name = name.TrimStart('@');
             this.PatternMatcher = pattern;
         }
 
         public EntityPattern(string name, string resolution, PatternMatcher pattern)
         {
-            this.Name = name;
+            this.Name = name.TrimStart('@');
             this.Resolution = resolution;
             this.PatternMatcher = pattern;
         }

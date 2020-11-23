@@ -35,7 +35,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Match
             return matchResult;
         }
 
-        public override string ToString() => $"Token({Token})";
+        public override string ToString() => $"{Token}";
 
     }
 }

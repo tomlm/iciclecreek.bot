@@ -16,11 +16,25 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         {
         }
 
-        // Name of the entity
+        /// <summary>
+        /// Gets or sets the name of the entity
+        /// </summary>
         public string Name { get; set; }
 
-        // Default fuzzy match for text tokens
+        /// <summary>
+        /// Gets or sets the default fuzzy match for text tokens
+        /// </summary>
+        /// <remarks>
+        /// If this is set to true, then fuzzy match will be used for all tokens
+        /// in the patterns by default, and ~ modifier will turn OFF fuzzy match.
+        /// </remarks>
         public bool FuzzyMatch { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the internal flag.
+        /// </summary>
+        /// <remarks>If this is set to true, then entity will not be returned as part of the results.</remarks>
+        public bool Internal { get; set; } = false;
 
         // patterns which define the entity
         public List<PatternModel> Patterns { get; set; }  = new List<PatternModel>();

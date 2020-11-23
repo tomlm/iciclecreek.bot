@@ -11,7 +11,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
     /// </summary>
     public class WildcardPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "@wildcard";
+        public const string ENTITYTYPE = "wildcard";
 
         public WildcardPatternMatcher()
         {
@@ -20,15 +20,40 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = new MatchResult();
-            var entityToken = context.FindNextEntities(ENTITYTYPE, start).FirstOrDefault();
-            if (entityToken != null)
+
+            // if the next token is already claimed, then we don't want to keep this
+            var tokenTaken = context.Entities.Where(entity =>
+                entity.Start >= start && entity.Start <= start + 1 &&
+                entity.Type != TokenPatternMatcher.ENTITYTYPE &&
+                entity.Type != FuzzyTokenPatternMatcher.ENTITYTYPE).Any();
+            if (!tokenTaken)
             {
-                matchResult.Matched = true;
-                matchResult.NextStart = entityToken.End;
+                var token = context.FindNextEntities(TokenPatternMatcher.ENTITYTYPE, start).FirstOrDefault();
+                if (token != null)
+                {
+                    var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == ENTITYTYPE);
+                    if (wildcardToken == null)
+                    {
+                        wildcardToken = new LucyEntity()
+                        {
+                            Type = ENTITYTYPE,
+                            Start = token.Start
+                        };
+                        context.CurrentEntity.Children.Add(wildcardToken);
+                    }
+                    wildcardToken.End = token.End;
+                    wildcardToken.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                    wildcardToken.Text = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                    context.CurrentEntity.End = token.End;
+                    context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                    context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+                    matchResult.Matched = true;
+                    matchResult.NextStart = token.End;
+                }
             }
             return matchResult;
         }
 
-        public override string ToString() => ENTITYTYPE;
+        public override string ToString() => "___";
     }
 }

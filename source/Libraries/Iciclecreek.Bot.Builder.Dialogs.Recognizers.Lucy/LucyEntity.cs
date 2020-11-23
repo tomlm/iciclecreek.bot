@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
@@ -15,8 +16,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         // original text
         public string Text { get; set; }
 
-        // normalized text
-        public string Resolution { get; set; }
+        // normalized value
+        public object Resolution { get; set; }
 
         public float Score { get; set; }
 
@@ -26,6 +27,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         // index of first char outside of token, length = end-start
         public int End { get; set; }
 
-        public override string ToString() => $"{Type} [{Start},{End}]";
+        /// <summary>
+        /// Dependent entities that were consumed to match this entity.
+        /// </summary>
+        public List<LucyEntity> Children { get; set; } = new List<LucyEntity>();
+
+        public override string ToString() => $"{Type} [{Start},{End}] Resolution:{JsonConvert.SerializeObject(Resolution)}";
     }
 }

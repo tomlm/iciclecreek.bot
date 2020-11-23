@@ -28,6 +28,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// </summary>
         public EntityPattern EntityPattern { get; set; }
 
+        /// <summary>
+        /// This is the entity which is being built up as part of matching.
+        /// </summary>
+        public LucyEntity CurrentEntity { get; set; }
+
         public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start, int slop = 0)
         {
             return this.Entities.Where(entityToken =>

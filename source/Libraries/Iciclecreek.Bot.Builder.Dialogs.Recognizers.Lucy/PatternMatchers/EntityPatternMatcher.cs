@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
     {
         public EntityPatternMatcher(string entityType)
         {
-            this.EntityType = entityType;
+            this.EntityType = entityType.TrimStart('@');
         }
 
         public string EntityType { get; set; }
@@ -23,6 +23,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             var entityToken = context.FindNextEntities(EntityType, start).FirstOrDefault();
             if (entityToken != null)
             {
+                // add the matched entity to the children of the currentEntity.
+                context.CurrentEntity.Children.Add(entityToken);
+
                 matchResult.Matched = true;
                 matchResult.NextStart = entityToken.End;
             }
@@ -30,6 +33,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             return matchResult;
         }
 
-        public override string ToString() => $"EntityPattern({EntityType})";
+        public override string ToString() => $"@{EntityType}";
     }
 }

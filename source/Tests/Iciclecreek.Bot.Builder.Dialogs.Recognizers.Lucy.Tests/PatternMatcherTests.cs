@@ -26,7 +26,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, includeTokens: true);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
@@ -36,13 +36,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual("test", entities[3].Text);
 
             entities = results.Where(e => e.Type == FuzzyTokenPatternMatcher.ENTITYTYPE).ToList();
-            Assert.AreEqual(4, entities.Count);
-            Assert.AreEqual("this", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
-            Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
-            Assert.AreEqual("a", text.Substring(entities[2].Start, entities[2].End - entities[2].Start));
-            Assert.AreEqual("test", text.Substring(entities[3].Start, entities[3].End - entities[3].Start));
-
-            entities = results.Where(e => e.Type == WildcardPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
             Assert.AreEqual("this", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
             Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
@@ -70,11 +63,39 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
+            Assert.AreEqual("test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
+        [TestMethod]
+        public void TokenPatternMatcherTestsNoAt()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel()
+                    {
+                        Name = "test",
+                        Patterns = new List<PatternModel>()
+                        {
+                            new PatternModel("test")
+                        }
+                    }
+                }
+            });
+
+            string text = "this is a test";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -99,11 +120,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n"+LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("tesst", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -127,11 +148,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("tesst", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -155,18 +176,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             text = "this is a nottest notdog notfrog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            entities = results.Where(e => e.Type == "@test").ToList();
+            entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(0, entities.Count);
         }
 
@@ -190,11 +211,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a test dog", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -218,19 +239,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             text = "this is a test dog frog";
             results = engine.MatchEntities(text, null);
 
-            entities = results.Where(e => e.Type == "@test").ToList();
+            entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a test dog", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -254,20 +275,20 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n"+LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             text = "this is a test dog frog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            entities = results.Where(e => e.Type == "@test").ToList();
+            entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -295,17 +316,55 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
 
             string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
-            var entities = results.Where(e => e.Type == "@test").ToList();
+            var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(2, entities.Count);
-            Assert.AreEqual("@test", entities[0].Type);
+            Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("SEA", entities[0].Resolution);
             Assert.AreEqual("seattle", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
-            Assert.AreEqual("@test", entities[1].Type);
+            Assert.AreEqual("test", entities[1].Type);
             Assert.AreEqual("DSM", entities[1].Resolution);
             Assert.AreEqual("dez moiynes", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+        }
+
+        [TestMethod]
+        public void NestedPatternTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box (is|equals)? @dimensions"} },
+                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@length) (height|tall)" } },
+                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@length) (width|wide)" } },
+                    new EntityModel() { Name = "@length", Patterns = new List<PatternModel>() { "@number @units" } },
+                    new EntityModel() { Name = "@number", Patterns = new List<PatternModel>() { "(0|1|2|3|4|5|6|7|8|9|10)" } },
+                    new EntityModel() { Name = "@units", Patterns = new List<PatternModel>() { "(inches|feet|yards|meters)" } },
+                    new EntityModel() {
+                        Name = "@dimensions",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "(@width|@length|@number) (x|by)? (@height|@length|@number)",
+                            "(@height|@length|@number) (x|by)? (@width|@length|@number)",
+                        }
+                    },
+                }
+            });
+
+            string text = "the box is 9 inches by 7.";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "boxsize").ToList();
+            Assert.AreEqual(1, entities.Count);
+            var entity = entities.Single().Children.Single();
+            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual(3, entity.Children.Count);
+            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
         }
 
         [TestMethod]
@@ -315,26 +374,46 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel()
-                    {
-                        Name = "@name",
-                        Patterns = new List<PatternModel>()
-                        {
-                            "name is ___"
-                        }
-                    }
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is ___"} },
+                    new EntityModel() { Name = "@conjunction",Patterns = new List<PatternModel>(){"(and|or)"} },
                 }
             });
 
-            string text = "my name is joe smith";
+            string text = "my name is joe smith and I am cool";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.FormatResults(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
 
-            var entities = results.Where(e => e.Type == "@name").ToList();
+            var entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual("@name", entities[0].Type);
-            Assert.AreEqual("joe", entities[0].Text);
-            Assert.AreEqual("joe", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("name", entities[0].Type);
+            Assert.AreEqual("joe", entities[0].Resolution);
+            Assert.AreEqual("name is joe", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
+        [TestMethod]
+        public void WildcardPatternTest_MultipleTokens()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (___)+"} },
+                    new EntityModel() { Name = "@conjunction",Patterns = new List<PatternModel>(){"(and|or)"} },
+                }
+            });
+
+            string text = "my name is joe smith and I am cool";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "name").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("name", entities[0].Type);
+            Assert.AreEqual("joe smith", entities[0].Resolution);
+            Assert.AreEqual("name is joe smith", entities[0].Text);
+            Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
     }
 }
