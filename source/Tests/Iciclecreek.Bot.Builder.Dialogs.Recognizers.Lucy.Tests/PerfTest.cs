@@ -1,0 +1,77 @@
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
+{
+    [TestClass]
+    public class PerfTests
+    {
+        [TestMethod]
+        public void RunPerfTests()
+        {
+            StringBuilder sb = new StringBuilder();
+            var model = new LucyModel()
+            {
+                Macros = new Dictionary<string, string>()
+                {
+                    { "$name", "(name|nom de plum|handle)" },
+                    { "$is", "(is|equals)?" }
+                },
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "$name $is ___" } },
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @dimensions" } },
+                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@length) (height|tall)" } },
+                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@length) (width|wide)" } },
+                    new EntityModel() { Name = "@length", Patterns = new List<PatternModel>() { "@number @units" } },
+                    new EntityModel() { Name = "@number", Patterns = new List<PatternModel>() { "(0|1|2|3|4|5|6|7|8|9|10)" } },
+                    new EntityModel() { Name = "@units", Patterns = new List<PatternModel>() { "(inches|feet|yards|meters)" } },
+                    new EntityModel() {
+                        Name = "@dimensions",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "(@width|@length|@number) (x|by)? (@height|@length|@number)",
+                            "(@height|@length|@number) (x|by)? (@width|@length|@number)",
+                        }
+                    },
+                }
+            };
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var engine = new LucyEngine(model);
+            sw.Stop();
+            sb.AppendLine($"loading: {sw.Elapsed}");
+            sw.Reset();
+
+            string text = "the box is 9 inches by 7.";
+
+            sw.Restart();
+            var results = engine.MatchEntities(text);
+            sw.Stop();
+            sb.AppendLine($"single cold match: {sw.Elapsed}");
+            sw.Reset();
+
+            sw.Restart();
+            results = engine.MatchEntities(text, null);
+            sw.Stop();
+            sb.AppendLine($"single warm match: {sw.Elapsed}");
+            sw.Reset();
+
+            sw.Restart();
+            var count = 1000;
+            for (int i = 0; i < count; i++)
+            {
+                results = engine.MatchEntities(text);
+            }
+            sw.Stop();
+            sb.AppendLine($"{count} utterances: {sw.Elapsed} {sw.ElapsedMilliseconds/count} ms per match ");
+            sw.Reset();
+            Trace.TraceInformation(sb.ToString());
+            //File.WriteAllText(@"c:\scratch\timing.txt", sb.ToString());
+        }
+    }
+}

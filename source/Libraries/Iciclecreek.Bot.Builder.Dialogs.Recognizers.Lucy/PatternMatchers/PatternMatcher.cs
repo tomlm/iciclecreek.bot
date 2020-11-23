@@ -27,9 +27,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         /// <param name="pattern">pattern to parse</param>
         /// <param name="exactAnalyzer">exact analyzer to use</param>
         /// <param name="fuzzyAnalyzer">fuzzy analyzer to use</param>
-        /// <param name="fuzzyMatch">if true changes default for text token to fuzzyMatch</param>
+        /// <param name="defaultFuzzyMatch">if true changes default for text token to fuzzyMatch</param>
         /// <returns></returns>
-        public static PatternMatcher Parse(string pattern, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool fuzzyMatch = false)
+        public static PatternMatcher Parse(string pattern, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool defaultFuzzyMatch = false)
         {
             SequencePatternMatcher sequence = new SequencePatternMatcher();
             pattern = pattern.Replace("___", $"@{WildcardPatternMatcher.ENTITYTYPE}");
@@ -48,7 +48,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                         case '(':
                             if (sb.Length > 0)
                             {
-                                if (fuzzyMatch)
+                                if (defaultFuzzyMatch)
                                 {
                                     sequence.PatternMatchers.Add(CreateFuzzyTextPatternMatcher(sb.ToString(), fuzzyAnalyzer));
                                 }
@@ -101,7 +101,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                         switch (ch)
                         {
                             case '~':
-                                modifierFuzzyMatch = !fuzzyMatch;
+                                modifierFuzzyMatch = !defaultFuzzyMatch;
                                 break;
 
                             case '?':
@@ -149,7 +149,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 string text = sb.ToString().Trim();
                 if (!String.IsNullOrEmpty(text))
                 {
-                    if (fuzzyMatch)
+                    if (defaultFuzzyMatch)
                     {
                         sequence.PatternMatchers.Add(CreateFuzzyTextPatternMatcher(text, fuzzyAnalyzer));
                     }
@@ -161,10 +161,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             }
             if (sequence.PatternMatchers.Count == 1)
             {
-                Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
+                //Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
                 return sequence.PatternMatchers.Single();
             }
-            Trace.TraceInformation($"{pattern}:\n\t{sequence}");
+            //Trace.TraceInformation($"{pattern}:\n\t{sequence}");
             return sequence;
         }
 

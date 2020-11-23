@@ -1,17 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Phonetic;
-using Lucene.Net.Analysis.Phonetic.Language.Bm;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Analysis.Util;
-using Lucene.Net.Util;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests

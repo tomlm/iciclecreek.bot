@@ -1,46 +1,51 @@
-# synonyms are simply macros that will expand when used in a pattern
-synonyms:
-  - name: $clear
-    values: [clear, forget, reset, delete]
-
-  - name: $is
-    values: [is, to, equals]
-
-  - name: $set
-    values: [set, change]
-
-  - name: $show
-    values: [show, what is]
-
-  - name: $name
-    values: [name, nom de plum]
-
-  - name: $departing
-    values: [departing, from, leaving, taking off]
-
-  - name: $destination
-    values: [arriving, destination, to, landing]
-
-  - name: $flight
-    values: [flight, trip, fly, travel, itinerary]
+# macros that will expand when used in a pattern
+macros:
+  $clear: (clear|forget|reset|delete)
+  $is: (is|to|equals)
+  $set: (set|change)
+  $show: (show|what is)
+  $name: (name|nom de plum)
+  $departing: (departing|from|leaving|taking off)
+  $destination: (arriving|destination|to|landing)
+  $flight: (flight|trip|fly|travel|itinerary)
 
 entities:
+  # @colors entity
+  - name: "@colors"
+    patterns: [red, green, blue, yellow, purple, white, orange]
+
+  # @drinkSize entity
+  - name: "@drinkSize"
+    patterns:
+      # NOTE:if patterns are an array the first value is the canonical value
+      - [s, small, short]
+      - [m, medium, tall]
+      - [l, large, tall]
+      - [xl, extra large, venti]
+
   # @airportCode entity
   - name: "@airportCode"
-    patterns: 
+    patterns:
       - [LAX, "los angeles"]
       - [DSM, "des moines"]
-      - [OHR, "o'hare","ohare"]
-      - [MID, "midway"]
+      - [OHR, "o'hare", "ohare"]
+      - [MID, midway]
       - ORD
+      - ...
 
   # @city entity
   - name: "@city"
-    # fuzzyMatch means it will use match on things that sound the same, aka seatle == seattle
+    patterns:
+      - [(los angeles)~, (city of angeles)~, LA, L.A.]
+      - (des moines)~
+      - (chicago)~
+      - [(seattle)~, (emerald city)~]
+
+  # @city2 entity, default fuzzy
+  - name: "@city2"
     fuzzyMatch: true
     patterns:
-      # array in a pattern is [resolution=normalizedValue, alias1, alias2]
-      - [los angeles, city of angeles, LA, L.A.]
+      - [los angeles, city of angeles, (LA)~, (L.A.)~]
       - des moines
       - chicago
       - [seattle, emerald city]
@@ -85,18 +90,6 @@ entities:
     patterns:
       - $clear (my|the)? flight (@departure|@destination|@placeAndTime)*
 
-  # @mention entity
-  - name: "@mention"
-    patterns:
-      # regex pattern starts and ends with / 
-      - /(?:(@[a-zA-Z0-9_]*))/
-
-  # @hashtag entity 
-  - name: "@hashtag"
-    patterns:
-      # regex pattern starts and ends with / 
-      - /(?:(#[a-zA-Z0-9_]*))/
-
   #age property
   - name: "@userage"
     patterns:
@@ -137,19 +130,20 @@ entities:
   #name property
   - name: "@name"
     patterns:
-      - (my)? $name ($is)? (@QuotedText|*)
-      - call me (@QuotedText|*)
-      - (@QuotedText|*) (is my)? name
-      - change my name (to)? (@QuotedText|*)
+      - (my)? $name ($is)? (@QuotedText|___)+
+      - call me (@QuotedText|___)
+      - call me (___)+
+      - (@QuotedText|___) (is my)? name
+      - change my name (to)? (@QuotedText|___)+
 
 intents:
   - name: match
     examples:
-      - book a flight from new york to SEA on friday 
+      - book a flight from new york to SEA on friday
       - the box is 12 inches wide by 14
       - it is 15 feet tall
       - my name is Boba Fett
       - you can call me Boba
       - people call me "john wick"
       - change my flight to new york
-      - show me my flight 
+      - show me my flight
