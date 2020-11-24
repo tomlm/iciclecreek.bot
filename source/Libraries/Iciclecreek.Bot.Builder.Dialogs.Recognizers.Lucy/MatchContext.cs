@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
@@ -35,9 +36,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start)
         {
+            // slop is large for text tokens (to take care of embedded spaces)
+            // slop is tight for entity matching
+            int slop = (entityType == TokenPatternMatcher.ENTITYTYPE || entityType == FuzzyTokenPatternMatcher.ENTITYTYPE) ? 255 : 0;
             return this.Entities.Where(entityToken =>
                 String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
-                entityToken.Start >= start);
+                entityToken.Start >= start && entityToken.Start <= (start + slop + 1));
         }
     }
 }
