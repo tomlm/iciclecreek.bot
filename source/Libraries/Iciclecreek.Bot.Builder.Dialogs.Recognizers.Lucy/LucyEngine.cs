@@ -121,7 +121,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 return context.Entities;
             }
 
-            return context.Entities.Where(entity => entity.Type[0] != '^')
+            return context.Entities.Where(entity => entity.Type[0] != '^' && entity.Type != WildcardPatternMatcher.ENTITYTYPE)
                 .ToList();
         }
 

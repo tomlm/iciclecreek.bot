@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -359,6 +360,28 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
         }
 
         [TestMethod]
+        public void FallbackParserTest()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>(){"name is ___"} },
+                }
+            });
+
+            Assert.AreEqual(0, engine.EntityPatterns.Count);
+            Assert.AreEqual(1, engine.WildcardEntityPatterns.Count);
+            var sequence = engine.WildcardEntityPatterns.Single().PatternMatcher as SequencePatternMatcher;
+            Assert.IsNotNull(sequence.PatternMatchers.Last() as FallbackPatternMatcher);
+
+            string text = "my name is joe smith";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+        }
+
+        [TestMethod]
         public void WildcardPatternTest()
         {
             var engine = new LucyEngine(new LucyModel()
@@ -465,7 +488,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         Name = "@drink",
                         Patterns = new List<PatternModel>()
                         {
-                            "(like)? a (@size|___)* " +
+                            "(like)? a (@size)? (___)* " +
                             "(drink|cocktail|beverage)"
                         }
                     },

@@ -11,7 +11,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
     /// </summary>
     public class WildcardPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "^wildcard";
+        public const string ENTITYTYPE = "wildcard";
 
         public WildcardPatternMatcher()
         {
@@ -61,6 +61,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             }
             return matchResult;
         }
+
+        public override bool IsWildcard() => true;
 
         public override string ToString() => "___";
     }

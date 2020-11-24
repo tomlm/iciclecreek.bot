@@ -54,6 +54,41 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             };
         }
 
+        internal void ResolveFallbackMatchers()
+        {
+            if (this.PatternMatchers.Any(pm => pm.IsWildcard()))
+            {
+                List<PatternMatcher> newSequence = new List<PatternMatcher>();
+                PatternMatcher wildcard = null;
+                foreach (var pattern in PatternMatchers)
+                {
+                    if (pattern.IsWildcard())
+                    {
+                        wildcard = pattern;
+                    }
+                    else
+                    {
+                        if (wildcard != null)
+                        {
+                            newSequence.Add(new FallbackPatternMatcher(pattern, wildcard));
+                            wildcard = null;
+                        }
+                        else
+                        {
+                            newSequence.Add(pattern);
+                        }
+                    }
+                }
+
+                if (wildcard != null)
+                {
+                    newSequence.Add(new FallbackPatternMatcher(wildcard, null));
+                }
+
+                this.PatternMatchers = newSequence;
+            }
+        }
+
         public override string ToString() => $"Sequence({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

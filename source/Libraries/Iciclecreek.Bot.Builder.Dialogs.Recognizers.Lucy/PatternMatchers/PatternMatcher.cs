@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -152,8 +153,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 //Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
                 return sequence.PatternMatchers.Single();
             }
+
             //Trace.TraceInformation($"{pattern}:\n\t{sequence}");
+            sequence.ResolveFallbackMatchers();
             return sequence;
+        }
+
+        public virtual bool IsWildcard()
+        {
+            return false;
         }
 
         private static void AddPatternMatchersForText(List<PatternMatcher> patternMatchers, string text, bool defaultFuzzyMatch, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
@@ -181,6 +189,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 
         private static void FinishVariations(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, SequencePatternMatcher sequence, bool modifierFuzzyMatch, Ordinality modifierOrdinality, List<string> variations)
         {
+            if (variations.Contains("___") && variations.Count > 1)
+            {
+                throw new SyntaxErrorException($"___ cannot be combined with other tokens in a () clause.  It must be used by itself like this: (___)?"); 
+            }
+
             var patternMatchers = CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch);
 
             switch (modifierOrdinality)
@@ -275,6 +288,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 return sequence.PatternMatchers.Single();
             }
 
+            sequence.ResolveFallbackMatchers();
             return sequence;
         }
 
@@ -333,6 +347,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             {
                 return sequence.PatternMatchers.Single();
             }
+
+            sequence.ResolveFallbackMatchers();
             return sequence;
         }
 
