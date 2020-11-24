@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.1" />
     <PackageReference Include="Lucene.Net.Analysis.Phonetic" Version="4.8.0-beta00012" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00011" />
   </ItemGroup>
