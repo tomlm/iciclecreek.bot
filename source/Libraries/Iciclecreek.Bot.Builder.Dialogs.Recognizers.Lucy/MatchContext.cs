@@ -33,12 +33,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
-        public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start, int slop = 0)
+        public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start)
         {
             return this.Entities.Where(entityToken =>
                 String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
-                entityToken.Start >= start &&
-                entityToken.Start <= (start + slop + 1));
+                entityToken.Start >= start);
         }
     }
 }

@@ -506,5 +506,39 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual("clyde mills", entity.Resolution);
         }
 
+        [TestMethod]
+        public void WildcardNamedTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Macros = new Dictionary<string, string>()
+                {
+                    { "$is","(is|equals)" },
+                },
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@size", Patterns = new List<PatternModel>() { "(small|medium|large)" } },
+                    new EntityModel() {
+                        Name = "@drink",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "a (@size)? (foo:___)* (drink|cocktail|beverage)?"
+                        }
+                    },
+                }
+            });
+
+            string text = "I would like a clyde mills drink.";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "drink").ToList();
+            Assert.AreEqual(1, entities.Count);
+            var entity = entities.Single().Children.Single();
+            Assert.AreEqual("foo", entity.Type);
+            Assert.AreEqual("clyde mills", entity.Resolution);
+        }
+
     }
 }

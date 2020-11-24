@@ -13,8 +13,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
     {
         public const string ENTITYTYPE = "wildcard";
 
-        public WildcardPatternMatcher()
+        private string entityType = ENTITYTYPE;
+
+        public WildcardPatternMatcher(string variation=null)
         {
+            if (variation != null && variation.IndexOf(":") > 0)
+            {
+                entityType = variation.Split(':').First().Trim();
+            }
         }
 
         public override MatchResult Matches(MatchContext context, int start)
@@ -33,13 +39,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 if (token != null)
                 {
                     // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
-
-                    var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == ENTITYTYPE);
+                    var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == entityType);
                     if (wildcardToken == null)
                     {
                         wildcardToken = new LucyEntity()
                         {
-                            Type = ENTITYTYPE,
+                            Type = entityType,
                             Start = token.Start
                         };
                         context.CurrentEntity.Children.Add(wildcardToken);

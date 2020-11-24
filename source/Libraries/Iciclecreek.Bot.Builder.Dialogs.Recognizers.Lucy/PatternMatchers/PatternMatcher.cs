@@ -33,7 +33,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         public static PatternMatcher Parse(string pattern, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool defaultFuzzyMatch = false)
         {
             SequencePatternMatcher sequence = new SequencePatternMatcher();
-            pattern = pattern.Replace("___", $"@{WildcardPatternMatcher.ENTITYTYPE}");
             bool inVariations = false;
             bool inModifiers = false;
             bool modifierFuzzyMatch = false;
@@ -113,7 +112,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                             default:
                                 if (variations.Any())
                                 {
-                                    FinishVariations(exactAnalyzer, fuzzyAnalyzer, sequence, modifierFuzzyMatch, modifierOrdinality, variations);
+                                    AddVariations(exactAnalyzer, fuzzyAnalyzer, sequence, modifierFuzzyMatch, modifierOrdinality, variations);
                                     inVariations = false;
                                     inModifiers = false;
                                     modifierOrdinality = Ordinality.One;
@@ -130,7 +129,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             {
                 if (inModifiers && variations.Any())
                 {
-                    FinishVariations(exactAnalyzer, fuzzyAnalyzer, sequence, modifierFuzzyMatch, modifierOrdinality, variations);
+                    AddVariations(exactAnalyzer, fuzzyAnalyzer, sequence, modifierFuzzyMatch, modifierOrdinality, variations);
                 }
                 else
                 {
@@ -192,13 +191,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             }
         }
 
-        private static void FinishVariations(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, SequencePatternMatcher sequence, bool modifierFuzzyMatch, Ordinality modifierOrdinality, List<string> variations)
+        private static void AddVariations(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, SequencePatternMatcher sequence, bool modifierFuzzyMatch, Ordinality modifierOrdinality, List<string> variations)
         {
-            if (variations.Contains("___") && variations.Count > 1)
-            {
-                throw new SyntaxErrorException($"___ cannot be combined with other tokens in a () clause.  It must be used by itself like this: (___)?"); 
-            }
-
             var patternMatchers = CreateVariationsPatternMatchers(variations, exactAnalyzer, fuzzyAnalyzer, modifierFuzzyMatch);
 
             switch (modifierOrdinality)
@@ -230,16 +224,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             var patternMatchers = new List<PatternMatcher>();
             foreach (var variation in variations.Select(variation => variation.Trim()))
             {
-                if (variation.FirstOrDefault() == '@')
+                if (variation.EndsWith("___"))
                 {
-                    if (variation == $"@{WildcardPatternMatcher.ENTITYTYPE}")
-                    {
-                        patternMatchers.Add(new WildcardPatternMatcher());
-                    }
-                    else
-                    {
-                        patternMatchers.Add(new EntityPatternMatcher(variation));
-                    }
+                    patternMatchers.Add(new WildcardPatternMatcher(variation));
+                }
+                else if (variation.FirstOrDefault() == '@')
+                {
+                    patternMatchers.Add(new EntityPatternMatcher(variation));
                 }
                 else
                 {
@@ -251,6 +242,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 
         private static PatternMatcher CreateTextPatternMatcher(string text, Analyzer analyzer)
         {
+            text = text.Replace("___", $"@{WildcardPatternMatcher.ENTITYTYPE}");
             var sequence = new SequencePatternMatcher();
             using (TextReader reader = new StringReader(text))
             {
