@@ -24,7 +24,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         public EntityPattern(string name, string resolution, PatternMatcher pattern)
         {
             this.Name = name.TrimStart('@');
-            this.Resolution = resolution;
+            this.Resolution = resolution?.Trim('(', ')', '~').Trim();
             this.PatternMatcher = pattern;
         }
 

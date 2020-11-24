@@ -141,7 +141,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 }
             }
 
-
             return mergedEntities;
         }
 

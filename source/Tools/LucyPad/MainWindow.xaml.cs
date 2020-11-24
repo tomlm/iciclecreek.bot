@@ -102,8 +102,8 @@ entities:
 
   - name: '@container'
     patterns:
-    - (glass|shot|tumbler|mug)?
-    
+    - (glass|shot|shotglass|tumbler|mug|pitcher)?
+
   - name: '@beverageType'
     patterns:
     - [beer, suds]
@@ -118,7 +118,7 @@ entities:
   # @drink entity
   - name: '@drinkorder'
     patterns:
-    - (a|some) (@drinkSize|@container)* (of)? (___)* (@beverageType|beverage|drink)?
+    - like (a|some) (@drinkSize|@container)* (of)? (___)* (@beverageType|beverage|drink)?
 ";
         }
 
