@@ -35,7 +35,8 @@
         public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = PrimaryMatcher.Matches(context, start);
-            if (matchResult.Matched)
+            // if it matched AND moved forward, then we want to fallback
+            if (matchResult.Matched && matchResult.NextStart > start)
             {
                 return matchResult;
             }
