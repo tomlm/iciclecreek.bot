@@ -11,7 +11,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Match
     /// </summary>
     public class TokenPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "Token";
+        public const string ENTITYTYPE = "^Token";
 
         public TokenPatternMatcher(string textToken)
         {

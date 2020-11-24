@@ -11,7 +11,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
     /// </summary>
     public class WildcardPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "wildcard";
+        public const string ENTITYTYPE = "^wildcard";
 
         public WildcardPatternMatcher()
         {

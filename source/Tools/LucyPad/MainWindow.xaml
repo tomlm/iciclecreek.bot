@@ -16,10 +16,12 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Label Content="Lucy Model" FontSize="20"/>
-            <aui:TextEditor Grid.Row="1" Grid.Column="0" x:Name="editor" SyntaxHighlighting="markdown" FontFamily="Consolas" FontSize="15pt" Margin="4">
+            <Label Grid.Row="1" Content="" Visibility="Collapsed" Background="Yellow" x:Name="error" Padding="10"/>
+            <aui:TextEditor Grid.Row="2" Grid.Column="0" x:Name="editor" SyntaxHighlighting="markdown" FontFamily="Consolas" FontSize="15pt" Margin="4">
             </aui:TextEditor>
         </Grid>
 

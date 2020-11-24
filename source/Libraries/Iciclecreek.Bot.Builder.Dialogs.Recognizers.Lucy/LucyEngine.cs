@@ -66,9 +66,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// </summary>
         /// <param name="text">text to match against.</param>
         /// <param name="externalEntities">externally provided entities</param>
-        /// <param name="includeTokens">include tokens in results</param>
+        /// <param name="includeInternal">include tokens in results</param>
         /// <returns>entities</returns>
-        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeTokens = false)
+        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeInternal = false)
         {
             var context = new MatchContext()
             {
@@ -116,13 +116,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             } while (count != context.Entities.Count);
 
             // filter out internal entities
-            if (includeTokens)
+            if (includeInternal)
             {
                 return context.Entities;
             }
 
-            return context.Entities.Where(entity => !String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase) &&
-                                                    !String.Equals(entity.Type, FuzzyTokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
+            return context.Entities.Where(entity => entity.Type[0] != '^')
                 .ToList();
         }
 

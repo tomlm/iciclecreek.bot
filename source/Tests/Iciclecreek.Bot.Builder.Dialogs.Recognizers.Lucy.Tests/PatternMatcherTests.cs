@@ -16,7 +16,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             var engine = new LucyEngine(new LucyModel());
 
             string text = "this is a test";
-            var results = engine.MatchEntities(text, includeTokens: true);
+            var results = engine.MatchEntities(text, includeInternal: true);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
@@ -229,7 +229,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             });
 
             string text = "this is a frog frog frog frog";
-            var results = engine.MatchEntities(text, null);
+            var results = engine.MatchEntities(text, includeInternal: true);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
@@ -436,6 +436,42 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             });
 
             string text = "the box is 9 inches by 7.";
+            var results = engine.MatchEntities(text, null, true);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "boxsize").ToList();
+            Assert.AreEqual(1, entities.Count);
+            var entity = entities.Single().Children.Single();
+            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual(3, entity.Children.Count);
+            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+        }
+
+        [TestMethod]
+        public void WildcardOrdinalTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Macros = new Dictionary<string, string>()
+                {
+                    { "$is","(is|equals)" },
+                },
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@size", Patterns = new List<PatternModel>() { "(small|medium|large)" } },
+                    new EntityModel() {
+                        Name = "@drink",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "(like)? a (@size|___)* (drink|cocktail|beverage)"
+                        }
+                    },
+                }
+            });
+
+            string text = "I would like a large clyde mills drink.";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
             Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));

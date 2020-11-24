@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -54,12 +55,13 @@ namespace LucyPad
             {
                 if (lucyModel != this.editor.Document.Text)
                 {
-                    lucyModel = this.editor.Document.Text;
-
-                    var x = yamlDeserializer.Deserialize(new StringReader(lucyModel));
+                    Trace.TraceInformation("Loading model");
+                    var x = yamlDeserializer.Deserialize(new StringReader(this.editor.Document.Text));
                     var json = yamlSerializer.Serialize(x);
                     var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
                     engine = new LucyEngine(model);
+                    this.error.Visibility = Visibility.Collapsed;
+                    lucyModel = this.editor.Document.Text;
                 }
 
                 var text = this.query?.Text?.Trim() ?? string.Empty;
@@ -67,11 +69,24 @@ namespace LucyPad
                 {
                     var results = engine.MatchEntities(text);
                     this.entitiesBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
-                    this.entitiesBox.Text += "\n\n====================================\n"+LucyEngine.VizualizeResultsAsHierarchy(text, results);
+                    this.entitiesBox.Text += "\n\n====================================\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results);
                 }
             }
-            catch
+            catch (SemanticErrorException err)
             {
+                this.error.Content = err.Message;
+                this.error.Visibility = Visibility.Visible;
+                this.editor.ScrollToLine(err.Start.Line);
+                var line = this.editor.Document.GetLineByNumber(err.Start.Line-1);
+                this.editor.Select(line.Offset, line.Length);
+            }
+            catch (SyntaxErrorException err)
+            {
+                this.error.Content = err.Message;
+                this.error.Visibility = Visibility.Visible;
+                this.editor.ScrollToLine(err.Start.Line);
+                var line = this.editor.Document.GetLineByNumber(err.Start.Line-1);
+                this.editor.Select(line.Offset, line.Length);
             }
         }
 
@@ -79,6 +94,7 @@ namespace LucyPad
         {
             this.editor.Options.ConvertTabsToSpaces = true;
             this.editor.Options.IndentationSize = 2;
+            this.editor.ShowLineNumbers = true;
 
             this.editor.Text = @"# macros expand when used in a pattern
 macros:
@@ -97,6 +113,11 @@ entities:
     - [m, medium, tall]
     - [l, large, tall]
     - [xl, extra large, venti]
+
+  # @drink entity
+  - name: '@drinkorder'
+    patterns:
+    - 'like (a)? (@drinkSize|___)* (drink|beverage|cocktail)
 ";
         }
     }

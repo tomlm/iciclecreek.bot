@@ -75,6 +75,5 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual(2, results.Where(e => e.Type == "placeAndTime").Count());
             Assert.AreEqual(2, results.Where(e => e.Type == "city").Count());
         }
-
     }
 }
