@@ -1,4 +1,6 @@
-﻿namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
+﻿using System.Collections.Generic;
+
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {
     /// <summary>
     /// PatternMatcher which evaluates if the primary fails will evaluate the fallback matcher. 
@@ -47,6 +49,22 @@
             }
 
             return matchResult;
+        }
+
+        public override IEnumerable<string> GetEntityTypeDependencies()
+        {
+            foreach(var dependency in this.PrimaryMatcher.GetEntityTypeDependencies())
+            {
+                yield return dependency;
+            }
+
+            if (this.FallbackMatcher != null)
+            {
+                foreach (var dependency in this.FallbackMatcher.GetEntityTypeDependencies())
+                {
+                    yield return dependency;
+                }
+            }
         }
 
         public override string ToString() => $"Fallback({PrimaryMatcher},{FallbackMatcher})";

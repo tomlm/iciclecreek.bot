@@ -164,6 +164,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             return false;
         }
 
+        public virtual IEnumerable<string> GetEntityTypeDependencies()
+        {
+            yield break;
+        }
+
         private static void AddPatternMatchersForText(List<PatternMatcher> patternMatchers, string text, bool defaultFuzzyMatch, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
         {
             if (!String.IsNullOrEmpty(text))

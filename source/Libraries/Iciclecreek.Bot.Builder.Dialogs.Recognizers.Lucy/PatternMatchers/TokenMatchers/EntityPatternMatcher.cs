@@ -34,5 +34,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         }
 
         public override string ToString() => $"@{EntityType}";
+
+        public override IEnumerable<string> GetEntityTypeDependencies()
+        {
+            yield return this.EntityType;
+        }
     }
 }

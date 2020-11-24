@@ -48,6 +48,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 
         public override bool IsWildcard() => (this.PatternMatchers.Count == 1 && this.PatternMatchers.Where(p => p.IsWildcard()).Any());
 
+        public override IEnumerable<string> GetEntityTypeDependencies()
+        {
+            foreach (var patternMatcher in this.PatternMatchers)
+            {
+                foreach (var dependency in patternMatcher.GetEntityTypeDependencies())
+                {
+                    yield return dependency;
+                }
+            }
+        }
+
         public override string ToString() => $"ZeroOrMore({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

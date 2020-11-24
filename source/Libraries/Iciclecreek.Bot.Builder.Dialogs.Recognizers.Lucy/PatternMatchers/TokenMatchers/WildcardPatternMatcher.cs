@@ -64,6 +64,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 
         public override bool IsWildcard() => true;
 
+        public override IEnumerable<string> GetEntityTypeDependencies()
+        {
+            yield return ENTITYTYPE;
+        }
+
         public override string ToString() => "___";
     }
 }

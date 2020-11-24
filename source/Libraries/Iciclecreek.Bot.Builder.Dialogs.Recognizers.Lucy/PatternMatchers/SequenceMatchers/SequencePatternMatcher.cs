@@ -101,6 +101,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             }
         }
 
+        public override IEnumerable<string> GetEntityTypeDependencies()
+        {
+            foreach (var patternMatcher in this.PatternMatchers)
+            {
+                foreach (var dependency in patternMatcher.GetEntityTypeDependencies())
+                {
+                    yield return dependency;
+                }
+            }
+        }
+
         public override string ToString() => $"Sequence({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }
