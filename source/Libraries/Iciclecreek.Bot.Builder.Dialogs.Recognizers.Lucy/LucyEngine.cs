@@ -126,15 +126,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
             foreach (var entity1 in context.Entities.Where(entity => entity.Type[0] != '^'))
             {
-                var sameTypeEntities = context.Entities.Where(e => e.Type == entity1.Type && e != entity1 && !mergedEntities.Contains(entity1)).ToList();
-                if (sameTypeEntities.Count() == 0)
+                var alternateEntities = context.Entities.Where(e => e.Type == entity1.Type && e != entity1 && !mergedEntities.Contains(entity1)).ToList();
+                if (alternateEntities.Count() == 0)
                 {
                     mergedEntities.Add(entity1);
                 }
                 else
                 {
-                    // if none say "don't keep it" then we add it
-                    if (!sameTypeEntities.Any(entity2 => !KeepEntity(entity1, entity2)))
+                    // if no alterantes say "don't keep it" then we add it
+                    if (!alternateEntities.Any(entity2 => ShouldDropEntity(entity1, entity2)))
                     {
                         mergedEntities.Add(entity1);
                     }
@@ -426,18 +426,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             return pattern;
         }
 
-        private bool KeepEntity(LucyEntity entity1, LucyEntity entity2)
+        private bool ShouldDropEntity(LucyEntity entity1, LucyEntity entity2)
         {
             // if entity2 is bigger on both ends
             if (entity2.Start < entity1.Start && entity2.End > entity1.End)
             {
-                return false;
+                return true;
             }
 
             // if it's inside the current token
             if (entity2.Start >= entity1.Start && entity2.End <= entity1.End)
             {
-                return true;
+                return false;
             }
             // if offset overlapping at start or end
             if ((entity2.Start <= entity1.Start && entity2.End >= entity1.Start && entity2.End <= entity1.End) ||
@@ -447,14 +447,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 var entity2Length = entity2.End - entity2.Start;
                 if (entity1Length > entity2Length)
                 {
-                    return true;
+                    return false;
                 }
                 else if (entity2Length > entity1Length)
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
     }
 }
