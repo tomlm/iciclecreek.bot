@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -405,5 +406,48 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual("name is joe smith", entities[0].Text);
             Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
+
+        [TestMethod]
+        public void MacroTest()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Macros = new Dictionary<string, string>()
+                {
+                    { "$is","(is|equals)" },
+                },
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @dimensions"} },
+                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@length) (height|tall)" } },
+                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@length) (width|wide)" } },
+                    new EntityModel() { Name = "@length", Patterns = new List<PatternModel>() { "@number @units" } },
+                    new EntityModel() { Name = "@number", Patterns = new List<PatternModel>() { "(0|1|2|3|4|5|6|7|8|9|10)" } },
+                    new EntityModel() { Name = "@units", Patterns = new List<PatternModel>() { "(inches|feet|yards|meters)" } },
+                    new EntityModel() {
+                        Name = "@dimensions",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "(@width|@length|@number) (x|by)? (@height|@length|@number)",
+                            "(@height|@length|@number) (x|by)? (@width|@length|@number)",
+                        }
+                    },
+                }
+            });
+
+            string text = "the box is 9 inches by 7.";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "boxsize").ToList();
+            Assert.AreEqual(1, entities.Count);
+            var entity = entities.Single().Children.Single();
+            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual(3, entity.Children.Count);
+            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+        }
+
     }
 }

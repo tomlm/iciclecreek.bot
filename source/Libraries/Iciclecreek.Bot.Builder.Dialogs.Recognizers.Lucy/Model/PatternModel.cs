@@ -14,6 +14,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
     {
         private List<string> patterns = new List<string>();
 
+        public PatternModel()
+        {
+        }
+
         public PatternModel(string patternDefinition)
         {
             this.patterns.Add(patternDefinition.Trim());
@@ -21,7 +25,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public PatternModel(string[] patternDefinitions)
         {
-            this.patterns.AddRange(patternDefinitions.Select(pattern => pattern.Trim()));
+            if (patternDefinitions!= null && patternDefinitions.Any())
+            {
+                this.patterns.AddRange(patternDefinitions.Select(pattern => pattern.Trim()));
+            }
         }
 
         public bool IsNormalized()
@@ -37,5 +44,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public static implicit operator PatternModel(string[] patternDefinitions) => new PatternModel(patternDefinitions);
         public static implicit operator PatternModel(JArray patternDefinitions) => new PatternModel(patternDefinitions.ToObject<string[]>());
+
+        public override string ToString() => $"[{this.patterns.FirstOrDefault()}, ...]";
     }
 }

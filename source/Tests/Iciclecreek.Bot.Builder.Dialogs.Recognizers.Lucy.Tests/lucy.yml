@@ -41,16 +41,7 @@ entities:
       - (chicago)~
       - [(seattle)~, (emerald city)~]
 
-  # @city2 entity, default fuzzy
-  - name: "@city2"
-    fuzzyMatch: true
-    patterns:
-      - [los angeles, city of angeles, (LA)~, (L.A.)~]
-      - des moines
-      - chicago
-      - [seattle, emerald city]
-
-  # @placeAndTime entity is one or more of (@airport | @city | @date)
+    # @placeAndTime entity is one or more of (@airport | @city | @date)
   - name: "@placeAndTime"
     patterns:
       - "(@airportCode|@city|@datetimev2)+"
@@ -84,11 +75,11 @@ entities:
 
   - name: "@show_trip"
     patterns:
-      - $show (my|the)? flight (@departure|@destination|@placeAndTime)*
+      - $show (me|my|the)? flight (@departure|@destination|@placeAndTime)*
 
   - name: "@delete_trip"
     patterns:
-      - $clear (my|the)? flight (@departure|@destination|@placeAndTime)*
+      - $clear (me|my|the)? flight (@departure|@destination|@placeAndTime)*
 
   #age property
   - name: "@userage"
@@ -108,24 +99,37 @@ entities:
       - $clear (my)? age
       - I am ageless
 
-  #height property
+  # box properties
+  - name: "@number"
+    patterns: 
+    - (0|1|2|3|4|5|6|7|8|9|10)
+
+  - name: "@units"
+    patterns: 
+    - (inches|feet|yards|meters)
+
+  - name: "@length"
+    patterns: 
+    - "@number @units"
+
+  - name: "@dimensions"
+    patterns:
+      - (@width|@length|@number) (x|by)? (@height|@length|@number)
+      - (@height|@length|@number) (x|by)? (@width|@length|@number)
+
   - name: "@height"
     patterns:
-      - height ($is)? (@dimension|@number)
-      - ($set)? height (to)? (@dimension|@number)
-      - (@dimension|@number) tall
+    - (@length) (height|tall)
+    - height $is (@length) 
 
-  #width
   - name: "@width"
-    patterns:
-      - width (equals)? (@dimension|@number)
-      - (@dimension|@number) wide
+    patterns: 
+    - (@length) (width|wide)
+    - width $is (@length)
 
-  #size
-  - name: "@size"
+  - name: "@boxsize"
     patterns:
-      - "(@width|@dimension|@number) (by|x)? (@height|@dimension|@number)"
-      - "(@height|@dimension|@number) (by|x)? (@width|@dimension|@number)"
+      - box (is|equals)? @dimensions
 
   #name property
   - name: "@name"

@@ -48,14 +48,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                         case '(':
                             if (sb.Length > 0)
                             {
-                                if (defaultFuzzyMatch)
-                                {
-                                    sequence.PatternMatchers.Add(CreateFuzzyTextPatternMatcher(sb.ToString(), fuzzyAnalyzer));
-                                }
-                                else
-                                {
-                                    sequence.PatternMatchers.Add(CreateTextPatternMatcher(sb.ToString(), exactAnalyzer));
-                                }
+                                AddPatternMatchersForText(sequence.PatternMatchers, sb.ToString().Trim(), defaultFuzzyMatch, exactAnalyzer, fuzzyAnalyzer);
                                 sb.Clear();
                             }
 
@@ -146,19 +139,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 
             if (sb.Length > 0)
             {
-                string text = sb.ToString().Trim();
-                if (!String.IsNullOrEmpty(text))
-                {
-                    if (defaultFuzzyMatch)
-                    {
-                        sequence.PatternMatchers.Add(CreateFuzzyTextPatternMatcher(text, fuzzyAnalyzer));
-                    }
-                    else
-                    {
-                        sequence.PatternMatchers.Add(CreateTextPatternMatcher(text, exactAnalyzer));
-                    }
-                }
+                AddPatternMatchersForText(sequence.PatternMatchers, sb.ToString().Trim(), defaultFuzzyMatch, exactAnalyzer, fuzzyAnalyzer);
             }
+
+            if (sequence.PatternMatchers.Count == 0)
+            {
+                return null;
+            }
+
             if (sequence.PatternMatchers.Count == 1)
             {
                 //Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
@@ -166,6 +154,29 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             }
             //Trace.TraceInformation($"{pattern}:\n\t{sequence}");
             return sequence;
+        }
+
+        private static void AddPatternMatchersForText(List<PatternMatcher> patternMatchers, string text, bool defaultFuzzyMatch, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                if (defaultFuzzyMatch)
+                {
+                    var patternMatcher = CreateFuzzyTextPatternMatcher(text, fuzzyAnalyzer);
+                    if (patternMatcher != null)
+                    {
+                        patternMatchers.Add(patternMatcher);
+                    }
+                }
+                else
+                {
+                    var patternMatcher = CreateTextPatternMatcher(text, exactAnalyzer);
+                    if (patternMatcher != null)
+                    {
+                        patternMatchers.Add(patternMatcher);
+                    }
+                }
+            }
         }
 
         private static void FinishVariations(Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, SequencePatternMatcher sequence, bool modifierFuzzyMatch, Ordinality modifierOrdinality, List<string> variations)
@@ -214,14 +225,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 }
                 else
                 {
-                    if (fuzzy)
-                    {
-                        patternMatchers.Add(CreateFuzzyTextPatternMatcher(variation, fuzzyAnalyzer));
-                    }
-                    else
-                    {
-                        patternMatchers.Add(CreateTextPatternMatcher(variation, exactAnalyzer));
-                    }
+                    AddPatternMatchersForText(patternMatchers, variation.Trim(), fuzzy, exactAnalyzer, fuzzyAnalyzer);
                 }
             }
             return patternMatchers;
@@ -259,6 +263,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                         }
                     }
                 }
+            }
+
+            if (sequence.PatternMatchers.Count == 0)
+            {
+                return null;
             }
 
             if (sequence.PatternMatchers.Count == 1)
@@ -313,6 +322,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                         }
                     }
                 }
+            }
+
+            if (sequence.PatternMatchers.Count == 0)
+            {
+                return null;
             }
 
             if (sequence.PatternMatchers.Count == 1)

@@ -4,18 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Antlr4.Runtime.Atn;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Phonetic;
 using Lucene.Net.Analysis.Phonetic.Language.Bm;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
-using Newtonsoft.Json;
 using NuGet.Packaging;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
@@ -99,6 +96,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
+                        //if (entityPattern.Name == "departure")
+                        //Debugger.Break();
                         ProcessEntityPattern(context, textEntity, entityPattern);
                     }
                 }
@@ -140,7 +139,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             sb.AppendLine(text);
             foreach (var grp in entities.GroupBy(entity => entity.Type))
             {
-                sb.AppendLine(FormatEntityLine(text, grp));
+                sb.Append(FormatEntityLine(text, grp));
             }
 
             return sb.ToString();
@@ -184,22 +183,74 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         private static string FormatEntityLine(string text, IEnumerable<LucyEntity> entities)
         {
             StringBuilder sb = new StringBuilder();
-            int last = 0;
-            foreach (var entity in entities)
+            foreach (var tier in ArrangeEntitiesIntoNonOverlappingTies(entities))
             {
-                sb.Append(new String(' ', entity.Start - last));
-                if (entity.End == entity.Start + 1)
+                int lastEnd = 0;
+                foreach (var entity in tier)
                 {
-                    sb.Append("^");
+                    sb.Append(new String(' ', entity.Start - lastEnd));
+                    if (entity.End == entity.Start + 1)
+                    {
+                        sb.Append("^");
+                    }
+                    else
+                    {
+                        sb.Append($"^{new String('_', entity.End - entity.Start - 2)}^");
+                    }
+                    lastEnd = entity.End;
+                }
+                sb.AppendLine($"{new String(' ', text.Length - lastEnd)} @{entities.First().Type}");
+            }
+
+            return sb.ToString();
+        }
+
+        private static List<List<LucyEntity>> ArrangeEntitiesIntoNonOverlappingTies(IEnumerable<LucyEntity> entities)
+        {
+            var candidates = entities.ToList();
+            var tiers = new List<List<LucyEntity>>();
+
+            List<LucyEntity> tier = new List<LucyEntity>();
+            List<LucyEntity> nextTier = new List<LucyEntity>();
+            while (true)
+            {
+                foreach (var entity in candidates)
+                {
+                    // if collision
+                    if (tier.Any(tierEntity =>
+                        tierEntity.Type == entity.Type &&
+                        (
+                            // inside 
+                            (tierEntity.Start >= entity.Start && tierEntity.End <= entity.End) ||
+                            // overlaps on start
+                            (tierEntity.Start <= entity.Start && tierEntity.End >= entity.Start && tierEntity.End <= entity.End) ||
+                            // overlaps on End
+                            (tierEntity.Start >= entity.Start && tierEntity.Start <= entity.End && tierEntity.End >= entity.End) ||
+                            // bigger overlap
+                            (tierEntity.Start <= entity.Start && tierEntity.End >= entity.End)
+                        )))
+                    {
+                        nextTier.Add(entity);
+                    }
+                    else
+                    {
+                        tier.Add(entity);
+                    }
+                }
+
+                tiers.Add(tier.OrderBy(e => e.Start).ToList());
+
+                if (nextTier.Any())
+                {
+                    candidates = nextTier;
+                    tier = new List<LucyEntity>();
+                    nextTier = new List<LucyEntity>();
                 }
                 else
                 {
-                    sb.Append($"^{new String('_', entity.End - entity.Start - 2)}^");
+                    return tiers;
                 }
-                last = entity.End;
             }
-            sb.Append($"{new String(' ', text.Length - last)} @{entities.First().Type}");
-            return sb.ToString();
         }
 
         private void ProcessEntityPattern(MatchContext context, LucyEntity textEntity, EntityPattern entityPattern)
@@ -214,7 +265,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
             // see if it matches at this textEntity starting position.
             var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
-            //    Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
+            //Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
 
             // if it matches
             if (matchResult.Matched)
@@ -222,6 +273,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 // add it to the entities.
                 context.CurrentEntity.End = matchResult.NextStart;
                 context.Entities.Add(context.CurrentEntity);
+                Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
             }
         }
 
@@ -236,14 +288,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     {
                         var expandedPattern = ExpandMacros(pattern);
                         var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
-                        if (expandedPattern.Contains("___"))
+                        if (patternMatcher != null)
                         {
-                            // we want to process wildcard patterns last
-                            WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
-                        }
-                        else
-                        {
-                            EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                            if (expandedPattern.Contains("___"))
+                            {
+                                // we want to process wildcard patterns last
+                                WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                            }
+                            else
+                            {
+                                EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                            }
                         }
                     }
                 }

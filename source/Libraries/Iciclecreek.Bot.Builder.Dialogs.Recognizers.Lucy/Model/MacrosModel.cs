@@ -10,8 +10,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
     /// <summary>
     /// Represents a Value
     /// </summary>
-    public class MacrosModel 
+    public class MacrosModel
     {
+        public MacrosModel()
+        {
+        }
+
         /// <summary>
         /// name (must start with $)
         /// </summary>
@@ -21,5 +25,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// Aliases 
         /// </summary>
         public string Value { get; set; }
+
+        public override string ToString() => $"{Name} = {Value}";
     }
 }

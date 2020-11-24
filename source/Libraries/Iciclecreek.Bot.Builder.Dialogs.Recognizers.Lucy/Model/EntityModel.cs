@@ -38,5 +38,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         // patterns which define the entity
         public List<PatternModel> Patterns { get; set; }  = new List<PatternModel>();
+
+        public override string ToString() => $"{Name}{(FuzzyMatch ? "~" : "")}";
     }
 }

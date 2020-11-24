@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Miscellaneous;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
 {

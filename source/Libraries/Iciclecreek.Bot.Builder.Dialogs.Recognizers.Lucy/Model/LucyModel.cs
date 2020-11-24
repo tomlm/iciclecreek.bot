@@ -12,6 +12,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     public class LucyModel
     {
+        public LucyModel()
+        { }
+
         public Dictionary<string, string> Macros { get; set; }
 
         public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
