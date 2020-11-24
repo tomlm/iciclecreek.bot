@@ -67,7 +67,7 @@ namespace LucyPad
                 var text = this.query?.Text?.Trim() ?? string.Empty;
                 if (text.Length > 0)
                 {
-                    var results = engine.MatchEntities(text);
+                    var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
                     this.entitiesBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
                     this.entitiesBox.Text += "\n\n====================================\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results);
                 }
@@ -119,6 +119,10 @@ entities:
     patterns:
     - 'like (a)? (@drinkSize|___)* (drink|beverage|cocktail)
 ";
+        }
+
+        private void showInternal_Checked(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

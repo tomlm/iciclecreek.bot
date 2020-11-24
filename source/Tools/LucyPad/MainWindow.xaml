@@ -37,6 +37,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBox Margin="4" x:Name="query" TextChanged="query_TextChanged"/>
+                <CheckBox Grid.Column="1" Content="Show Internal" x:Name="showInternal" Margin="4" Checked="showInternal_Checked"/>
             </Grid>
 
             <TabControl Grid.Row="1"  x:Name="tabs" >

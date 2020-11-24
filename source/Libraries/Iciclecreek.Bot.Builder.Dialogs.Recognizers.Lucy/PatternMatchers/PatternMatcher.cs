@@ -214,7 +214,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             {
                 if (variation.FirstOrDefault() == '@')
                 {
-                    if (variation == "@wildcard")
+                    if (variation == $"@{WildcardPatternMatcher.ENTITYTYPE}")
                     {
                         patternMatchers.Add(new WildcardPatternMatcher());
                     }

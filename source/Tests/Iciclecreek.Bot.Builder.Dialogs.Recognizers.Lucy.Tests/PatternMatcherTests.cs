@@ -465,7 +465,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         Name = "@drink",
                         Patterns = new List<PatternModel>()
                         {
-                            "(like)? a (@size|___)* (drink|cocktail|beverage)"
+                            "(like)? a (@size|___)* " +
+                            "(drink|cocktail|beverage)"
                         }
                     },
                 }
