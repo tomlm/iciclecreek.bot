@@ -90,14 +90,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
                 // foreach text token
                 foreach (var textEntity in context.Entities
-                                            .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
+                                            .Where(entity => String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
                                             .OrderBy(entity => entity.Start))
                 {
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
-                        //if (entityPattern.Name == "departure")
-                        //Debugger.Break();
                         ProcessEntityPattern(context, textEntity, entityPattern);
                     }
                 }
@@ -106,7 +104,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 {
                     // process wildcard patterns
                     foreach (var textEntity in context.Entities
-                                                .Where(entity => entity.Type == TokenPatternMatcher.ENTITYTYPE)
+                                                .Where(entity => String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
                                                 .OrderBy(entity => entity.Start))
                     {
                         foreach (var entityPattern in WildcardEntityPatterns)
@@ -123,8 +121,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 return context.Entities;
             }
 
-            return context.Entities.Where(entity => entity.Type != TokenPatternMatcher.ENTITYTYPE &&
-                                                    entity.Type != FuzzyTokenPatternMatcher.ENTITYTYPE).ToList();
+            return context.Entities.Where(entity => !String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase) &&
+                                                    !String.Equals(entity.Type, FuzzyTokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         /// <summary>
@@ -137,7 +136,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(text);
-            foreach (var grp in entities.GroupBy(entity => entity.Type))
+            foreach (var grp in entities.GroupBy(entity => entity.Type.ToLower()))
             {
                 sb.Append(FormatEntityLine(text, grp));
             }
@@ -218,7 +217,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 {
                     // if collision
                     if (tier.Any(tierEntity =>
-                        tierEntity.Type == entity.Type &&
+                        String.Equals(tierEntity.Type, entity.Type, StringComparison.OrdinalIgnoreCase) &&
                         (
                             // inside 
                             (tierEntity.Start >= entity.Start && tierEntity.End <= entity.End) ||
@@ -272,8 +271,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             {
                 // add it to the entities.
                 context.CurrentEntity.End = matchResult.NextStart;
-                context.Entities.Add(context.CurrentEntity);
-                Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
+                if (!context.Entities.Contains(context.CurrentEntity))
+                {
+                    context.Entities.Add(context.CurrentEntity);
+                    // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
+                }
             }
         }
 
@@ -290,6 +292,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                         var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
                         if (patternMatcher != null)
                         {
+                            // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
                             if (expandedPattern.Contains("___"))
                             {
                                 // we want to process wildcard patterns last

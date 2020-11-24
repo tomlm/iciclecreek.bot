@@ -12,7 +12,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
                 return true;
             else if (token1 == null || token2 == null)
                 return false;
-            else if (token1.Type == token2.Type &&
+            else if (String.Equals(token1.Type, token2.Type, StringComparison.OrdinalIgnoreCase) &&
                      token1.Start == token2.Start &&
                      token1.End == token2.End)
                 return true;

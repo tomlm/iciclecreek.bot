@@ -24,8 +24,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
             // if the next token is already claimed, then we don't want to keep this
             var tokenTaken = context.Entities.Where(entity =>
                 entity.Start >= start && entity.Start <= start + 1 &&
-                entity.Type != TokenPatternMatcher.ENTITYTYPE &&
-                entity.Type != FuzzyTokenPatternMatcher.ENTITYTYPE).Any();
+                !String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase) &&
+                !String.Equals(entity.Type, FuzzyTokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
+                .Any();
             if (!tokenTaken)
             {
                 var token = context.FindNextEntities(TokenPatternMatcher.ENTITYTYPE, start).FirstOrDefault();

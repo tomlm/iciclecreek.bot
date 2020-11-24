@@ -69,13 +69,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
             Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
 
-            var entities = results.Where(e => e.Type == "boxsize").ToList();
-            Assert.AreEqual(1, entities.Count);
-            var entity = entities.Single().Children.Single();
-            Assert.AreEqual("dimensions", entity.Type);
-            Assert.AreEqual(3, entity.Children.Count);
-            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
-            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+            Assert.AreEqual(1, results.Where(e => e.Type == "trip").Count());
+            Assert.AreEqual(1, results.Where(e => e.Type == "destination").Count());
+            Assert.AreEqual(1, results.Where(e => e.Type == "departure").Count());
+            Assert.AreEqual(2, results.Where(e => e.Type == "placeAndTime").Count());
+            Assert.AreEqual(2, results.Where(e => e.Type == "city").Count());
         }
 
     }

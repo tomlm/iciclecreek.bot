@@ -36,7 +36,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         public IEnumerable<LucyEntity> FindNextEntities(string entityType, int start, int slop = 0)
         {
             return this.Entities.Where(entityToken =>
-                entityToken.Type == entityType &&
+                String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
                 entityToken.Start >= start &&
                 entityToken.Start <= (start + slop + 1));
         }

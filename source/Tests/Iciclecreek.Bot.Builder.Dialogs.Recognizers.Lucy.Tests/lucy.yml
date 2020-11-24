@@ -5,8 +5,8 @@ macros:
   $set: (set|change)
   $show: (show|what is)
   $name: (name|nom de plum)
-  $departing: (departing|from|leaving|taking off)
-  $destination: (arriving|destination|to|landing)
+  $departing: (departing|from|leaving|leaving from|taking off)
+  $destination: (arriving|destination|to|to the|landing)
   $flight: (flight|trip|fly|travel|itinerary)
 
 entities:
@@ -28,11 +28,15 @@ entities:
     patterns:
       - [LAX, "los angeles"]
       - [DSM, "des moines"]
-      - [OHR, "o'hare", "ohare"]
+      - [CHI, "o'hare", "ohare"]
       - [MID, midway]
       - ORD
       - ...
 
+  - name: "conjunction"
+    patterns: 
+    - (and|or|but)
+    
   # @city entity
   - name: "@city"
     patterns:
@@ -40,6 +44,7 @@ entities:
       - (des moines)~
       - (chicago)~
       - [(seattle)~, (emerald city)~]
+      - [(new york)~, the big apple]
 
     # @placeAndTime entity is one or more of (@airport | @city | @date)
   - name: "@placeAndTime"
