@@ -37,14 +37,26 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, int start)
         {
+            // try to match each element in the sequence.
             foreach (var patternMatcher in PatternMatchers)
             {
-                var matchResult = patternMatcher.Matches(context, start);
-                if (!matchResult.Matched)
+                MatchResult matchResult = null;
+                do
                 {
-                    return matchResult;
-                }
-                start = matchResult.NextStart;
+                    var result = patternMatcher.Matches(context, start);
+                    // if the element did not match, then sequence is bad, return failure
+                    if (!result.Matched)
+                    {
+                        // unless we already have a result from this pattern matcher, then we can continue on.
+                        if (matchResult != null)
+                        {
+                            break;
+                        }
+                        return result;
+                    }
+                    matchResult = result;
+                    start = matchResult.NextStart;
+                } while (matchResult.Repeat);
             }
 
             return new MatchResult()

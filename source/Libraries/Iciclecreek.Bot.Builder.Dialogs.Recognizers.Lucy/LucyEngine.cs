@@ -133,6 +133,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// <returns></returns>
         public static string VisualizeResultsAsSpans(string text, IEnumerable<LucyEntity> entities)
         {
+            if (!entities.Any())
+            {
+                return "No entities found";
+            }
+
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(text);
             foreach (var grp in entities.GroupBy(entity => entity.Type.ToLower()))
@@ -151,6 +156,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// <returns></returns>
         public static string VizualizeResultsAsHierarchy(string text, IEnumerable<LucyEntity> entities)
         {
+            if (!entities.Any())
+            {
+                return "No entities found";
+            }
+
             StringBuilder sb = new StringBuilder();
 
             foreach (var entity in entities)
@@ -264,7 +274,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             // see if it matches at this textEntity starting position.
             var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
             //Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
-
+            if (matchResult == null)
+                Debugger.Break();
             // if it matches
             if (matchResult.Matched)
             {

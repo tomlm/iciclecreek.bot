@@ -354,8 +354,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
             Assert.AreEqual("dimensions", entity.Type);
-            Assert.AreEqual(3, entity.Children.Count);
-            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(2, entity.Children.Count);
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
         }
 
@@ -417,7 +417,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                 }
             });
 
-            string text = "my name is joe smith and I am cool";
+            string text = "my name is joe smith and but and I am cool";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
             Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
@@ -467,8 +467,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
             Assert.AreEqual("dimensions", entity.Type);
-            Assert.AreEqual(3, entity.Children.Count);
-            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(2, entity.Children.Count);
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
         }
 
@@ -488,14 +488,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                         Name = "@drink",
                         Patterns = new List<PatternModel>()
                         {
-                            "(like)? a (@size)? (___)* " +
-                            "(drink|cocktail|beverage)"
+                            "(like)? a (@size)? (___)* (drink|cocktail|beverage)?"
                         }
                     },
                 }
             });
 
-            string text = "I would like a large clyde mills drink.";
+            string text = "I would like a clyde mills drink.";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
             Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));

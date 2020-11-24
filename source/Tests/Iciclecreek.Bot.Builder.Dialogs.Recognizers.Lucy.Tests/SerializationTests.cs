@@ -46,8 +46,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
             Assert.AreEqual("dimensions", entity.Type);
-            Assert.AreEqual(3, entity.Children.Count);
-            Assert.AreEqual(2, entity.Children.Where(e => e.Type == "number").Count());
+            Assert.AreEqual(2, entity.Children.Count);
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
         }
 

@@ -29,33 +29,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, int start)
         {
-            MatchResult matchResult = new MatchResult();
-
-            bool found = false;
-            do
+            foreach (var patternMatcher in PatternMatchers)
             {
-                found = false;
-                foreach (var patternMatcher in PatternMatchers)
+                var matchResult = patternMatcher.Matches(context, start);
+                if (matchResult.Matched)
                 {
-                    var result = patternMatcher.Matches(context, start);
-                    if (result.Matched)
-                    {
-                        found = true;
-                        start = result.NextStart;
-
-                        if (result.NextStart > matchResult.NextStart)
-                        {
-                            matchResult.NextStart = result.NextStart;
-                        }
-
-                        matchResult.Matched = true;
-                        break;
-                    }
+                    matchResult.Repeat = true;
+                    return matchResult;
                 }
+            }
 
-            } while (found);
-
-            return matchResult;
+            return new MatchResult();
         }
 
         public override bool IsWildcard() => (this.PatternMatchers.Count == 1 && this.PatternMatchers.Where(p => p.IsWildcard()).Any());

@@ -12,6 +12,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         public bool Matched { get; set; }
 
         /// <summary>
+        /// Set to true to have this matcher run again on the next token
+        /// </summary>
+        public bool Repeat { get; set; } = false;
+
+        /// <summary>
         /// The starting point for sequence
         /// </summary>
         public int NextStart { get; set; }

@@ -29,24 +29,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, int start)
         {
-            MatchResult matchResult = new MatchResult();
-
             foreach (var patternMatch in PatternMatchers)
             {
                 var result = patternMatch.Matches(context, start);
                 if (result.Matched)
                 {
-                    matchResult.Matched = true;
-                }
-
-                // keep longest token span which matches
-                if (result.Matched && result.NextStart > matchResult.NextStart)
-                {
-                    matchResult.NextStart = result.NextStart;
+                    return result;
                 }
             }
 
-            return matchResult;
+            return new MatchResult();
         }
 
         public override bool IsWildcard() => (this.PatternMatchers.Count == 1 && this.PatternMatchers.Where(p => p.IsWildcard()).Any());
