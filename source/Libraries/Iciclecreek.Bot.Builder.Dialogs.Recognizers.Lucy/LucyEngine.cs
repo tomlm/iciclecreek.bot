@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
@@ -121,8 +122,87 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 return context.Entities;
             }
 
-            return context.Entities.Where(entity => entity.Type[0] != '^' && entity.Type != WildcardPatternMatcher.ENTITYTYPE)
-                .ToList();
+            // merge entities which are overlapping.
+            var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
+            foreach (var entity1 in context.Entities.Where(entity => entity.Type[0] != '^'))
+            {
+                var sameTypeEntities = context.Entities.Where(e => e.Type == entity1.Type && e != entity1 && !mergedEntities.Contains(entity1)).ToList();
+                if (sameTypeEntities.Count() == 0)
+                {
+                    mergedEntities.Add(entity1);
+                }
+                else
+                {
+                    // if none say "don't keep it" then we add it
+                    if (!sameTypeEntities.Any(entity2 => !KeepEntity(entity1, entity2)))
+                    {
+                        mergedEntities.Add(entity1);
+                    }
+                }
+            }
+
+
+            return mergedEntities;
+        }
+
+        public IEnumerable<LucyEntity> Tokenize(string text)
+        {
+            var tokens = new List<Token>();
+
+            using (TextReader reader = new StringReader(text))
+            {
+                using (var tokenStream = _exactAnalyzer.GetTokenStream("name", reader))
+                {
+                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
+                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
+                    tokenStream.Reset();
+
+                    while (tokenStream.IncrementToken())
+                    {
+                        string token = termAtt.ToString();
+                        bool skipFuzzy = false;
+                        if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '@')
+                        {
+                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
+                            skipFuzzy = true;
+                        }
+                        else if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '$')
+                        {
+                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
+                            skipFuzzy = true;
+                        }
+
+                        yield return new LucyEntity()
+                        {
+                            Type = TokenPatternMatcher.ENTITYTYPE,
+                            Text = token,
+                            Start = offsetAtt.StartOffset,
+                            End = offsetAtt.EndOffset
+                        };
+
+                        if (_fuzzyAnalyzer != null && !skipFuzzy)
+                        {
+                            using (TextReader fuzzyReader = new StringReader(token))
+                            {
+                                // get fuzzyText
+                                using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", fuzzyReader))
+                                {
+                                    var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
+                                    fuzzyTokenStream.Reset();
+                                    fuzzyTokenStream.IncrementToken();
+                                    yield return new LucyEntity()
+                                    {
+                                        Type = FuzzyTokenPatternMatcher.ENTITYTYPE,
+                                        Text = fuzzyTermAtt.ToString(),
+                                        Start = offsetAtt.StartOffset,
+                                        End = offsetAtt.EndOffset
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -140,7 +220,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(text);
-            foreach (var grp in entities.GroupBy(entity => entity.Type.ToLower()))
+            foreach (var grp in entities.GroupBy(entity => entity.Type.ToLower())
+                                                .OrderBy(grp => grp.Max(v => v.End - v.Start))
+                                                .ThenBy(grp => grp.Min(v => v.Start)))
             {
                 sb.Append(FormatEntityLine(text, grp));
             }
@@ -274,17 +356,29 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             // see if it matches at this textEntity starting position.
             var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
             //Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
-            if (matchResult == null)
-                Debugger.Break();
+
             // if it matches
-            if (matchResult.Matched)
+            if (matchResult.Matched && matchResult.NextStart != textEntity.Start)
             {
                 // add it to the entities.
                 context.CurrentEntity.End = matchResult.NextStart;
+                if (context.CurrentEntity.Resolution == null && !context.CurrentEntity.Children.Any())
+                {
+                    context.CurrentEntity.Resolution = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+                }
+
                 if (!context.Entities.Contains(context.CurrentEntity))
                 {
                     context.Entities.Add(context.CurrentEntity);
                     // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
+                }
+
+                foreach (var childEntity in context.CurrentEntity.Children)
+                {
+                    if (!context.Entities.Contains(childEntity))
+                    {
+                        context.Entities.Add(childEntity);
+                    }
                 }
             }
         }
@@ -295,7 +389,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             {
                 foreach (var patternModel in entityModel.Patterns)
                 {
-                    var resolution = patternModel.IsNormalized() ? patternModel.First() : entityModel.Name;
+                    var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
                     foreach (var pattern in patternModel)
                     {
                         var expandedPattern = ExpandMacros(pattern);
@@ -332,64 +426,35 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             return pattern;
         }
 
-        public IEnumerable<LucyEntity> Tokenize(string text)
+        private bool KeepEntity(LucyEntity entity1, LucyEntity entity2)
         {
-            var tokens = new List<Token>();
-
-            using (TextReader reader = new StringReader(text))
+            // if entity2 is bigger on both ends
+            if (entity2.Start < entity1.Start && entity2.End > entity1.End)
             {
-                using (var tokenStream = _exactAnalyzer.GetTokenStream("name", reader))
+                return false;
+            }
+
+            // if it's inside the current token
+            if (entity2.Start >= entity1.Start && entity2.End <= entity1.End)
+            {
+                return true;
+            }
+            // if offset overlapping at start or end
+            if ((entity2.Start <= entity1.Start && entity2.End >= entity1.Start && entity2.End <= entity1.End) ||
+                (entity2.Start >= entity1.Start && entity2.Start < entity1.End && entity2.End >= entity1.End))
+            {
+                var entity1Length = entity1.End - entity1.Start;
+                var entity2Length = entity2.End - entity2.Start;
+                if (entity1Length > entity2Length)
                 {
-                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
-                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
-                    tokenStream.Reset();
-
-                    while (tokenStream.IncrementToken())
-                    {
-                        string token = termAtt.ToString();
-                        bool skipFuzzy = false;
-                        if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '@')
-                        {
-                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
-                            skipFuzzy = true;
-                        }
-                        else if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '$')
-                        {
-                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
-                            skipFuzzy = true;
-                        }
-
-                        yield return new LucyEntity()
-                        {
-                            Type = TokenPatternMatcher.ENTITYTYPE,
-                            Text = token,
-                            Start = offsetAtt.StartOffset,
-                            End = offsetAtt.EndOffset
-                        };
-
-                        if (_fuzzyAnalyzer != null && !skipFuzzy)
-                        {
-                            using (TextReader fuzzyReader = new StringReader(token))
-                            {
-                                // get fuzzyText
-                                using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", fuzzyReader))
-                                {
-                                    var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
-                                    fuzzyTokenStream.Reset();
-                                    fuzzyTokenStream.IncrementToken();
-                                    yield return new LucyEntity()
-                                    {
-                                        Type = FuzzyTokenPatternMatcher.ENTITYTYPE,
-                                        Text = fuzzyTermAtt.ToString(),
-                                        Start = offsetAtt.StartOffset,
-                                        End = offsetAtt.EndOffset
-                                    };
-                                }
-                            }
-                        }
-                    }
+                    return true;
+                }
+                else if (entity2Length > entity1Length)
+                {
+                    return false;
                 }
             }
+            return true;
         }
     }
 }

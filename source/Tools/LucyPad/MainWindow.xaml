@@ -10,6 +10,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width=".5*"/>
         </Grid.ColumnDefinitions>
 
@@ -25,7 +26,9 @@
             </aui:TextEditor>
         </Grid>
 
-        <Grid Grid.Column="1">
+        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5" />
+
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -36,16 +39,25 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Margin="4" x:Name="query" TextChanged="query_TextChanged"/>
+                <TextBox Margin="4" x:Name="query" TextChanged="query_TextChanged" FontSize="15pt"/>
                 <CheckBox Grid.Column="1" Content="Show Internal" x:Name="showInternal" Margin="4" Checked="showInternal_Checked"/>
             </Grid>
 
             <TabControl Grid.Row="1"  x:Name="tabs" >
                 <TabItem Header="Entities" x:Name="entitiesTab">
-                    <TextBox x:Name="entitiesBox" FontFamily="Consolas" FontSize="15"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".5*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height=".5*"/>
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="labelBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
+                        <TextBox Grid.Row="2" x:Name="entitiesBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Recognizer" x:Name="recognizerTab">
-                    <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15"/>
+                    <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
                 </TabItem>
             </TabControl>
         </Grid>

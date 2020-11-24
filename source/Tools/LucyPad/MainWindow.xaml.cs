@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Dynamic;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -68,8 +54,8 @@ namespace LucyPad
                 if (text.Length > 0)
                 {
                     var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
-                    this.entitiesBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
-                    this.entitiesBox.Text += "\n\n====================================\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results);
+                    this.labelBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
+                    this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
                 }
             }
             catch (SemanticErrorException err)
@@ -111,13 +97,28 @@ entities:
     # NOTE:if patterns are an array the first value is the canonical value
     - [s, small, short]
     - [m, medium, tall]
-    - [l, large, tall]
+    - [l, large]
     - [xl, extra large, venti]
+
+  - name: '@container'
+    patterns:
+    - (glass|shot|tumbler|mug)?
+    
+  - name: '@beverageType'
+    patterns:
+    - [beer, suds]
+    - wine
+    - [cocktail, highball]
+    - whiskey
+    - bourbon
+    - rye
+    - gin
+    - vodka
 
   # @drink entity
   - name: '@drinkorder'
     patterns:
-    - 'like (a)? (@drinkSize|___)* (drink|beverage|cocktail)
+    - (a|some) (@drinkSize|@container)* (of)? (___)* (@beverageType|beverage|drink)?
 ";
         }
 
