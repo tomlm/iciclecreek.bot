@@ -1,9 +1,19 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Adapters;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
+using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -54,6 +64,7 @@ namespace LucyPad
                 if (text.Length > 0)
                 {
                     var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
+
                     this.labelBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
                     this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
                 }
@@ -63,7 +74,7 @@ namespace LucyPad
                 this.error.Content = err.Message;
                 this.error.Visibility = Visibility.Visible;
                 this.editor.ScrollToLine(err.Start.Line);
-                var line = this.editor.Document.GetLineByNumber(err.Start.Line-1);
+                var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
                 this.editor.Select(line.Offset, line.Length);
             }
             catch (SyntaxErrorException err)
@@ -71,7 +82,7 @@ namespace LucyPad
                 this.error.Content = err.Message;
                 this.error.Visibility = Visibility.Visible;
                 this.editor.ScrollToLine(err.Start.Line);
-                var line = this.editor.Document.GetLineByNumber(err.Start.Line-1);
+                var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
                 this.editor.Select(line.Offset, line.Length);
             }
         }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.PatternMatchers.Matchers;
@@ -14,6 +15,12 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Adapters;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
+using Microsoft.Bot.Schema;
+using Newtonsoft.Json.Linq;
 using NuGet.Packaging;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
@@ -26,6 +33,26 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         private LucyModel _lupaModel;
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
+        private EntityRecognizerSet entityRecognizerSet = new EntityRecognizerSet()
+        {
+            new AgeEntityRecognizer(),
+            new ConfirmationEntityRecognizer(),
+            new CurrencyEntityRecognizer(),
+            new DateTimeEntityRecognizer(),
+            new DimensionEntityRecognizer(),
+            new EmailEntityRecognizer(),
+            new GuidEntityRecognizer(),
+            new HashtagEntityRecognizer(),
+            new IpEntityRecognizer(),
+            new MentionEntityRecognizer(),
+            new NumberEntityRecognizer(),
+            new NumberRangeEntityRecognizer(),
+            new OrdinalEntityRecognizer(),
+            new PercentageEntityRecognizer(),
+            new PhoneNumberEntityRecognizer(),
+            new TemperatureEntityRecognizer(),
+            new UrlEntityRecognizer()
+        };
 
         public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null)
         {
@@ -51,6 +78,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
             LoadModel();
         }
+
+        /// <summary>
+        /// Set to false to disable text recognizer libraries.
+        /// </summary>
+        public bool UseTextRecognizers { get; set; } = true;
 
         /// <summary>
         /// Patterns to match
@@ -79,6 +111,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             if (externalEntities != null)
             {
                 context.Entities.AddRange(externalEntities);
+            }
+
+            if (this.UseTextRecognizers)
+            {
+                context.Entities.AddRange(GetExternalEntities(text, "en-us"));
             }
 
             // add all  @Token and @FuzzyToken entities
@@ -455,5 +492,25 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             }
             return false;
         }
+
+        private List<LucyEntity> GetExternalEntities(string text, string locale)
+        {
+            var dc = new DialogContext(new DialogSet(), new TurnContext(new TestAdapter(), new Activity()), new DialogState());
+            var entities = this.entityRecognizerSet.RecognizeEntitiesAsync(dc, text, locale).Result;
+            return entities
+                .Where(e => e.Type != "text")
+                .Select(e => JObject.FromObject(e).ToObject<LucyEntity>())
+                .ToList();
+        }
     }
 }
+
+//dynamic entity = JObject.FromObject(e);
+//return new LucyEntity()
+//{
+//    Type = entity.type,
+//    Start = entity.start,
+//    End = entity.end,
+//    Score = 1.0F,
+//    Resolution = entity.resolution
+//};

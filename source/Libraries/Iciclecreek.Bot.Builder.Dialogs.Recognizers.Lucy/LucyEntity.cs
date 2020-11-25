@@ -11,20 +11,26 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
     public class LucyEntity
     {
         // name of the entity type
+        [JsonProperty("type")]
         public string Type { get; set; }
 
         // original text
+        [JsonProperty("text")]
         public string Text { get; set; }
 
         // normalized value
+        [JsonProperty("resolution")]
         public object Resolution { get; set; }
 
+        [JsonProperty("score")]
         public float Score { get; set; }
 
         // start index
+        [JsonProperty("start")]
         public int Start { get; set; }
 
         // index of first char outside of token, length = end-start
+        [JsonProperty("end")]
         public int End { get; set; }
 
         /// <summary>
