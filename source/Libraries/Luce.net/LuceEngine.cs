@@ -1,15 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Luce.PatternMatchers;
 using Luce.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Ar;
+using Lucene.Net.Analysis.Ca;
+using Lucene.Net.Analysis.Cn;
+using Lucene.Net.Analysis.Cn.Smart;
+using Lucene.Net.Analysis.Cz;
+using Lucene.Net.Analysis.Da;
+using Lucene.Net.Analysis.De;
+using Lucene.Net.Analysis.El;
+using Lucene.Net.Analysis.En;
+using Lucene.Net.Analysis.Es;
+using Lucene.Net.Analysis.Eu;
+using Lucene.Net.Analysis.Fa;
+using Lucene.Net.Analysis.Fi;
+using Lucene.Net.Analysis.Fr;
+using Lucene.Net.Analysis.Ga;
+using Lucene.Net.Analysis.Gl;
+using Lucene.Net.Analysis.Hi;
+using Lucene.Net.Analysis.Hu;
+using Lucene.Net.Analysis.Hy;
+using Lucene.Net.Analysis.Id;
+using Lucene.Net.Analysis.It;
+using Lucene.Net.Analysis.Lv;
+using Lucene.Net.Analysis.Nl;
+using Lucene.Net.Analysis.No;
 using Lucene.Net.Analysis.Phonetic;
 using Lucene.Net.Analysis.Phonetic.Language.Bm;
+using Lucene.Net.Analysis.Pt;
+using Lucene.Net.Analysis.Ro;
+using Lucene.Net.Analysis.Ru;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis.Sv;
 using Lucene.Net.Analysis.TokenAttributes;
+using Lucene.Net.Analysis.Tr;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 using builtin = Microsoft.Recognizers.Text;
@@ -35,8 +65,7 @@ namespace Luce
         {
             this._lucyModel = model;
 
-            this._exactAnalyzer = exactAnalyzer ??
-                new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.UnmodifiableSet(new CharArraySet(LuceneVersion.LUCENE_48, Array.Empty<string>(), false)));
+            this._exactAnalyzer = exactAnalyzer ?? GetAnalyzerForLocale(model.Locale);
 
             this._fuzzyAnalyzer = fuzzyAnalyzer ??
                 Analyzer.NewAnonymous((field, textReader) =>
@@ -67,6 +96,11 @@ namespace Luce
         {
             BuiltinEntities = new HashSet<string>(builtinEntities);
         }
+
+        /// <summary>
+        /// The locale for this model
+        /// </summary>
+        public string Locale { get; set; } = "en";
 
         public HashSet<string> BuiltinEntities { get; set; } = new HashSet<string>();
 
@@ -548,7 +582,7 @@ namespace Luce
                         Text = result.Text,
                         Type = result.TypeName,
                         Start = result.Start,
-                        End = result.End + 1, 
+                        End = result.End + 1,
                         Resolution = result.Resolution,
                         Score = 1.0F
                     });
@@ -586,15 +620,72 @@ namespace Luce
             }
             return false;
         }
+
+        private Analyzer GetAnalyzerForLocale(string locale = "en")
+        {
+            var language = CultureInfo.GetCultureInfo(locale).EnglishName.Split(' ').First();
+            switch (language)
+            {
+                case "Arabic":
+                    return new ArabicAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Armenian":
+                    return new ArmenianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Basque":
+                    return new BasqueAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Catalan":
+                    return new CatalanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Chinese":
+                    return new SmartChineseAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);
+                case "Czech":
+                    return new CzechAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Danish":
+                    return new DanishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Dutch":
+                    return new DutchAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "English":
+                    return new EnglishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Finnish":
+                    return new FinnishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "French":
+                    return new FrenchAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Galician":
+                    return new GalicianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "German":
+                    return new GermanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Greek":
+                    return new GreekAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Hindi":
+                    return new HindiAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Hungarian":
+                    return new HungarianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Indonesian":
+                    return new IndonesianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Irish":
+                    return new IrishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Italian":
+                    return new ItalianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Latvian":
+                    return new LatvianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Norwegian":
+                    return new NorwegianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Persian":
+                    return new PersianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Portuguese":
+                    return new PortugueseAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Romanian":
+                    return new RomanianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Russian":
+                    return new RussianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Spanish":
+                    return new SpanishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Swedish":
+                    return new SwedishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Turkish":
+                    return new TurkishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                default:
+                    return new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);
+            }
+        }
     }
 }
 
-//dynamic entity = JObject.FromObject(e);
-//return new LuceEntity()
-//{
-//    Type = entity.type,
-//    Start = entity.start,
-//    End = entity.end,
-//    Score = 1.0F,
-//    Resolution = entity.resolution
-//};
