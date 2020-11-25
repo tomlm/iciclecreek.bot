@@ -452,11 +452,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         {
             var tokens = Tokenize(pattern);
 
-            foreach (var token in tokens.Where(t => t.Text.FirstOrDefault() == '$').OrderByDescending(t => t.Start))
+            if (_lupaModel.Macros != null)
             {
-                if (_lupaModel.Macros.TryGetValue(token.Text, out string value))
+                foreach (var token in tokens.Where(t => t.Text.FirstOrDefault() == '$').OrderByDescending(t => t.Start))
                 {
-                    pattern = $"{pattern.Substring(0, token.Start)}{value}{pattern.Substring(token.End)}";
+                    if (_lupaModel.Macros.TryGetValue(token.Text, out string value))
+                    {
+                        pattern = $"{pattern.Substring(0, token.Start)}{value}{pattern.Substring(token.End)}";
+                    }
                 }
             }
             return pattern;

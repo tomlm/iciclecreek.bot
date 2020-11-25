@@ -328,18 +328,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box (is|equals)? @dimensions"} },
-                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@length) (height|tall)" } },
-                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@length) (width|wide)" } },
-                    new EntityModel() { Name = "@length", Patterns = new List<PatternModel>() { "@number @units" } },
-                    new EntityModel() { Name = "@number", Patterns = new List<PatternModel>() { "(0|1|2|3|4|5|6|7|8|9|10)" } },
-                    new EntityModel() { Name = "@units", Patterns = new List<PatternModel>() { "(inches|feet|yards|meters)" } },
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "$name $is ___" } },
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @twoDimensional" } },
+                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@dimension|@number) (height|tall)" } },
+                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@dimension|@number) (width|wide)" } },
                     new EntityModel() {
-                        Name = "@dimensions",
+                        Name = "@twoDimensional",
                         Patterns = new List<PatternModel>()
                         {
-                            "(@width|@length|@number) (x|by)? (@height|@length|@number)",
-                            "(@height|@length|@number) (x|by)? (@width|@length|@number)",
+                            "(@width|@dimension|@number) (x|by)? (@height|@dimension|@number)",
+                            "(@height|@dimension|@number) (x|by)? (@width|@dimension|@number)",
                         }
                     },
                 }
@@ -353,10 +351,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             var entities = results.Where(e => e.Type == "boxsize").ToList();
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
-            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual("twoDimensional", entity.Type);
             Assert.AreEqual(2, entity.Children.Count);
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
-            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "dimension").Count());
         }
 
         [TestMethod]
@@ -441,18 +439,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
                 },
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @dimensions"} },
-                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@length) (height|tall)" } },
-                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@length) (width|wide)" } },
-                    new EntityModel() { Name = "@length", Patterns = new List<PatternModel>() { "@number @units" } },
-                    new EntityModel() { Name = "@number", Patterns = new List<PatternModel>() { "(0|1|2|3|4|5|6|7|8|9|10)" } },
-                    new EntityModel() { Name = "@units", Patterns = new List<PatternModel>() { "(inches|feet|yards|meters)" } },
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "$name $is ___" } },
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @twoDimensional" } },
+                    new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@dimension|@number) (height|tall)" } },
+                    new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@dimension|@number) (width|wide)" } },
                     new EntityModel() {
-                        Name = "@dimensions",
+                        Name = "@twoDimensional",
                         Patterns = new List<PatternModel>()
                         {
-                            "(@width|@length|@number) (x|by)? (@height|@length|@number)",
-                            "(@height|@length|@number) (x|by)? (@width|@length|@number)",
+                            "(@width|@dimension|@number) (x|by)? (@height|@dimension|@number)",
+                            "(@height|@dimension|@number) (x|by)? (@width|@dimension|@number)",
                         }
                     },
                 }
@@ -466,10 +462,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             var entities = results.Where(e => e.Type == "boxsize").ToList();
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
-            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual("twoDimensional", entity.Type);
             Assert.AreEqual(2, entity.Children.Count);
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
-            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "dimension").Count());
         }
 
         [TestMethod]

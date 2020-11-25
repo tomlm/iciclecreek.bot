@@ -105,22 +105,10 @@ entities:
       - I am ageless
 
   # box properties
-  - name: "@number"
-    patterns: 
-    - (0|1|2|3|4|5|6|7|8|9|10)
-
-  - name: "@units"
-    patterns: 
-    - (inches|feet|yards|meters)
-
-  - name: "@length"
-    patterns: 
-    - "@number @units"
-
-  - name: "@dimensions"
+  - name: "@twoDimensional"
     patterns:
-      - (@width|@length|@number) (x|by)? (@height|@length|@number)
-      - (@height|@length|@number) (x|by)? (@width|@length|@number)
+      - (@width|@dimension|@number) (x|by)? (@height|@dimension|@number)
+      - (@height|@dimension|@number) (x|by)? (@width|@dimension|@number)
 
   - name: "@height"
     patterns:
@@ -134,7 +122,7 @@ entities:
 
   - name: "@boxsize"
     patterns:
-      - box (is|equals)? @dimensions
+      - box (is|equals)? @twoDimensional
 
   #name property
   - name: "@name"

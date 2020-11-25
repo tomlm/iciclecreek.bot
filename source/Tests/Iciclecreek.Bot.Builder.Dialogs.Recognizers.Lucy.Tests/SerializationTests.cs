@@ -45,10 +45,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.Tests
             var entities = results.Where(e => e.Type == "boxsize").ToList();
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
-            Assert.AreEqual("dimensions", entity.Type);
+            Assert.AreEqual("twoDimensional", entity.Type);
             Assert.AreEqual(2, entity.Children.Count);
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());
-            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "length").Count());
+            Assert.AreEqual(1, entity.Children.Where(e => e.Type == "dimension").Count());
         }
 
         [TestMethod]
