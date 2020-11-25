@@ -105,24 +105,28 @@ entities:
       - I am ageless
 
   # box properties
+  - name: "@height"
+    patterns:
+    - (@dimension) (height|tall|high|heigth)
+    - (height|heigth) (is|equals)? (@dimension|@number)
+
+  - name: "@width"
+    patterns: 
+    - (@dimension) (width|wide)
+    - width (is|equals)? (@dimension|@number)
+    
   - name: "@twoDimensional"
     patterns:
       - (@width|@dimension|@number) (x|by)? (@height|@dimension|@number)
       - (@height|@dimension|@number) (x|by)? (@width|@dimension|@number)
-
-  - name: "@height"
+      
+  - name: "@boxSize"
     patterns:
-    - (@length) (height|tall)
-    - height $is (@length) 
+    - box (size)? (is|equals)? (@twoDimensional|@width|@height@|@dimension)
 
-  - name: "@width"
-    patterns: 
-    - (@length) (width|wide)
-    - width $is (@length)
-
-  - name: "@boxsize"
+  - name: "@roomSize"
     patterns:
-      - box (is|equals)? @twoDimensional
+    - room (size)? (is|equals)? (@twoDimensional|@width|@height@|@dimension)
 
   #name property
   - name: "@name"

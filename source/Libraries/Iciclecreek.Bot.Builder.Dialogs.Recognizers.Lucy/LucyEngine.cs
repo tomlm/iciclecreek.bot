@@ -30,7 +30,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
     /// </summary>
     public class LucyEngine
     {
-        private LucyModel _lupaModel;
+        private LucyModel _lucyModel;
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
         private EntityRecognizerSet entityRecognizerSet = new EntityRecognizerSet()
@@ -56,7 +56,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null)
         {
-            this._lupaModel = model;
+            this._lucyModel = model;
 
             this._exactAnalyzer = exactAnalyzer ??
                 new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.UnmodifiableSet(new CharArraySet(LuceneVersion.LUCENE_48, Array.Empty<string>(), false)));
@@ -421,26 +421,29 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
         private void LoadModel()
         {
-            foreach (var entityModel in _lupaModel.Entities)
+            if (_lucyModel.Entities != null)
             {
-                foreach (var patternModel in entityModel.Patterns)
+                foreach (var entityModel in _lucyModel.Entities)
                 {
-                    var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
-                    foreach (var pattern in patternModel)
+                    foreach (var patternModel in entityModel.Patterns)
                     {
-                        var expandedPattern = ExpandMacros(pattern);
-                        var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
-                        if (patternMatcher != null)
+                        var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
+                        foreach (var pattern in patternModel)
                         {
-                            // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
-                            if (expandedPattern.Contains("___"))
+                            var expandedPattern = ExpandMacros(pattern);
+                            var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
+                            if (patternMatcher != null)
                             {
-                                // we want to process wildcard patterns last
-                                WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
-                            }
-                            else
-                            {
-                                EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
+                                if (expandedPattern.Contains("___"))
+                                {
+                                    // we want to process wildcard patterns last
+                                    WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                }
+                                else
+                                {
+                                    EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                }
                             }
                         }
                     }
@@ -452,11 +455,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         {
             var tokens = Tokenize(pattern);
 
-            if (_lupaModel.Macros != null)
+            if (_lucyModel.Macros != null)
             {
                 foreach (var token in tokens.Where(t => t.Text.FirstOrDefault() == '$').OrderByDescending(t => t.Start))
                 {
-                    if (_lupaModel.Macros.TryGetValue(token.Text, out string value))
+                    if (_lucyModel.Macros.TryGetValue(token.Text, out string value))
                     {
                         pattern = $"{pattern.Substring(0, token.Start)}{value}{pattern.Substring(token.End)}";
                     }

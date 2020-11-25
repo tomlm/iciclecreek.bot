@@ -38,6 +38,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// </summary>
         public List<LucyEntity> Children { get; set; } = new List<LucyEntity>();
 
-        public override string ToString() => $"{Type} [{Start},{End}] Resolution:{JsonConvert.SerializeObject(Resolution)}";
+        public override string ToString()
+        {
+            if (Resolution == null)
+            {
+                return $"{Type} [{Start},{End}]";
+            }
+            return $"{Type} [{Start},{End}] Resolution:{JsonConvert.SerializeObject(Resolution)}";
+        }
     }
 }
