@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucene.Net.Analysis.Phonetic" Version="4.8.0-beta00012" />
+    <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00011" />
+    <PackageReference Include="Microsoft.Recognizers.Text.Choice" Version="1.2.9" />
+    <PackageReference Include="Microsoft.Recognizers.Text.DateTime" Version="1.2.9" />
+    <PackageReference Include="Microsoft.Recognizers.Text.Number" Version="1.2.9" />
+    <PackageReference Include="Microsoft.Recognizers.Text.Sequence" Version="1.2.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>

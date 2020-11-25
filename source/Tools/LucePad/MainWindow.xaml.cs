@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce;
+using Luce;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;
@@ -56,6 +56,7 @@ namespace LucePad
                     var json = yamlSerializer.Serialize(x);
                     var model = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
                     engine = new LuceEngine(model);
+                    engine.UseAllBuiltEntities();
                     this.error.Visibility = Visibility.Collapsed;
                     lucyModel = this.editor.Document.Text;
                 }

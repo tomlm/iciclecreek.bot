@@ -429,13 +429,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce.csproj">
-      <Project>{39aa4c94-d224-42f1-a40b-1997a24ec61b}</Project>
-      <Name>Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce</Name>
-    </ProjectReference>
+    <Analyzer Include="..\..\packages\Lucene.Net.4.8.0-beta00013\analyzers\dotnet\cs\Lucene.Net.CodeAnalysis.CSharp.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\Lucene.Net.4.8.0-beta00013\analyzers\dotnet\cs\Lucene.Net.CodeAnalysis.CSharp.dll" />
+    <ProjectReference Include="..\..\Libraries\Luce.net\Luce.net.csproj">
+      <Project>{39aa4c94-d224-42f1-a40b-1997a24ec61b}</Project>
+      <Name>Luce.net</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
