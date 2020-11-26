@@ -1,0 +1,79 @@
+# macros that will expand when used in a pattern
+macros:
+  $clear: clear|forget|reset|delete
+  $is: is|to|equals
+  $set: set|change
+  $show: show|what is
+  $name: name|nom de plum
+  $departing: departing|from|leaving|leaving from|taking off
+  $destination: arriving|destination|to|to the|landing
+  $flight: flight|trip|fly|travel|itinerary
+
+entities:
+  # @airportCode entity
+  - name: "@airportCode"
+    patterns:
+      - [LAX, "los angeles"]
+      - [DSM, "des moines"]
+      - [CHI, "o'hare", "ohare"]
+      - [MID, midway]
+      - ORD
+
+  - name: "conjunction"
+    patterns: 
+    - (and|or|but)
+    
+  # @city entity
+  - name: "@city"
+    patterns:
+      - [(los angeles)~, (city of angeles)~, LA, L.A.]
+      - (des moines)~
+      - (chicago)~
+      - [(seattle)~, (emerald city)~]
+      - [(new york)~, the big apple]
+      
+  - name: '@timeRef'
+    patterns:
+    - (on|in)* @datetime
+
+    # @placeAndTime entity is one or more of (@airport | @city | @date)
+  - name: "@placeAndTime"
+    patterns:
+      - "(@airportCode|@city|@timeRef|@datetime)+"
+
+  #destination is slot reference + @placeAndTime
+  - name: "@destination"
+    patterns:
+      - ($destination) (@placeAndTime)? (description:___)*
+      - ($destination) (@airportCode|@city)+ (in|on) @timeRef
+
+  - name: "@clear_destination"
+    patterns:
+      - ($clear) @destination
+
+  #departure is slot reference + @placeAndTime
+  - name: "@departure"
+    patterns:
+      - ($departing) (@placeAndTime)? (description:___)*
+      - ($departing) (@airportCode|@city)+ (in|on) @timeRef
+
+  - name: "@clear_departure"
+    patterns:
+      - ($clear) ($departing)
+      - ($clear) (@airportCode|@city|@datetime)+
+
+  #trip
+
+  ## Trip is flight reference plus destination/departure/placeAndTime information
+  - name: "@trip"
+    patterns:
+      - ($flight) (@departure|@destination|@placeAndTime)+
+
+  - name: "@show_trip"
+    patterns:
+      - ($show) (me|my|the)? flight (@departure|@destination|@placeAndTime)*
+
+  - name: "@delete_trip"
+    patterns:
+      - ($clear) (me|my|the)? flight (@departure|@destination|@placeAndTime)*
+

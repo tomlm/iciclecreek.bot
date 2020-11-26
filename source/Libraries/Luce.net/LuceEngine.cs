@@ -73,14 +73,13 @@ namespace Luce
                 Analyzer.NewAnonymous((field, textReader) =>
                 {
                     Tokenizer tokenizer = new StandardTokenizer(LuceneVersion.LUCENE_48, textReader);
-                    // TokenStream stream = new DoubleMetaphoneFilter(tokenizer, 6, false);
-                    var factory = new BeiderMorseFilterFactory(new Dictionary<string, string>()
-                        {
-                            { "nameType", NameType.GENERIC.ToString()},
-                            { "ruleType", RuleType.APPROX.ToString() },
-                            { "languageSet", "auto"}
-                        });
-                    TokenStream stream = factory.Create(tokenizer);
+                    TokenStream stream = new DoubleMetaphoneFilter(tokenizer, 6, false);
+                    //TokenStream stream = new BeiderMorseFilterFactory(new Dictionary<string, string>()
+                    //    {
+                    //        { "nameType", NameType.GENERIC.ToString()},
+                    //        { "ruleType", RuleType.APPROX.ToString() },
+                    //        { "languageSet", "auto"}
+                    //    }).Create(tokenizer);
                     return new TokenStreamComponents(tokenizer, stream);
                 });
 

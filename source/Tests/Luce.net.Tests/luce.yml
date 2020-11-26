@@ -131,11 +131,11 @@ entities:
   #name property
   - name: "@name"
     patterns:
-      - (my)? $name ($is)? (@QuotedText|___)+
-      - call me (@QuotedText|___)
+      - (my)? $name ($is)? (___)+
+      - call me (___)
       - call me (___)+
-      - (@QuotedText|___) (is my)? name
-      - change my name (to)? (@QuotedText|___)+
+      - (___) (is my)? name
+      - change my name (to)? (___)+
 
 # drinks
   - name: '@drinkSize'

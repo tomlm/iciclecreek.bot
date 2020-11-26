@@ -40,6 +40,7 @@ namespace Luce
         /// <summary>
         /// Dependent entities that were consumed to match this entity.
         /// </summary>
+        [JsonProperty("children")]
         public List<LuceEntity> Children { get; set; } = new List<LuceEntity>();
 
         public override string ToString()

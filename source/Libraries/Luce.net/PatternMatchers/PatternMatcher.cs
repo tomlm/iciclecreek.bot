@@ -149,11 +149,11 @@ namespace Luce.PatternMatchers
 
             if (sequence.PatternMatchers.Count == 1)
             {
-                //Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
+                Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
                 return sequence.PatternMatchers.Single();
             }
 
-            //Trace.TraceInformation($"{pattern}:\n\t{sequence}");
+            Trace.TraceInformation($"{pattern}:\n\t{sequence}");
             sequence.ResolveFallbackMatchers();
             return sequence;
         }
