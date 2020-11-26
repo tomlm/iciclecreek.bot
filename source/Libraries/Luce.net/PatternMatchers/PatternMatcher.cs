@@ -35,7 +35,7 @@ namespace Luce.PatternMatchers
             SequencePatternMatcher sequence = new SequencePatternMatcher();
             bool inVariations = false;
             bool inModifiers = false;
-            bool modifierFuzzyMatch = false;
+            bool modifierFuzzyMatch = defaultFuzzyMatch;
             Ordinality modifierOrdinality = Ordinality.One;
             List<string> variations = new List<string>();
             StringBuilder sb = new StringBuilder();
@@ -55,7 +55,7 @@ namespace Luce.PatternMatchers
                             inVariations = true;
                             inModifiers = false;
                             modifierOrdinality = Ordinality.One;
-                            modifierFuzzyMatch = false;
+                            modifierFuzzyMatch = defaultFuzzyMatch;
                             variations.Clear();
                             break;
 

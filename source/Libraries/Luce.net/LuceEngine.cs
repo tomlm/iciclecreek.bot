@@ -155,10 +155,10 @@ namespace Luce
                 AddBuiltInEntities(context, text, culture);
             }
 
-            // add all  @Token and @FuzzyToken entities
+            // add all @Token entities
             foreach (var tokenEntity in Tokenize(text))
             {
-                context.Entities.Add(tokenEntity);
+                context.TokenEntities.Add(tokenEntity);
             }
 
             int count = 0;
@@ -167,9 +167,7 @@ namespace Luce
                 count = context.Entities.Count;
 
                 // foreach text token
-                foreach (var textEntity in context.Entities
-                                            .Where(entity => String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
-                                            .OrderBy(entity => entity.Start))
+                foreach (var textEntity in context.TokenEntities)
                 {
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
@@ -181,9 +179,7 @@ namespace Luce
                 if (count == context.Entities.Count && WildcardEntityPatterns.Any())
                 {
                     // process wildcard patterns
-                    foreach (var textEntity in context.Entities
-                                                .Where(entity => String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
-                                                .OrderBy(entity => entity.Start))
+                    foreach (var textEntity in context.TokenEntities)
                     {
                         foreach (var entityPattern in WildcardEntityPatterns)
                         {
@@ -196,7 +192,9 @@ namespace Luce
             // filter out internal entities
             if (includeInternal)
             {
-                return context.Entities;
+                var merged = new List<LuceEntity>(context.TokenEntities);
+                merged.AddRange(context.Entities);
+                return merged;
             }
 
             // merge entities which are overlapping.

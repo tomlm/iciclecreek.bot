@@ -25,6 +25,11 @@ namespace Luce
         public HashSet<LuceEntity> Entities { get; set; } = new HashSet<LuceEntity>(new EntityTokenComparer());
 
         /// <summary>
+        /// All of the token entities (Aka text and fuzzy text entities)
+        /// </summary>
+        public HashSet<LuceEntity> TokenEntities { get; set; } = new HashSet<LuceEntity>(new EntityTokenComparer());
+
+        /// <summary>
         /// Current entity pattern being evaluated
         /// </summary>
         public EntityPattern EntityPattern { get; set; }
@@ -34,14 +39,22 @@ namespace Luce
         /// </summary>
         public LuceEntity CurrentEntity { get; set; }
 
-        public IEnumerable<LuceEntity> FindNextEntities(string entityType, int start)
+        public IEnumerable<LuceEntity> FindNextEntityOfType(string entityType, int start)
         {
-            // slop is large for text tokens (to take care of embedded spaces)
-            // slop is tight for entity matching
-            int slop = (entityType == TokenPatternMatcher.ENTITYTYPE) ? 255 : 0;
             return this.Entities.Where(entityToken =>
                 String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
-                entityToken.Start >= start && entityToken.Start <= (start + slop + 1));
+                entityToken.Start >= start && entityToken.Start <= (start + 1));
+        }
+
+        public IEnumerable<LuceEntity> FindNextRecognizedEntities(int start)
+        {
+            return this.Entities.Where(entityToken =>
+                entityToken.Start >= start && entityToken.Start <= (start + 1));
+        }
+
+        public LuceEntity FindNextTextEntity(int start)
+        {
+            return this.TokenEntities.Where(entityToken => entityToken.Start >= start).FirstOrDefault();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Luce.PatternMatchers.Matchers
         public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = new MatchResult();
-            var entityToken = context.FindNextEntities(ENTITYTYPE, start).FirstOrDefault();
+            var entityToken = context.FindNextTextEntity(start);
             var resolution = entityToken?.Resolution as TokenResolution;
             if (resolution != null)
             {

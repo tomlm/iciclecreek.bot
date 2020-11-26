@@ -20,7 +20,7 @@ namespace Luce.PatternMatchers
         public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = new MatchResult();
-            var entityToken = context.FindNextEntities(EntityType, start).FirstOrDefault();
+            var entityToken = context.FindNextEntityOfType(EntityType, start).FirstOrDefault();
             if (entityToken != null)
             {
                 // add the matched entity to the children of the currentEntity.

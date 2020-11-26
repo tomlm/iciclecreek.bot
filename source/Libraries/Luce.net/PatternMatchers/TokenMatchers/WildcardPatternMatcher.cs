@@ -28,13 +28,11 @@ namespace Luce.PatternMatchers
             var matchResult = new MatchResult();
 
             // if the next token is already claimed, then we don't want to keep this
-            var tokenTaken = context.Entities.Where(entity =>
-                entity.Start >= start && entity.Start <= start + 1 &&
-                !String.Equals(entity.Type, TokenPatternMatcher.ENTITYTYPE, StringComparison.OrdinalIgnoreCase))
+            var tokenTaken = context.Entities.Where(entity => entity.Start >= start && entity.Start <= start + 1)
                 .Any();
             if (!tokenTaken)
             {
-                var token = context.FindNextEntities(TokenPatternMatcher.ENTITYTYPE, start).FirstOrDefault();
+                var token = context.FindNextTextEntity(start);
                 if (token != null)
                 {
                     // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
