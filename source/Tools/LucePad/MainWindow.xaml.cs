@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -79,6 +80,11 @@ namespace LucePad
                 this.editor.ScrollToLine(err.Start.Line);
                 var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
                 this.editor.Select(line.Offset, line.Length);
+            }
+            catch (Exception err)
+            {
+                this.error.Content = err.Message;
+                this.error.Visibility = Visibility.Visible;
             }
         }
 

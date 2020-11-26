@@ -449,6 +449,11 @@ namespace Luce
 
         private void LoadModel()
         {
+            if (_luceModel.Macros == null)
+            {
+                _luceModel.Macros = new Dictionary<string, string>();
+            }
+
             if (_luceModel.Entities != null)
             {
                 foreach (var entityModel in _luceModel.Entities)
@@ -509,41 +514,38 @@ namespace Luce
 
         private string ExpandMacros(string pattern)
         {
-            if (_luceModel.Macros != null)
+            using (var tokenStream = _simpleAnalyzer.GetTokenStream("name", pattern))
             {
-                using (var tokenStream = _simpleAnalyzer.GetTokenStream("name", pattern))
+                var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
+                var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
+                tokenStream.Reset();
+
+                Stack<Occurence> occurences = new Stack<Occurence>();
+                while (tokenStream.IncrementToken())
                 {
-                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
-                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
-                    tokenStream.Reset();
+                    var start = offsetAtt.StartOffset;
+                    var end = offsetAtt.EndOffset;
 
-                    Stack<Occurence> occurences = new Stack<Occurence>();
-                    while (tokenStream.IncrementToken())
+                    // if a $ reference
+                    if (start > 0 && pattern[start - 1] == '$')
                     {
-                        var start = offsetAtt.StartOffset;
-                        var end = offsetAtt.EndOffset;
-
-                        // if a $ reference
-                        if (start > 0 && pattern[start- 1] == '$')
+                        start--;
+                        var macroName = pattern.Substring(start, end - start);
+                        if (this._luceModel.Macros.TryGetValue(macroName, out string value))
                         {
-                            start--;
-                            var macroName = pattern.Substring(start, end - start);
-                            if (this._luceModel.Macros.TryGetValue(macroName, out string value))
-                            {
-                                occurences.Push(new Occurence() { Start = start, Value = value, End = end });
-                            }
-                            else
-                            {
-                                throw new KeyNotFoundException($"There isn't a macro {macroName} defined.");
-                            }
+                            occurences.Push(new Occurence() { Start = start, Value = value, End = end });
+                        }
+                        else
+                        {
+                            throw new KeyNotFoundException($"There isn't a macro {macroName} defined.");
                         }
                     }
+                }
 
-                    while(occurences.Count > 0)
-                    {
-                        var occurence = occurences.Pop();
-                        pattern = $"{pattern.Substring(0, occurence.Start)}{occurence.Value}{pattern.Substring(occurence.End)}";
-                    }
+                while (occurences.Count > 0)
+                {
+                    var occurence = occurences.Pop();
+                    pattern = $"{pattern.Substring(0, occurence.Start)}{occurence.Value}{pattern.Substring(occurence.End)}";
                 }
             }
 
