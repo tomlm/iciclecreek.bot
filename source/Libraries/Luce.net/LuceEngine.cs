@@ -85,6 +85,7 @@ namespace Luce
                 });
 
             LoadModel();
+            ValidateModel();
         }
 
         /// <summary>
@@ -115,6 +116,16 @@ namespace Luce
         /// Wildcard Patterns to match
         /// </summary>
         public List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
+
+        /// <summary>
+        /// Warning messages
+        /// </summary>
+        public List<string> Warnings { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Error messages
+        /// </summary>
+        public List<string> Errors { get; set; } = new List<string>();
 
         /// <summary>
         /// Match entities in given text
@@ -505,6 +516,48 @@ namespace Luce
             }
         }
 
+        private void ValidateModel()
+        {
+            HashSet<string> entityDefinitions = new HashSet<string>(builtinEntities)
+            {
+                "datetime", "datetimeV2.date", "datetimeV2.time", "datetimeV2.datetime",
+                "datetimeV2.daterange", "datetimeV2.timerange", "datetimeV2.datetimerange",
+                "datetimeV2.duration", "ordinal.relative", "wildcard"
+            };
+
+            foreach (var externlEntity in this._luceModel.ExternalEntities)
+            {
+                entityDefinitions.Add(externlEntity);
+            }
+
+            HashSet<string> entityReferences = new HashSet<string>();
+            foreach (var pattern in this.EntityPatterns)
+            {
+                entityDefinitions.Add(pattern.Name);
+                foreach (var reference in pattern.PatternMatcher.GetEntityReferences())
+                {
+                    entityReferences.Add(reference);
+                }
+            }
+
+            foreach (var pattern in this.WildcardEntityPatterns)
+            {
+                entityDefinitions.Add(pattern.Name);
+                foreach (var reference in pattern.PatternMatcher.GetEntityReferences())
+                {
+                    entityReferences.Add(reference);
+                }
+            }
+
+            foreach (var entityRef in entityReferences)
+            {
+                if (!entityDefinitions.Contains(entityRef))
+                {
+                    Warnings.Add($"WARNING: @{entityRef} does not exist.");
+                }
+            }
+        }
+
         private class Occurence
         {
             public int Start { get; set; }
@@ -537,7 +590,7 @@ namespace Luce
                         }
                         else
                         {
-                            throw new KeyNotFoundException($"There isn't a macro {macroName} defined.");
+                            Warnings.Add($"WARNING: {macroName} is not defined.");
                         }
                     }
                 }

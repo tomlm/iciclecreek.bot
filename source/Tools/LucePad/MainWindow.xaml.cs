@@ -96,7 +96,15 @@ namespace LucePad
             var model = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
             engine = new LuceEngine(model);
             engine.UseAllBuiltEntities();
-            this.error.Visibility = Visibility.Collapsed;
+            if (engine.Warnings.Any())
+            {
+                this.error.Content = String.Join("\n", engine.Warnings);
+                this.error.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.error.Visibility = Visibility.Collapsed;
+            }
             luceModel = this.editor.Document.Text;
         }
 
