@@ -1,26 +1,29 @@
-﻿# Luce Help
-Luce *(pronounced Lucy)* is a library which performs natural language understanding (LU)
-by defining a simple yaml syntax for defining **entities**.
+﻿# LucE Help
+LucE *(pronounced Lucy)* is an Entity Recognition engine which defines a simple yaml syntax for recognizing **entities**.
+
 # Entities
 Entites are *named fragments of information*. 
 
-When entities are recognized they have resolution with information from the recognition process.
-For example, @dimensions => resolution { value:13, units:inches }.
+When entities are recognized they have **resolution** which is structural
+information from the recognition process.
 
-Entities are made up of 1..N patterns.
+For example, ```@dimension``` outputs a structure ```{ value:13, units:inches }```
+
+Entities are made up of 1..N token patterns.
 
 # Patterns
-A pattern is a sequence of tokens and/or entities.  Patterns look a like regular expression but 
-they are not.  A regular expression defines sequences at the **character** level, while 
-Luce patterns are expressed at the **token** level.  
+A pattern is a sequence of tokens and/or entities.  Patterns look a like regular 
+expression but they are not.  A regular expression defines sequences at the 
+**character** level, while LucE patterns are expressed at the **token** level.  
 
-Because Luce works at the token level, you don't have to worry about punctionation, stemming, etc.
+LucE uses Lucene language tokenizers to normalize text into tokens with best practices of stemming, punctation, etc. Since your token patterns are matched at the token level
+you don't have to worry about punctionation, stemming, etc.
 
-Given a simple fragment like ```walk the dog``` you are telling Luce to look for a sequence of 
-tokens ```["walk", "the", "dog"]```.
+Given a simple pattern ```walk the dog``` you are telling LucE to look for 
+a sequence of normalized tokens ```["walk", "the", "dog"]```.
 
-## List of values
-Matching a set of values is a core capability. To do this is easy:
+## Token patterns
+Matching a set of alternative tokens is the simplest case. To do this is easy:
 ```yaml
   - name: '@drinkSize'
     patterns: 
@@ -28,12 +31,19 @@ Matching a set of values is a core capability. To do this is easy:
     - medium
     - large
 ```
+or even more simply:
+```yaml
+  - name: '@drinkSize'
+    patterns: [small, medium, large]
+```
 Given text like ```I would like a large``` will match ``@drinkSize = large``.
 
 ## Canonical values
-When a token entity is recognize the calling program will get an entity where the resolution
-is the matched text. But the matched text could be mispelled or a language variation. 
-Programmers like working with a fixed set of enumerated "canonical values". 
+When an entity is recognized, the calling program will get an entity where the 
+resolution is the matched text. But the matched text could be mispelled or a 
+language variation. 
+
+Programmers like working with a fixed set of enumerated values, aka *canonical values*.
 
 To do that is easy, just change a pattern line to be an array of strings, and if any 
 of the tokens is found, the first one in the array will be the resolution.
@@ -117,7 +127,7 @@ There are 2 ways to enable fuzzy matching.
 
 ## Wildcards
 
-# Luce file format
+# LucE file format
 
 A luce file (**xxx.luce.yaml**) has 4 top level properties:
 
