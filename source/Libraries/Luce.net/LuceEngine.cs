@@ -317,7 +317,7 @@ namespace Luce
 
             StringBuilder sb = new StringBuilder();
 
-            foreach (var entity in entities)
+            foreach (var entity in entities.OrderByDescending(entity => entity.GetAllEntities().Count()))
             {
                 sb.AppendLine(FormatEntityChildren(string.Empty, entity));
             }

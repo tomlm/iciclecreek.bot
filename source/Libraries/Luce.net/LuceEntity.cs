@@ -43,6 +43,18 @@ namespace Luce
         [JsonProperty("children")]
         public List<LuceEntity> Children { get; set; } = new List<LuceEntity>();
 
+        public IEnumerable<LuceEntity> GetAllEntities()
+        {
+            foreach(var child in Children)
+            {
+                yield return child;
+                foreach(var subChild in child.GetAllEntities())
+                {
+                    yield return subChild;
+                }
+            }
+        }
+
         public override string ToString()
         {
             if (Resolution == null)

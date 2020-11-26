@@ -54,8 +54,8 @@ namespace Luce.PatternMatchers
 
                     // update parent token 
                     context.CurrentEntity.End = token.End;
-                    context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-                    context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+                    // context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                    // context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
 
                     matchResult.Matched = true;
                     matchResult.NextStart = token.End;
