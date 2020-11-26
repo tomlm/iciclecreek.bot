@@ -172,21 +172,10 @@ namespace Luce.PatternMatchers
         {
             if (!String.IsNullOrEmpty(text))
             {
-                if (defaultFuzzyMatch)
+                var patternMatcher = CreateTextPatternMatcher(text, exactAnalyzer, fuzzyAnalyzer, defaultFuzzyMatch);
+                if (patternMatcher != null)
                 {
-                    var patternMatcher = CreateFuzzyTextPatternMatcher(text, fuzzyAnalyzer);
-                    if (patternMatcher != null)
-                    {
-                        patternMatchers.Add(patternMatcher);
-                    }
-                }
-                else
-                {
-                    var patternMatcher = CreateTextPatternMatcher(text, exactAnalyzer);
-                    if (patternMatcher != null)
-                    {
-                        patternMatchers.Add(patternMatcher);
-                    }
+                    patternMatchers.Add(patternMatcher);
                 }
             }
         }
@@ -240,13 +229,13 @@ namespace Luce.PatternMatchers
             return patternMatchers;
         }
 
-        private static PatternMatcher CreateTextPatternMatcher(string text, Analyzer analyzer)
+        private static PatternMatcher CreateTextPatternMatcher(string text, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool fuzzyMatch)
         {
             text = text.Replace("___", $"@{WildcardPatternMatcher.ENTITYTYPE}");
             var sequence = new SequencePatternMatcher();
             using (TextReader reader = new StringReader(text))
             {
-                using (var tokenStream = analyzer.GetTokenStream("name", reader))
+                using (var tokenStream = exactAnalyzer.GetTokenStream("name", reader))
                 {
                     var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
                     var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
@@ -255,8 +244,11 @@ namespace Luce.PatternMatchers
                     while (tokenStream.IncrementToken())
                     {
                         string token = termAtt.ToString();
+                        var start = offsetAtt.StartOffset;
+                        var end = offsetAtt.EndOffset;
+                        string sourceToken = text.Substring(start, end - start);
 
-                        if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '@')
+                        if (start > 0 && text[start - 1] == '@')
                         {
                             if (token == WildcardPatternMatcher.ENTITYTYPE)
                             {
@@ -264,12 +256,17 @@ namespace Luce.PatternMatchers
                             }
                             else
                             {
-                                sequence.PatternMatchers.Add(new EntityPatternMatcher(token));
+                                sequence.PatternMatchers.Add(new EntityPatternMatcher(sourceToken));
                             }
                         }
                         else
                         {
-                            sequence.PatternMatchers.Add(new TokenPatternMatcher(token));
+                            TokenPatternMatcher tokenPatternMatcher = new TokenPatternMatcher(text, token);
+                            if (fuzzyMatch)
+                            {
+                                AddFuzzyMatchTokens(tokenPatternMatcher, text, fuzzyAnalyzer);
+                            }
+                            sequence.PatternMatchers.Add(tokenPatternMatcher);
                         }
                     }
                 }
@@ -289,64 +286,18 @@ namespace Luce.PatternMatchers
             return sequence;
         }
 
-        // NOTE: FuzzyAnalyzer can return multiple possible tokens for the same segment, so we collect them into One() clauses
-        // Sequence(One(x1,x2,x3),One(y1,y2,y3))
-        private static PatternMatcher CreateFuzzyTextPatternMatcher(string text, Analyzer analyzer)
+        private static void AddFuzzyMatchTokens(TokenPatternMatcher tokenPatternMatcher, string text, Analyzer fuzzyAnalyzer)
         {
-            var sequence = new SequencePatternMatcher();
-            OneOfPatternMatcher oneOf = null;
-            var start = -1;
-            using (TextReader reader = new StringReader(text))
+            using (var tokenStream = fuzzyAnalyzer.GetTokenStream("name", text))
             {
-                using (var tokenStream = analyzer.GetTokenStream("name", reader))
+                var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
+                tokenStream.Reset();
+                while (tokenStream.IncrementToken())
                 {
-                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
-                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
-                    tokenStream.Reset();
-
-                    while (tokenStream.IncrementToken())
-                    {
-                        string token = termAtt.ToString();
-                        var offset = offsetAtt.StartOffset;
-                        if (start != offset)
-                        {
-                            start = offset;
-                            if (oneOf != null)
-                            {
-                                sequence.PatternMatchers.Add(oneOf);
-                            }
-                            oneOf = new OneOfPatternMatcher();
-                        }
-
-                        oneOf.PatternMatchers.Add(new FuzzyTokenPatternMatcher(token));
-                    }
-
-                    if (oneOf != null && oneOf.PatternMatchers.Any())
-                    {
-                        if (oneOf.PatternMatchers.Count == 1)
-                        {
-                            sequence.PatternMatchers.Add(oneOf.PatternMatchers.Single());
-                        }
-                        else
-                        {
-                            sequence.PatternMatchers.Add(oneOf);
-                        }
-                    }
+                    string token = termAtt.ToString();
+                    tokenPatternMatcher.FuzzyTokens.Add(token);
                 }
             }
-
-            if (sequence.PatternMatchers.Count == 0)
-            {
-                return null;
-            }
-
-            if (sequence.PatternMatchers.Count == 1)
-            {
-                return sequence.PatternMatchers.Single();
-            }
-
-            sequence.ResolveFallbackMatchers();
-            return sequence;
         }
 
     }

@@ -4,13 +4,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Luce.PatternMatchers;
 using Luce.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Ar;
 using Lucene.Net.Analysis.Ca;
-using Lucene.Net.Analysis.Cn;
-using Lucene.Net.Analysis.Cn.Smart;
+using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Cz;
 using Lucene.Net.Analysis.Da;
 using Lucene.Net.Analysis.De;
@@ -42,6 +42,7 @@ using Lucene.Net.Analysis.TokenAttributes;
 using Lucene.Net.Analysis.Tr;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
+using Newtonsoft.Json.Linq;
 using builtin = Microsoft.Recognizers.Text;
 
 namespace Luce
@@ -51,7 +52,8 @@ namespace Luce
     /// </summary>
     public class LuceEngine
     {
-        private LuceModel _lucyModel;
+        private LuceModel _luceModel;
+        private Analyzer _simpleAnalyzer = new SimpleAnalyzer(LuceneVersion.LUCENE_48);
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
 
@@ -63,11 +65,11 @@ namespace Luce
 
         public LuceEngine(LuceModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null)
         {
-            this._lucyModel = model;
+            this._luceModel = model;
 
             this._exactAnalyzer = exactAnalyzer ?? GetAnalyzerForLocale(model.Locale);
 
-            this._fuzzyAnalyzer = fuzzyAnalyzer ??
+            this._fuzzyAnalyzer = exactAnalyzer ?? fuzzyAnalyzer ??
                 Analyzer.NewAnonymous((field, textReader) =>
                 {
                     Tokenizer tokenizer = new StandardTokenizer(LuceneVersion.LUCENE_48, textReader);
@@ -210,60 +212,59 @@ namespace Luce
 
         public IEnumerable<LuceEntity> Tokenize(string text)
         {
-            var tokens = new List<Token>();
-
-            using (TextReader reader = new StringReader(text))
+            using (var tokenStream = _exactAnalyzer.GetTokenStream("name", text))
             {
-                using (var tokenStream = _exactAnalyzer.GetTokenStream("name", reader))
+                var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
+                var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
+                tokenStream.Reset();
+
+                while (tokenStream.IncrementToken())
                 {
-                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
-                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
-                    tokenStream.Reset();
+                    string token = termAtt.ToString();
+                    bool skipFuzzy = false;
+                    var start = offsetAtt.StartOffset;
+                    var end = offsetAtt.EndOffset;
 
-                    while (tokenStream.IncrementToken())
+                    if (start > 0 && text[start - 1] == '@')
                     {
-                        string token = termAtt.ToString();
-                        bool skipFuzzy = false;
-                        if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '@')
-                        {
-                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
-                            skipFuzzy = true;
-                        }
-                        else if (offsetAtt.StartOffset > 0 && text[offsetAtt.StartOffset - 1] == '$')
-                        {
-                            token = text.Substring(offsetAtt.StartOffset - 1, offsetAtt.EndOffset - offsetAtt.StartOffset + 1);
-                            skipFuzzy = true;
-                        }
+                        token = text.Substring(start - 1, end - start + 1);
+                        skipFuzzy = true;
+                    }
+                    else if (start > 0 && text[start - 1] == '$')
+                    {
+                        token = text.Substring(start - 1, end - start + 1);
+                        skipFuzzy = true;
+                    }
 
-                        yield return new LuceEntity()
-                        {
-                            Type = TokenPatternMatcher.ENTITYTYPE,
-                            Text = token,
-                            Start = offsetAtt.StartOffset,
-                            End = offsetAtt.EndOffset
-                        };
+                    var resolution = new TokenResolution()
+                    {
+                        Token = token
+                    };
 
-                        if (_fuzzyAnalyzer != null && !skipFuzzy)
+                    var luceEntity = new LuceEntity()
+                    {
+                        Type = TokenPatternMatcher.ENTITYTYPE,
+                        Text = text.Substring(start, end - start),
+                        Start = offsetAtt.StartOffset,
+                        End = end,
+                        Resolution = resolution
+                    };
+
+                    if (_fuzzyAnalyzer != null && !skipFuzzy)
+                    {
+                        // get fuzzyText
+                        using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", luceEntity.Text))
                         {
-                            using (TextReader fuzzyReader = new StringReader(token))
+                            var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
+                            fuzzyTokenStream.Reset();
+                            while (fuzzyTokenStream.IncrementToken())
                             {
-                                // get fuzzyText
-                                using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", fuzzyReader))
-                                {
-                                    var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
-                                    fuzzyTokenStream.Reset();
-                                    fuzzyTokenStream.IncrementToken();
-                                    yield return new LuceEntity()
-                                    {
-                                        Type = FuzzyTokenPatternMatcher.ENTITYTYPE,
-                                        Text = fuzzyTermAtt.ToString(),
-                                        Start = offsetAtt.StartOffset,
-                                        End = offsetAtt.EndOffset
-                                    };
-                                }
+                                resolution.FuzzyTokens.Add(fuzzyTermAtt.ToString());
                             }
                         }
                     }
+
+                    yield return luceEntity;
                 }
             }
         }
@@ -418,7 +419,7 @@ namespace Luce
 
             // see if it matches at this textEntity starting position.
             var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
-            //Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
+            //System.Diagnostics.Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
 
             // if it matches
             if (matchResult.Matched && matchResult.NextStart != textEntity.Start)
@@ -448,9 +449,9 @@ namespace Luce
 
         private void LoadModel()
         {
-            if (_lucyModel.Entities != null)
+            if (_luceModel.Entities != null)
             {
-                foreach (var entityModel in _lucyModel.Entities)
+                foreach (var entityModel in _luceModel.Entities)
                 {
                     foreach (var patternModel in entityModel.Patterns)
                     {
@@ -458,6 +459,7 @@ namespace Luce
                         foreach (var pattern in patternModel)
                         {
                             var expandedPattern = ExpandMacros(pattern);
+
                             var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
                             if (patternMatcher != null)
                             {
@@ -498,20 +500,53 @@ namespace Luce
             }
         }
 
+        private class Occurence
+        {
+            public int Start { get; set; }
+            public int End { get; set; }
+            public string Value { get; set; }
+        }
+
         private string ExpandMacros(string pattern)
         {
-            var tokens = Tokenize(pattern);
-
-            if (_lucyModel.Macros != null)
+            if (_luceModel.Macros != null)
             {
-                foreach (var token in tokens.Where(t => t.Text.FirstOrDefault() == '$').OrderByDescending(t => t.Start))
+                using (var tokenStream = _simpleAnalyzer.GetTokenStream("name", pattern))
                 {
-                    if (_lucyModel.Macros.TryGetValue(token.Text, out string value))
+                    var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
+                    var offsetAtt = tokenStream.GetAttribute<IOffsetAttribute>();
+                    tokenStream.Reset();
+
+                    Stack<Occurence> occurences = new Stack<Occurence>();
+                    while (tokenStream.IncrementToken())
                     {
-                        pattern = $"{pattern.Substring(0, token.Start)}{value}{pattern.Substring(token.End)}";
+                        var start = offsetAtt.StartOffset;
+                        var end = offsetAtt.EndOffset;
+
+                        // if a $ reference
+                        if (start > 0 && pattern[start- 1] == '$')
+                        {
+                            start--;
+                            var macroName = pattern.Substring(start, end - start);
+                            if (this._luceModel.Macros.TryGetValue(macroName, out string value))
+                            {
+                                occurences.Push(new Occurence() { Start = start, Value = value, End = end });
+                            }
+                            else
+                            {
+                                throw new KeyNotFoundException($"There isn't a macro {macroName} defined.");
+                            }
+                        }
+                    }
+
+                    while(occurences.Count > 0)
+                    {
+                        var occurence = occurences.Pop();
+                        pattern = $"{pattern.Substring(0, occurence.Start)}{occurence.Value}{pattern.Substring(occurence.End)}";
                     }
                 }
             }
+
             return pattern;
         }
 
@@ -635,7 +670,7 @@ namespace Luce
                 case "Catalan":
                     return new CatalanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Chinese":
-                    return new SmartChineseAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);
+                    return new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);
                 case "Czech":
                     return new CzechAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Danish":

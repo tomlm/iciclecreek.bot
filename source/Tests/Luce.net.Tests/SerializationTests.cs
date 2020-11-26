@@ -25,15 +25,15 @@ namespace Luce.Tests
         [TestMethod]
         public void TestLoadYaml()
         {
-            LuceModel lucyModel;
+            LuceModel luceModel;
             using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "luce.yml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);
-                lucyModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
+                luceModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
             }
 
-            var engine = new LuceEngine(lucyModel);
+            var engine = new LuceEngine(luceModel);
 
             string text = "the box is 9 inches by 7.";
 
@@ -53,15 +53,15 @@ namespace Luce.Tests
         [TestMethod]
         public void TestLoadMacroTest()
         {
-            LuceModel lucyModel;
+            LuceModel luceModel;
             using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "luce.yml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);
-                lucyModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
+                luceModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
             }
 
-            var engine = new LuceEngine(lucyModel);
+            var engine = new LuceEngine(luceModel);
 
             string text = "flight from seattle to chicago.";
             var results = engine.MatchEntities(text, null);

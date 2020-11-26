@@ -38,7 +38,7 @@ namespace Luce
         {
             // slop is large for text tokens (to take care of embedded spaces)
             // slop is tight for entity matching
-            int slop = (entityType == TokenPatternMatcher.ENTITYTYPE || entityType == FuzzyTokenPatternMatcher.ENTITYTYPE) ? 255 : 0;
+            int slop = (entityType == TokenPatternMatcher.ENTITYTYPE) ? 255 : 0;
             return this.Entities.Where(entityToken =>
                 String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
                 entityToken.Start >= start && entityToken.Start <= (start + slop + 1));

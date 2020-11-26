@@ -26,13 +26,6 @@ namespace Luce.Tests
             Assert.AreEqual("is", entities[1].Text);
             Assert.AreEqual("a", entities[2].Text);
             Assert.AreEqual("test", entities[3].Text);
-
-            entities = results.Where(e => e.Type == FuzzyTokenPatternMatcher.ENTITYTYPE).ToList();
-            Assert.AreEqual(4, entities.Count);
-            Assert.AreEqual("this", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
-            Assert.AreEqual("is", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
-            Assert.AreEqual("a", text.Substring(entities[2].Start, entities[2].End - entities[2].Start));
-            Assert.AreEqual("test", text.Substring(entities[3].Start, entities[3].End - entities[3].Start));
         }
 
         [TestMethod]
@@ -434,12 +427,12 @@ namespace Luce.Tests
             {
                 Macros = new Dictionary<string, string>()
                 {
-                    { "$is","(is|equals)" },
+                    { "$test","(is|equals)" },
                 },
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "$name $is ___" } },
-                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @twoDimensional" } },
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "name $test ___" } },
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $test @twoDimensional" } },
                     new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@dimension|@number) (height|tall)" } },
                     new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@dimension|@number) (width|wide)" } },
                     new EntityModel() {

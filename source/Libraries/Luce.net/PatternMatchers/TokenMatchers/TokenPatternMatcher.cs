@@ -12,29 +12,53 @@ namespace Luce.PatternMatchers.Matchers
     {
         public const string ENTITYTYPE = "^Token";
 
-        public TokenPatternMatcher(string textToken)
+        public TokenPatternMatcher(string text, string token)
         {
-            this.Token = textToken;
+            this.Text = text;
+            this.Token = token;
         }
+
+        public string Text { get; set; }
 
         public string Token { get; set; }
 
-        public bool FuzzyMatch { get; set; }
+        public HashSet<String> FuzzyTokens { get; set; } = new HashSet<string>();
 
         public override MatchResult Matches(MatchContext context, int start)
         {
             var matchResult = new MatchResult();
             var entityToken = context.FindNextEntities(ENTITYTYPE, start).FirstOrDefault();
-            if (entityToken?.Text == Token)
+            var resolution = entityToken?.Resolution as TokenResolution;
+            if (resolution != null)
             {
-                matchResult.Matched = true;
-                matchResult.NextStart = entityToken.End;
+                if (this.Token == resolution.Token)
+                {
+                    matchResult.Matched = true;
+                    matchResult.NextStart = entityToken.End;
+                    return matchResult;
+                }
+
+                if (this.FuzzyTokens.Any())
+                {
+                    foreach (var fuzzyToken in FuzzyTokens)
+                    {
+                        foreach (var fuzzyToken2 in resolution.FuzzyTokens)
+                        {
+                            if (fuzzyToken2 == fuzzyToken)
+                            {
+                                matchResult.Matched = true;
+                                matchResult.NextStart = entityToken.End;
+                                return matchResult;
+                            }
+                        }
+                    }
+                }
             }
 
             return matchResult;
         }
 
-        public override string ToString() => $"{Token}";
+        public override string ToString() => $"{(FuzzyTokens.Any()? $"{Token}~" : Token)}";
 
     }
 }

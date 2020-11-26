@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LucyPad.Properties {
+namespace LucePad.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

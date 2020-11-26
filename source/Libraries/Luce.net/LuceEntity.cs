@@ -10,6 +10,10 @@ namespace Luce
     /// </summary>
     public class LuceEntity
     {
+        public LuceEntity()
+        {
+        }
+
         // name of the entity type
         [JsonProperty("type")]
         public string Type { get; set; }

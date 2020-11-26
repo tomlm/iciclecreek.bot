@@ -137,6 +137,52 @@ entities:
       - (@QuotedText|___) (is my)? name
       - change my name (to)? (@QuotedText|___)+
 
+# drinks
+  - name: '@drinkSize'
+    patterns:
+    - [s, small, short]
+    - [m, medium, tall]
+    - [l, large]
+    - [xl, extra large, venti]
+
+  - name: '@container'
+    patterns:
+    - (glass|shot|shotglass|tumbler|mug|pitcher)?
+
+  - name: '@beverageType'
+    fuzzyMatch: true
+    patterns:
+    - [beer, suds]
+    - wine
+    - [cocktail, highball]
+    - whiskey
+    - bourbon
+    - rye
+    - gin
+    - vodka
+
+  - name: '@temperature'
+    fuzzyMatch: true
+    patterns: 
+    - [cold, chilled, cool, icy, iced]
+    - warm
+    - [hot, heated, steaming]
+  
+  - name: '@drinkOrder'
+    patterns:
+    - (like|have|order) (a|some|@number)? (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?
+    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?    
+
+  - name: '@or'
+    patterns: [or]
+
+  - name: '@and'
+    patterns: [and]
+
+  - name: '@compoundDrinkOrder'
+    patterns:
+    - '@drinkOrder @or @drinkOrder'
+
 intents:
   - name: match
     examples:
