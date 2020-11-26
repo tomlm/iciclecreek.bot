@@ -44,6 +44,12 @@
             </Grid>
 
             <TabControl Grid.Row="1"  x:Name="tabs" >
+                <TabItem Header="Overview" x:Name="overviewTab">
+                    <WebBrowser x:Name="overviewViewer" Source="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Luce.net/readme.md"/>
+                </TabItem>
+                <TabItem Header="Help" x:Name="helpTab">
+                    <WebBrowser x:Name="helpViewer" Source="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Luce.net/help.md"/>
+                </TabItem>
                 <TabItem Header="Entities" x:Name="entitiesTab">
                     <Grid>
                         <Grid.RowDefinitions>

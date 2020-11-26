@@ -10,6 +10,7 @@ using Luce.PatternMatchers.Matchers;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Ar;
 using Lucene.Net.Analysis.Ca;
+using Lucene.Net.Analysis.Cjk;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Cz;
 using Lucene.Net.Analysis.Da;
@@ -721,8 +722,6 @@ namespace Luce
                     return new BasqueAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Catalan":
                     return new CatalanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Chinese":
-                    return new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);
                 case "Czech":
                     return new CzechAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Danish":
@@ -745,6 +744,10 @@ namespace Luce
                     return new HindiAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Hungarian":
                     return new HungarianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
+                case "Chinese":
+                case "Japanese":
+                case "Korean":
+                    return new CJKAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Indonesian":
                     return new IndonesianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 case "Irish":

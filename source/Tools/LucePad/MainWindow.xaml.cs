@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xaml;
 using Luce;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
-using Microsoft.Bot.Schema;
+using Markdig;
+using Microsoft.MarkedNet;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -114,18 +109,37 @@ namespace LucePad
             this.editor.Options.IndentationSize = 2;
             this.editor.ShowLineNumbers = true;
 
-            var assembly = Assembly.GetExecutingAssembly();
-            using (Stream stream = assembly.GetManifestResourceStream("LucePad.luce.yaml"))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                this.editor.Text = reader.ReadToEnd();
-            }
+            this.editor.Text = LoadResource("LucePad.luce.yaml");
             LoadModel();
-            
+
+            //this.overviewViewer.NavigateToString(LoadMarkdown("LucePad.overview.md"));
+            //this.helpViewer.NavigateToString(LoadMarkdown("LucePad.help.md"));
         }
 
         private void showInternal_Checked(object sender, RoutedEventArgs e)
         {
+        }
+
+        private string LoadMarkdown(string name)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<html>");
+            sb.AppendLine("<body style=\"font-family:Calibri\">");
+            sb.AppendLine(new Marked().Parse(LoadResource(name)));
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+            return sb.ToString();
+        }
+
+        private string LoadResource(string name)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = assembly.GetManifestResourceStream(name))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+
         }
     }
 }
