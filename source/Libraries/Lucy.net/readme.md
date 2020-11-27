@@ -1,5 +1,5 @@
 ﻿# Lucy Overview
-Lucy *(pronounced Lucy)* is an Entity Recognition engine which defines a simple yaml syntax for recognizing **entities**.
+Lucy is an Entity Recognition engine which defines a simple yaml syntax for recognizing **entities** in text.
 
 #  Core concept
 Lucy's core concept is
@@ -7,9 +7,9 @@ Lucy's core concept is
 
 Lucy focuses on **capturing your knowledge** by focusing on **token patterns**.
 
-This is a natural way of building a model, because it allows you to focus on the 
-fragments of information you understand in way that is instantly
-testable and naturally builds up to more complex entities.
+Token patterns are a natural way of building a model, because it allows you to focus on the 
+fragments of information you understand in way that is instantly testable and naturally
+builds up to more complex entities.
 
 # Key tenants
 
