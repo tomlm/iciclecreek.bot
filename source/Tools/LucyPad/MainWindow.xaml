@@ -1,0 +1,72 @@
+﻿<Window x:Class="LucyPad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:aui="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:local="clr-namespace:LucyPad"
+        mc:Ignorable="d" Loaded="Window_Loaded"
+        Title="LucyPad" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width=".5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Lucy Model" FontSize="20"/>
+            <Label Grid.Row="1" Content="" Visibility="Collapsed" Background="Yellow" x:Name="error" Padding="10"/>
+            <aui:TextEditor Grid.Row="2" Grid.Column="0" x:Name="editor" SyntaxHighlighting="markdown" FontFamily="Consolas" FontSize="15pt" Margin="4">
+            </aui:TextEditor>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5" />
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Margin="4" x:Name="query" TextChanged="query_TextChanged" FontSize="15pt"/>
+                <CheckBox Grid.Column="1" Content="Show Internal" x:Name="showInternal" Margin="4" Checked="showInternal_Checked"/>
+            </Grid>
+
+            <TabControl Grid.Row="1"  x:Name="tabs" >
+                <TabItem Header="Overview" x:Name="overviewTab">
+                    <wv2:WebView2  x:Name="overviewViewer" Source="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/readme.md"/>
+                </TabItem>
+                <TabItem Header="Help" x:Name="helpTab">
+                    <wv2:WebView2 x:Name="helpViewer" Source="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md"/>
+                </TabItem>
+                <TabItem Header="Entities" x:Name="entitiesTab">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".5*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height=".5*"/>
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="labelBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
+                        <TextBox Grid.Row="2" x:Name="entitiesBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Recognizer" x:Name="recognizerTab">
+                    <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</Window>

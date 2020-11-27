@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{77F111DA-C9CA-47C8-8632-A62AF8C27B8D}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce.csproj = Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Luce.csproj
+		Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj = Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{94ECDBC2-C0D1-4067-A209-A548BD3B39D1}"
@@ -60,11 +60,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bots", "Bots", "{69BDBCF0-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepoBot", "Bots\RepoBot\RepoBot.csproj", "{BA948957-71F8-4A46-B6C5-B56C11BF1367}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luce.net", "Libraries\Luce.net\Luce.net.csproj", "{39AA4C94-D224-42F1-A40B-1997A24EC61B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lucy.net", "Libraries\Lucy.net\Lucy.net.csproj", "{39AA4C94-D224-42F1-A40B-1997A24EC61B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Luce.net.Tests", "tests\Luce.net.Tests\Luce.net.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lucy.net.Tests", "tests\Lucy.net.Tests\Lucy.net.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LucePad", "tools\LucePad\LucePad.csproj", "{D473CF28-2CFA-42A4-86BF-33364C25F159}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LucyPad", "tools\LucyPad\LucyPad.csproj", "{D473CF28-2CFA-42A4-86BF-33364C25F159}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
