@@ -31,24 +31,15 @@ Matching a set of alternative tokens is the simplest case. To do this is easy:
     - medium
     - large
 ```
-or even more simply:
-```yaml
-  - name: '@drinkSize'
-    patterns: [small, medium, large]
-```
+
 Given text like ```I would like a large``` will match ``@drinkSize = large``.
 
-## Canonical values
-When an entity is recognized, the calling program will get an entity where the 
-resolution is the matched text. But the matched text could be mispelled or a 
-language variation. 
+## Synonyms and canonical values
+You can control the canonical value that is passed to your program by using an array.
 
-Programmers like working with a fixed set of enumerated values, aka *canonical values*.
+In the following example, instead of just ```small, medium, large, extra large``` 
+we are defining synonyms on each line, normalizing the resolution to the letters ```s, m, l, xl```.
 
-To do that is easy, just change a pattern line to be an array of strings, and if any 
-of the tokens is found, the first one in the array will be the resolution.
-
-Example:
 ```yaml
   - name: '@drinkSize'
     patterns:
@@ -60,7 +51,8 @@ Example:
 Given text like ```I would like a extra large``` will match ``@drinkSize = xl``.
 
 ## Entity references
-In a pattern sequence you can refer to an entity by using ```@``` prefix.
+In a pattern sequence you can refer to an entity by using ```@``` prefix in
+front of the entity name.
 
  ```@xxx``` in a sequence means
 *"if you found an entity called ```xxx``` aligning here in the token sequence, then I would
@@ -73,6 +65,7 @@ Example:
     - dog
     - cat
     - snake
+
   - name: '@myentity'
     patterns:
     - walk the @animal
@@ -83,25 +76,25 @@ This defines an entity ```@animal``` which will recognize the animal tokens.  ``
 match ```walk the dog```, because it sees that ```@animal`` aligns.  Because it matched on an 
 entity it will capture the entity value for animal.
 
-## Variations
-Just like regular expressions you can define variations inline by putting parens around it and using the
-pipe operator like ```(token|token|token)```
-
-These are identical definitions:
+## Alternates
+Just like regular expressions you can define alternitives inline by putting parens 
+around a set of tokens seperated by the pipe character '|'.   ```(token|token|token)```
 
 ```yaml
-  - name: '@animal1'
-    patterns:
-    - dog
-    - cat
-    - snake
-  - name: '@animal2'
+  - name: '@animal'
     patterns:
     - (dog|cat|snake)
 ```
 
-## Ordinality
-Just like in regular expressions you can define ordinality on a variation. 
+This enables a you to express multiple permutations of patterns by composing your alternation patterns together like this:
+```yaml
+  - name: '@animalOperation'
+    patterns:
+    - (walk|pet|feed) the (dog|cat|snake)
+```
+
+## Quantifiers
+Just like in regular expressions you can define ordinality on groups.
 
 | postfix | description        |
 |---------|--------------------|
@@ -114,18 +107,68 @@ Just like in regular expressions you can define ordinality on a variation.
     patterns:
     - (walk|feed|pet) (the)? (dog|cat|snake)+
 ```
-With variations, this one pattern does all of the combinations of action and animal.
 
 ## Fuzzy Matching
-Matching on tokens is powerful but brittle because people spell poorly, or speech
-rec provides a word which sounds right, but is wrong word. When fuzzy matching is used
-we will match using techniques such as phonetic matching. 
+Matching on tokens when your text is spellled correctly, but in reality the input
+data is not clean.  People spell poorly, speech rec provides a word which sounds
+right, but is wrong word, etc. **Fuzzy matching** enables phonetic matching
+when comparing tokens, making the pattern recognition much more robust.
 
 There are 2 ways to enable fuzzy matching. 
-1. You can use the ~ postfix to enable fuzzy matching for a token or group of tokens
-2. you can use the ```fuzzyMatch``` property on an entity definition
+1. You can use the ```~``` postfix character to enable fuzzy matching on a alternate group.
+2. you can use the ```fuzzyMatch``` property on an entity definition to apply fuzzy
+matching to all patterns in the entity definition.
+
+```yaml
+  - name: '@example1'
+    patterns:
+    # fuzzy match only on tokens des moines 
+    - (des moines)~
+    - seattle
+    - ...
+
+  - name: '@example2'
+    # fuzzy match turned on for all patterns in this entity definition.
+    fuzzyMatch: true
+    patterns:
+    - mummy
+    - dracula
+    - sasquatch
+    - ...
+```
 
 ## Wildcards
+Wildcards enable you to capture entities which can only be expressed by their postion 
+in a sequence relative to other tokens.  These are esssentially empty slots, and are
+expressed with three underscore characters ```___```.
+
+This represents a single token which is captured because of the token sequence around 
+it. 
+
+```yaml
+  - name: '@name'
+    patterns:
+    - name is ___
+    - call me ___
+    - ___ is my name
+```
+So with an input, ```my name is ishmail``` the result will be ```@name = 'ishmail'```. 
+
+Wildcards can be placed in alternate groups with quantifiers```(___)*``` , allowing 
+you to capture a sequence of unknown tokens into an entity. 
+
+Repeating wildcards will take tokens until they run into a token which is claimed
+by any pattern in the system. 
+
+## Named wildcards
+You can assign entity names inline when defining a wildcard by using the pattern
+```(name:___)```. 
+
+```yaml
+  - name: '@name'
+    patterns:
+    - name is (firstname:___) (lastname:___)?
+```
 
 # LucE file format
 

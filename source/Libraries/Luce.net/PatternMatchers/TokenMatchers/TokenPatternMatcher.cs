@@ -31,6 +31,7 @@ namespace Luce.PatternMatchers.Matchers
             var resolution = entityToken?.Resolution as TokenResolution;
             if (resolution != null)
             {
+                // see if it matches the normal token
                 if (this.Token == resolution.Token)
                 {
                     matchResult.Matched = true;
@@ -38,6 +39,7 @@ namespace Luce.PatternMatchers.Matchers
                     return matchResult;
                 }
 
+                // if we have fuzzyTokens, see if it matches any of the fuzzy tokens.
                 if (this.FuzzyTokens.Any())
                 {
                     foreach (var fuzzyToken in FuzzyTokens)

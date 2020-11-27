@@ -1,7 +1,7 @@
 ﻿# LucE Overview
 LucE *(pronounced Lucy)* is an Entity Recognition engine which defines a simple yaml syntax for recognizing **entities**.
 
-#  Entity Recognition Engine
+#  Core concept
 LucE's core concept is
 > **Entities** are cascading patterns of **tokens** and **entities**.
 
@@ -42,7 +42,7 @@ such as LUIS or Orchestrator to great benefit.
 There are 2 factors controlling language support in LucE.
 
 ## Tokenizers
-LucE uses off the shelf LucEne tokenizers to tokenize text into tokens.
+LucE uses off the shelf Lucene token analyzers to tokenize text into tokens.
 There are currently token analyzers for 29 lanuages:
 * *Arabic
 Armenian
@@ -83,7 +83,7 @@ for core entity types:
 * *age boolean currency datetime dimension email guid hashtag 
 ip mention number numberrange ordinal percentage phonenumber temperature url*
 
-Across 15 languages
+Microsoft.Text.Recognizers support 15 languages
 * *Arabic
 Bulgarian
 Chinese 
