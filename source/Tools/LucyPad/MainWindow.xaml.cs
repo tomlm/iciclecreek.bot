@@ -54,6 +54,7 @@ namespace LucyPad
                 {
                     var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
 
+                    this.tabs.SelectedIndex = 2;
                     this.labelBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
                     this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
                 }

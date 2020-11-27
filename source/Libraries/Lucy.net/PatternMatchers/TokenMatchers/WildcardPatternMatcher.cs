@@ -15,7 +15,7 @@ namespace Lucy.PatternMatchers
 
         private string entityType = ENTITYTYPE;
 
-        public WildcardPatternMatcher(string variation=null)
+        public WildcardPatternMatcher(string variation = null)
         {
             if (variation != null && variation.IndexOf(":") > 0)
             {
@@ -27,39 +27,33 @@ namespace Lucy.PatternMatchers
         {
             var matchResult = new MatchResult();
 
-            // if the next token is already claimed, then we don't want to keep this
-            var tokenTaken = context.Entities.Where(entity => entity.Start >= start && entity.Start <= start + 1)
-                .Any();
-            if (!tokenTaken)
+            var token = context.FindNextTextEntity(start);
+            if (token != null)
             {
-                var token = context.FindNextTextEntity(start);
-                if (token != null)
+                // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
+                var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == entityType);
+                if (wildcardToken == null)
                 {
-                    // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
-                    var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == entityType);
-                    if (wildcardToken == null)
+                    wildcardToken = new LucyEntity()
                     {
-                        wildcardToken = new LucyEntity()
-                        {
-                            Type = entityType,
-                            Start = token.Start
-                        };
-                        context.CurrentEntity.Children.Add(wildcardToken);
-                    }
-
-                    // update wildcardToken
-                    wildcardToken.End = token.End;
-                    wildcardToken.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-                    wildcardToken.Text = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-
-                    // update parent token 
-                    context.CurrentEntity.End = token.End;
-                    // context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-                    // context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
-
-                    matchResult.Matched = true;
-                    matchResult.NextStart = token.End;
+                        Type = entityType,
+                        Start = token.Start
+                    };
+                    context.CurrentEntity.Children.Add(wildcardToken);
                 }
+
+                // update wildcardToken
+                wildcardToken.End = token.End;
+                wildcardToken.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                wildcardToken.Text = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+
+                // update parent token 
+                context.CurrentEntity.End = token.End;
+                // context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                // context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+
+                matchResult.Matched = true;
+                matchResult.NextStart = token.End;
             }
             return matchResult;
         }

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\Luce.net\Luce.net.csproj" />
+    <ProjectReference Include="..\..\Libraries\Lucy.net\Lucy.net.csproj" />
   </ItemGroup>
 
 </Project>

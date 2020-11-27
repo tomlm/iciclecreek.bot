@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Luce.Tests
+namespace Lucy.Tests
 {
     [TestClass]
     public class PerfTests
@@ -13,7 +13,7 @@ namespace Luce.Tests
         public void RunPerfTests()
         {
             StringBuilder sb = new StringBuilder();
-            var model = new LuceModel()
+            var model = new LucyModel()
             {
                 Macros = new Dictionary<string, string>()
                 {
@@ -39,7 +39,7 @@ namespace Luce.Tests
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var engine = new LuceEngine(model);
+            var engine = new LucyEngine(model);
             sw.Stop();
             sb.AppendLine($"loading: {sw.Elapsed}");
             sw.Reset();

@@ -8,24 +8,24 @@ namespace Lucy.PatternMatchers
     /// <remarks>
     /// This is used primarily for wildcardmatchers as the fallback
     /// </remarks>
-    public class FallbackPatternMatcher : PatternMatcher
+    public class MultiWildcardPatternMatcher : PatternMatcher
     {
         /// <summary>
         /// Evaluates a sequence of matchers
         /// </summary>
-        public FallbackPatternMatcher()
+        public MultiWildcardPatternMatcher()
         {
         }
 
-        public FallbackPatternMatcher(PatternMatcher primaryMatcher, PatternMatcher fallbackMatcher)
+        public MultiWildcardPatternMatcher(PatternMatcher wildcardMatcher, PatternMatcher entityMatcher = null)
         {
-            this.PrimaryMatcher = primaryMatcher;
-            this.FallbackMatcher = fallbackMatcher;
+            this.WildcardMatcher = wildcardMatcher;
+            this.EntityMatcher = entityMatcher ?? new AnyEntityPatternMatcher();
         }
 
-        public PatternMatcher PrimaryMatcher { get; set; }
+        public PatternMatcher EntityMatcher { get; set; }
 
-        public PatternMatcher FallbackMatcher { get; set; }
+        public PatternMatcher WildcardMatcher { get; set; }
 
 
         /// <summary>
@@ -36,16 +36,17 @@ namespace Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, int start)
         {
-            var matchResult = PrimaryMatcher.Matches(context, start);
+            var matchResult = EntityMatcher.Matches(context, start);
             // if it matched AND moved forward, then we want to fallback
             if (matchResult.Matched && matchResult.NextStart > start)
             {
-                return matchResult;
+                // not matched, we are done.
+                return new MatchResult();
             }
 
-            if (this.FallbackMatcher != null)
+            if (this.WildcardMatcher != null)
             {
-                matchResult = this.FallbackMatcher.Matches(context, start);
+                matchResult = this.WildcardMatcher.Matches(context, start);
             }
 
             return matchResult;
@@ -53,20 +54,20 @@ namespace Lucy.PatternMatchers
 
         public override IEnumerable<string> GetEntityReferences()
         {
-            foreach(var dependency in this.PrimaryMatcher.GetEntityReferences())
+            foreach (var dependency in this.EntityMatcher.GetEntityReferences())
             {
                 yield return dependency;
             }
 
-            if (this.FallbackMatcher != null)
+            if (this.WildcardMatcher != null)
             {
-                foreach (var dependency in this.FallbackMatcher.GetEntityReferences())
+                foreach (var dependency in this.WildcardMatcher.GetEntityReferences())
                 {
                     yield return dependency;
                 }
             }
         }
 
-        public override string ToString() => $"Fallback({PrimaryMatcher},{FallbackMatcher})";
+        public override string ToString() => $"MultiWildcard({WildcardMatcher}, {EntityMatcher})";
     }
 }

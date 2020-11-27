@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Luce.Tests
+namespace Lucy.Tests
 {
     [TestClass]
     public class SerializationTests
@@ -25,21 +25,21 @@ namespace Luce.Tests
         [TestMethod]
         public void TestLoadYaml()
         {
-            LuceModel luceModel;
-            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "luce.yml"))))
+            LucyModel lucyModel;
+            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);
-                luceModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
+                lucyModel = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
             }
 
-            var engine = new LuceEngine(luceModel);
+            var engine = new LucyEngine(lucyModel);
 
             string text = "the box is 9 inches by 7.";
 
             var results = engine.MatchEntities(text);
-            Trace.TraceInformation("\n" + LuceEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LuceEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
 
             var entities = results.Where(e => e.Type == "boxSize").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -53,20 +53,20 @@ namespace Luce.Tests
         [TestMethod]
         public void TestLoadMacroTest()
         {
-            LuceModel luceModel;
-            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "luce.yml"))))
+            LucyModel lucyModel;
+            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);
-                luceModel = JsonConvert.DeserializeObject<LuceModel>(json, patternModelConverter);
+                lucyModel = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
             }
 
-            var engine = new LuceEngine(luceModel);
+            var engine = new LucyEngine(lucyModel);
 
             string text = "flight from seattle to chicago.";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LuceEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LuceEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
 
             Assert.AreEqual(1, results.Where(e => e.Type == "trip").Count());
             Assert.AreEqual(1, results.Where(e => e.Type == "destination").Count());

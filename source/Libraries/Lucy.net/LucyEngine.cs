@@ -45,6 +45,7 @@ using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 using Newtonsoft.Json.Linq;
 using builtin = Microsoft.Recognizers.Text;
+using System.Diagnostics;
 
 namespace Lucy
 {
@@ -146,7 +147,7 @@ namespace Lucy
             {
                 foreach (var externalEntity in externalEntities)
                 {
-                    context.Entities.Add(externalEntity);
+                    context.AddEntity(externalEntity);
                 }
             }
 
@@ -199,7 +200,7 @@ namespace Lucy
 
             // merge entities which are overlapping.
             var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
-            foreach (var entity1 in context.Entities.Where(entity => entity.Type[0] != '^'))
+            foreach (var entity1 in context.Entities)
             {
                 var alternateEntities = context.Entities.Where(e => e.Type == entity1.Type && e != entity1 && !mergedEntities.Contains(entity1)).ToList();
                 if (alternateEntities.Count() == 0)
@@ -440,18 +441,12 @@ namespace Lucy
                     context.CurrentEntity.Resolution = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
                 }
 
-                if (!context.Entities.Contains(context.CurrentEntity))
-                {
-                    context.Entities.Add(context.CurrentEntity);
-                    // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
-                }
+                context.AddEntity(context.CurrentEntity);
+                // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
 
                 foreach (var childEntity in context.CurrentEntity.Children)
                 {
-                    if (!context.Entities.Contains(childEntity))
-                    {
-                        context.Entities.Add(childEntity);
-                    }
+                    context.AddEntity(childEntity);
                 }
             }
         }
@@ -665,7 +660,7 @@ namespace Lucy
 
                 foreach (var result in results)
                 {
-                    context.Entities.Add(new LucyEntity()
+                    context.AddEntity(new LucyEntity()
                     {
                         Text = result.Text,
                         Type = result.TypeName,

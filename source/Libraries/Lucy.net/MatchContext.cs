@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Lucene.Net.Analysis.CharFilters;
 using Lucy;
 using Lucy.PatternMatchers;
 using Lucy.PatternMatchers.Matchers;
@@ -13,6 +14,8 @@ namespace Lucy
     /// </summary>
     public class MatchContext
     {
+        private Dictionary<int, HashSet<LucyEntity>> positionMap = new Dictionary<int, HashSet<LucyEntity>>();
+
         public MatchContext()
         {
         }
@@ -39,17 +42,66 @@ namespace Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
-        public IEnumerable<LucyEntity> FindNextEntityOfType(string entityType, int start)
+        public void AddEntity(LucyEntity entity)
         {
-            return this.Entities.Where(entityToken =>
-                String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase) &&
-                entityToken.Start >= start && entityToken.Start <= (start + 1));
+            if (!Entities.Contains(entity))
+            {
+                Entities.Add(entity);
+                HashSet<LucyEntity> map;
+                if (!positionMap.TryGetValue(entity.Start, out map))
+                {
+                    map = new HashSet<LucyEntity>();
+                    positionMap.Add(entity.Start, map);
+                }
+
+                map.Add(entity);
+            }
+        }
+
+        public LucyEntity FindNextEntityOfType(string entityType, int start)
+        {
+            while (start < Text.Length)
+            {
+                if (positionMap.TryGetValue(start, out var entities))
+                {
+                    var result = entities
+                        .Where(entityToken => String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase))
+                        .FirstOrDefault();
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+                start++;
+            }
+            return null;
         }
 
         public IEnumerable<LucyEntity> FindNextRecognizedEntities(int start)
         {
-            return this.Entities.Where(entityToken =>
-                entityToken.Start >= start && entityToken.Start <= (start + 1));
+            while (start < Text.Length)
+            {
+                if (positionMap.TryGetValue(start, out var entities))
+                {
+                    foreach (var entity in entities)
+                    {
+                        yield return entity;
+                    }
+                }
+                else
+                {
+                    start++;
+                }
+            }
+        }
+
+        public bool IsTokenMatched(LucyEntity textToken)
+        {
+            if (positionMap.TryGetValue(textToken.Start, out var entities))
+            {
+                return entities.Any();
+            }
+            return false;
         }
 
         public LucyEntity FindNextTextEntity(int start)

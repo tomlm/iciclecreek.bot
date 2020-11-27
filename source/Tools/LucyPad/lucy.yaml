@@ -17,7 +17,7 @@ entities:
     fuzzyMatch: true
     patterns:
     - [beer, suds]
-    - wine
+    - [(wine)~, vino]
     - [cocktail, highball]
     - whiskey
     - bourbon
@@ -38,11 +38,12 @@ entities:
     - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?    
 
   - name: '@or'
-    patterns: [or]
+    patterns: 
+    - or (maybe|perhaps)?
 
   - name: '@and'
     patterns: [and]
 
   - name: '@compoundDrinkOrder'
     patterns:
-    - '@drinkOrder @or @drinkOrder'
+    - '@drinkOrder (@or @drinkOrder)*'

@@ -82,7 +82,7 @@ namespace Lucy.PatternMatchers
                     {
                         if (wildcard != null)
                         {
-                            newSequence.Add(new FallbackPatternMatcher(pattern, wildcard));
+                            newSequence.Add(new MultiWildcardPatternMatcher(wildcard, pattern));
                             wildcard = null;
                         }
                         else
@@ -94,7 +94,7 @@ namespace Lucy.PatternMatchers
 
                 if (wildcard != null)
                 {
-                    newSequence.Add(new FallbackPatternMatcher(wildcard, null));
+                    newSequence.Add(new MultiWildcardPatternMatcher(wildcard));
                 }
 
                 this.PatternMatchers = newSequence;

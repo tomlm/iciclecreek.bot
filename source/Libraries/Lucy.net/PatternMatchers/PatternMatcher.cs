@@ -213,25 +213,20 @@ namespace Lucy.PatternMatchers
             var patternMatchers = new List<PatternMatcher>();
             foreach (var variation in variations.Select(variation => variation.Trim()))
             {
-                if (variation.EndsWith("___"))
-                {
-                    patternMatchers.Add(new WildcardPatternMatcher(variation));
-                }
-                else if (variation.FirstOrDefault() == '@')
-                {
-                    patternMatchers.Add(new EntityPatternMatcher(variation));
-                }
-                else
-                {
-                    AddPatternMatchersForText(patternMatchers, variation.Trim(), fuzzy, exactAnalyzer, fuzzyAnalyzer);
-                }
+                AddPatternMatchersForText(patternMatchers, variation.Trim(), fuzzy, exactAnalyzer, fuzzyAnalyzer);
             }
             return patternMatchers;
         }
 
+        private const string NAMEDWILDCARD = ":" + WildcardPatternMatcher.ENTITYTYPE;
+        private const string NAMEDWILDCARD_TOKEN = "_" + WildcardPatternMatcher.ENTITYTYPE;
+
         private static PatternMatcher CreateTextPatternMatcher(string text, Analyzer exactAnalyzer, Analyzer fuzzyAnalyzer, bool fuzzyMatch)
         {
-            text = text.Replace("___", $"@{WildcardPatternMatcher.ENTITYTYPE}");
+            // massage wildcards text so it survives tokenization "foo:___" => foo_wildcard
+            text = text.Replace("___", WildcardPatternMatcher.ENTITYTYPE);
+            text = text.Replace(NAMEDWILDCARD, NAMEDWILDCARD_TOKEN);
+
             var sequence = new SequencePatternMatcher();
             using (TextReader reader = new StringReader(text))
             {
@@ -250,17 +245,18 @@ namespace Lucy.PatternMatchers
 
                         if (start > 0 && text[start - 1] == '@')
                         {
-                            if (token == WildcardPatternMatcher.ENTITYTYPE)
-                            {
-                                sequence.PatternMatchers.Add(new WildcardPatternMatcher());
-                            }
-                            else
-                            {
-                                sequence.PatternMatchers.Add(new EntityPatternMatcher(sourceToken));
-                            }
+                            sequence.PatternMatchers.Add(new EntityPatternMatcher(sourceToken));
+                        }
+                        else if (token.EndsWith(WildcardPatternMatcher.ENTITYTYPE))
+                        {
+                            var sb = new StringBuilder(token);
+                            if (token.EndsWith(NAMEDWILDCARD_TOKEN))
+                                sb[token.LastIndexOf('_')] = ':';
+                            sequence.PatternMatchers.Add(new WildcardPatternMatcher(sb.ToString()));
                         }
                         else
                         {
+
                             TokenPatternMatcher tokenPatternMatcher = new TokenPatternMatcher(text, token);
                             if (fuzzyMatch)
                             {
