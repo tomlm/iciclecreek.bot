@@ -21,7 +21,7 @@ namespace Lucy.PatternMatchers
         public MultiWildcardPatternMatcher(PatternMatcher wildcardMatcher, PatternMatcher entityMatcher = null)
         {
             this.WildcardMatcher = wildcardMatcher;
-            this.EntityMatcher = entityMatcher ?? new AnyEntityPatternMatcher();
+            this.EntityMatcher = entityMatcher;
         }
 
         /// <summary>
@@ -42,20 +42,27 @@ namespace Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
-            var matchResult = EntityMatcher.Matches(context, tokenEntity);
-
-            // if it matched AND moved forward, then we are done
-            if (matchResult.Matched && matchResult.NextToken != tokenEntity)
+            MatchResult matchResult = new MatchResult();
+            if (tokenEntity != null)
             {
-                // NOTE: The entity matcher is a look ahead.  When it matches we return "not found" to terminate the wildcard matching.
-                // If any results have been found with the wildcard matching, then token will advance to this matcher again, at which
-                // point it will be processed normally
-                return new MatchResult();
-            }
+                if (EntityMatcher != null)
+                {
+                    matchResult = EntityMatcher.Matches(context, tokenEntity);
 
-            if (this.WildcardMatcher != null)
-            {
-                matchResult = this.WildcardMatcher.Matches(context, tokenEntity);
+                    // if it matched AND moved forward, then we are done
+                    if (matchResult.Matched)
+                    {
+                        if (matchResult.Matched && matchResult.NextToken != tokenEntity)
+                        {
+                            return matchResult;
+                        }
+                    }
+                }
+
+                if (this.WildcardMatcher != null)
+                {
+                    matchResult = this.WildcardMatcher.Matches(context, tokenEntity);
+                }
             }
 
             return matchResult;
@@ -63,9 +70,12 @@ namespace Lucy.PatternMatchers
 
         public override IEnumerable<string> GetEntityReferences()
         {
-            foreach (var dependency in this.EntityMatcher.GetEntityReferences())
+            if (this.EntityMatcher != null)
             {
-                yield return dependency;
+                foreach (var dependency in this.EntityMatcher.GetEntityReferences())
+                {
+                    yield return dependency;
+                }
             }
 
             if (this.WildcardMatcher != null)

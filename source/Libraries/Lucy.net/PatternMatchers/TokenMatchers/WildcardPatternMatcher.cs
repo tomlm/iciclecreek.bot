@@ -28,7 +28,7 @@ namespace Lucy.PatternMatchers
         {
             var matchResult = new MatchResult();
 
-            if (tokenEntity != null)
+            if (tokenEntity != null && !context.IsTokenMatched(tokenEntity))
             {
                 // if last child is a wildcard and it's end matches the last token's end
                 // then we will merge the wildcards together.

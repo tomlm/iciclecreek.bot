@@ -16,7 +16,7 @@ namespace Lucy.PatternMatchers
 
         public ZeroOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
         {
-            PatternMatchers.AddRange(patternMatchers);
+            PatternMatchers.AddRange(patternMatchers.OrderBy(p => p.IsWildcard()));
         }
 
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();

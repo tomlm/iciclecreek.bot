@@ -130,11 +130,11 @@ namespace Lucy.Tests
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
             Assert.AreEqual("joe smith", entities[0].Children[0].Resolution);
-            Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("name is joe smith end", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
         [TestMethod]
-        public void WildcardPatternTest_MultipleTokens()
+        public void WildcardPatternTest_StopsOnAnyEntity()
         {
             var engine = new LucyEngine(new LucyModel()
             {
@@ -145,7 +145,7 @@ namespace Lucy.Tests
                 }
             });
 
-            string text = "my name is joe smith and but and I am cool";
+            string text = "my name is joe smith and I am cool";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
             Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
@@ -225,5 +225,53 @@ namespace Lucy.Tests
             Assert.AreEqual("clyde mills", entity.Resolution);
         }
 
+        [TestMethod]
+        public void WildcardMatcherWithEntityTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test1", Patterns = new List<PatternModel>() { "test1" } },
+                    new EntityModel() { Name = "@test2", Patterns = new List<PatternModel>() { "test2" } },
+                    new EntityModel() { Name = "@test3", Patterns = new List<PatternModel>() {"start (@test1|@test2|label:___)* end" } },
+                }
+            });
+
+            string text = "start test1 cool end";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+
+            var entities = results.Where(e => e.Type == "test3").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("start test1 cool end", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
+        [TestMethod]
+        public void WildcardMatcherWithOptionalTokenTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test1", Patterns = new List<PatternModel>() { "test1" } },
+                    new EntityModel() { Name = "@test2", Patterns = new List<PatternModel>() { "test2" } },
+                    new EntityModel() { Name = "@test3", Patterns = new List<PatternModel>() { "start (@test1|@test2|label:___)* end (label:___)* " } },
+                }
+            });
+
+            string text = "start test1 cool end more stuff";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+
+            var entities = results.Where(e => e.Type == "test3").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual(2, results.Where(e => e.Type == "label").Count());
+            Assert.AreEqual(2, results.Where(e => e.Type == "label").Count());
+            Assert.AreEqual(3, entities.First().Children.Count);
+            Assert.AreEqual("test1", entities.First().Children[0].Text);
+            Assert.AreEqual("cool", entities.First().Children[1].Text);
+            Assert.AreEqual("more stuff", entities.First().Children[2].Text);
+        }
     }
 }
