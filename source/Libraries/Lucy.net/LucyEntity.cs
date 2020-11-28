@@ -42,7 +42,7 @@ namespace Lucy
         /// Dependent entities that were consumed to match this entity.
         /// </summary>
         [JsonProperty("children")]
-        public HashSet<LucyEntity> Children { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+        public List<LucyEntity> Children { get; set; } = new List<LucyEntity>();
 
         public IEnumerable<LucyEntity> GetAllEntities()
         {

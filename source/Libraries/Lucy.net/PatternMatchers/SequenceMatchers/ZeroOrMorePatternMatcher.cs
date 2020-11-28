@@ -34,7 +34,7 @@ namespace Lucy.PatternMatchers
                 var matchResult = patternMatcher.Matches(context, tokenEntity);
                 if (matchResult.Matched)
                 {
-                    matchResult.Repeat = true;
+                    matchResult.Repeat = matchResult.NextToken != null; ;
                     return matchResult;
                 }
             }

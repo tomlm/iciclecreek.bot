@@ -22,7 +22,7 @@ namespace Lucy.PatternMatchers
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();
 
         /// <summary>
-        /// Returns true if thre is 1 match, and always advacnces the start
+        /// Repeats as long as there is a match and we haven't run out of tokens.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="start"></param>
@@ -34,7 +34,7 @@ namespace Lucy.PatternMatchers
                 var matchResult = patternMatcher.Matches(context, tokenEntity);
                 if (matchResult.Matched)
                 {
-                    matchResult.Repeat = true;
+                    matchResult.Repeat = matchResult.NextToken != null;
                     return matchResult;
                 }
             }

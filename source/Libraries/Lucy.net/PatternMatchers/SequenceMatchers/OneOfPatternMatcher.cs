@@ -22,7 +22,7 @@ namespace Lucy.PatternMatchers
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();
 
         /// <summary>
-        /// Always returns true, but will find the largest span for the matchresult.start 
+        /// Run all of the pattern matchers, as soon as first one triggers we match
         /// </summary>
         /// <param name="context"></param>
         /// <param name="start"></param>

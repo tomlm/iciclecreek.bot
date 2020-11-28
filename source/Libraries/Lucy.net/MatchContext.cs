@@ -42,11 +42,6 @@ namespace Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
-        /// <summary>
-        /// This is the current active wildcard.
-        /// </summary>
-        public LucyEntity CurrentWildcard { get; set; }
-
         public void AddEntity(LucyEntity entity)
         {
             if (entity != null && !Entities.Contains(entity))
@@ -106,6 +101,17 @@ namespace Lucy
         public LucyEntity GetNextTokenEntity(LucyEntity textToken)
         {
             return this.TokenEntities.Where(entityToken => entityToken.Start > textToken.End).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get previous token to the passed in token.
+        /// </summary>
+        /// <param name="textToken"></param>
+        /// <returns></returns>
+        public LucyEntity GetPreviousTokenEntity(LucyEntity textToken)
+        {
+            return this.TokenEntities
+                .OrderByDescending(et => et.End).Where(entityToken => entityToken.End < textToken.Start).FirstOrDefault();
         }
     }
 }

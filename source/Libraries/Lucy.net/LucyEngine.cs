@@ -180,6 +180,7 @@ namespace Lucy
                     }
                 }
 
+                // if entities were added we need to run wildcard matchers
                 if (count == context.Entities.Count && WildcardEntityPatterns.Any())
                 {
                     // process wildcard patterns
@@ -439,9 +440,11 @@ namespace Lucy
             {
                 // add it to the entities.
                 context.CurrentEntity.End = matchResult.End;
+                context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+
                 if (context.CurrentEntity.Resolution == null && !context.CurrentEntity.Children.Any())
                 {
-                    context.CurrentEntity.Resolution = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+                    context.CurrentEntity.Resolution = context.CurrentEntity.Text;
                 }
 
                 context.AddEntity(context.CurrentEntity);

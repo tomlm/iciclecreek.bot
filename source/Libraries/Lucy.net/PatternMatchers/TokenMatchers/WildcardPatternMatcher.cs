@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Lucy.PatternMatchers.Matchers;
 
 namespace Lucy.PatternMatchers
@@ -29,23 +30,28 @@ namespace Lucy.PatternMatchers
 
             if (tokenEntity != null)
             {
-                // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
-                if (context.CurrentWildcard == null)
+                // if last child is a wildcard and it's end matches the last token's end
+                // then we will merge the wildcards together.
+                var previousToken = context.GetPreviousTokenEntity(tokenEntity);
+                var wildcardEntity = context.CurrentEntity.Children.FirstOrDefault(wildcard => wildcard.Type == this.entityType && wildcard.End == previousToken.End);
+                if (wildcardEntity != null)
                 {
-                    context.CurrentWildcard = new LucyEntity()
+                    wildcardEntity.End = tokenEntity.End;
+                }
+                else
+                {
+                    wildcardEntity = new LucyEntity()
                     {
                         Type = entityType,
                         Start = tokenEntity.Start
                     };
+                    context.CurrentEntity.Children.Add(wildcardEntity);
                 }
 
                 // update wildcardToken by including the next token.
-                context.CurrentWildcard.End = tokenEntity.End;
-                context.CurrentWildcard.Resolution = context.Text.Substring(context.CurrentWildcard.Start, context.CurrentWildcard.End - context.CurrentWildcard.Start);
-                context.CurrentWildcard.Text = context.Text.Substring(context.CurrentWildcard.Start, context.CurrentWildcard.End - context.CurrentWildcard.Start);
-
-                // update parent token 
-                context.CurrentEntity.End = tokenEntity.End;
+                wildcardEntity.End = tokenEntity.End;
+                wildcardEntity.Text = context.Text.Substring(wildcardEntity.Start, wildcardEntity.End - wildcardEntity.Start);
+                wildcardEntity.Resolution = wildcardEntity.Text;
 
                 matchResult.Matched = true;
                 matchResult.End = tokenEntity.End;

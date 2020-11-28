@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Lucy.PatternMatchers
 {
@@ -23,13 +24,18 @@ namespace Lucy.PatternMatchers
             this.EntityMatcher = entityMatcher ?? new AnyEntityPatternMatcher();
         }
 
+        /// <summary>
+        /// Lookahead matcher...when this matches the wildcard matcher is done.
+        /// </summary>
         public PatternMatcher EntityMatcher { get; set; }
 
+        /// <summary>
+        /// Wildcard matcher to process
+        /// </summary>
         public PatternMatcher WildcardMatcher { get; set; }
 
-
         /// <summary>
-        /// If a matcher in the sequence doesn't match, then it doesn't match
+        /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="start"></param>
@@ -41,13 +47,9 @@ namespace Lucy.PatternMatchers
             // if it matched AND moved forward, then we are done
             if (matchResult.Matched && matchResult.NextToken != tokenEntity)
             {
-                if (context.CurrentWildcard != null)
-                {
-                    context.AddEntity(context.CurrentWildcard);
-                    context.CurrentEntity.Children.Add(context.CurrentWildcard);
-                    context.CurrentWildcard = null;
-                }
-
+                // NOTE: The entity matcher is a look ahead.  When it matches we return "not found" to terminate the wildcard matching.
+                // If any results have been found with the wildcard matching, then token will advance to this matcher again, at which
+                // point it will be processed normally
                 return new MatchResult();
             }
 
