@@ -18,9 +18,9 @@ namespace Lucy.PatternMatchers
         /// See if matcher is true or not
         /// </summary>
         /// <param name="matchContext">match context.</param>
-        /// <param name="start">start index</param>
-        /// <returns>-1 if not match, else new start index</returns>
-        public abstract MatchResult Matches(MatchContext matchContext, int start);
+        /// <param name="start">start token</param>
+        /// <returns>matchresult</returns>
+        public abstract MatchResult Matches(MatchContext matchContext, LucyEntity tokenEntity);
 
         /// <summary>
         /// 

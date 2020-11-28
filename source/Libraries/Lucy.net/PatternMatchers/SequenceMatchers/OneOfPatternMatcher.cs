@@ -27,11 +27,11 @@ namespace Lucy.PatternMatchers
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             foreach (var patternMatch in PatternMatchers)
             {
-                var result = patternMatch.Matches(context, start);
+                var result = patternMatch.Matches(context, tokenEntity);
                 if (result.Matched)
                 {
                     return result;
@@ -41,7 +41,7 @@ namespace Lucy.PatternMatchers
             return new MatchResult();
         }
 
-        public override bool IsWildcard() => (this.PatternMatchers.Count == 1 && this.PatternMatchers.Where(p => p.IsWildcard()).Any());
+        public override bool IsWildcard() => (this.PatternMatchers.Where(p => p.IsWildcard()).Any());
 
         public override IEnumerable<string> GetEntityReferences()
         {

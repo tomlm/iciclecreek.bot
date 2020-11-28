@@ -17,19 +17,22 @@ namespace Lucy.PatternMatchers
 
         public string EntityType { get; set; }
 
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             var matchResult = new MatchResult();
-            var entityToken = context.FindNextEntityOfType(EntityType, start);
-            if (entityToken != null)
+            if (tokenEntity != null)
             {
-                // add the matched entity to the children of the currentEntity.
-                context.CurrentEntity.Children.Add(entityToken);
+                var entity = context.FindNextEntityOfType(EntityType, tokenEntity);
+                if (entity != null)
+                {
+                    // add the matched entity to the children of the currentEntity.
+                    context.CurrentEntity.Children.Add(entity);
 
-                matchResult.Matched = true;
-                matchResult.NextStart = entityToken.End;
+                    matchResult.Matched = true;
+                    matchResult.End = entity.End;
+                    matchResult.NextToken = context.GetFirstTokenEntity(entity.End);
+                }
             }
-
             return matchResult;
         }
 

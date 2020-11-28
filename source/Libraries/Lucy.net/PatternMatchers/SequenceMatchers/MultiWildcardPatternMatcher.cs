@@ -34,19 +34,26 @@ namespace Lucy.PatternMatchers
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
-            var matchResult = EntityMatcher.Matches(context, start);
-            // if it matched AND moved forward, then we want to fallback
-            if (matchResult.Matched && matchResult.NextStart > start)
+            var matchResult = EntityMatcher.Matches(context, tokenEntity);
+
+            // if it matched AND moved forward, then we are done
+            if (matchResult.Matched && matchResult.NextToken != tokenEntity)
             {
-                // not matched, we are done.
+                if (context.CurrentWildcard != null)
+                {
+                    context.AddEntity(context.CurrentWildcard);
+                    context.CurrentEntity.Children.Add(context.CurrentWildcard);
+                    context.CurrentWildcard = null;
+                }
+
                 return new MatchResult();
             }
 
             if (this.WildcardMatcher != null)
             {
-                matchResult = this.WildcardMatcher.Matches(context, start);
+                matchResult = this.WildcardMatcher.Matches(context, tokenEntity);
             }
 
             return matchResult;

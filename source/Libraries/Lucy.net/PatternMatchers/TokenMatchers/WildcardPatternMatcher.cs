@@ -23,37 +23,33 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             var matchResult = new MatchResult();
 
-            var token = context.FindNextTextEntity(start);
-            if (token != null)
+            if (tokenEntity != null)
             {
                 // we add wildcardtoken on first token, and then get it and keep appending until we decide we are done.
-                var wildcardToken = context.CurrentEntity.Children.FirstOrDefault(entity => entity.Type == entityType);
-                if (wildcardToken == null)
+                if (context.CurrentWildcard == null)
                 {
-                    wildcardToken = new LucyEntity()
+                    context.CurrentWildcard = new LucyEntity()
                     {
                         Type = entityType,
-                        Start = token.Start
+                        Start = tokenEntity.Start
                     };
-                    context.CurrentEntity.Children.Add(wildcardToken);
                 }
 
-                // update wildcardToken
-                wildcardToken.End = token.End;
-                wildcardToken.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-                wildcardToken.Text = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
+                // update wildcardToken by including the next token.
+                context.CurrentWildcard.End = tokenEntity.End;
+                context.CurrentWildcard.Resolution = context.Text.Substring(context.CurrentWildcard.Start, context.CurrentWildcard.End - context.CurrentWildcard.Start);
+                context.CurrentWildcard.Text = context.Text.Substring(context.CurrentWildcard.Start, context.CurrentWildcard.End - context.CurrentWildcard.Start);
 
                 // update parent token 
-                context.CurrentEntity.End = token.End;
-                // context.CurrentEntity.Resolution = context.Text.Substring(wildcardToken.Start, wildcardToken.End - wildcardToken.Start);
-                // context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
+                context.CurrentEntity.End = tokenEntity.End;
 
                 matchResult.Matched = true;
-                matchResult.NextStart = token.End;
+                matchResult.End = tokenEntity.End;
+                matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
             }
             return matchResult;
         }

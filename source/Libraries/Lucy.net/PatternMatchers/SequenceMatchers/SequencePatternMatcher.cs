@@ -35,17 +35,18 @@ namespace Lucy.PatternMatchers
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             // try to match each element in the sequence.
+            int end = 0;
             foreach (var patternMatcher in PatternMatchers)
             {
                 MatchResult matchResult = null;
                 do
                 {
-                    var result = patternMatcher.Matches(context, start);
+                    var result = patternMatcher.Matches(context, tokenEntity);
                     // if the element did not match, then sequence is bad, return failure
-                    if (!result.Matched)
+                    if (result.Matched == false)
                     {
                         // unless we already have a result from this pattern matcher, then we can continue on.
                         if (matchResult != null)
@@ -55,14 +56,16 @@ namespace Lucy.PatternMatchers
                         return result;
                     }
                     matchResult = result;
-                    start = matchResult.NextStart;
+                    tokenEntity = matchResult.NextToken;
+                    end = Math.Max(result.End, end);
                 } while (matchResult.Repeat);
             }
 
             return new MatchResult()
             {
                 Matched = true,
-                NextStart = start
+                End = end,
+                NextToken = tokenEntity
             };
         }
 
@@ -74,7 +77,7 @@ namespace Lucy.PatternMatchers
                 PatternMatcher wildcard = null;
                 foreach (var pattern in PatternMatchers)
                 {
-                    if (pattern.IsWildcard())
+                    if (pattern.IsWildcard() && !(pattern is WildcardPatternMatcher))
                     {
                         wildcard = pattern;
                     }
@@ -111,6 +114,8 @@ namespace Lucy.PatternMatchers
                 }
             }
         }
+
+        public override bool IsWildcard() => (this.PatternMatchers.Where(p => p.IsWildcard()).Any());
 
         public override string ToString() => $"Sequence({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }

@@ -99,6 +99,9 @@ namespace Lucy
         public void UseAllBuiltEntities()
         {
             BuiltinEntities = new HashSet<string>(builtinEntities);
+
+            // add default pattern for datetime = (all permutations of datetime)
+            EntityPatterns.Add(new EntityPattern("datetime", PatternMatcher.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)", this._exactAnalyzer, this._fuzzyAnalyzer)));
         }
 
         /// <summary>
@@ -168,12 +171,12 @@ namespace Lucy
                 count = context.Entities.Count;
 
                 // foreach text token
-                foreach (var textEntity in context.TokenEntities)
+                foreach (var tokenEntity in context.TokenEntities)
                 {
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
-                        ProcessEntityPattern(context, textEntity, entityPattern);
+                        ProcessEntityPattern(context, tokenEntity, entityPattern);
                     }
                 }
 
@@ -428,14 +431,14 @@ namespace Lucy
             };
 
             // see if it matches at this textEntity starting position.
-            var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity.Start);
-            //System.Diagnostics.Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched}");
+            var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity);
+            //System.Diagnostics.Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => \"{textEntity}\" {matchResult.Matched}");
 
             // if it matches
-            if (matchResult.Matched && matchResult.NextStart != textEntity.Start)
+            if (matchResult.Matched && matchResult.NextToken != textEntity)
             {
                 // add it to the entities.
-                context.CurrentEntity.End = matchResult.NextStart;
+                context.CurrentEntity.End = matchResult.End;
                 if (context.CurrentEntity.Resolution == null && !context.CurrentEntity.Children.Any())
                 {
                     context.CurrentEntity.Resolution = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
@@ -487,11 +490,8 @@ namespace Lucy
                     }
                 }
 
-                // add default pattern for datetime = (all permutations of datetime)
-                EntityPatterns.Add(new EntityPattern("datetime", PatternMatcher.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)", this._exactAnalyzer, this._fuzzyAnalyzer)));
-
                 // Auto detect all references to built in entities
-                foreach (var pattern in this.EntityPatterns)
+                foreach (var pattern in this.EntityPatterns.ToList())
                 {
                     foreach (var reference in pattern.PatternMatcher.GetEntityReferences().Select(r => r.TrimStart('@')))
                     {
@@ -503,6 +503,9 @@ namespace Lucy
                         else if (reference == "datetime" || reference == "datetimev2")
                         {
                             this.BuiltinEntities.Add("datetime");
+
+                            // add default pattern for datetime = (all permutations of datetime)
+                            EntityPatterns.Add(new EntityPattern("datetime", PatternMatcher.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)", this._exactAnalyzer, this._fuzzyAnalyzer)));
                         }
                     }
                 }

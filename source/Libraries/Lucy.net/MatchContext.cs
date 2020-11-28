@@ -42,15 +42,20 @@ namespace Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
+        /// <summary>
+        /// This is the current active wildcard.
+        /// </summary>
+        public LucyEntity CurrentWildcard { get; set; }
+
         public void AddEntity(LucyEntity entity)
         {
-            if (!Entities.Contains(entity))
+            if (entity != null && !Entities.Contains(entity))
             {
                 Entities.Add(entity);
                 HashSet<LucyEntity> map;
                 if (!positionMap.TryGetValue(entity.Start, out map))
                 {
-                    map = new HashSet<LucyEntity>();
+                    map = new HashSet<LucyEntity>(new EntityTokenComparer());
                     positionMap.Add(entity.Start, map);
                 }
 
@@ -58,41 +63,20 @@ namespace Lucy
             }
         }
 
-        public LucyEntity FindNextEntityOfType(string entityType, int start)
+        public LucyEntity FindNextEntityOfType(string entityType, LucyEntity tokenEntity)
         {
-            while (start < Text.Length)
+            var start = tokenEntity.Start;
+            if (positionMap.TryGetValue(start, out var entities))
             {
-                if (positionMap.TryGetValue(start, out var entities))
+                var result = entities
+                    .Where(entityToken => String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase))
+                    .FirstOrDefault();
+                if (result != null)
                 {
-                    var result = entities
-                        .Where(entityToken => String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase))
-                        .FirstOrDefault();
-                    if (result != null)
-                    {
-                        return result;
-                    }
+                    return result;
                 }
-                start++;
             }
             return null;
-        }
-
-        public IEnumerable<LucyEntity> FindNextRecognizedEntities(int start)
-        {
-            while (start < Text.Length)
-            {
-                if (positionMap.TryGetValue(start, out var entities))
-                {
-                    foreach (var entity in entities)
-                    {
-                        yield return entity;
-                    }
-                }
-                else
-                {
-                    start++;
-                }
-            }
         }
 
         public bool IsTokenMatched(LucyEntity textToken)
@@ -104,9 +88,24 @@ namespace Lucy
             return false;
         }
 
-        public LucyEntity FindNextTextEntity(int start)
+        /// <summary>
+        /// Get first token starting from offset
+        /// </summary>
+        /// <param name="start"></param>
+        /// <returns></returns>
+        public LucyEntity GetFirstTokenEntity(int start = 0)
         {
             return this.TokenEntities.Where(entityToken => entityToken.Start >= start).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get next token after passed in token.
+        /// </summary>
+        /// <param name="textToken"></param>
+        /// <returns></returns>
+        public LucyEntity GetNextTokenEntity(LucyEntity textToken)
+        {
+            return this.TokenEntities.Where(entityToken => entityToken.Start > textToken.End).FirstOrDefault();
         }
     }
 }

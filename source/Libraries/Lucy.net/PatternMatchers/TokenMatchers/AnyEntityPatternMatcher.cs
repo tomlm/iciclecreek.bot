@@ -15,20 +15,21 @@ namespace Lucy.PatternMatchers
         {
         }
 
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             var matchResult = new MatchResult();
 
-            var token = context.FindNextTextEntity(start);
-            if (context.IsTokenMatched(token))
+            if (tokenEntity != null)
             {
-                matchResult.Matched = true;
-                matchResult.NextStart = token.End;
+                if (context.IsTokenMatched(tokenEntity))
+                {
+                    matchResult.Matched = true;
+                    matchResult.End = tokenEntity.End;
+                    matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
+                }
             }
             return matchResult;
         }
-
-        public override bool IsWildcard() => true;
 
         public override string ToString() => "AnyEntity";
     }

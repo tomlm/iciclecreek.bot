@@ -17,8 +17,13 @@ namespace Lucy.PatternMatchers
         public bool Repeat { get; set; } = false;
 
         /// <summary>
-        /// The starting point for sequence
+        /// End of recognized sequence.
         /// </summary>
-        public int NextStart { get; set; }
+        public int End { get; set; }
+
+        /// <summary>
+        /// Next token to process
+        /// </summary>
+        public LucyEntity NextToken { get; set; }
     }
 }

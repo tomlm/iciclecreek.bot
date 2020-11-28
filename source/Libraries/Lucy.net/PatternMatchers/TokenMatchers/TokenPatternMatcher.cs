@@ -10,7 +10,7 @@ namespace Lucy.PatternMatchers.Matchers
     /// </summary>
     public class TokenPatternMatcher : PatternMatcher
     {
-        public const string ENTITYTYPE = "^Token";
+        public const string ENTITYTYPE = "Token";
 
         public TokenPatternMatcher(string text, string token)
         {
@@ -24,33 +24,38 @@ namespace Lucy.PatternMatchers.Matchers
 
         public HashSet<String> FuzzyTokens { get; set; } = new HashSet<string>();
 
-        public override MatchResult Matches(MatchContext context, int start)
+        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
             var matchResult = new MatchResult();
-            var entityToken = context.FindNextTextEntity(start);
-            var resolution = entityToken?.Resolution as TokenResolution;
-            if (resolution != null)
+            if (tokenEntity != null)
             {
-                // see if it matches the normal token
-                if (this.Token == resolution.Token)
-                {
-                    matchResult.Matched = true;
-                    matchResult.NextStart = entityToken.End;
-                    return matchResult;
-                }
 
-                // if we have fuzzyTokens, see if it matches any of the fuzzy tokens.
-                if (this.FuzzyTokens.Any())
+                var resolution = tokenEntity?.Resolution as TokenResolution;
+                if (resolution != null)
                 {
-                    foreach (var fuzzyToken in FuzzyTokens)
+                    // see if it matches the normal token
+                    if (this.Token == resolution.Token)
                     {
-                        foreach (var fuzzyToken2 in resolution.FuzzyTokens)
+                        matchResult.Matched = true;
+                        matchResult.End = tokenEntity.End;
+                        matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
+                        return matchResult;
+                    }
+
+                    // if we have fuzzyTokens, see if it matches any of the fuzzy tokens.
+                    if (this.FuzzyTokens.Any())
+                    {
+                        foreach (var fuzzyToken in FuzzyTokens)
                         {
-                            if (fuzzyToken2 == fuzzyToken)
+                            foreach (var fuzzyToken2 in resolution.FuzzyTokens)
                             {
-                                matchResult.Matched = true;
-                                matchResult.NextStart = entityToken.End;
-                                return matchResult;
+                                if (fuzzyToken2 == fuzzyToken)
+                                {
+                                    matchResult.Matched = true;
+                                    matchResult.End = tokenEntity.End;
+                                    matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
+                                    return matchResult;
+                                }
                             }
                         }
                     }
@@ -60,7 +65,7 @@ namespace Lucy.PatternMatchers.Matchers
             return matchResult;
         }
 
-        public override string ToString() => $"{(FuzzyTokens.Any()? $"{Token}~" : Token)}";
+        public override string ToString() => $"{(FuzzyTokens.Any() ? $"{Token}~" : Token)}";
 
     }
 }

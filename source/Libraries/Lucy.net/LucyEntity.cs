@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Lucy.PatternMatchers;
 using Newtonsoft.Json;
 
 namespace Lucy
@@ -41,7 +42,7 @@ namespace Lucy
         /// Dependent entities that were consumed to match this entity.
         /// </summary>
         [JsonProperty("children")]
-        public List<LucyEntity> Children { get; set; } = new List<LucyEntity>();
+        public HashSet<LucyEntity> Children { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
 
         public IEnumerable<LucyEntity> GetAllEntities()
         {

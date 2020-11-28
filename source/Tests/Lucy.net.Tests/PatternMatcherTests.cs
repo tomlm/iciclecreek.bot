@@ -321,8 +321,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>() { "$name $is ___" } },
-                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box $is @twoDimensional" } },
+                    new EntityModel() { Name = "@boxsize",Patterns = new List<PatternModel>(){ "box is @twoDimensional" } },
                     new EntityModel() { Name = "@height", Patterns = new List<PatternModel>() { "(@dimension|@number) (height|tall)" } },
                     new EntityModel() { Name = "@width", Patterns = new List<PatternModel>() { "(@dimension|@number) (width|wide)" } },
                     new EntityModel() {
@@ -391,7 +390,7 @@ namespace Lucy.Tests
             var entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -415,7 +414,7 @@ namespace Lucy.Tests
             var entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe smith", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe smith", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -526,6 +525,29 @@ namespace Lucy.Tests
             Assert.AreEqual("foo", entity.Type);
             Assert.AreEqual("clyde mills", entity.Resolution);
         }
+
+        [TestMethod]
+        public void TokenPatternMatcherWithEntityTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test1", Patterns = new List<PatternModel>() { "test1" } },
+                    new EntityModel() { Name = "@test2", Patterns = new List<PatternModel>() { "test2" } },
+                    new EntityModel() { Name = "@test3", Patterns = new List<PatternModel>() {"@test1 @test2" } },
+                }
+            });
+
+            string text = "nomatch test1 test2 nomatch";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+
+            var entities = results.Where(e => e.Type == "test3").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("test1 test2", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
 
     }
 }
