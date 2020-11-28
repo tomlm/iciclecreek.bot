@@ -9,39 +9,45 @@ entities:
     - [l, large]
     - [xl, extra large, venti]
 
+# example of alternatives inline in one pattern
   - name: '@container'
     patterns:
-    - (glass|shot|shotglass|tumbler|mug|pitcher)?
+    - (glass|shot|shotglass|tumbler|mug|pitcher|cup)
 
-  - name: '@beverageType'
-    fuzzyMatch: true
-    patterns:
-    - [beer, suds]
-    - [(wine)~, vino]
-    - [cocktail, highball]
-    - whiskey
-    - bourbon
-    - rye
-    - gin
-    - vodka
+# example of canonical values and fuzzy matching
+#  - name: '@beverageType'
+#    patterns:
+#    - [beer, suds]
+#    - [wine, vino]
+#    - [cocktail, highball]
+#    - (whiskey)~
+#    - (bourbon)~
+#    - rye
+#    - gin
+#    - vodka
+#    - (tequila)~
+#    - [coffee, joe, java]
 
-  - name: '@temperature'
-    fuzzyMatch: true
-    patterns: 
-    - [cold, chilled, cool, icy, iced]
-    - warm
-    - [hot, heated, steaming]
-  
-  - name: '@drinkOrder'
-    patterns:
-    - (like|have|order) (a|some|@number)? (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?
-    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?    
+#  - name: '@temperature'
+#    patterns: 
+#    - [cold, chilled, cool, icy, iced]
+#    - warm
+#    - [hot, heated, steaming]
+#
+## example of bulding nested references
+#  - name: '@drinkOrder'
+#    patterns:
+#    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?
+#    
+#  - name: '@conjunction'
+#    patterns: 
+#    - or
+#    - and
 
-  - name: '@conjunction'
-    patterns: 
-    - [or, 'or (maybe|perhaps)?']
-    - [and, 'and (also|maybe|perhaps)?']
-
-  - name: '@compoundDrinkOrder'
-    patterns:
-    - '@drinkOrder (@conjunction @drinkOrder)*'
+#  - name: '@multpleDrinkOrder'
+#    patterns:
+#    - '@drinkOrder (@conjunction @drinkOrder)*'
+#
+#  - name: '@orderIntent'
+#    patterns:
+#    - (like|like to|have|order|bring me) @multpleDrinkOrder

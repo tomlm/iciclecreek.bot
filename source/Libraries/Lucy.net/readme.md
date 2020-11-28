@@ -15,8 +15,8 @@ builds up to more complex entities.
 
 ## Tenant 1: **Minimize concept count**
 Lucy has 2 core concepts:
-1. **Create Entities** - name each thing you want to capture.
-2. **Define Patterns** - Define patterns as simple sequences of tokens and entities.
+1. **Name your Entities** - name each entity in your system.
+2. **Define their Patterns** - Define entity patterns as simple sequences of tokens and other entities.
 
 ## Tenant 2: **Instant feedback**
 When authoring you want immediate feedback on the impact
