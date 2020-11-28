@@ -65,7 +65,7 @@ namespace Lucy.Tests
                 results = engine.MatchEntities(text);
             }
             sw.Stop();
-            sb.AppendLine($"{count} utterances: {sw.Elapsed} {sw.ElapsedMilliseconds/count} ms per match ");
+            sb.AppendLine($"{count} utterances: {sw.Elapsed} {(float)sw.ElapsedMilliseconds/count} ms per match ");
             sw.Reset();
             Trace.TraceInformation(sb.ToString());
             //File.WriteAllText(@"c:\scratch\timing.txt", sb.ToString());

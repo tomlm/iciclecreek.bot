@@ -158,7 +158,7 @@ namespace Lucy.PatternMatchers
             return sequence;
         }
 
-        public virtual bool IsWildcard()
+        public virtual bool ContainsWildcard()
         {
             return false;
         }
@@ -241,11 +241,11 @@ namespace Lucy.PatternMatchers
                         string token = termAtt.ToString();
                         var start = offsetAtt.StartOffset;
                         var end = offsetAtt.EndOffset;
-                        string sourceToken = text.Substring(start, end - start);
+                        string tokenText = text.Substring(start, end - start);
 
                         if (start > 0 && text[start - 1] == '@')
                         {
-                            sequence.PatternMatchers.Add(new EntityPatternMatcher(sourceToken));
+                            sequence.PatternMatchers.Add(new EntityPatternMatcher(tokenText));
                         }
                         else if (token.EndsWith(WildcardPatternMatcher.ENTITYTYPE))
                         {
@@ -257,7 +257,7 @@ namespace Lucy.PatternMatchers
                         else
                         {
 
-                            TokenPatternMatcher tokenPatternMatcher = new TokenPatternMatcher(text, token);
+                            TokenPatternMatcher tokenPatternMatcher = new TokenPatternMatcher(tokenText, token);
                             if (fuzzyMatch)
                             {
                                 AddFuzzyMatchTokens(tokenPatternMatcher, text, fuzzyAnalyzer);

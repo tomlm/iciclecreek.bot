@@ -87,6 +87,8 @@ namespace Lucy.PatternMatchers
             }
         }
 
+        public override bool ContainsWildcard() => true;
+
         public override string ToString() => $"MultiWildcard({WildcardMatcher}, {EntityMatcher})";
     }
 }

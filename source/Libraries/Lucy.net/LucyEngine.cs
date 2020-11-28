@@ -194,6 +194,8 @@ namespace Lucy
                 }
             } while (count != context.Entities.Count);
 
+            context.MergeOverlappingEntities();
+
             // filter out internal entities
             if (includeInternal)
             {
@@ -202,27 +204,9 @@ namespace Lucy
                 return merged;
             }
 
-            // merge entities which are overlapping.
-            var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
-            foreach (var entity1 in context.Entities)
-            {
-                var alternateEntities = context.Entities.Where(e => e.Type == entity1.Type && e != entity1 && !mergedEntities.Contains(entity1)).ToList();
-                if (alternateEntities.Count() == 0)
-                {
-                    mergedEntities.Add(entity1);
-                }
-                else
-                {
-                    // if no alterantes say "don't keep it" then we add it
-                    if (!alternateEntities.Any(entity2 => ShouldDropEntity(entity1, entity2)))
-                    {
-                        mergedEntities.Add(entity1);
-                    }
-                }
-            }
-
-            return mergedEntities;
+            return context.Entities;
         }
+
 
         public IEnumerable<LucyEntity> Tokenize(string text)
         {
@@ -479,7 +463,7 @@ namespace Lucy
                             if (patternMatcher != null)
                             {
                                 // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
-                                if (expandedPattern.Contains("___"))
+                                if (patternMatcher.ContainsWildcard())
                                 {
                                     // we want to process wildcard patterns last
                                     WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
@@ -677,37 +661,6 @@ namespace Lucy
                     });
                 }
             }
-        }
-
-        private bool ShouldDropEntity(LucyEntity entity1, LucyEntity entity2)
-        {
-            // if entity2 is bigger on both ends
-            if (entity2.Start < entity1.Start && entity2.End > entity1.End)
-            {
-                return true;
-            }
-
-            // if it's inside the current token
-            if (entity2.Start >= entity1.Start && entity2.End <= entity1.End)
-            {
-                return false;
-            }
-            // if offset overlapping at start or end
-            if ((entity2.Start <= entity1.Start && entity2.End >= entity1.Start && entity2.End <= entity1.End) ||
-                (entity2.Start >= entity1.Start && entity2.Start < entity1.End && entity2.End >= entity1.End))
-            {
-                var entity1Length = entity1.End - entity1.Start;
-                var entity2Length = entity2.End - entity2.Start;
-                if (entity1Length > entity2Length)
-                {
-                    return false;
-                }
-                else if (entity2Length > entity1Length)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         private Analyzer GetAnalyzerForLocale(string locale = "en")

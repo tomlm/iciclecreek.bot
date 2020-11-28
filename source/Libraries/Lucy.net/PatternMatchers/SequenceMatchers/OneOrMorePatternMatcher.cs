@@ -16,7 +16,7 @@ namespace Lucy.PatternMatchers
 
         public OneOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
         {
-            PatternMatchers.AddRange(patternMatchers.OrderBy(p => p.IsWildcard()));
+            PatternMatchers.AddRange(patternMatchers.OrderBy(p => p.ContainsWildcard()));
         }
 
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();
@@ -42,7 +42,7 @@ namespace Lucy.PatternMatchers
             return new MatchResult();
         }
 
-        public override bool IsWildcard() => (this.PatternMatchers.Where(p => p.IsWildcard()).Any());
+        public override bool ContainsWildcard() => (this.PatternMatchers.Where(p => p.ContainsWildcard()).Any());
 
         public override IEnumerable<string> GetEntityReferences()
         {

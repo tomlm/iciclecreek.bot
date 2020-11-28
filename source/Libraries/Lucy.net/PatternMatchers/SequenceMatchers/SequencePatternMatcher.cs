@@ -71,13 +71,13 @@ namespace Lucy.PatternMatchers
 
         internal void ResolveFallbackMatchers()
         {
-            if (this.PatternMatchers.Any(pm => pm.IsWildcard()))
+            if (this.PatternMatchers.Any(pm => pm.ContainsWildcard()))
             {
                 List<PatternMatcher> newSequence = new List<PatternMatcher>();
                 PatternMatcher wildcard = null;
                 foreach (var pattern in PatternMatchers)
                 {
-                    if (pattern.IsWildcard() && !(pattern is WildcardPatternMatcher))
+                    if (pattern.ContainsWildcard() && !(pattern is WildcardPatternMatcher))
                     {
                         wildcard = pattern;
                     }
@@ -115,7 +115,7 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override bool IsWildcard() => (this.PatternMatchers.Where(p => p.IsWildcard()).Any());
+        public override bool ContainsWildcard() => (this.PatternMatchers.Where(p => p.ContainsWildcard()).Any());
 
         public override string ToString() => $"Sequence({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }

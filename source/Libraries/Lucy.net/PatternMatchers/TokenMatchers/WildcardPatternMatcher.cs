@@ -60,7 +60,7 @@ namespace Lucy.PatternMatchers
             return matchResult;
         }
 
-        public override bool IsWildcard() => true;
+        public override bool ContainsWildcard() => true;
 
         public override IEnumerable<string> GetEntityReferences()
         {

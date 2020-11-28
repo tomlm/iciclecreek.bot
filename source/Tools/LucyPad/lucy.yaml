@@ -34,16 +34,14 @@ entities:
   
   - name: '@drinkOrder'
     patterns:
-    - (like|have|order) (a|some|@number)? (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?
-    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?    
+    - (like|have|order) (a|some|@number)? (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?
+    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?    
 
-  - name: '@or'
+  - name: '@conjunction'
     patterns: 
-    - or (maybe|perhaps)?
-
-  - name: '@and'
-    patterns: [and]
+    - [or, 'or (maybe|perhaps)?']
+    - [and, 'and (also|maybe|perhaps)?']
 
   - name: '@compoundDrinkOrder'
     patterns:
-    - '@drinkOrder (@or @drinkOrder)*'
+    - '@drinkOrder (@conjunction @drinkOrder)*'
