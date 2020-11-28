@@ -15,10 +15,10 @@ namespace Lucy.PatternMatchers
     public abstract class PatternMatcher
     {
         /// <summary>
-        /// See if matcher is true or not
+        /// Match and add entity as appropriate.
         /// </summary>
         /// <param name="matchContext">match context.</param>
-        /// <param name="start">start token</param>
+        /// <param name="tokenEntity">token entity</param>
         /// <returns>matchresult</returns>
         public abstract MatchResult Matches(MatchContext matchContext, LucyEntity tokenEntity);
 

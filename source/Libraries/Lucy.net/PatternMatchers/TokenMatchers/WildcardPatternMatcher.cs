@@ -67,6 +67,6 @@ namespace Lucy.PatternMatchers
             yield return ENTITYTYPE;
         }
 
-        public override string ToString() => "___";
+        public override string ToString() => $"{((this.entityType != ENTITYTYPE) ? this.entityType+":" : ENTITYTYPE)}___";
     }
 }
