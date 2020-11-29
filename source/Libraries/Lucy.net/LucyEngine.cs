@@ -447,7 +447,7 @@ namespace Lucy
             {
                 _lucyModel.Macros = new Dictionary<string, string>();
             }
-
+            var patternParser = new PatternParser(this._exactAnalyzer, this._fuzzyAnalyzer);
             if (_lucyModel.Entities != null)
             {
                 foreach (var entityModel in _lucyModel.Entities)
@@ -459,7 +459,7 @@ namespace Lucy
                         {
                             var expandedPattern = ExpandMacros(pattern);
 
-                            var patternMatcher = PatternMatcher.Parse(expandedPattern, this._exactAnalyzer, this._fuzzyAnalyzer, entityModel.FuzzyMatch);
+                            var patternMatcher = patternParser.Parse(expandedPattern, entityModel.FuzzyMatch);
                             if (patternMatcher != null)
                             {
                                 // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
@@ -492,7 +492,7 @@ namespace Lucy
                             this.BuiltinEntities.Add("datetime");
 
                             // add default pattern for datetime = (all permutations of datetime)
-                            EntityPatterns.Add(new EntityPattern("datetime", PatternMatcher.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)", this._exactAnalyzer, this._fuzzyAnalyzer)));
+                            // EntityPatterns.Add(new EntityPattern("datetime", patternParser.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)")));
                         }
                     }
                 }
