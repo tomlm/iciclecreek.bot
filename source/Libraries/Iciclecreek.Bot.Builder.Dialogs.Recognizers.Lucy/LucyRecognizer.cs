@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions.Properties;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Phonetic;
-using Lucene.Net.Analysis.Phonetic.Language.Bm;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Analysis.Util;
-using Lucene.Net.Util;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -77,35 +69,70 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
             var recognizerResult = new RecognizerResult();
             var lucyEntities = _engine.MatchEntities(activity.Text, activity.Locale, externalEntities);
-            foreach (var lucyEntity in lucyEntities)
+            recognizerResult.Entities = GetRecognizerEntities(lucyEntities);
+            if (recognizerResult.Entities.Count > externalEntities.Count + 1)
             {
-                // todo
+                recognizerResult.Intents.Add("match", new IntentScore() { Score = 1.0f });
+            }
+            else
+            {
+                recognizerResult.Intents.Add("None", new IntentScore { Score = 1.0f });
             }
 
             return recognizerResult;
         }
 
-        private static IEnumerable<LucyEntity> GetEntitiesFromObject(Activity activity, JObject entity)
+        private static JObject GetRecognizerEntities(IEnumerable<LucyEntity> lucyEntities)
         {
-            dynamic instance = entity.Property("$instance");
-            if (instance != null)
+            dynamic entitiesObject = new JObject();
+            dynamic instancesObject = new JObject();
+
+            foreach (var grp in lucyEntities.GroupBy(le => le.Type))
             {
-                foreach (var prop in instance.Value.Properties())
+                entitiesObject[grp.Key] = JArray.FromObject(grp.Select(lucyEntity =>
                 {
-                    dynamic metadatas = prop.Value;
-                    dynamic resolutions = entity[prop.Name];
+                    if (lucyEntity.Children.Any())
+                    {
+                        return GetRecognizerEntities(lucyEntity.Children);
+                    }
+                    return JToken.FromObject(lucyEntity.Resolution);
+                }));
+
+                instancesObject[grp.Key] = JArray.FromObject(grp.Select(lucyEntity =>
+                {
+                    dynamic instance = new JObject();
+                    instance.type = lucyEntity.Type;
+                    instance.startIndex = lucyEntity.Start;
+                    instance.endIndex = lucyEntity.End;
+                    instance.text = lucyEntity.Text;
+                    return instance;
+                }));
+            }
+            entitiesObject["$instance"] = instancesObject;
+            return entitiesObject;
+        }
+
+        private static IEnumerable<LucyEntity> GetEntitiesFromObject(Activity activity, JObject entitiesObject)
+        {
+            dynamic instanceObject = entitiesObject.Property("$instance");
+            if (instanceObject != null)
+            {
+                foreach (var prop in instanceObject.Value.Properties())
+                {
+                    dynamic instances = prop.Value;
+                    dynamic resolutions = entitiesObject[prop.Name];
 
                     // get resolution
                     for (int i = 0; i < resolutions.Count; i++)
                     {
                         dynamic resolution = (JToken)resolutions[i];
-                        dynamic metadata = metadatas[i];
+                        dynamic instance = instances[i];
 
-                        var start = (int)metadata.startIndex;
-                        var end = (int)metadata.endIndex;
+                        var start = (int)instance.startIndex;
+                        var end = (int)instance.endIndex;
                         var newEntity = new LucyEntity()
                         {
-                            Type = metadata.type,
+                            Type = ((string)instance.type).StartsWith("builtin.") ? ((string)instance.type).Replace("builtin.", "") : instance.type,
                             Start = start,
                             End = end,
                             // Score = metadata.Score,

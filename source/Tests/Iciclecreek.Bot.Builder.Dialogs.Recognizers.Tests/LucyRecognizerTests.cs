@@ -15,6 +15,7 @@ using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -72,6 +73,31 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             var dc = new DialogContext(new DialogSet(), tc, new DialogState());
             var results = await recognizer.RecognizeAsync(dc, activity);
 
+            Assert.IsNotNull(results.Entities.Property("Add()"));
+            Assert.IsNotNull(results.Entities.Property("number"));
+            Assert.IsNull(results.Entities.Property("foo"));
+
+            dynamic heightProperty = results.Entities["Add()"][0]["heightProperty"];
+            Assert.IsNotNull(heightProperty);
+
+            dynamic dimension = heightProperty[0].dimension;
+            Assert.IsNotNull(dimension);
+
+            dynamic resolution = dimension[0];
+            Assert.AreEqual(6, (int)resolution.number);
+            Assert.AreEqual("Inch", (string)resolution.units);
+
+            dynamic dimensionInstance = heightProperty[0]["$instance"]["dimension"][0];
+            Assert.AreEqual("dimension", (string)dimensionInstance.type);
+            Assert.AreEqual(10, (int)dimensionInstance.startIndex);
+            Assert.AreEqual(18, (int)dimensionInstance.endIndex);
+            Assert.AreEqual("6 inches", (string)dimensionInstance.text);
+
+            dynamic instanceEntities = results.Entities["$instance"];
+            Assert.IsNotNull(instanceEntities);
+            Assert.IsNotNull(instanceEntities.Property("Add()"));
+            Assert.IsNotNull(instanceEntities.Property("number"));
+            Assert.IsNull(instanceEntities.Property("foo"));
         }
 
     }
