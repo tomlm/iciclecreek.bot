@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -19,12 +20,24 @@ using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     public class LucyRecognizer : Recognizer
     {
         private LucyEngine _engine = null;
+        private JsonConverter patternModelConverter = new PatternModelConverter();
+
+        private IDeserializer yamlDeserializer = new DeserializerBuilder()
+                                                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                                    .Build();
+        private ISerializer yamlSerializer = new SerializerBuilder()
+                                                .JsonCompatible()
+                                                .Build();
+
+
 
         public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
@@ -47,7 +60,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 var modelId = ResourceId.GetValue(dialogContext.State);
                 var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
                 var modelResource = resourceExplorer.GetResource(modelId);
-                var model = JsonConvert.DeserializeObject<LucyModel>(await modelResource.ReadTextAsync());
+                var yaml = await modelResource.ReadTextAsync();
+                var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
+                var json = yamlSerializer.Serialize(yobj);
+                var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
                 this._engine = new LucyEngine(model);
             }
 
@@ -56,37 +72,59 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             {
                 var results = await ExternalEntityRecognizer.RecognizeAsync(dialogContext, activity, cancellationToken, telemetryProperties, telemetryMetrics).ConfigureAwait(false);
 
-                dynamic instanceData = results.Entities["$instanceData"];
-                foreach (var prop in results.Entities.Properties().Where(p => p.Name != "$instance"))
-                {
-                    // get resolution
-                    JArray resolutions = (JArray)prop.Value;
-                    for (int i = 0; i < resolutions.Count; i++)
-                    {
-                        dynamic resolution = resolutions[i];
-                        dynamic metadata = instanceData[i];
-
-                        externalEntities.Add(new LucyEntity()
-                        {
-                            Type = prop.Name,
-                            Start = metadata.StartIndex,
-                            End = metadata.EndIndex,
-                            Resolution = resolution,
-                            Score = metadata.Score,
-                            Text = activity.Text.Substring((int)metadata.StartIndex, metadata.EndIndex - metadata.StartIndex)
-                        });
-                    }
-                }
+                externalEntities = GetEntitiesFromObject(activity, results.Entities).ToList();
             }
 
             var recognizerResult = new RecognizerResult();
             var lucyEntities = _engine.MatchEntities(activity.Text, activity.Locale, externalEntities);
             foreach (var lucyEntity in lucyEntities)
             {
-
+                // todo
             }
 
             return recognizerResult;
+        }
+
+        private static IEnumerable<LucyEntity> GetEntitiesFromObject(Activity activity, JObject entity)
+        {
+            dynamic instance = entity.Property("$instance");
+            if (instance != null)
+            {
+                foreach (var prop in instance.Value.Properties())
+                {
+                    dynamic metadatas = prop.Value;
+                    dynamic resolutions = entity[prop.Name];
+
+                    // get resolution
+                    for (int i = 0; i < resolutions.Count; i++)
+                    {
+                        dynamic resolution = (JToken)resolutions[i];
+                        dynamic metadata = metadatas[i];
+
+                        var start = (int)metadata.startIndex;
+                        var end = (int)metadata.endIndex;
+                        var newEntity = new LucyEntity()
+                        {
+                            Type = metadata.type,
+                            Start = start,
+                            End = end,
+                            // Score = metadata.Score,
+                            Text = activity.Text.Substring(start, end - start)
+                        };
+
+                        if (resolution is JObject && resolution.Property("$instance") != null)
+                        {
+                            newEntity.Children.AddRange(GetEntitiesFromObject(activity, resolution));
+                        }
+                        else
+                        {
+                            newEntity.Resolution = resolution;
+                        }
+
+                        yield return newEntity;
+                    }
+                }
+            }
         }
     }
 }

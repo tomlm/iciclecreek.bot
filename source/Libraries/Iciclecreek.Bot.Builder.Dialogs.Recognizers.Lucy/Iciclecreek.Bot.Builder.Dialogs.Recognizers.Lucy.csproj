@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.Recognizers.Text.Number" Version="1.2.9" />
     <PackageReference Include="Microsoft.Recognizers.Text.Sequence" Version="1.2.9" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="YamlDotNet" Version="9.1.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.1" />
   </ItemGroup>
 

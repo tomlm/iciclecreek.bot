@@ -1,0 +1,82 @@
+{
+    "text": "height is 6 inches",
+    "alteredText": null,
+    "intents": {
+        "test": {
+            "score": 0.997745454
+        }
+    },
+    "entities": {
+        "Add()": [
+            {
+                "heightProperty": [
+                    {
+                        "dimension": [
+                            {
+                                "number": 6,
+                                "units": "Inch"
+                            }
+                        ],
+                        "$instance": {
+                            "dimension": [
+                                {
+                                    "type": "builtin.dimension",
+                                    "text": "6 inches",
+                                    "startIndex": 10,
+                                    "endIndex": 18,
+                                    "modelType": "Entity Extractor",
+                                    "recognitionSources": [
+                                        "model"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "$instance": {
+                    "heightProperty": [
+                        {
+                            "type": "heightProperty",
+                            "text": "height is 6 inches",
+                            "startIndex": 0,
+                            "endIndex": 18,
+                            "modelType": "Entity Extractor",
+                            "recognitionSources": [
+                                "model"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "number": [
+            6
+        ],
+        "$instance": {
+            "Add()": [
+                {
+                    "type": "Add()",
+                    "text": "height is 6 inches",
+                    "startIndex": 0,
+                    "endIndex": 18,
+                    "modelType": "Entity Extractor",
+                    "recognitionSources": [
+                        "model"
+                    ]
+                }
+            ],
+            "number": [
+                {
+                    "type": "builtin.number",
+                    "text": "6",
+                    "startIndex": 10,
+                    "endIndex": 11,
+                    "modelType": "Prebuilt Entity Extractor",
+                    "recognitionSources": [
+                        "model"
+                    ]
+                }
+            ]
+        }
+    }
+}
