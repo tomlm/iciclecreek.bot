@@ -100,5 +100,23 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             Assert.IsNull(instanceEntities.Property("foo"));
         }
 
+        [TestMethod]
+        public async Task TestIntents()
+        {
+            var recognizer = new LucyRecognizer()
+            {
+                ResourceId = "lucy.yaml",
+                Intents = new string[] { "Add()" },
+                ExternalEntityRecognizer = new MockLuisRecognizer()
+            };
+            var activity = new Activity(ActivityTypes.Message) { Text = "height is 6 inches" };
+            var tc = new TurnContext(new TestAdapter(), activity);
+            tc.TurnState.Add(ResourceExplorer);
+            var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+            var results = await recognizer.RecognizeAsync(dc, activity);
+
+            Assert.AreEqual(1.0f, results.Intents["Add()"].Score);
+        }
+
     }
 }

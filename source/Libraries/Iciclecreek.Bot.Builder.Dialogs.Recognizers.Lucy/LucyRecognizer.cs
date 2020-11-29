@@ -45,6 +45,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         [JsonProperty("externalEntityRecognizer")]
         public Recognizer ExternalEntityRecognizer { get; set; }
 
+        /// <summary>
+        /// Gets or sets Intents to emit as intents when matched.
+        /// </summary>
+        [JsonProperty("intents")]
+        public ArrayExpression<string> Intents { get; set; } = new ArrayExpression<string>();
+
         public override async Task<RecognizerResult> RecognizeAsync(DialogContext dialogContext, Activity activity, CancellationToken cancellationToken = default, Dictionary<string, string> telemetryProperties = null, Dictionary<string, double> telemetryMetrics = null)
         {
             if (this._engine == null)
@@ -70,13 +76,28 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             var recognizerResult = new RecognizerResult();
             var lucyEntities = _engine.MatchEntities(activity.Text, activity.Locale, externalEntities);
             recognizerResult.Entities = GetRecognizerEntities(lucyEntities);
-            if (recognizerResult.Entities.Count > externalEntities.Count + 1)
+
+            var intents = this.Intents.GetValue(dialogContext.State);
+            if (intents.Any())
             {
-                recognizerResult.Intents.Add("match", new IntentScore() { Score = 1.0f });
+                foreach (var intent in intents)
+                {
+                    if (lucyEntities.Where(lucyEntity => lucyEntity.Type == intent).Any())
+                    {
+                        recognizerResult.Intents.Add(intent, new IntentScore() { Score = 1.0f });
+                    }
+                }
             }
             else
             {
-                recognizerResult.Intents.Add("None", new IntentScore { Score = 1.0f });
+                if (recognizerResult.Entities.Count > externalEntities.Count + 1)
+                {
+                    recognizerResult.Intents.Add("matched", new IntentScore() { Score = 1.0f });
+                }
+                else
+                {
+                    recognizerResult.Intents.Add("None", new IntentScore { Score = 1.0f });
+                }
             }
 
             return recognizerResult;
