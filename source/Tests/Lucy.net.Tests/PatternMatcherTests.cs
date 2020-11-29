@@ -315,7 +315,7 @@ namespace Lucy.Tests
         }
 
         [TestMethod]
-        public void NestedPatternTests()
+        public void CascadingPatternTests()
         {
             var engine = new LucyEngine(new LucyModel()
             {
@@ -349,7 +349,34 @@ namespace Lucy.Tests
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "dimension").Count());
         }
 
-        
+        [TestMethod]
+        public void NestedPatternTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test",Patterns = new List<PatternModel>(){ "x ((p|d|q)|cool)" } },
+                }
+            });
+
+            string text = "x z";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+
+            text = "x q ";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+        }
+
         [TestMethod]
         public void MacroTest()
         {

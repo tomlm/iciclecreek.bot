@@ -73,13 +73,19 @@ namespace Lucy.PatternMatchers
                             switch (ch)
                             {
                                 case '(':
-                                    var subText = GetSubParens(chars, out char lastChar);
-                                    variations.Add(subText);
+                                    var subText = GetSubParens(chars, out char lastChar).Trim();
+                                    if (!String.IsNullOrEmpty(subText))
+                                    {
+                                        variations.Add(subText);
+                                    }
                                     ch = lastChar;
                                     repeatChar = true;
                                     break;
                                 case '|':
-                                    variations.Add(sb.ToString());
+                                    if (sb.Length > 0)
+                                    {
+                                        variations.Add(sb.ToString());
+                                    }
                                     sb.Clear();
                                     break;
 
