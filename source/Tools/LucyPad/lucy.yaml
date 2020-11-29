@@ -2,19 +2,24 @@ locale: en
 externalEntities: []
 macros:
 entities:
-  - name: '@drinkSize'
-    patterns:
-    - [s, small, short]
-    - [m, medium, tall]
-    - [l, large]
-    - [xl, extra large, venti]
-
-# example of alternatives inline in one pattern
-  - name: '@container'
-    patterns:
-    - (glass|shot|shotglass|tumbler|mug|pitcher|cup)
-
-# example of canonical values and fuzzy matching
+#  - name: '@container'
+#    patterns:
+#    - glass
+#    - shot
+#    - shotglass
+#    - tumbler
+#    - mug
+#    - pitcher
+#    - cup
+#
+#  - name: '@drinkSize'
+#    patterns:
+#    - [s, small, short]
+#    - [m, medium, tall]
+#    - [l, large]
+#    - [xl, extra large, venti]
+#
+## example of canonical values and fuzzy matching
 #  - name: '@beverageType'
 #    patterns:
 #    - [beer, suds]
@@ -27,27 +32,27 @@ entities:
 #    - vodka
 #    - (tequila)~
 #    - [coffee, joe, java]
-
+#
 #  - name: '@temperature'
 #    patterns: 
 #    - [cold, chilled, cool, icy, iced]
 #    - warm
 #    - [hot, heated, steaming]
 #
-## example of bulding nested references
+## example pattern built up using recognized entities
 #  - name: '@drinkOrder'
 #    patterns:
-#    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (description:___)* (@beverageType|beverage|drink)?
+#    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@temperature|description:___)* (@beverageType|beverage|drink)?
 #    
 #  - name: '@conjunction'
 #    patterns: 
 #    - or
 #    - and
-
-#  - name: '@multpleDrinkOrder'
+#
+#  - name: '@drinkOrders'
 #    patterns:
 #    - '@drinkOrder (@conjunction @drinkOrder)*'
 #
 #  - name: '@orderIntent'
 #    patterns:
-#    - (like|like to|have|order|bring me) @multpleDrinkOrder
+#    - (like|like to|have|order|bring me) @drinkOrders
