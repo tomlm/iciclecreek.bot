@@ -2,6 +2,10 @@ locale: en
 externalEntities: []
 macros:
 entities:
+#  - name: '@nameFact'
+#    patterns:
+#    - name is ___
+#
 #  - name: '@container'
 #    patterns:
 #    - glass
@@ -16,8 +20,8 @@ entities:
 #    patterns:
 #    - [s, small, short]
 #    - [m, medium, tall]
-#    - [l, large]
-#    - [xl, extra large, venti]
+#    - [l, large, big]
+#    - [xl, extra large, venti, giant, (humungous)~]
 #
 ## example of canonical values and fuzzy matching
 #  - name: '@beverageType'

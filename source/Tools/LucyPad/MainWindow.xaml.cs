@@ -42,6 +42,11 @@ namespace LucyPad
 
         private void query_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ShowResults();
+        }
+
+        private void ShowResults()
+        {
             try
             {
                 if (lucyModel != this.editor.Document.Text)
@@ -139,6 +144,11 @@ namespace LucyPad
                 return reader.ReadToEnd();
             }
 
+        }
+
+        private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            ShowResults();
         }
     }
 }

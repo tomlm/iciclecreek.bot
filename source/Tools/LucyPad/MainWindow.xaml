@@ -8,6 +8,15 @@
         xmlns:local="clr-namespace:LucyPad"
         mc:Ignorable="d" Loaded="Window_Loaded"
         Title="LucyPad" Height="450" Width="800">
+    <Window.Resources>
+        <RoutedUICommand x:Key="queryCmd"></RoutedUICommand>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource queryCmd}" Executed="CommandBinding_Executed"></CommandBinding>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding  Key="F5" Command="{StaticResource queryCmd}"></KeyBinding>
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".5*"/>
