@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -77,7 +78,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             var lucyEntities = _engine.MatchEntities(activity.Text, activity.Locale, externalEntities);
             recognizerResult.Entities = GetRecognizerEntities(lucyEntities);
 
-            var intents = this.Intents.GetValue(dialogContext.State);
+            var intents = this.Intents.GetValue(dialogContext.State) ?? new List<string>();
             if (intents.Any())
             {
                 foreach (var intent in intents)

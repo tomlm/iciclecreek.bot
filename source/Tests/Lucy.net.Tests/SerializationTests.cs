@@ -26,7 +26,7 @@ namespace Lucy.Tests
         public void TestLoadYaml()
         {
             LucyModel lucyModel;
-            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yml"))))
+            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yaml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);
@@ -54,7 +54,7 @@ namespace Lucy.Tests
         public void TestLoadMacroTest()
         {
             LucyModel lucyModel;
-            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yml"))))
+            using (var streamReader = new StreamReader(File.OpenRead(Path.Combine(@"..", "..", "..", "lucy.yaml"))))
             {
                 var x = yamlDeserializer.Deserialize(streamReader);
                 var json = yamlSerializer.Serialize(x);

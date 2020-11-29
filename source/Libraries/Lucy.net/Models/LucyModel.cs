@@ -35,12 +35,6 @@ namespace Lucy
         public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
 
         /// <summary>
-        /// Intent definitions.
-        /// </summary>
-        [JsonProperty("intents")]
-        public List<IntentModel> Intents { get; set; } = new List<IntentModel>();
-
-        /// <summary>
         /// Macros
         /// </summary>
         [JsonProperty("macros")]
