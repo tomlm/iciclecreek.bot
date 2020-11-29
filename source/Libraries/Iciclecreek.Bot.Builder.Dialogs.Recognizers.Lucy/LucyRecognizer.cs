@@ -26,11 +26,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         private IDeserializer yamlDeserializer = new DeserializerBuilder()
                                                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                                     .Build();
+
         private ISerializer yamlSerializer = new SerializerBuilder()
                                                 .JsonCompatible()
                                                 .Build();
-
-
 
         public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
