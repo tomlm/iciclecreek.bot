@@ -178,7 +178,7 @@ namespace Lucy.PatternMatchers
             //}
 
             // Trace.TraceInformation($"{pattern}:\n\t{sequence}");
-            sequence.ResolveFallbackMatchers();
+            sequence.FixupWildcardPatterns();
             return sequence;
         }
 
@@ -240,10 +240,10 @@ namespace Lucy.PatternMatchers
             switch (modifierOrdinality)
             {
                 case Ordinality.ZeroOrOne:
-                    sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch))));
+                    sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch))));
                     break;
                 case Ordinality.ZeroOrMore:
-                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
+                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
                     break;
                 case Ordinality.One:
                     if (variations.Count == 1)
@@ -252,11 +252,11 @@ namespace Lucy.PatternMatchers
                     }
                     else
                     {
-                        sequence.PatternMatchers.Add(new OneOfPatternMatcher(variations.Select(v => Parse(v, fuzzyMatch))));
+                        sequence.PatternMatchers.Add(new OneOfPatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch))));
                     }
                     break;
                 case Ordinality.OneOrMore:
-                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
+                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
                     break;
             }
         }
@@ -320,7 +320,7 @@ namespace Lucy.PatternMatchers
             //    return sequence.PatternMatchers.Single();
             //}
 
-            sequence.ResolveFallbackMatchers();
+            sequence.FixupWildcardPatterns();
             return sequence;
         }
 

@@ -70,7 +70,7 @@ namespace Lucy.PatternMatchers
             };
         }
 
-        internal void ResolveFallbackMatchers()
+        internal void FixupWildcardPatterns()
         {
             if (this.PatternMatchers.Any(pm => pm.ContainsWildcard()))
             {

@@ -56,6 +56,6 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override string ToString() => $"OneOrMore{this.MaxTokens}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"OneOrMore{(this.MaxTokens < 255 ? this.MaxTokens.ToString() : String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

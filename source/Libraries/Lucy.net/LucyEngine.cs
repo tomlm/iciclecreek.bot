@@ -455,11 +455,9 @@ namespace Lucy
                     foreach (var patternModel in entityModel.Patterns)
                     {
                         var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
-                        foreach (var pattern in patternModel)
+                        foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                         {
-                            var expandedPattern = ExpandMacros(pattern);
-
-                            var patternMatcher = patternParser.Parse(expandedPattern, entityModel.FuzzyMatch);
+                            var patternMatcher = patternParser.Parse(pattern, entityModel.FuzzyMatch);
                             if (patternMatcher != null)
                             {
                                 // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
