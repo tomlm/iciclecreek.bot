@@ -15,6 +15,7 @@ namespace Lucy
     /// </summary>
     public class MatchContext
     {
+        // map of start token => set of entities which start at that token.
         private Dictionary<int, HashSet<LucyEntity>> positionMap = new Dictionary<int, HashSet<LucyEntity>>();
 
         public MatchContext()
@@ -61,8 +62,25 @@ namespace Lucy
 
         public void AddToCurrentEntity(LucyEntity entity)
         {
+            var token = this.GetFirstTokenEntity(entity.Start);
+            if (token != null)
+            {
+                var prevToken = this.GetPreviousTokenEntity(token);
+                if (prevToken != null)
+                {
+                    // merge entities if they are contigious and have the same resolution.
+                    var existingEntity = CurrentEntity.Children.Where(e => e.Type == entity.Type && e.End == prevToken.End).SingleOrDefault();
+                    if (existingEntity != null && JToken.FromObject(entity.Resolution ?? "").ToString() == JToken.FromObject(existingEntity.Resolution ?? "").ToString())
+                    {
+                        existingEntity.Start = Math.Min(entity.Start, existingEntity.Start);
+                        existingEntity.End = Math.Max(entity.End, existingEntity.End);
+                        existingEntity.Text = this.Text.Substring(existingEntity.Start, existingEntity.End - existingEntity.Start);
+                        return;
+                    }
+                }
+            }
+
             CurrentEntity.Children.Add(entity);
-            // CurrentEntity.Children = MergeOverlappingEntities(CurrentEntity.Children).ToList();
         }
 
         public LucyEntity FindNextEntityOfType(string entityType, LucyEntity tokenEntity)
@@ -125,64 +143,40 @@ namespace Lucy
             // merge entities which are overlapping.
             var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
 
-            //// merge entiteies which are contigious and the same type/resolution
-            //foreach (var entity in entities)
-            //{
-            //    var token = this.GetFirstTokenEntity(entity.End);
-            //    if (token != null)
-            //    {
-            //        var nextEntity = this.FindNextEntityOfType(entity.Type, token);
-            //        if (nextEntity != null && JToken.FromObject(entity.Resolution ?? "").ToString() == JToken.FromObject(nextEntity.Resolution ?? "").ToString())
-            //        {
-            //            // they have the same resolution
-            //            var start = Math.Min(entity.Start, nextEntity.Start);
-            //            var end = Math.Max(entity.End, nextEntity.End);
-            //            mergedEntities.Add(new LucyEntity()
-            //            {
-            //                Type = entity.Type,
-            //                Start = start,
-            //                End = end,
-            //                Resolution = entity.Resolution,
-            //                Text = this.Text.Substring(start, end - start)
-            //            });
-            //        }
-
             foreach (var entity in this.Entities)
             {
                 if (!this.Entities.Any(alternateEntity =>
+                    {
+                        if (alternateEntity.Type == entity.Type)
                         {
-                            if (alternateEntity.Type == entity.Type)
+                            // if alternateEntity is bigger on both ends
+                            if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
                             {
-                                // if alternateEntity is bigger on both ends
-                                if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
+                                // there is a better candidate
+                                return true;
+                            }
+
+                            // if offset overlapping at start or end
+                            else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
+                            (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
+                            {
+                                var entityLength = entity.End - entity.Start;
+                                var alternateLength = alternateEntity.End - alternateEntity.Start;
+                                if (entityLength < alternateLength)
                                 {
                                     // there is a better candidate
                                     return true;
                                 }
-
-                                // if offset overlapping at start or end
-                                else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
-                                        (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
-                                {
-                                    var entityLength = entity.End - entity.Start;
-                                    var alternateLength = alternateEntity.End - alternateEntity.Start;
-                                    if (entityLength < alternateLength)
-                                    {
-                                        // there is a better candidate
-                                        return true;
-                                    }
-                                }
                             }
-                            // this one it is not better then entity.
-                            return false;
-                        }))
+                        }
+                        // this one it is not better then entity.
+                        return false;
+                    }))
                 {
                     mergedEntities.Add(entity);
                 }
             }
-
             this.Entities = mergedEntities;
         }
-
     }
 }
