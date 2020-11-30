@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucy;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Adapters;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
 using Microsoft.MarkedNet;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -21,13 +28,14 @@ namespace LucyPad
     public partial class MainWindow : Window
     {
         private LucyEngine engine = null;
+        private LucyRecognizer recognizer = null;
         private string lucyModel = null;
         private JsonConverter patternModelConverter = new PatternModelConverter();
 
         private IDeserializer yamlDeserializer = new DeserializerBuilder()
                                                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                                     .Build();
-        private ISerializer yamlSerializer = new SerializerBuilder()
+        private ISerializer yamlToJsonSerializer = new SerializerBuilder()
                                                 .JsonCompatible()
                                                 .Build();
 
@@ -62,6 +70,13 @@ namespace LucyPad
                     this.tabs.SelectedIndex = 2;
                     this.labelBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
                     this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
+
+                    var activity = new Activity(ActivityTypes.Message) { Text = text };
+                    var tc = new TurnContext(new TestAdapter(), activity);
+                    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+                    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
+                    this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+                    //this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());
                 }
             }
             catch (SemanticErrorException err)
@@ -91,9 +106,11 @@ namespace LucyPad
         {
             Trace.TraceInformation("Loading model");
             var x = yamlDeserializer.Deserialize(new StringReader(this.editor.Document.Text));
-            var json = yamlSerializer.Serialize(x);
+            var json = yamlToJsonSerializer.Serialize(x);
             var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
             engine = new LucyEngine(model);
+            recognizer = new LucyRecognizer() { Model = model };
+
             engine.UseAllBuiltEntities();
             if (engine.Warnings.Any())
             {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:aui="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        xmlns:local="clr-namespace:LucyPad"
+        xmlns:local="clr-namespace:LucyPad" 
         mc:Ignorable="d" Loaded="Window_Loaded"
         Title="LucyPad" Height="450" Width="800">
     <Window.Resources>
@@ -60,7 +60,7 @@
                 <TabItem Header="Help" x:Name="helpTab">
                     <wv2:WebView2 x:Name="helpViewer" Source="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md"/>
                 </TabItem>
-                <TabItem Header="Entities" x:Name="entitiesTab">
+                <TabItem Header="Results" x:Name="resultsTab">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height=".5*"/>
@@ -69,11 +69,16 @@
                         </Grid.RowDefinitions>
                         <TextBox x:Name="labelBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
-                        <TextBox Grid.Row="2" x:Name="entitiesBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+
+                        <TabControl Grid.Row="2"  x:Name="entityTabs" >
+                            <TabItem Header="Entities" x:Name="entitiesTab">
+                                <TextBox Grid.Row="2" x:Name="entitiesBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                            </TabItem> 
+                            <TabItem Header="Recognizer" x:Name="recognizerTab">
+                                <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
+                            </TabItem>
+                        </TabControl>
                     </Grid>
-                </TabItem>
-                <TabItem Header="Recognizer" x:Name="recognizerTab">
-                    <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
                 </TabItem>
             </TabControl>
         </Grid>

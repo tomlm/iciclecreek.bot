@@ -37,6 +37,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         }
 
         /// <summary>
+        /// Lucy model
+        /// </summary>
+        [JsonProperty("lucyModel")]
+        public LucyModel Model { get; set; }
+
+        /// <summary>
         /// Gets or sets the ResourceID for the Lucy model.
         /// </summary>
         [JsonProperty("resourceId")]
@@ -55,14 +61,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         {
             if (this._engine == null)
             {
-                var modelId = ResourceId.GetValue(dialogContext.State);
-                var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
-                var modelResource = resourceExplorer.GetResource(modelId);
-                var yaml = await modelResource.ReadTextAsync();
-                var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
-                var json = yamlSerializer.Serialize(yobj);
-                var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
-                this._engine = new LucyEngine(model);
+                if (this.Model == null)
+                {
+                    var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
+                    var modelId = ResourceId.GetValue(dialogContext.State);
+                    var modelResource = resourceExplorer.GetResource(modelId);
+                    var yaml = await modelResource.ReadTextAsync();
+                    var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
+                    var json = yamlSerializer.Serialize(yobj);
+                    this.Model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
+                }
+                this._engine = new LucyEngine(this.Model);
             }
 
             List<LucyEntity> externalEntities = new List<LucyEntity>();
