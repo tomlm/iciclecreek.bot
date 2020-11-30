@@ -288,6 +288,13 @@ namespace Lucy.PatternMatchers
 
                         if (start > 0 && text[start - 1] == '@')
                         {
+                            // handle datetime.subrange
+                            if (end < text.Length && text[end] == '.')
+                            {
+                                tokenStream.IncrementToken();
+                                end = offsetAtt.EndOffset;
+                                tokenText = text.Substring(start, end - start);
+                            }
                             sequence.PatternMatchers.Add(new EntityPatternMatcher(tokenText));
                         }
                         else if (token.EndsWith(WildcardPatternMatcher.ENTITYTYPE))

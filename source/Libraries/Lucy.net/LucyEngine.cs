@@ -58,6 +58,7 @@ namespace Lucy
         private Analyzer _simpleAnalyzer = new SimpleAnalyzer(LuceneVersion.LUCENE_48);
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
+        private PatternParser _patternParser;
 
         private static HashSet<string> builtinEntities { get; set; } = new HashSet<string>()
         {
@@ -65,7 +66,7 @@ namespace Lucy
             "ip", "mention", "number", "numberrange", "ordinal", "percentage", "phonenumber", "temperature", "url"
         };
 
-        public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null)
+        public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null, bool useAllBuiltIns = false)
         {
             this._lucyModel = model;
 
@@ -85,23 +86,18 @@ namespace Lucy
                     return new TokenStreamComponents(tokenizer, stream);
                 });
 
+            this._patternParser = new PatternParser(this._exactAnalyzer, this._fuzzyAnalyzer); ;
+
             LoadModel();
+
+            if (useAllBuiltIns)
+            {
+                BuiltinEntities = new HashSet<string>(builtinEntities);
+                // add default pattern for datetime = (all permutations of datetime)
+                EntityPatterns.Add(new EntityPattern("datetime", _patternParser.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)")));
+            }
+
             ValidateModel();
-        }
-
-        /// <summary>
-        /// Turn on all built in entity recognizers
-        /// </summary>
-        /// <remarks>
-        /// The default is to only run recognizers if you are referencing the entity types for the recognizer.
-        /// When authoring it's useful to "turn them all on" for discovery.
-        /// </remarks>
-        public void UseAllBuiltEntities()
-        {
-            BuiltinEntities = new HashSet<string>(builtinEntities);
-
-            // add default pattern for datetime = (all permutations of datetime)
-            //EntityPatterns.Add(new EntityPattern("datetime", PatternMatcher.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)", this._exactAnalyzer, this._fuzzyAnalyzer)));
         }
 
         /// <summary>
@@ -109,27 +105,23 @@ namespace Lucy
         /// </summary>
         public string Locale { get; set; } = "en";
 
-        public HashSet<string> BuiltinEntities { get; set; } = new HashSet<string>();
+        internal HashSet<string> BuiltinEntities { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Patterns to match
         /// </summary>
-        public List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
+        internal List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
 
         /// <summary>
         /// Wildcard Patterns to match
         /// </summary>
-        public List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
+        internal List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
 
         /// <summary>
         /// Warning messages
         /// </summary>
         public List<string> Warnings { get; set; } = new List<string>();
 
-        /// <summary>
-        /// Error messages
-        /// </summary>
-        public List<string> Errors { get; set; } = new List<string>();
 
         /// <summary>
         /// Match entities in given text
@@ -447,7 +439,6 @@ namespace Lucy
             {
                 _lucyModel.Macros = new Dictionary<string, string>();
             }
-            var patternParser = new PatternParser(this._exactAnalyzer, this._fuzzyAnalyzer);
             if (_lucyModel.Entities != null)
             {
                 foreach (var entityModel in _lucyModel.Entities)
@@ -457,7 +448,7 @@ namespace Lucy
                         var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
                         foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                         {
-                            var patternMatcher = patternParser.Parse(pattern, entityModel.FuzzyMatch);
+                            var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
                             if (patternMatcher != null)
                             {
                                 // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
@@ -480,17 +471,18 @@ namespace Lucy
                 {
                     foreach (var reference in pattern.PatternMatcher.GetEntityReferences().Select(r => r.TrimStart('@')))
                     {
-                        if (builtinEntities.Contains(reference) ||
-                            builtinEntities.Contains(reference.Split('.').First()))
-                        {
-                            this.BuiltinEntities.Add(reference);
-                        }
-                        else if (reference == "datetime" || reference == "datetimev2")
+                        if (reference == "datetime" || reference == "datetimeV2")
                         {
                             this.BuiltinEntities.Add("datetime");
 
                             // add default pattern for datetime = (all permutations of datetime)
-                            // EntityPatterns.Add(new EntityPattern("datetime", patternParser.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)")));
+                            EntityPatterns.Add(new EntityPattern("datetime", _patternParser.Parse("(@datetimeV2.date|@datetimeV2.time|@datetimeV2.datetime|@datetimeV2.daterange|@datetimeV2.timerange|@datetimeV2.datetimerange|@datetimeV2.duration)")));
+                        }
+
+                        if (builtinEntities.Contains(reference) ||
+                            builtinEntities.Contains(reference.Split('.').First()))
+                        {
+                            this.BuiltinEntities.Add(reference);
                         }
                     }
                 }
@@ -501,7 +493,7 @@ namespace Lucy
         {
             HashSet<string> entityDefinitions = new HashSet<string>(builtinEntities)
             {
-                "datetime", "datetimeV2.date", "datetimeV2.time", "datetimeV2.datetime",
+                "datetime", "datetimeV2", "datetimeV2.date", "datetimeV2.time", "datetimeV2.datetime",
                 "datetimeV2.daterange", "datetimeV2.timerange", "datetimeV2.datetimerange",
                 "datetimeV2.duration", "ordinal.relative", "wildcard"
             };

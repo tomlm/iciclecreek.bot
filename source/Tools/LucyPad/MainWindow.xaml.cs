@@ -108,10 +108,9 @@ namespace LucyPad
             var x = yamlDeserializer.Deserialize(new StringReader(this.editor.Document.Text));
             var json = yamlToJsonSerializer.Serialize(x);
             var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
-            engine = new LucyEngine(model);
+            engine = new LucyEngine(model, useAllBuiltIns: true);
             recognizer = new LucyRecognizer() { Model = model };
 
-            engine.UseAllBuiltEntities();
             if (engine.Warnings.Any())
             {
                 this.error.Content = String.Join("\n", engine.Warnings);

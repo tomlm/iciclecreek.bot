@@ -32,11 +32,11 @@
             </Grid.RowDefinitions>
             <Label Content="Lucy Model" FontSize="20"/>
             <Label Grid.Row="1" Content="" Visibility="Collapsed" Background="Yellow" x:Name="error" Padding="10"/>
-            <aui:TextEditor Grid.Row="2" Grid.Column="0" x:Name="editor" SyntaxHighlighting="markdown" FontFamily="Consolas" FontSize="15pt" Margin="4">
+            <aui:TextEditor Grid.Row="2" Grid.Column="0" x:Name="editor" SyntaxHighlighting="markdown" FontFamily="Consolas" FontSize="15pt" Margin="4" HorizontalAlignment="Stretch">
             </aui:TextEditor>
         </Grid>
 
-        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5" />
+        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5" ResizeBehavior="PreviousAndNext" />
 
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
@@ -68,7 +68,8 @@
                             <RowDefinition Height=".5*"/>
                         </Grid.RowDefinitions>
                         <TextBox x:Name="labelBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
-                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5"/>
+
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5" ResizeBehavior="PreviousAndNext"/>
 
                         <TabControl Grid.Row="2"  x:Name="entityTabs" >
                             <TabItem Header="Entities" x:Name="entitiesTab">
