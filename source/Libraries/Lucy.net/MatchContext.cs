@@ -118,57 +118,42 @@ namespace Lucy
         {
             // merge entities which are overlapping.
             var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
-            foreach (var entity1 in this.Entities)
+            foreach (var entity in this.Entities)
             {
-                var alternateEntities = this.Entities.Where(e => e.Type == entity1.Type &&
-                                                               e != entity1 &&
-                                                               !mergedEntities.Contains(entity1)).ToList();
-                if (alternateEntities.Count() == 0)
-                {
-                    mergedEntities.Add(entity1);
-                }
-                else
-                {
-                    // if no alterantes say "don't keep it" then we add it
-                    if (!alternateEntities.Any(entity2 => ShouldDropEntity(entity1, entity2)))
+                if (!this.Entities.Any(alternateEntity =>
                     {
-                        mergedEntities.Add(entity1);
-                    }
+                        if (alternateEntity.Type == entity.Type)
+                        {
+                            // if alternateEntity is bigger on both ends
+                            if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
+                            {
+                                // there is a better candidate
+                                return true;
+                            }
+
+                            // if offset overlapping at start or end
+                            else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
+                                (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
+                            {
+                                var entityLength = entity.End - entity.Start;
+                                var alternateLength = alternateEntity.End - alternateEntity.Start;
+                                if (entityLength < alternateLength)
+                                {
+                                    // there is a better candidate
+                                    return true;
+                                }
+                            }
+                        }
+                        // this one it is not better then entity.
+                        return false;
+                    }))
+                {
+                    mergedEntities.Add(entity);
                 }
             }
 
             this.Entities = mergedEntities;
         }
 
-        private bool ShouldDropEntity(LucyEntity entity1, LucyEntity entity2)
-        {
-            // if entity2 is bigger on both ends
-            if (entity2.Start < entity1.Start && entity2.End > entity1.End)
-            {
-                return true;
-            }
-
-            // if it's inside the current token
-            if (entity2.Start >= entity1.Start && entity2.End <= entity1.End)
-            {
-                return false;
-            }
-            // if offset overlapping at start or end
-            if ((entity2.Start <= entity1.Start && entity2.End >= entity1.Start && entity2.End <= entity1.End) ||
-                (entity2.Start >= entity1.Start && entity2.Start < entity1.End && entity2.End >= entity1.End))
-            {
-                var entity1Length = entity1.End - entity1.Start;
-                var entity2Length = entity2.End - entity2.Start;
-                if (entity1Length > entity2Length)
-                {
-                    return false;
-                }
-                else if (entity2Length > entity1Length)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }
