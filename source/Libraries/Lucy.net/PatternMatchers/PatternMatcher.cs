@@ -22,7 +22,7 @@ namespace Lucy.PatternMatchers
         /// <returns>matchresult</returns>
         public abstract MatchResult Matches(MatchContext matchContext, LucyEntity tokenEntity);
 
-        public virtual byte MaxTokens { get; protected set; } = 10;
+        public virtual byte MaxTokens { get; protected set; } = byte.MaxValue;
 
         public virtual bool ContainsWildcard()
         {

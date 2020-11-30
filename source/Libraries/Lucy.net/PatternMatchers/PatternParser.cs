@@ -32,7 +32,7 @@ namespace Lucy.PatternMatchers
             StringBuilder sb = new StringBuilder();
             var inVariations = false;
             bool inModifiers = false;
-            byte maxTokens = 10;
+            byte maxTokens = byte.MaxValue;
             var modifierOrdinality = Ordinality.One;
             var fuzzyMatch = defaultFuzzyMatch;
             var chars = pattern.GetEnumerator();
@@ -55,7 +55,7 @@ namespace Lucy.PatternMatchers
                                 }
 
                                 variations = new List<string>();
-                                maxTokens = 10;
+                                maxTokens = byte.MaxValue;
                                 inVariations = true;
                                 inModifiers = false;
                                 modifierOrdinality = Ordinality.One;
@@ -171,11 +171,11 @@ namespace Lucy.PatternMatchers
                 return null;
             }
 
-            if (sequence.PatternMatchers.Count == 1)
-            {
-                // Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
-                return sequence.PatternMatchers.Single();
-            }
+            //if (sequence.PatternMatchers.Count == 1)
+            //{
+            //    // Trace.TraceInformation($"{pattern}:\n\t{sequence.PatternMatchers.Single()}");
+            //    return sequence.PatternMatchers.Single();
+            //}
 
             // Trace.TraceInformation($"{pattern}:\n\t{sequence}");
             sequence.ResolveFallbackMatchers();
@@ -315,10 +315,10 @@ namespace Lucy.PatternMatchers
                 return null;
             }
 
-            if (sequence.PatternMatchers.Count == 1)
-            {
-                return sequence.PatternMatchers.Single();
-            }
+            //if (sequence.PatternMatchers.Count == 1)
+            //{
+            //    return sequence.PatternMatchers.Single();
+            //}
 
             sequence.ResolveFallbackMatchers();
             return sequence;
