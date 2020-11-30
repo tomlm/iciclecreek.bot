@@ -22,6 +22,8 @@ namespace Lucy.PatternMatchers
         /// <returns>matchresult</returns>
         public abstract MatchResult Matches(MatchContext matchContext, LucyEntity tokenEntity);
 
+        public virtual byte MaxTokens { get; protected set; } = 10;
+
         public virtual bool ContainsWildcard()
         {
             return false;

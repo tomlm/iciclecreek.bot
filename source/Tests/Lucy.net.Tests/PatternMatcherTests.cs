@@ -205,6 +205,35 @@ namespace Lucy.Tests
         }
 
         [TestMethod]
+        public void PatternParser_OneOrMoreModifierQuanittyTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel()
+                    {
+                        Name = "@test",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "a (dog|cat|test)+1"
+                        }
+                    }
+                }
+            });
+
+            string text = "this is a test dog frog";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("test", entities[0].Type);
+            Assert.AreEqual("a test", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
+
+        [TestMethod]
         public void PatternParser_ZeroOrMoreModifierTests()
         {
             var engine = new LucyEngine(new LucyModel()
@@ -239,6 +268,34 @@ namespace Lucy.Tests
             Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("a test dog", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
+
+        [TestMethod]
+        public void PatternParser_ZeroOrMoreModifierQuantityTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel()
+                    {
+                        Name = "@test",
+                        Patterns = new List<PatternModel>()
+                        {
+                            "a (dog|cat|test)3*"
+                        }
+                    }
+                }
+            });
+
+            var text = "this is a dog dog dog test test test";
+            var results = engine.MatchEntities(text, null);
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("test", entities[0].Type);
+            Assert.AreEqual("a dog dog dog", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+        }
+
 
         [TestMethod]
         public void PatternParser_ZeroOrOneModifierTests()

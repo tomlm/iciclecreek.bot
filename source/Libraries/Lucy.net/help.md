@@ -96,16 +96,18 @@ This enables a you to express multiple permutations of patterns by composing you
 ## Quantifiers
 Just like in regular expressions you can define ordinality on groups.
 
-| postfix | description        |
-|---------|--------------------|
-| ?       | match zero or one  |
-| *       | match zero or more |
-| +       | match one or more  |
+| postfix | description                       |
+|---------|-----------------------------------|
+| ?       | match zero or one                 |
+| *       | match zero or more                |
+| +       | match one or more                 |
+| *#      | match zero or more (max # tokens) |
+| +#      | match one or more (max # tokens)  |
 
 ```yaml
   - name: '@example'
     patterns:
-    - (walk|feed|pet) (the)? (dog|cat|snake)+
+    - (walk|feed|pet) (the)? (dog|cat|snake)+2
 ```
 
 ## Fuzzy Matching

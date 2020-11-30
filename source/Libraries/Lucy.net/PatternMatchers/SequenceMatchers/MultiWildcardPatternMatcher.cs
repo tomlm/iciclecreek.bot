@@ -22,6 +22,7 @@ namespace Lucy.PatternMatchers
         {
             this.WildcardMatcher = wildcardMatcher;
             this.EntityMatcher = entityMatcher;
+            this.MaxTokens = this.WildcardMatcher.MaxTokens;
         }
 
         /// <summary>

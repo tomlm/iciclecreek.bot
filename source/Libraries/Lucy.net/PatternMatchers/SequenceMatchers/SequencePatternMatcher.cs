@@ -41,6 +41,7 @@ namespace Lucy.PatternMatchers
             int end = 0;
             foreach (var patternMatcher in PatternMatchers)
             {
+                var maxTokens = patternMatcher.MaxTokens;
                 MatchResult matchResult = null;
                 do
                 {
@@ -58,7 +59,7 @@ namespace Lucy.PatternMatchers
                     matchResult = result;
                     tokenEntity = matchResult.NextToken;
                     end = Math.Max(result.End, end);
-                } while (matchResult.Repeat);
+                } while (matchResult.Repeat && --maxTokens > 0);
             }
 
             return new MatchResult()

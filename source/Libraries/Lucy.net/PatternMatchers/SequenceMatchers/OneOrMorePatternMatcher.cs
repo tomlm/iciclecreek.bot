@@ -14,9 +14,10 @@ namespace Lucy.PatternMatchers
         {
         }
 
-        public OneOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers)
+        public OneOrMorePatternMatcher(IEnumerable<PatternMatcher> patternMatchers, byte maxTokens)
         {
             PatternMatchers.AddRange(patternMatchers.OrderBy(p => p.ContainsWildcard()));
+            this.MaxTokens = maxTokens;
         }
 
         public List<PatternMatcher> PatternMatchers { get; set; } = new List<PatternMatcher>();
@@ -55,6 +56,6 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override string ToString() => $"OneOrMore({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"OneOrMore{this.MaxTokens}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

@@ -32,6 +32,7 @@ namespace Lucy.PatternMatchers
             StringBuilder sb = new StringBuilder();
             var inVariations = false;
             bool inModifiers = false;
+            byte maxTokens = 10;
             var modifierOrdinality = Ordinality.One;
             var fuzzyMatch = defaultFuzzyMatch;
             var chars = pattern.GetEnumerator();
@@ -54,6 +55,7 @@ namespace Lucy.PatternMatchers
                                 }
 
                                 variations = new List<string>();
+                                maxTokens = 10;
                                 inVariations = true;
                                 inModifiers = false;
                                 modifierOrdinality = Ordinality.One;
@@ -124,20 +126,24 @@ namespace Lucy.PatternMatchers
                                     break;
 
                                 default:
-                                    if (variations.Any())
+                                    if (byte.TryParse(ch.ToString(), out byte num))
                                     {
-                                        AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch);
+                                        maxTokens = num;
+                                    }
+                                    else if (variations.Any())
+                                    {
+                                        AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch, maxTokens);
+                                        // we need to reprocess this char with new state.
+                                        variations.Clear();
+                                        sb.Clear();
                                         inVariations = false;
                                         inModifiers = false;
                                         modifierOrdinality = Ordinality.One;
-                                        variations.Clear();
-                                        sb.Clear();
-
-                                        // we need to reprocess this char with new state.
                                         repeatChar = true;
                                     }
                                     break;
                             }
+                            break;
                         }
                     }
                 } while (repeatChar);
@@ -147,7 +153,7 @@ namespace Lucy.PatternMatchers
             {
                 if (inModifiers && variations.Any())
                 {
-                    AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch);
+                    AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch, maxTokens);
                 }
                 else
                 {
@@ -229,7 +235,7 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        private void AddVariations(SequencePatternMatcher sequence, List<string> variations, Ordinality modifierOrdinality, bool fuzzyMatch)
+        private void AddVariations(SequencePatternMatcher sequence, List<string> variations, Ordinality modifierOrdinality, bool fuzzyMatch, byte maxTokens)
         {
             switch (modifierOrdinality)
             {
@@ -237,7 +243,7 @@ namespace Lucy.PatternMatchers
                     sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch))));
                     break;
                 case Ordinality.ZeroOrMore:
-                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch))));
+                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
                     break;
                 case Ordinality.One:
                     if (variations.Count == 1)
@@ -250,7 +256,7 @@ namespace Lucy.PatternMatchers
                     }
                     break;
                 case Ordinality.OneOrMore:
-                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch))));
+                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(variations.Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
                     break;
             }
         }
