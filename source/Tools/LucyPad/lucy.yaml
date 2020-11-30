@@ -1,62 +1,73 @@
+# match on any token with ___, you can name a wildcard slot by using (name:___)
+# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+
 locale: en
 externalEntities: []
 macros:
 entities:
-#  - name: '@nameFact'
-#    patterns:
-#    - name is ___
-#
-#  - name: '@container'
-#    patterns:
-#    - glass
-#    - shot
-#    - shotglass
-#    - tumbler
-#    - mug
-#    - pitcher
-#    - cup
-#
-#  - name: '@drinkSize'
-#    patterns:
-#    - [s, small, short]
-#    - [m, medium, tall]
-#    - [l, large, big]
-#    - [xl, extra large, venti, giant, (humungous)~]
-#
-## example of canonical values and fuzzy matching
-#  - name: '@beverageType'
-#    patterns:
-#    - [beer, suds]
-#    - [wine, vino]
-#    - [cocktail, highball]
-#    - (whiskey)~
-#    - (bourbon)~
-#    - rye
-#    - gin
-#    - vodka
-#    - (tequila)~
-#    - [coffee, joe, java]
-#
-#  - name: '@temperature'
-#    patterns: 
-#    - [cold, chilled, cool, icy, iced]
-#    - warm
-#    - [hot, heated, steaming]
-#
-## example pattern built up using recognized entities
-#  - name: '@drinkOrder'
-#    patterns:
-#    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@temperature|description:___)* (@beverageType|beverage|drink)?
-#    
-#  - name: '@conjunction'
-#    patterns: 
-#    - or
-#    - and
-#
-#  - name: '@drinkOrders'
-#    patterns:
-#    - '@drinkOrder (@conjunction @drinkOrder)*'
-#
-#  - name: '@orderIntent'
-#    patterns:
-#    - (like|like to|have|order|bring me) @drinkOrders
+  - name: '@name'
+    patterns:
+    - name is ___
+
+# variations on words which will be captured as @container entitiy
+  - name: '@container'
+    patterns:
+    - glass
+    - shot
+    - shotglass
+    - tumbler
+    - mug
+    - pitcher
+    - cup
+
+# If you change the pattern to an array it will normalize to a first value in each array.
+  - name: '@drinkSize'
+    patterns:
+    - [s, small, short]
+    - [m, medium, tall]
+    - [l, large, big]
+    - [xl, extra large, venti, giant, (humungous)~]
+
+  - name: '@beverageType'
+    patterns:
+    - [beer, suds]
+    - [wine, vino]
+    - [cocktail, highball]
+    # fuzzy match whiskey so 'whisky' => "whiskey"
+    - (whiskey)~
+    - (bourbon)~
+    - rye
+    - gin
+    - vodka
+    - (tequila)~
+    - [coffee, joe, java]
+
+  - name: '@temperature'
+    patterns: 
+    - [cold, chilled, cool, icy, iced]
+    - warm
+    - [hot, heated, steaming]
+
+# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
+  - name: '@drinkOrder'
+    patterns:
+    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@temperature|description:___)* (@beverageType|beverage|drink)?
+    
+  - name: '@conjunction'
+    patterns: 
+    - or
+    - and
+
+  - name: '@drinkOrders'
+    patterns:
+    - '@drinkOrder (@conjunction @drinkOrder)*'
+
+  - name: '@orderIntent'
+    patterns:
+    - (like|like to|have|order|bring me) @drinkOrders
