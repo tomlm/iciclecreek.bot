@@ -45,7 +45,7 @@ namespace Lucy.PatternMatchers
                         Type = entityType,
                         Start = tokenEntity.Start
                     };
-                    context.CurrentEntity.Children.Add(wildcardEntity);
+                    context.AddToCurrentEntity(wildcardEntity);
                 }
 
                 // update wildcardToken by including the next token.

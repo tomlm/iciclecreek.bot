@@ -6,6 +6,7 @@ using Lucene.Net.Analysis.CharFilters;
 using Lucy;
 using Lucy.PatternMatchers;
 using Lucy.PatternMatchers.Matchers;
+using Newtonsoft.Json.Linq;
 
 namespace Lucy
 {
@@ -58,10 +59,15 @@ namespace Lucy
             }
         }
 
+        public void AddToCurrentEntity(LucyEntity entity)
+        {
+            CurrentEntity.Children.Add(entity);
+            // CurrentEntity.Children = MergeOverlappingEntities(CurrentEntity.Children).ToList();
+        }
+
         public LucyEntity FindNextEntityOfType(string entityType, LucyEntity tokenEntity)
         {
-            var start = tokenEntity.Start;
-            if (positionMap.TryGetValue(start, out var entities))
+            if (positionMap.TryGetValue(tokenEntity.Start, out var entities))
             {
                 var result = entities
                     .Where(entityToken => String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase))
@@ -74,9 +80,9 @@ namespace Lucy
             return null;
         }
 
-        public bool IsTokenMatched(LucyEntity textToken)
+        public bool IsTokenMatched(LucyEntity tokenEntity)
         {
-            if (positionMap.TryGetValue(textToken.Start, out var entities))
+            if (positionMap.TryGetValue(tokenEntity.Start, out var entities))
             {
                 return entities.Any();
             }
@@ -118,35 +124,58 @@ namespace Lucy
         {
             // merge entities which are overlapping.
             var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
+
+            //// merge entiteies which are contigious and the same type/resolution
+            //foreach (var entity in entities)
+            //{
+            //    var token = this.GetFirstTokenEntity(entity.End);
+            //    if (token != null)
+            //    {
+            //        var nextEntity = this.FindNextEntityOfType(entity.Type, token);
+            //        if (nextEntity != null && JToken.FromObject(entity.Resolution ?? "").ToString() == JToken.FromObject(nextEntity.Resolution ?? "").ToString())
+            //        {
+            //            // they have the same resolution
+            //            var start = Math.Min(entity.Start, nextEntity.Start);
+            //            var end = Math.Max(entity.End, nextEntity.End);
+            //            mergedEntities.Add(new LucyEntity()
+            //            {
+            //                Type = entity.Type,
+            //                Start = start,
+            //                End = end,
+            //                Resolution = entity.Resolution,
+            //                Text = this.Text.Substring(start, end - start)
+            //            });
+            //        }
+
             foreach (var entity in this.Entities)
             {
                 if (!this.Entities.Any(alternateEntity =>
-                    {
-                        if (alternateEntity.Type == entity.Type)
                         {
-                            // if alternateEntity is bigger on both ends
-                            if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
+                            if (alternateEntity.Type == entity.Type)
                             {
-                                // there is a better candidate
-                                return true;
-                            }
-
-                            // if offset overlapping at start or end
-                            else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
-                                (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
-                            {
-                                var entityLength = entity.End - entity.Start;
-                                var alternateLength = alternateEntity.End - alternateEntity.Start;
-                                if (entityLength < alternateLength)
+                                // if alternateEntity is bigger on both ends
+                                if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
                                 {
                                     // there is a better candidate
                                     return true;
                                 }
+
+                                // if offset overlapping at start or end
+                                else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
+                                        (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
+                                {
+                                    var entityLength = entity.End - entity.Start;
+                                    var alternateLength = alternateEntity.End - alternateEntity.Start;
+                                    if (entityLength < alternateLength)
+                                    {
+                                        // there is a better candidate
+                                        return true;
+                                    }
+                                }
                             }
-                        }
-                        // this one it is not better then entity.
-                        return false;
-                    }))
+                            // this one it is not better then entity.
+                            return false;
+                        }))
                 {
                     mergedEntities.Add(entity);
                 }

@@ -105,17 +105,17 @@ namespace Lucy
         /// </summary>
         public string Locale { get; set; } = "en";
 
-        internal HashSet<string> BuiltinEntities { get; set; } = new HashSet<string>();
+        public HashSet<string> BuiltinEntities { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Patterns to match
         /// </summary>
-        internal List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
+        public List<EntityPattern> EntityPatterns { get; set; } = new List<EntityPattern>();
 
         /// <summary>
         /// Wildcard Patterns to match
         /// </summary>
-        internal List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
+        public List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
 
         /// <summary>
         /// Warning messages

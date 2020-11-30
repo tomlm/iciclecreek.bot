@@ -26,7 +26,7 @@ namespace Lucy.PatternMatchers
                 if (entity != null)
                 {
                     // add the matched entity to the children of the currentEntity.
-                    context.CurrentEntity.Children.Add(entity);
+                    context.AddToCurrentEntity(entity);
                     context.CurrentEntity.End = entity.End;
 
                     matchResult.Matched = true;
