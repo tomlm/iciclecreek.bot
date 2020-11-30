@@ -111,7 +111,7 @@ Just like in regular expressions you can define ordinality on groups.
 ```
 
 ## Fuzzy Matching
-Matching on tokens when your text is spellled correctly, but in reality the input
+Matching on tokens when your text is spelled correctly is great, but in reality the input
 data is not clean.  People spell poorly, speech rec provides a word which sounds
 right, but is wrong word, etc. **Fuzzy matching** enables phonetic matching
 when comparing tokens, making the pattern recognition much more robust.
@@ -193,7 +193,6 @@ Example:
 ```yaml
 locale: en
 ```
-
 
 ## **entities** property
 An **entity** definition defines a named set of patterns.
