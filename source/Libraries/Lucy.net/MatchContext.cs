@@ -51,7 +51,7 @@ namespace Lucy
 
         public void AddEntity(LucyEntity entity)
         {
-            if (entity != null && !Entities.Contains(entity))
+            if (entity != null)
             {
                 NewEntities.Add(entity);
             }

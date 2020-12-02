@@ -111,7 +111,7 @@ entities:
     
   - name: '@coffee'
     patterns:
-    - (@coffeeStyle|@coffeeAdditives)+ coffee (with)? (@coffeeAdditives)* (@conjunction @coffeeAdditives)*
+    - (@coffeeStyle|@coffeeAdditives)* (coffee)? (with)? (@coffeeStyle|@coffeeAdditives)* (@conjunction @coffeeAdditives)*
 
 # -------- DRINK ORDER
 
