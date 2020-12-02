@@ -30,6 +30,11 @@ namespace Lucy
         public HashSet<LucyEntity> Entities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
 
         /// <summary>
+        /// All of the current recognized entities
+        /// </summary>
+        public HashSet<LucyEntity> NewEntities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+
+        /// <summary>
         /// All of the token entities (Aka text and fuzzy text entities)
         /// </summary>
         public HashSet<LucyEntity> TokenEntities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
@@ -48,16 +53,25 @@ namespace Lucy
         {
             if (entity != null && !Entities.Contains(entity))
             {
-                Entities.Add(entity);
+                NewEntities.Add(entity);
+            }
+        }
+
+        public void ProcessNewEntities()
+        {
+            foreach (var newEntity in NewEntities)
+            {
+                Entities.Add(newEntity);
                 HashSet<LucyEntity> map;
-                if (!positionMap.TryGetValue(entity.Start, out map))
+                if (!positionMap.TryGetValue(newEntity.Start, out map))
                 {
                     map = new HashSet<LucyEntity>(new EntityTokenComparer());
-                    positionMap.Add(entity.Start, map);
+                    positionMap.Add(newEntity.Start, map);
                 }
 
-                map.Add(entity);
+                map.Add(newEntity);
             }
+            NewEntities.Clear();
         }
 
         public void AddToCurrentEntity(LucyEntity entity)

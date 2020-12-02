@@ -174,6 +174,8 @@ namespace Lucy
                     }
                 }
 
+                context.ProcessNewEntities();
+
                 // if entities were added we need to run wildcard matchers
                 if (count == context.Entities.Count && WildcardEntityPatterns.Any())
                 {
@@ -185,6 +187,7 @@ namespace Lucy
                             ProcessEntityPattern(context, textEntity, entityPattern);
                         }
                     }
+                    context.ProcessNewEntities();
                 }
             } while (count != context.Entities.Count);
 
@@ -634,7 +637,7 @@ namespace Lucy
                         results = builtin.Sequence.SequenceRecognizer.RecognizePhoneNumber(text, culture);
                         break;
                     case "quotedtext":
-                        foreach(var quote in _quotedTextEntityRecognizer.Recognize(text, culture))
+                        foreach (var quote in _quotedTextEntityRecognizer.Recognize(text, culture))
                         {
                             context.AddEntity(quote);
                         }

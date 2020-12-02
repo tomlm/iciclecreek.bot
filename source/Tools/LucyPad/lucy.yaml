@@ -6,10 +6,12 @@
 #   '+' ==> one or more
 #   '#' ==> max number of tokens to consume
 #   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
 locale: en
 externalEntities: []
 macros:
   $quantity: a|an|some|@number
+  $beverages: '@beer|@wine|@whiskey|@coffee'
 entities:
   - name: '@name'
     patterns:
@@ -34,60 +36,100 @@ entities:
     - [l, large, big]
     - [xl, extra large, venti, giant, (humungous)~]
 
+  - name: '@temperature'
+    patterns: 
+    - [cold, chilled, cool, icy, iced, freezing cold]
+    - warm
+    - [hot, heated, steaming, '(steaming|really)? hot']
+
+
+# ---------- BEER
   - name: '@beerLabel'
     patterns:
     - coors
     - (heiniken)~
-    - corona
+    - (corona)~
     - miller
 
+  - name: '@beerStyle'
+    patterns:
+    - pilsner
+    - [ipa, india pale, india pale ale]
+    - ale
+    - porter
+    
   - name: '@beer'
     patterns:
-    - '@beerLabel (beer)?'
-    - ($quantity)? (beerDescription:___)*3 beer
+    - (@beerStyle|@beerLabel)+ (beer)?
+    - ($quantity)? (of|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
 
+# ---------- WINE
   - name: '@wineLabel'
     patterns:
+    - house
     - big house
     - columbia crest
+
+  - name: '@wineStyle'
+    patterns:
+    - red
+    - white
 
   - name: '@wine'
     patterns:
     - '@wineLabel (wine|vino)?'
-    - ($quantity)? (wineDescription:___)*3 (wine|vino)
+    - ($quantity)? (of|@wineStyle|wineDescription:___)* (wine|vino)
 
+# ---------- WHISKY
   - name: '@whiskeyLabel'
     patterns:
     - clyde mills
     - bushmills
-    - [makers, mark, makers ]
+    - [makers mark, makers]
+    - glenhaven
 
   - name: '@whiskey'
     patterns:
     - '@whiskeyLabel (whiskey|borboun)?~'
-    - ($quantity)? (whiskeyDescription:___)*3 (whiskey|borboun)~
+    - ($quantity)? (of|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel)*
 
-  - name: '@temperature'
-    patterns: 
-    - [cold, chilled, cool, icy, iced]
-    - warm
-    - [hot, heated, steaming]
+# ---------- COFFEE
+  - name: '@coffeeStyle'
+    patterns:
+    - [french, french roast]
+    - black
+    - espresso
+    - (cappucino)~
+    - (latte)~
 
-# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
+  - name: '@coffeeAdditives'
+    patterns:
+    - milk
+    - cream
+    - [half, half and half, half in half]
+    - sugar
+    
+  - name: '@coffee'
+    patterns:
+    - (@coffeeStyle|@coffeeAdditives)+ coffee (with)? (@coffeeAdditives)* (@conjunction @coffeeAdditives)*
+
+# -------- DRINK ORDER
+
   - name: '@drinkOrder'
     patterns:
-    - (a|an|some|@number) (@drinkSize|@container|@temperature)* (of)? (@beer|@whiskey|@wine|beverage|drink)
+    - (a|an|some|@number)? (@drinkSize|@container|@temperature)* (of)? (@temperature)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
 
+  - name: '@drinkOrders'
+    patterns:
+    - '@drinkOrder (@conjunction|@drinkOrder)*'
+
+  - name: '@desireIntent'
+    patterns:
+    - (like|like to|have|order|bring us|bring me) (@drinkOrders)+
+
+# ------------ MISC
   - name: '@conjunction'
     patterns: 
     - or
     - and
-
-  - name: '@drinkOrders'
-    patterns:
-    - '@drinkOrder (@conjunction @drinkOrder)*'
-
-  - name: '@orderIntent'
-    patterns:
-    - (like|like to|have|order|bring me) @drinkOrders
 
