@@ -59,11 +59,13 @@ namespace Lucy
         private Analyzer _exactAnalyzer;
         private Analyzer _fuzzyAnalyzer;
         private PatternParser _patternParser;
+        private QuotedTextEntityRecognizer _quotedTextEntityRecognizer = new QuotedTextEntityRecognizer();
 
         private static HashSet<string> builtinEntities { get; set; } = new HashSet<string>()
         {
             "age", "boolean", "currency", "datetime", "dimension", "email", "guid", "hashtag",
-            "ip", "mention", "number", "numberrange", "ordinal", "percentage", "phonenumber", "temperature", "url"
+            "ip", "mention", "number", "numberrange", "ordinal", "percentage", "phonenumber", "temperature", "url",
+            "quotedtext"
         };
 
         public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null, bool useAllBuiltIns = false)
@@ -631,6 +633,12 @@ namespace Lucy
                     case "phonenumber":
                         results = builtin.Sequence.SequenceRecognizer.RecognizePhoneNumber(text, culture);
                         break;
+                    case "quotedtext":
+                        foreach(var quote in _quotedTextEntityRecognizer.Recognize(text, culture))
+                        {
+                            context.AddEntity(quote);
+                        }
+                        return;
                     case "temperature":
                         results = builtin.NumberWithUnit.NumberWithUnitRecognizer.RecognizeTemperature(text, culture); ;
                         break;
