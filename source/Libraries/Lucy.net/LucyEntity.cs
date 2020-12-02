@@ -62,7 +62,8 @@ namespace Lucy
             {
                 return $"{Type} [{Start},{End}]";
             }
-            return $"{Type} [{Start},{End}] Resolution:{JsonConvert.SerializeObject(Resolution)}";
+            var json = JsonConvert.SerializeObject(Resolution);
+            return $"{Type} {Text} [{Start},{End}] Resolution:{json}";
         }
     }
 }

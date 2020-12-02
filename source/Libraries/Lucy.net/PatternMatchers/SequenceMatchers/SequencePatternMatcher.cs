@@ -39,13 +39,35 @@ namespace Lucy.PatternMatchers
         {
             // try to match each element in the sequence.
             int end = 0;
-            foreach (var patternMatcher in PatternMatchers)
+            for (int iPattern = 0; iPattern < PatternMatchers.Count; iPattern++)
             {
-                var maxTokens = patternMatcher.MaxTokens;
                 MatchResult matchResult = null;
+                var patternMatcher = PatternMatchers[iPattern];
+                var maxTokens = patternMatcher.MaxTokens;
                 do
                 {
+                    if (patternMatcher.ContainsWildcard())
+                    {
+                        // look ahead to non wild card
+                        var endPatternMatcher = PatternMatchers.Skip(iPattern).Where(pm => !pm.ContainsWildcard()).FirstOrDefault();
+                        if (endPatternMatcher != null)
+                        {
+                            matchResult = endPatternMatcher.Matches(context, tokenEntity);
+                            // if it matched AND moved forward, then we are done
+                            if (matchResult.Matched)
+                            {
+                                if (matchResult.Matched && matchResult.NextToken != tokenEntity)
+                                {
+                                    // skip forward to endPatternMatcher and run again...
+                                    iPattern = PatternMatchers.IndexOf(endPatternMatcher) - 1;
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+
                     var result = patternMatcher.Matches(context, tokenEntity);
+
                     // if the element did not match, then sequence is bad, return failure
                     if (result.Matched == false)
                     {
@@ -68,41 +90,6 @@ namespace Lucy.PatternMatchers
                 End = end,
                 NextToken = tokenEntity
             };
-        }
-
-        internal void FixupWildcardPatterns()
-        {
-            if (this.PatternMatchers.Any(pm => pm.ContainsWildcard()))
-            {
-                List<PatternMatcher> newSequence = new List<PatternMatcher>();
-                PatternMatcher wildcard = null;
-                foreach (var pattern in PatternMatchers)
-                {
-                    if (pattern.ContainsWildcard() && !(pattern is WildcardPatternMatcher))
-                    {
-                        wildcard = pattern;
-                    }
-                    else
-                    {
-                        if (wildcard != null)
-                        {
-                            newSequence.Add(new MultiWildcardPatternMatcher(wildcard, pattern));
-                            wildcard = null;
-                        }
-                        else
-                        {
-                            newSequence.Add(pattern);
-                        }
-                    }
-                }
-
-                if (wildcard != null)
-                {
-                    newSequence.Add(new MultiWildcardPatternMatcher(wildcard));
-                }
-
-                this.PatternMatchers = newSequence;
-            }
         }
 
         public override IEnumerable<string> GetEntityReferences()

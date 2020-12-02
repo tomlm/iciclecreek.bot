@@ -30,13 +30,16 @@ namespace Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
-            foreach (var patternMatcher in PatternMatchers)
+            if (tokenEntity != null)
             {
-                var matchResult = patternMatcher.Matches(context, tokenEntity);
-                if (matchResult.Matched)
+                foreach (var patternMatcher in PatternMatchers)
                 {
-                    matchResult.Repeat = matchResult.NextToken != null;
-                    return matchResult;
+                    var matchResult = patternMatcher.Matches(context, tokenEntity);
+                    if (matchResult.Matched)
+                    {
+                        matchResult.Repeat = matchResult.NextToken != null;
+                        return matchResult;
+                    }
                 }
             }
 
@@ -60,6 +63,6 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override string ToString() => $"ZeroOrMore{(this.MaxTokens < 255 ? this.MaxTokens.ToString(): String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"ZeroOrMore{(this.MaxTokens < 255 ? this.MaxTokens.ToString() : String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
     }
 }

@@ -29,12 +29,15 @@ namespace Lucy.PatternMatchers
         /// <returns></returns>
         public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
         {
-            foreach (var patternMatch in PatternMatchers)
+            if (tokenEntity != null)
             {
-                var matchResult = patternMatch.Matches(context, tokenEntity);
-                if (matchResult.Matched)
+                foreach (var patternMatch in PatternMatchers)
                 {
-                    return matchResult;
+                    var matchResult = patternMatch.Matches(context, tokenEntity);
+                    if (matchResult.Matched)
+                    {
+                        return matchResult;
+                    }
                 }
             }
 

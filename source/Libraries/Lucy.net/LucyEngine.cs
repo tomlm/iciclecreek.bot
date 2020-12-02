@@ -439,6 +439,7 @@ namespace Lucy
             {
                 _lucyModel.Macros = new Dictionary<string, string>();
             }
+
             if (_lucyModel.Entities != null)
             {
                 foreach (var entityModel in _lucyModel.Entities)
