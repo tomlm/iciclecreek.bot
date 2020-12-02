@@ -6,10 +6,10 @@
 #   '+' ==> one or more
 #   '#' ==> max number of tokens to consume
 #   '~' ==> use fuzzy matching for the tokens in the group.
-
 locale: en
 externalEntities: []
 macros:
+  $quantity: a|an|some|@number
 entities:
   - name: '@name'
     patterns:
@@ -34,19 +34,38 @@ entities:
     - [l, large, big]
     - [xl, extra large, venti, giant, (humungous)~]
 
-  - name: '@beverageType'
+  - name: '@beerLabel'
     patterns:
-    - [beer, suds]
-    - [wine, vino]
-    - [cocktail, highball]
-    # fuzzy match whiskey so 'whisky' => "whiskey"
-    - (whiskey)~
-    - (bourbon)~
-    - rye
-    - gin
-    - vodka
-    - (tequila)~
-    - [coffee, joe, java]
+    - coors
+    - (heiniken)~
+    - corona
+    - miller
+
+  - name: '@beer'
+    patterns:
+    - '@beerLabel (beer)?'
+    - ($quantity)? (beerDescription:___)*3 beer
+
+  - name: '@wineLabel'
+    patterns:
+    - big house
+    - columbia crest
+
+  - name: '@wine'
+    patterns:
+    - '@wineLabel (wine|vino)?'
+    - ($quantity)? (wineDescription:___)*3 (wine|vino)
+
+  - name: '@whiskeyLabel'
+    patterns:
+    - clyde mills
+    - bushmills
+    - [makers, mark, makers ]
+
+  - name: '@whiskey'
+    patterns:
+    - '@whiskeyLabel (whiskey|borboun)?~'
+    - ($quantity)? (whiskeyDescription:___)*3 (whiskey|borboun)~
 
   - name: '@temperature'
     patterns: 
@@ -57,8 +76,8 @@ entities:
 # Entities can be placed into a pattern with '@', creating a compound hierarchical result.
   - name: '@drinkOrder'
     patterns:
-    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@temperature|description:___)* (@beverageType|beverage|drink)?
-    
+    - (a|an|some|@number) (@drinkSize|@container|@temperature)* (of)? (@beer|@whiskey|@wine|beverage|drink)
+
   - name: '@conjunction'
     patterns: 
     - or
@@ -71,3 +90,4 @@ entities:
   - name: '@orderIntent'
     patterns:
     - (like|like to|have|order|bring me) @drinkOrders
+
