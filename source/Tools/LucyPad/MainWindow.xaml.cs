@@ -13,7 +13,6 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.MarkedNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.Core;
@@ -134,24 +133,10 @@ namespace LucyPad
 
             this.editor.Text = LoadResource("LucyPad.lucy.yaml");
             LoadModel();
-
-            //this.overviewViewer.NavigateToString(LoadMarkdown("LucyPad.overview.md"));
-            //this.helpViewer.NavigateToString(LoadMarkdown("LucyPad.help.md"));
         }
 
         private void showInternal_Checked(object sender, RoutedEventArgs e)
         {
-        }
-
-        private string LoadMarkdown(string name)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<html>");
-            sb.AppendLine("<body style=\"font-family:Calibri\">");
-            sb.AppendLine(new Marked().Parse(LoadResource(name)));
-            sb.AppendLine("</body>");
-            sb.AppendLine("</html>");
-            return sb.ToString();
         }
 
         private string LoadResource(string name)
