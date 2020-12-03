@@ -78,6 +78,9 @@
                             <TabItem Header="Recognizer" x:Name="recognizerTab">
                                 <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
                             </TabItem>
+                            <TabItem Header="Examples" x:Name="examplesTab">
+                                <TextBox x:Name="examplesBox" FontFamily="Consolas" FontSize="15pt"/>
+                            </TabItem>
                         </TabControl>
                     </Grid>
                 </TabItem>

@@ -62,5 +62,25 @@ namespace Lucy.PatternMatchers
         }
 
         public override string ToString() => $"ZeroOrOne({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            yield return String.Empty;
+
+            foreach (var pm in PatternMatchers)
+            {
+                foreach (var example in pm.GenerateExamples(engine))
+                {
+                    yield return example.Trim();
+                }
+            }
+        }
+
+        public override string GenerateExample(LucyEngine engine)
+        {
+            if (rnd.Next(2) == 0)
+                return String.Empty;
+            return PatternMatchers[rnd.Next(PatternMatchers.Count)].GenerateExample(engine);
+        }
     }
 }

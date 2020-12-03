@@ -68,5 +68,17 @@ namespace Lucy.PatternMatchers
         }
 
         public override string ToString() => $"{((this.entityType != ENTITYTYPE) ? this.entityType+":" : ENTITYTYPE)}___";
+
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = rnd.Next(7) + 3; i > 0; i--)
+            {
+                sb.Append((char)('a' + rnd.Next(26)));
+            }
+            yield return $"{sb}".Trim();
+        }
+
+        public override string GenerateExample(LucyEngine engine) => GenerateExamples(engine).First();
     }
 }

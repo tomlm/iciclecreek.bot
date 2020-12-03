@@ -45,7 +45,7 @@ namespace Lucy.PatternMatchers
 
         public override IEnumerable<string> GetEntityReferences()
         {
-            foreach(var patternMatcher in this.PatternMatchers)
+            foreach (var patternMatcher in this.PatternMatchers)
             {
                 foreach (var dependency in patternMatcher.GetEntityReferences())
                 {
@@ -55,6 +55,22 @@ namespace Lucy.PatternMatchers
         }
 
         public override string ToString() => $"OneOf({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            foreach (var pm in PatternMatchers)
+            {
+                foreach (var example in pm.GenerateExamples(engine))
+                {
+                    yield return example;
+                }
+            }
+        }
+
+        public override string GenerateExample(LucyEngine engine)
+        {
+            return PatternMatchers[rnd.Next(PatternMatchers.Count)].GenerateExample(engine);
+        }
 
     }
 }

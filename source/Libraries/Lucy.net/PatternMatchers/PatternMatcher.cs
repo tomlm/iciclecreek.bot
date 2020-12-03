@@ -14,6 +14,8 @@ namespace Lucy.PatternMatchers
 {
     public abstract partial class PatternMatcher
     {
+        protected static Random rnd = new Random();
+
         /// <summary>
         /// Match and add entity as appropriate.
         /// </summary>
@@ -34,5 +36,8 @@ namespace Lucy.PatternMatchers
             yield break;
         }
 
+        public abstract IEnumerable<string> GenerateExamples(LucyEngine engine);
+
+        public abstract string GenerateExample(LucyEngine engine);
     }
 }

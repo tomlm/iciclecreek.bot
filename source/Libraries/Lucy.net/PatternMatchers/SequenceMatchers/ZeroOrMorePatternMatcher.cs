@@ -64,5 +64,41 @@ namespace Lucy.PatternMatchers
         }
 
         public override string ToString() => $"ZeroOrMore{(this.MaxTokens < 255 ? this.MaxTokens.ToString() : String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            // yield a zero answer.
+            yield return string.Empty;
+
+            for (int numExamples = 0; numExamples < PatternMatchers.Count; numExamples++)
+            {
+                StringBuilder sb = new StringBuilder();
+                // pick a random pattern
+                var pm = PatternMatchers[rnd.Next(PatternMatchers.Count)];
+                var examples = pm.GenerateExamples(engine).ToList();
+                // pick a random example
+                sb.Append($" {examples[rnd.Next(examples.Count)]}");
+                yield return sb.ToString().Trim();
+            }
+        }
+
+        public override string GenerateExample(LucyEngine engine)
+        {
+            if (rnd.Next(2) == 0)
+            {
+                return String.Empty;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int numExamples = Math.Min(this.MaxTokens, (byte)5); numExamples > 0; numExamples--)
+            {
+                // pick a random pattern
+                var pm = PatternMatchers[rnd.Next(PatternMatchers.Count)];
+
+                // pick a random example
+                sb.Append($" {pm.GenerateExample(engine)}");
+            }
+            return sb.ToString();
+        }
     }
 }

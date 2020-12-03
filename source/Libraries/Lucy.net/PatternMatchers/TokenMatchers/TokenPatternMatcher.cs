@@ -67,5 +67,15 @@ namespace Lucy.PatternMatchers.Matchers
 
         public override string ToString() => $"{(FuzzyTokens.Any() ? $"{Token}~" : Token)}";
 
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            yield return Text.Trim();
+        }
+
+        public override string GenerateExample(LucyEngine engine)
+        {
+            return Text.Trim();
+        }
+
     }
 }

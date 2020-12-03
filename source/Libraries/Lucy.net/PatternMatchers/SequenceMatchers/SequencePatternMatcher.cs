@@ -106,5 +106,37 @@ namespace Lucy.PatternMatchers
         public override bool ContainsWildcard() => (this.PatternMatchers.Where(p => p.ContainsWildcard()).Any());
 
         public override string ToString() => $"Sequence({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+
+        public override IEnumerable<string> GenerateExamples(LucyEngine engine)
+        {
+            List<string> examples = new List<string>()
+            {
+                String.Empty
+            };
+            foreach (var pm in PatternMatchers)
+            {
+                List<string> newExamples = new List<string>();
+
+                foreach (var example in pm.GenerateExamples(engine))
+                {
+                    foreach(var previousExample in examples)
+                    {
+                        newExamples.Add($"{previousExample} {example}".Trim());
+                    }
+                }
+                examples = newExamples.Distinct().ToList();
+            }
+            return examples;
+        }
+
+        public override string GenerateExample(LucyEngine engine)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var patternMatcher in this.PatternMatchers)
+            {
+                sb.Append($" {patternMatcher.GenerateExample(engine)}");
+            }
+            return sb.ToString().Trim();
+        }
     }
 }

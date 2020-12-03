@@ -74,8 +74,8 @@ namespace LucyPad
                     var tc = new TurnContext(new TestAdapter(), activity);
                     var dc = new DialogContext(new DialogSet(), tc, new DialogState());
                     var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
-                    this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
-                    //this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());
+                    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+                    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());
                 }
             }
             catch (SemanticErrorException err)
@@ -112,6 +112,13 @@ namespace LucyPad
             {
                 Model = model,
             };
+
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i<100;i++)
+            {
+                sb.AppendLine(engine.GenerateExample("desireIntent"));
+            }
+            this.examplesBox.Text = sb.ToString();
 
             if (engine.Warnings.Any())
             {

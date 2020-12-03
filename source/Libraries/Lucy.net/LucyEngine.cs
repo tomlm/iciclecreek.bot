@@ -54,6 +54,7 @@ namespace Lucy
     /// </summary>
     public class LucyEngine
     {
+        private Random _rnd = new Random();
         private LucyModel _lucyModel;
         private Analyzer _simpleAnalyzer = new SimpleAnalyzer(LuceneVersion.LUCENE_48);
         private Analyzer _exactAnalyzer;
@@ -123,7 +124,6 @@ namespace Lucy
         /// Warning messages
         /// </summary>
         public List<string> Warnings { get; set; } = new List<string>();
-
 
         /// <summary>
         /// Match entities in given text
@@ -204,6 +204,29 @@ namespace Lucy
             return context.Entities;
         }
 
+        public IEnumerable<string> GenerateExamples(string entityType)
+        {
+            var patterns = new List<EntityPattern>(this.EntityPatterns.Where(et => et.Name == entityType));
+            patterns.AddRange(this.WildcardEntityPatterns.Where(et => et.Name == entityType));
+            foreach (var ep in patterns)
+            {
+                foreach (var example in ep.PatternMatcher.GenerateExamples(this))
+                {
+                    if (!String.IsNullOrWhiteSpace(example))
+                    {
+                        yield return example.Trim();
+                    }
+                }
+            }
+        }
+
+        public string GenerateExample(string entityType)
+        {
+            var patterns = new List<EntityPattern>(this.EntityPatterns.Where(et => et.Name == entityType));
+            patterns.AddRange(this.WildcardEntityPatterns.Where(et => et.Name == entityType));
+            var ep = patterns[_rnd.Next(patterns.Count)];
+            return ep.PatternMatcher.GenerateExample(this);
+        }
 
         public IEnumerable<LucyEntity> Tokenize(string text)
         {

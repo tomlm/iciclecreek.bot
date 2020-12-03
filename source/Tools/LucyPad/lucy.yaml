@@ -25,6 +25,7 @@ entities:
     - shotglass
     - tumbler
     - mug
+    - pint
     - pitcher
     - cup
 
@@ -36,7 +37,7 @@ entities:
     - [l, large, big]
     - [xl, extra large, venti, giant, (humungous)~]
 
-  - name: '@temperature'
+  - name: '@drinkTemp'
     patterns: 
     - [cold, chilled, cool, icy, iced, freezing cold]
     - warm
@@ -60,8 +61,12 @@ entities:
     
   - name: '@beer'
     patterns:
-    - (@beerStyle|@beerLabel)+ (beer)?
-    - ($quantity)? (of|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
+    - (@drinkTemp|@container|@beerStyle|@beerLabel)+ (beer)?
+    - ($quantity)? (of|@drinkTemp|@container|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
+    examples:
+    - a cold pitcher of coors
+    - a cold mug of beer
+    - 2 pints of ipa 
 
 # ---------- WINE
   - name: '@wineLabel'
@@ -77,10 +82,16 @@ entities:
 
   - name: '@wine'
     patterns:
-    - '@wineLabel (wine|vino)?'
-    - ($quantity)? (of|@wineStyle|wineDescription:___)* (wine|vino)
+    - '(@wineStyle|@wineLabel) (wine|vino)?'
+    - ($quantity)? (of|@wineStyle|@wineStyle|wineDescription:___)* (wine|vino)
 
 # ---------- WHISKY
+  - name: '@whiskeyStyle'
+    patterns:
+    - neat
+    - [ontherocks, on the rocks, on ice]
+    - [water, splash of water]
+
   - name: '@whiskeyLabel'
     patterns:
     - clyde mills
@@ -90,8 +101,8 @@ entities:
 
   - name: '@whiskey'
     patterns:
-    - '@whiskeyLabel (whiskey|borboun)?~'
-    - ($quantity)? (of|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel)*
+    - '(@whiskeyLabel|@whiskeyStyle) (whiskey|borboun)?~ (@whiskeyStyle)*'
+    - ($quantity)? (of|@whiskeyStyle|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel|@whiskeyStyle)*
 
 # ---------- COFFEE
   - name: '@coffeeStyle'
@@ -105,8 +116,8 @@ entities:
   - name: '@coffeeAdditives'
     patterns:
     - milk
-    - cream
-    - [half, half and half, half in half]
+    - [nondairycreamer, '(non-dairy|nondairy)? creamer']
+    - [halfnhalf, half and half, half in half]
     - sugar
     
   - name: '@coffee'
@@ -117,7 +128,7 @@ entities:
 
   - name: '@drinkOrder'
     patterns:
-    - (a|an|some|@number)? (@drinkSize|@container|@temperature)* (of)? (@temperature)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
+    - (a|an|some|@number)? (@drinkSize|@container|@drinkTemp)* (of)? (@drinkTemp)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
 
   - name: '@drinkOrders'
     patterns:
