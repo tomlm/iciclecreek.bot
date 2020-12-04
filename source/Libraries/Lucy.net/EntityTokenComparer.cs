@@ -14,8 +14,18 @@ namespace Lucy.PatternMatchers
                 return false;
             else if (String.Equals(token1.Type, token2.Type, StringComparison.OrdinalIgnoreCase) &&
                      token1.Start == token2.Start &&
-                     token1.End == token2.End)
+                     token1.End == token2.End &&
+                     token1.Children.Count == token2.Children.Count)
+            {
+                foreach (var child in token1.Children)
+                {
+                    if (!token2.Children.Contains(child))
+                    {
+                        return false;
+                    }
+                }
                 return true;
+            }
             else
                 return false;
         }
@@ -23,6 +33,11 @@ namespace Lucy.PatternMatchers
         public override int GetHashCode(LucyEntity token)
         {
             int hCode = token.Type.GetHashCode() ^ token.Start ^ token.End;
+            foreach(var child in token.Children)
+            {
+                hCode ^= child.GetHashCode();
+            }
+
             return hCode.GetHashCode();
         }
     }
