@@ -510,14 +510,14 @@ namespace Lucy.Tests
             });
 
             string text = "I want ice cold beer";
-            var results = engine.MatchEntities(text, includeInternal: true);
+            var results = engine.MatchEntities(text);
             Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("test", entities[0].Type);
             Assert.AreEqual("I want ice cold beer", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
-            Assert.AreEqual("ice cold", entities[0].Children[0].Text);
+            Assert.AreEqual("ice cold", entities[0].Children.First().Text);
         }
 
     }

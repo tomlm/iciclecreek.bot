@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Lucene.Net.Analysis.CharFilters;
@@ -16,7 +17,7 @@ namespace Lucy
     public class MatchContext
     {
         // map of start token => set of entities which start at that token.
-        private Dictionary<int, HashSet<LucyEntity>> positionMap = new Dictionary<int, HashSet<LucyEntity>>();
+        private Dictionary<int, LucyEntitySet> positionMap = new Dictionary<int, LucyEntitySet>();
 
         public MatchContext()
         {
@@ -27,17 +28,17 @@ namespace Lucy
         /// <summary>
         /// All of the current recognized entities
         /// </summary>
-        public HashSet<LucyEntity> Entities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+        public LucyEntitySet Entities { get; set; } = new LucyEntitySet();
 
         /// <summary>
-        /// All of the current recognized entities
+        /// New entities for the current pass through the token space.
         /// </summary>
-        public HashSet<LucyEntity> NewEntities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+        public LucyEntitySet NewEntities { get; set; } = new LucyEntitySet();
 
         /// <summary>
         /// All of the token entities (Aka text and fuzzy text entities)
         /// </summary>
-        public HashSet<LucyEntity> TokenEntities { get; set; } = new HashSet<LucyEntity>(new EntityTokenComparer());
+        public LucyEntitySet TokenEntities { get; set; } = new LucyEntitySet();
 
         /// <summary>
         /// Current entity pattern being evaluated
@@ -49,7 +50,7 @@ namespace Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
-        public void AddEntity(LucyEntity entity)
+        public void AddNewEntity(LucyEntity entity)
         {
             if (entity != null)
             {
@@ -57,15 +58,18 @@ namespace Lucy
             }
         }
 
+        /// <summary>
+        /// take all of the new entities and merge them into the main entity pool
+        /// </summary>
         public void ProcessNewEntities()
         {
             foreach (var newEntity in NewEntities)
             {
                 Entities.Add(newEntity);
-                HashSet<LucyEntity> map;
+                LucyEntitySet map;
                 if (!positionMap.TryGetValue(newEntity.Start, out map))
                 {
-                    map = new HashSet<LucyEntity>(new EntityTokenComparer());
+                    map = new LucyEntitySet();
                     positionMap.Add(newEntity.Start, map);
                 }
 
@@ -86,9 +90,9 @@ namespace Lucy
                     var existingEntity = CurrentEntity.Children.Where(e => e.Type == entity.Type && e.End == prevToken.End).SingleOrDefault();
                     if (existingEntity != null && JToken.FromObject(entity.Resolution ?? "").ToString() == JToken.FromObject(existingEntity.Resolution ?? "").ToString())
                     {
-                        existingEntity.Start = Math.Min(entity.Start, existingEntity.Start);
-                        existingEntity.End = Math.Max(entity.End, existingEntity.End);
-                        existingEntity.Text = this.Text.Substring(existingEntity.Start, existingEntity.End - existingEntity.Start);
+                        var mergedEntity = MergeEntities(entity, existingEntity);
+                        CurrentEntity.Children.Remove(existingEntity);
+                        CurrentEntity.Children.Add(mergedEntity);
                         return;
                     }
                 }
@@ -155,42 +159,109 @@ namespace Lucy
         public void MergeOverlappingEntities()
         {
             // merge entities which are overlapping.
-            var mergedEntities = new HashSet<LucyEntity>(new EntityTokenComparer());
+            var mergedEntities = new LucyEntitySet(this.Entities);
 
             foreach (var entity in this.Entities)
             {
-                if (!this.Entities.Any(alternateEntity =>
-                    {
-                        if (alternateEntity.Type == entity.Type)
-                        {
-                            // if alternateEntity is bigger on both ends
-                            if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
-                            {
-                                // there is a better candidate
-                                return true;
-                            }
+                var tokenStart = this.GetFirstTokenEntity(entity.Start);
+                var tokenNext = this.GetFirstTokenEntity(entity.End);
 
-                            // if offset overlapping at start or end
-                            else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
-                            (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
-                            {
-                                var entityLength = entity.End - entity.Start;
-                                var alternateLength = alternateEntity.End - alternateEntity.Start;
-                                if (entityLength < alternateLength)
-                                {
-                                    // there is a better candidate
-                                    return true;
-                                }
-                            }
-                        }
-                        // this one it is not better then entity.
-                        return false;
-                    }))
+                // look to see if there are alternative is contigious, has same type and resolution.
+                foreach (var alternateEntity in this.Entities.Where(e => e != entity && e.Type == entity.Type))
                 {
-                    mergedEntities.Add(entity);
+                    // if alternateEntity is bigger on both ends
+                    if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
+                    {
+                        // merge them
+                        mergedEntities.Remove(entity);
+                        mergedEntities.Remove(alternateEntity);
+                        mergedEntities.Add(MergeEntities(entity, alternateEntity));
+                    }
+
+                    // if offset overlapping at start or end
+                    else if ((alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
+                        (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
+                    {
+                        // merge them
+                        mergedEntities.Remove(entity);
+                        mergedEntities.Remove(alternateEntity);
+                        mergedEntities.Add(MergeEntities(entity, alternateEntity));
+                    }
+                    else if (entity.Resolution?.ToString() == alternateEntity.Resolution?.ToString())
+                    {
+                        // if entity is next to alternateEntity
+                        var altTokenStart = this.GetFirstTokenEntity(alternateEntity.Start);
+                        var altTokenNext = this.GetFirstTokenEntity(alternateEntity.End);
+                        if (tokenNext == altTokenStart || altTokenNext == tokenStart)
+                        {
+                            mergedEntities.Remove(entity);
+                            mergedEntities.Remove(alternateEntity);
+                            mergedEntities.Add(MergeEntities(entity, alternateEntity));
+                        }
+                    }
                 }
             }
+
             this.Entities = mergedEntities;
+        }
+
+        private LucyEntity MergeEntities(LucyEntity entity, LucyEntity alternateEntity)
+        {
+            var mergedEntity = new LucyEntity()
+            {
+                Type = entity.Type,
+                Start = Math.Min(entity.Start, alternateEntity.Start),
+                End = Math.Max(entity.End, alternateEntity.End),
+            };
+            mergedEntity.Text = this.Text.Substring(mergedEntity.Start, mergedEntity.End - mergedEntity.Start);
+            if (entity.Resolution != null && alternateEntity.Resolution == null)
+            {
+                mergedEntity.Resolution = entity.Resolution;
+            }
+            else if (entity.Resolution == null && alternateEntity.Resolution != null)
+            {
+                mergedEntity.Resolution = alternateEntity.Resolution;
+            }
+            else if (entity.Resolution == alternateEntity.Resolution)
+            {
+                mergedEntity.Resolution = entity.Resolution;
+            }
+            else
+            {
+                if (entity.Resolution is JValue && alternateEntity.Resolution is JValue)
+                {
+                    string resolutionText1 = entity.Resolution?.ToString();
+                    string resolutionTest2 = entity.Resolution?.ToString();
+                    if (resolutionText1.Length > resolutionTest2.Length)
+                    {
+                        mergedEntity.Resolution = resolutionText1;
+                    }
+                    else
+                    {
+                        mergedEntity.Resolution = resolutionTest2;
+                    }
+                }
+                else
+                {
+                    Debugger.Break();
+                }
+            }
+
+            if (entity.Children != null)
+            {
+                foreach (var child in entity.Children)
+                {
+                    mergedEntity.Children.Add(child);
+                }
+            }
+            if (alternateEntity.Children != null)
+            {
+                foreach (var child in alternateEntity.Children)
+                {
+                    mergedEntity.Children.Add(child);
+                }
+            }
+            return mergedEntity;
         }
     }
 }

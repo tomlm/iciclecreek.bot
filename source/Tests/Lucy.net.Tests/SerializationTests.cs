@@ -43,7 +43,7 @@ namespace Lucy.Tests
 
             var entities = results.Where(e => e.Type == "boxSize").ToList();
             Assert.AreEqual(1, entities.Count);
-            var entity = entities.Single().Children.Single();
+            var entity = entities.Single().Children.First(entity => entity.Type == "twoDimensional");
             Assert.AreEqual("twoDimensional", entity.Type);
             Assert.AreEqual(2, entity.Children.Count);
             Assert.AreEqual(1, entity.Children.Where(e => e.Type == "number").Count());

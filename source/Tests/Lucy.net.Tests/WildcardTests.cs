@@ -126,7 +126,7 @@ namespace Lucy.Tests
             var entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe smith", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe smith", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             // stop on entity
@@ -138,7 +138,7 @@ namespace Lucy.Tests
             entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe smith", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe smith", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -163,7 +163,7 @@ namespace Lucy.Tests
             var entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe smith and stuff", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe smith and stuff", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe smith and stuff", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             // stop on entity
@@ -175,7 +175,7 @@ namespace Lucy.Tests
             entities = results.Where(e => e.Type == "name").ToList();
             Assert.AreEqual(1, entities.Count);
             Assert.AreEqual("name", entities[0].Type);
-            Assert.AreEqual("joe smith", entities[0].Children[0].Resolution);
+            Assert.AreEqual("joe smith", entities[0].Children.First().Resolution);
             Assert.AreEqual("name is joe smith", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
         }
 
@@ -312,12 +312,9 @@ namespace Lucy.Tests
 
             var entities = results.Where(e => e.Type == "test3").ToList();
             Assert.AreEqual(1, entities.Count);
-            Assert.AreEqual(2, results.Where(e => e.Type == "label").Count());
-            Assert.AreEqual(2, results.Where(e => e.Type == "label").Count());
-            Assert.AreEqual(3, entities.First().Children.Count);
-            Assert.AreEqual("test1", entities.First().Children[0].Text);
-            Assert.AreEqual("cool", entities.First().Children[1].Text);
-            Assert.AreEqual("more stuff", entities.First().Children[2].Text);
+            Assert.AreEqual("test1", entities.First().Children.First().Text);
+            Assert.AreEqual("cool", entities.First().Children.Skip(1).First().Text);
+            Assert.AreEqual("more stuff", entities.First().Children.Skip(2).First().Text);
         }
     }
 }

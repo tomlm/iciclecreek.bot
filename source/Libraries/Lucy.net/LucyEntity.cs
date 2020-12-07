@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Lucy.PatternMatchers;
 using Newtonsoft.Json;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Lucy
 {
@@ -42,14 +42,14 @@ namespace Lucy
         /// Dependent entities that were consumed to match this entity.
         /// </summary>
         [JsonProperty("children")]
-        public List<LucyEntity> Children { get; set; } = new List<LucyEntity>();
+        public LucyEntitySet Children { get; set; } = new LucyEntitySet();
 
         public IEnumerable<LucyEntity> GetAllEntities()
         {
-            foreach(var child in Children)
+            foreach (var child in Children)
             {
                 yield return child;
-                foreach(var subChild in child.GetAllEntities())
+                foreach (var subChild in child.GetAllEntities())
                 {
                     yield return subChild;
                 }
@@ -64,6 +64,59 @@ namespace Lucy
             }
             var json = JsonConvert.SerializeObject(Resolution);
             return $"{Type} {Text} [{Start},{End}] Resolution:{json}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            LucyEntity entity2 = obj as LucyEntity;
+
+            if (entity2 == null)
+                return false;
+
+            if (this.Start != entity2.Start)
+                return false;
+            if (this.End != entity2.End)
+                return false;
+            if (!String.Equals(this.Type, entity2.Type, StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (!String.Equals(this.Text, entity2.Text, StringComparison.OrdinalIgnoreCase))
+                return false;
+            if ((this.Resolution != null && entity2.Resolution == null) ||
+                     (entity2.Resolution == null && entity2.Resolution != null) ||
+                     (this.Resolution?.GetType().Name != entity2.Resolution?.GetType().Name))
+                return false;
+            if (this.Resolution?.ToString() != entity2.Resolution?.ToString())
+                return false;
+            if (this.Children.Count != entity2.Children.Count)
+                return false;
+
+            foreach (var child in this.Children)
+            {
+                if (entity2.Children.Contains(child) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hCode = (this.Type.GetHashCode() * 17) ^ this.Start ^ this.End;
+            if (this.Text != null)
+                hCode ^= (this.Text.GetHashCode() * 18);
+            if (this.Resolution != null)
+                hCode ^= (this.Resolution.GetHashCode() * 19);
+
+            if (this.Children != null)
+            {
+                foreach (var child in this.Children)
+                {
+                    hCode ^= child.GetHashCode();
+                }
+            }
+
+            return hCode;
         }
     }
 }

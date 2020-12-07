@@ -113,24 +113,22 @@ namespace Lucy.Tests
             Assert.IsTrue(result.Contains("x q z"));
         }
 
-        [TestMethod]
-        public void GenerateEntityMatchNested()
-        {
-            var engine = new LucyEngine(new LucyModel()
-            {
-                Entities = new List<EntityModel>()
-                {
-                    new EntityModel() { Name = "@test", Patterns = new List<PatternModel>() { "(p|d|q)" } },
-                    new EntityModel() { Name = "@test2", Patterns = new List<PatternModel>() { "x @test z" } },
-                    new EntityModel() { Name = "@test3", Patterns = new List<PatternModel>() { "foo (@test2)*" } },
-                }
-            });
+        //[TestMethod]
+        //public void GenerateEntityMatchNested()
+        //{
+        //    var engine = new LucyEngine(new LucyModel()
+        //    {
+        //        Entities = new List<EntityModel>()
+        //        {
+        //            new EntityModel() { Name = "@test", Patterns = new List<PatternModel>() { "(p|d|q)" } },
+        //            new EntityModel() { Name = "@test2", Patterns = new List<PatternModel>() { "x @test z" } },
+        //            new EntityModel() { Name = "@test3", Patterns = new List<PatternModel>() { "foo (@test2)*" } },
+        //        }
+        //    });
 
-            var result = engine.GenerateExamples("test3").ToList();
-            Assert.AreEqual(3, result.Count);
-            Assert.IsTrue(result.Contains("foo"));
-            Assert.IsTrue(result.Contains("foo x p z") || result.Contains("foo x d z") || result.Contains("foo x q z"));
-        }
+        //    var result = engine.GenerateExample("test3");
+        //    Assert.IsTrue(result == "foo" || result == "foo x p z" || result == "foo x d z" || result == "foo x q z");
+        //}
 
         [TestMethod]
         public void GenerateWildcard()

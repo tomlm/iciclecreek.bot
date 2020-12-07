@@ -144,13 +144,15 @@ namespace Lucy
             {
                 foreach (var externalEntity in externalEntities)
                 {
-                    context.AddEntity(externalEntity);
+                    context.AddNewEntity(externalEntity);
                 }
+                context.ProcessNewEntities();
             }
 
             if (this.BuiltinEntities.Any())
             {
                 AddBuiltInEntities(context, text, culture);
+                context.ProcessNewEntities();
             }
 
             // add all @Token entities
@@ -170,6 +172,10 @@ namespace Lucy
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
+                        if (entityPattern.Name == "twoDimensional")
+                        {
+                            //Debugger.Break();
+                        }
                         ProcessEntityPattern(context, tokenEntity, entityPattern);
                     }
                 }
@@ -451,13 +457,13 @@ namespace Lucy
                     context.CurrentEntity.Resolution = context.CurrentEntity.Text;
                 }
 
-                context.AddEntity(context.CurrentEntity);
+                context.AddNewEntity(context.CurrentEntity);
                 // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
 
-                foreach (var childEntity in context.CurrentEntity.Children)
-                {
-                    context.AddEntity(childEntity);
-                }
+                //foreach (var childEntity in context.CurrentEntity.Children)
+                //{
+                //    context.AddNewEntity(childEntity);
+                //}
             }
         }
 
@@ -662,7 +668,7 @@ namespace Lucy
                     case "quotedtext":
                         foreach (var quote in _quotedTextEntityRecognizer.Recognize(text, culture))
                         {
-                            context.AddEntity(quote);
+                            context.AddNewEntity(quote);
                         }
                         return;
                     case "temperature":
@@ -675,7 +681,7 @@ namespace Lucy
 
                 foreach (var result in results)
                 {
-                    context.AddEntity(new LucyEntity()
+                    context.AddNewEntity(new LucyEntity()
                     {
                         Text = result.Text,
                         Type = result.TypeName,

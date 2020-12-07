@@ -1,141 +1,196 @@
-# match on any token with ___, you can name a wildcard slot by using (name:___)
-# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
-# put quantifiers on any token grouping...
-#   '?' ==> zero or one
-#   '*' ==> zero or more
-#   '+' ==> one or more
-#   '#' ==> max number of tokens to consume
-#   '~' ==> use fuzzy matching for the tokens in the group.
-# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
-locale: en
-externalEntities: []
+# macros that will expand when used in a pattern
 macros:
-  $quantity: a|an|some|@number
-  $beverages: '@beer|@wine|@whiskey|@coffee'
+  $clear: (clear|forget|reset|delete)
+  $is: (is|to|equals)
+  $set: (set|change)
+  $show: (show|what is)
+  $name: (name|nom de plum)
+  $departing: (departing|from|leaving|leaving from|taking off)
+  $destination: (arriving|destination|to|to the|landing)
+  $flight: (flight|trip|fly|travel|itinerary)
+
 entities:
-  - name: '@name'
-    patterns:
-    - name is ___
+  # @colors entity
+  - name: "@colors"
+    patterns: [red, green, blue, yellow, purple, white, orange]
 
-# variations on words which will be captured as @container entitiy
-  - name: '@container'
+  # @drinkSize entity
+  - name: "@drinkSize"
     patterns:
-    - glass
-    - shot
-    - shotglass
-    - tumbler
-    - mug
-    - pitcher
-    - cup
+      # NOTE:if patterns are an array the first value is the canonical value
+      - [s, small, short]
+      - [m, medium, tall]
+      - [l, large, tall]
+      - [xl, extra large, venti]
 
-# If you change the pattern to an array it will normalize to a first value in each array.
+  # @airportCode entity
+  - name: "@airportCode"
+    patterns:
+      - [LAX, "los angeles"]
+      - [DSM, "des moines"]
+      - [CHI, "o'hare", "ohare"]
+      - [MID, midway]
+      - ORD
+      - ...
+
+  - name: "conjunction"
+    patterns: 
+    - (and|or|but)
+    
+  # @city entity
+  - name: "@city"
+    patterns:
+      - [(los angeles)~, (city of angeles)~, LA, L.A.]
+      - (des moines)~
+      - (chicago)~
+      - [(seattle)~, (emerald city)~]
+      - [(new york)~, the big apple]
+
+    # @placeAndTime entity is one or more of (@airport | @city | @date)
+  - name: "@placeAndTime"
+    patterns:
+      - "(@airportCode|@city|@datetimev2)+"
+
+  #destination is slot reference + @placeAndTime
+  - name: "@destination"
+    patterns:
+      - $destination @placeAndTime
+      - $destination (@airportCode|@city)+ on @datetimev2
+
+  - name: "@clear_destination"
+    patterns:
+      - $clear @destination
+
+  #departure is slot reference + @placeAndTime
+  - name: "@departure"
+    patterns:
+      - $departing @placeAndTime
+
+  - name: "@clear_departure"
+    patterns:
+      - $clear $departing
+      - $clear (@airportCode|@city|@datetimeV2)+
+
+  #trip
+
+  ## Trip is flight reference plus destination/departure/placeAndTime information
+  - name: "@trip"
+    patterns:
+      - $flight (@departure|@destination|@placeAndTime)+
+
+  - name: "@show_trip"
+    patterns:
+      - $show (me|my|the)? flight (@departure|@destination|@placeAndTime)*
+
+  - name: "@delete_trip"
+    patterns:
+      - $clear (me|my|the)? flight (@departure|@destination|@placeAndTime)*
+
+  #age property
+  - name: "@userage"
+    patterns:
+      - "@age"
+      - ($set)? age (to)? (@age|@number)
+      - (my)? age (is)? (@age|@number)
+
+  - name: "@show_userage"
+    patterns:
+      - $show (my)? age
+      - how old am I
+      - what is (my)? age
+
+  - name: "@clear_age"
+    patterns:
+      - $clear (my)? age
+      - I am ageless
+
+  # box properties
+  - name: "@height"
+    patterns:
+    - (@dimension) (height|tall|high|heigth)
+    - (height|heigth) (is|equals)? (@dimension|@number)
+
+  - name: "@width"
+    patterns: 
+    - (@dimension) (width|wide)
+    - width (is|equals)? (@dimension|@number)
+    
+  - name: "@twoDimensional"
+    patterns:
+      - (@width|@dimension|@number) (x|by)? (@height|@dimension|@number)
+      - (@height|@dimension|@number) (x|by)? (@width|@dimension|@number)
+      
+  - name: "@boxSize"
+    patterns:
+    - box (size)? (is|equals)? (@twoDimensional|@width|@height@|@dimension)
+
+  - name: "@roomSize"
+    patterns:
+    - room (size)? (is|equals)? (@twoDimensional|@width|@height@|@dimension)
+
+  #name property
+  - name: "@name"
+    patterns:
+      - (my)? $name ($is)? (___)+
+      - call me (___)
+      - call me (___)+
+      - (___) (is my)? name
+      - change my name (to)? (___)+
+
+# drinks
   - name: '@drinkSize'
     patterns:
     - [s, small, short]
     - [m, medium, tall]
-    - [l, large, big]
-    - [xl, extra large, venti, giant, (humungous)~]
+    - [l, large]
+    - [xl, extra large, venti]
 
-  - name: '@drinkTemp'
+  - name: '@container'
+    patterns:
+    - (glass|shot|shotglass|tumbler|mug|pitcher)?
+
+  - name: '@beverageType'
+    fuzzyMatch: true
+    patterns:
+    - [beer, suds]
+    - wine
+    - [cocktail, highball]
+    - whiskey
+    - bourbon
+    - rye
+    - gin
+    - vodka
+
+  - name: '@temperature'
+    fuzzyMatch: true
     patterns: 
-    - [cold, chilled, cool, icy, iced, freezing cold]
+    - [cold, chilled, cool, icy, iced]
     - warm
-    - [hot, heated, steaming, '(steaming|really)? hot']
-
-
-# ---------- BEER
-  - name: '@beerLabel'
-    patterns:
-    - coors
-    - (heiniken)~
-    - (corona)~
-    - miller
-
-  - name: '@beerStyle'
-    patterns:
-    - pilsner
-    - [ipa, india pale, india pale ale]
-    - ale
-    - porter
-    
-  - name: '@beer'
-    patterns:
-    - (@drinkTemp|@container|@beerStyle|@beerLabel)+ (beer)?
-    - ($quantity)? (of|@drinkTemp|@container|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
-
-# ---------- WINE
-  - name: '@wineLabel'
-    patterns:
-    - house
-    - big house
-    - columbia crest
-
-  - name: '@wineStyle'
-    patterns:
-    - red
-    - white
-
-  - name: '@wine'
-    patterns:
-    - '@wineLabel (wine|vino)?'
-    - ($quantity)? (of|@wineStyle|wineDescription:___)* (wine|vino)
-
-# ---------- WHISKY
-  - name: '@whiskeyStyle'
-    patterns:
-    - neat
-    - [ontherocks, on the rocks, on ice]
-    - [water, splash of water]
-
-  - name: '@whiskeyLabel'
-    patterns:
-    - clyde mills
-    - bushmills
-    - [makers mark, makers]
-    - glenhaven
-
-  - name: '@whiskey'
-    patterns:
-    - '(@whiskeyLabel|@whiskeyStyle) (whiskey|borboun)?~ (@whiskeyStyle)*'
-    - ($quantity)? (of|@whiskeyStyle|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel|@whiskeyStyle)*
-
-# ---------- COFFEE
-  - name: '@coffeeStyle'
-    patterns:
-    - [french, french roast]
-    - black
-    - espresso
-    - (cappucino)~
-    - (latte)~
-
-  - name: '@coffeeAdditives'
-    patterns:
-    - milk
-    - [nondairycreamer, '(non-dairy|nondairy)? creamer']
-    - [halfnhalf, half and half, half in half]
-    - sugar
-    
-  - name: '@coffee'
-    patterns:
-    - (@coffeeStyle|@coffeeAdditives)* (coffee)? (with)? (@coffeeStyle|@coffeeAdditives)* (@conjunction @coffeeAdditives)*
-
-# -------- DRINK ORDER
-
+    - [hot, heated, steaming]
+  
   - name: '@drinkOrder'
     patterns:
-    - (a|an|some|@number)? (@drinkSize|@container|@drinkTemp)* (of)? (@drinkTemp)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
+    - (like|have|order) (a|some|@number)? (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?
+    - (a|some|@number) (@drinkSize|@temperature|@container|description:___)* (of)? (@beverageType|beverage|drink)?    
 
-  - name: '@drinkOrders'
+  - name: '@or'
+    patterns: [or]
+
+  - name: '@and'
+    patterns: [and]
+
+  - name: '@compoundDrinkOrder'
     patterns:
-    - '@drinkOrder (@conjunction|@drinkOrder)*'
+    - '@drinkOrder @or @drinkOrder'
 
-  - name: '@desireIntent'
-    patterns:
-    - (like|like to|have|order|bring us|bring me) (@drinkOrders)+
-
-# ------------ MISC
-  - name: '@conjunction'
-    patterns: 
-    - or
-    - and
-
+intents:
+  - name: match
+    examples:
+      - book a flight from new york to SEA on friday
+      - the box is 12 inches wide by 14
+      - it is 15 feet tall
+      - my name is Boba Fett
+      - you can call me Boba
+      - people call me "john wick"
+      - change my flight to new york
+      - show me my flight
