@@ -158,7 +158,7 @@ namespace Lucy
             // add all @Token entities
             foreach (var tokenEntity in Tokenize(text))
             {
-                context.TokenEntities.Add(tokenEntity);
+                context.AddTokenEntity(tokenEntity);
             }
 
             int count = 0;
@@ -172,10 +172,6 @@ namespace Lucy
                     // foreach entity pattern
                     foreach (var entityPattern in EntityPatterns)
                     {
-                        if (entityPattern.Name == "twoDimensional")
-                        {
-                            //Debugger.Break();
-                        }
                         ProcessEntityPattern(context, tokenEntity, entityPattern);
                     }
                 }
@@ -197,7 +193,7 @@ namespace Lucy
                 }
             } while (count != context.Entities.Count);
 
-            context.MergeOverlappingEntities();
+            context.MergeOverlappingEntities(context.Entities);
 
             // filter out internal entities
             if (includeInternal)

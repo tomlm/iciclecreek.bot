@@ -25,7 +25,7 @@ namespace Lucy.PatternMatchers
             var matchResult = new MatchResult();
             if (tokenEntity != null)
             {
-                var entity = context.FindNextEntityOfType(EntityType, tokenEntity);
+                var entity = context.Entities.FirstOrDefault(le => le.Start == tokenEntity.Start && le.Type == EntityType);
                 if (entity != null)
                 {
                     // add the matched entity to the children of the currentEntity.

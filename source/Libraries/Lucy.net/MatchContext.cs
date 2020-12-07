@@ -17,7 +17,7 @@ namespace Lucy
     public class MatchContext
     {
         // map of start token => set of entities which start at that token.
-        private Dictionary<int, LucyEntitySet> positionMap = new Dictionary<int, LucyEntitySet>();
+        private Dictionary<int, LucyEntitySet> tokenMap = new Dictionary<int, LucyEntitySet>();
 
         public MatchContext()
         {
@@ -50,6 +50,20 @@ namespace Lucy
         /// </summary>
         public LucyEntity CurrentEntity { get; set; }
 
+        public void AddTokenEntity(LucyEntity entity)
+        {
+            TokenEntities.Add(entity);
+
+            LucyEntitySet map;
+            if (!tokenMap.TryGetValue(entity.Start, out map))
+            {
+                map = new LucyEntitySet();
+                tokenMap.Add(entity.Start, map);
+            }
+
+            map.Add(entity);
+        }
+
         public void AddNewEntity(LucyEntity entity)
         {
             if (entity != null)
@@ -66,14 +80,6 @@ namespace Lucy
             foreach (var newEntity in NewEntities)
             {
                 Entities.Add(newEntity);
-                LucyEntitySet map;
-                if (!positionMap.TryGetValue(newEntity.Start, out map))
-                {
-                    map = new LucyEntitySet();
-                    positionMap.Add(newEntity.Start, map);
-                }
-
-                map.Add(newEntity);
             }
             NewEntities.Clear();
         }
@@ -97,32 +103,13 @@ namespace Lucy
                     }
                 }
             }
-
             CurrentEntity.Children.Add(entity);
-        }
-
-        public LucyEntity FindNextEntityOfType(string entityType, LucyEntity tokenEntity)
-        {
-            if (positionMap.TryGetValue(tokenEntity.Start, out var entities))
-            {
-                var result = entities
-                    .Where(entityToken => String.Equals(entityToken.Type, entityType, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault();
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-            return null;
+            CurrentEntity.End = CurrentEntity.Children.Max(e => e.End);
         }
 
         public bool IsTokenMatched(LucyEntity tokenEntity)
         {
-            if (positionMap.TryGetValue(tokenEntity.Start, out var entities))
-            {
-                return entities.Any();
-            }
-            return false;
+            return this.Entities.Any(e => e.Start == tokenEntity.Start);
         }
 
         /// <summary>
@@ -156,18 +143,18 @@ namespace Lucy
                 .OrderByDescending(et => et.End).Where(entityToken => entityToken.End < textToken.Start).FirstOrDefault();
         }
 
-        public void MergeOverlappingEntities()
+        public void MergeOverlappingEntities(LucyEntitySet entities)
         {
             // merge entities which are overlapping.
-            var mergedEntities = new LucyEntitySet(this.Entities);
+            var mergedEntities = new LucyEntitySet(entities);
 
-            foreach (var entity in this.Entities)
+            foreach (var entity in entities)
             {
                 var tokenStart = this.GetFirstTokenEntity(entity.Start);
                 var tokenNext = this.GetFirstTokenEntity(entity.End);
 
                 // look to see if there are alternative is contigious, has same type and resolution.
-                foreach (var alternateEntity in this.Entities.Where(e => e != entity && e.Type == entity.Type))
+                foreach (var alternateEntity in entities.Where(e => e != entity && e.Type == entity.Type))
                 {
                     // if alternateEntity is bigger on both ends
                     if (alternateEntity.Start < entity.Start && alternateEntity.End > entity.End)
@@ -201,8 +188,11 @@ namespace Lucy
                     }
                 }
             }
-
-            this.Entities = mergedEntities;
+            entities.Clear();
+            foreach (var entity in mergedEntities)
+            {
+                entities.Add(entity);
+            }
         }
 
         private LucyEntity MergeEntities(LucyEntity entity, LucyEntity alternateEntity)
@@ -228,22 +218,15 @@ namespace Lucy
             }
             else
             {
-                if (entity.Resolution is JValue && alternateEntity.Resolution is JValue)
+                string resolutionText1 = entity.Resolution?.ToString();
+                string resolutionTest2 = entity.Resolution?.ToString();
+                if (resolutionText1.Length > resolutionTest2.Length)
                 {
-                    string resolutionText1 = entity.Resolution?.ToString();
-                    string resolutionTest2 = entity.Resolution?.ToString();
-                    if (resolutionText1.Length > resolutionTest2.Length)
-                    {
-                        mergedEntity.Resolution = resolutionText1;
-                    }
-                    else
-                    {
-                        mergedEntity.Resolution = resolutionTest2;
-                    }
+                    mergedEntity.Resolution = resolutionText1;
                 }
                 else
                 {
-                    Debugger.Break();
+                    mergedEntity.Resolution = resolutionTest2;
                 }
             }
 
@@ -261,6 +244,12 @@ namespace Lucy
                     mergedEntity.Children.Add(child);
                 }
             }
+
+            if (mergedEntity.Children.Any())
+            {
+                this.MergeOverlappingEntities(mergedEntity.Children);
+            }
+
             return mergedEntity;
         }
     }
