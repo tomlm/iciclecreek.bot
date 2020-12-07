@@ -171,7 +171,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
                         if (resolution is JObject && resolution.Property("$instance") != null)
                         {
-                            newEntity.Children.AddRange(GetEntitiesFromObject(activity, resolution));
+                            foreach (var entity in GetEntitiesFromObject(activity, resolution))
+                            {
+                                newEntity.Children.Add(entity);
+                            }
                         }
                         else
                         {
