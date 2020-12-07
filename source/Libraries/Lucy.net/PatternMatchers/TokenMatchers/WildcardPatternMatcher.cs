@@ -42,6 +42,7 @@ namespace Lucy.PatternMatchers
                         Type = entityType,
                         Start = wildcardEntity.Start,
                         End = tokenEntity.End,
+                        Score = 0.5f,
                         Text = context.Text.Substring(wildcardEntity.Start, tokenEntity.End - wildcardEntity.Start),
                         Resolution = context.Text.Substring(wildcardEntity.Start, tokenEntity.End - wildcardEntity.Start),
                     };
@@ -56,6 +57,7 @@ namespace Lucy.PatternMatchers
                         Type = entityType,
                         Start = tokenEntity.Start,
                         End = tokenEntity.End,
+                        Score = 0.5f,
                         Text = context.Text.Substring(tokenEntity.Start, tokenEntity.End - tokenEntity.Start),
                         Resolution = context.Text.Substring(tokenEntity.Start, tokenEntity.End - tokenEntity.Start)
                     };

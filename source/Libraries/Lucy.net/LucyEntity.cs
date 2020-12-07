@@ -28,7 +28,7 @@ namespace Lucy
         public object Resolution { get; set; }
 
         [JsonProperty("score")]
-        public float Score { get; set; }
+        public float Score { get; set; } = 1.0f;
 
         // start index
         [JsonProperty("start")]

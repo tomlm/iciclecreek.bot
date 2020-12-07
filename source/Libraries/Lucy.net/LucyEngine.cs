@@ -46,6 +46,7 @@ using Lucene.Net.Util;
 using Newtonsoft.Json.Linq;
 using builtin = Microsoft.Recognizers.Text;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Lucy
 {
@@ -203,6 +204,12 @@ namespace Lucy
                 return merged;
             }
 
+            // score each entity
+            foreach (var entity in context.Entities)
+            {
+                entity.Score = (float)(1 + entity.GetAllEntities().Count()) / context.TokenEntities.Count;
+            }
+
             return context.Entities;
         }
 
@@ -303,12 +310,22 @@ namespace Lucy
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(text);
-            foreach (var grp in entities.GroupBy(entity => entity.Type.ToLower())
-                                                .OrderBy(grp => grp.Max(v => v.End - v.Start))
-                                                .ThenBy(grp => grp.Min(v => v.Start)))
+            foreach (var entity in entities.OrderByDescending(entity => entity.Score))
             {
-                sb.Append(FormatEntityLine(text, grp));
+                sb.AppendLine($"==== {entity.Type} ({entity.Score})");
+                sb.AppendLine(text);
+                var allEntities = new List<LucyEntity>(entity.GetAllEntities())
+                {
+                    entity
+                };
+                foreach (var grp in allEntities.GroupBy(e => e.Type.ToLower())
+                                                    .OrderBy(grp => grp.Max(v => v.End - v.Start))
+                                                    .ThenBy(grp => grp.Min(v => v.Start)))
+                {
+                    sb.Append(FormatEntitiesOfSameTypeAsLine(text, grp));
+                }
+
+                sb.AppendLine();
             }
 
             return sb.ToString();
@@ -354,7 +371,7 @@ namespace Lucy
             return sb.ToString();
         }
 
-        private static string FormatEntityLine(string text, IEnumerable<LucyEntity> entities)
+        private static string FormatEntitiesOfSameTypeAsLine(string text, IEnumerable<LucyEntity> entities)
         {
             StringBuilder sb = new StringBuilder();
             foreach (var tier in ArrangeEntitiesIntoNonOverlappingTies(entities))
