@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lucy.PatternMatchers
 {
-    public class EntityTokenComparer : EqualityComparer<LucyEntity>
+    public class LucyEntityComparer : EqualityComparer<LucyEntity>
     {
         public override bool Equals(LucyEntity token1, LucyEntity token2)
         {
