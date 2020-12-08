@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:aui="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-        xmlns:local="clr-namespace:LucyPad" 
+        xmlns:local="clr-namespace:LucyPad" Icon="icon.ico" 
         mc:Ignorable="d" Loaded="Window_Loaded"
         Title="LucyPad" Height="450" Width="800">
     <Window.Resources>
