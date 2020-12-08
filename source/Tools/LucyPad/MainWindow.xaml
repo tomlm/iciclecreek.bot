@@ -74,7 +74,7 @@
                         <TabControl Grid.Row="2"  x:Name="entityTabs" >
                             <TabItem Header="Entities" x:Name="entitiesTab">
                                 <TextBox Grid.Row="2" x:Name="entitiesBox" FontFamily="Consolas" FontSize="15pt" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
-                            </TabItem> 
+                            </TabItem>
                             <TabItem Header="Recognizer" x:Name="recognizerTab">
                                 <TextBox x:Name="recognizerBox" FontFamily="Consolas" FontSize="15pt"/>
                             </TabItem>

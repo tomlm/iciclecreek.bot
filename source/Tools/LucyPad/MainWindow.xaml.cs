@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
@@ -103,7 +102,7 @@ namespace LucyPad
 
         private void LoadModel()
         {
-            Trace.TraceInformation("Loading model");
+            // Trace.TraceInformation("Loading model");
             var x = yamlDeserializer.Deserialize(new StringReader(this.editor.Document.Text));
             var json = yamlToJsonSerializer.Serialize(x);
             var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
@@ -114,7 +113,7 @@ namespace LucyPad
             };
 
             StringBuilder sb = new StringBuilder();
-            for(int i=0; i<100;i++)
+            for (int i = 0; i < 100; i++)
             {
                 sb.AppendLine(engine.GenerateExample("desireIntent"));
             }
