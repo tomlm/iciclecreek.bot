@@ -61,9 +61,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lucy.net", "Libraries\Lucy.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lucy.net.Tests", "tests\Lucy.net.Tests\Lucy.net.Tests.csproj", "{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LucyPad", "tools\LucyPad\LucyPad.csproj", "{D473CF28-2CFA-42A4-86BF-33364C25F159}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LucyPad", "tools\LucyPad\LucyPad.csproj", "{D473CF28-2CFA-42A4-86BF-33364C25F159}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy", "Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj", "{13118DC3-368A-493A-A2DC-834B54A7ADC0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LucyPad2.Server", "tools\LucyPad2\Server\LucyPad2.Server.csproj", "{59151732-420B-4C92-8236-0C5858717784}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LucyPad2.Client", "tools\LucyPad2\Client\LucyPad2.Client.csproj", "{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +167,14 @@ Global
 		{13118DC3-368A-493A-A2DC-834B54A7ADC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13118DC3-368A-493A-A2DC-834B54A7ADC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13118DC3-368A-493A-A2DC-834B54A7ADC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59151732-420B-4C92-8236-0C5858717784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59151732-420B-4C92-8236-0C5858717784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59151732-420B-4C92-8236-0C5858717784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59151732-420B-4C92-8236-0C5858717784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +204,8 @@ Global
 		{154F41A4-04E4-4B24-A5DD-5E2ABF1C0543} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 		{D473CF28-2CFA-42A4-86BF-33364C25F159} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 		{13118DC3-368A-493A-A2DC-834B54A7ADC0} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{59151732-420B-4C92-8236-0C5858717784} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
+		{DABE5186-BFA5-40DA-BCA8-F4CED8DC0BC7} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}

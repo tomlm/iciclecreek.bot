@@ -1,0 +1,275 @@
+﻿@page "/"
+@inherits LayoutComponentBase
+<!-- layout -->
+<div class="grid">
+    <TextEdit Class="grid-query" Placeholder="Enter utterance..." Text="@Text" TextChanged="@OnTextChanged" DelayTextOnKeyPress="true" />
+
+    <Text Class="grid-yamlheading">Lucy Yaml file</Text>
+
+    <MonacoEditorYaml @ref="yamlEditor" Id="monacoEditorYaml" Value="@Yaml" CssClass="grid-yaml" />
+
+    <Alert Class="grid-alert" Color="Color.Warning" @bind-IsShow="ShowAlert">
+        <TextEdit IsPlaintext="true" @bind-Text="@Error" />
+    </Alert>
+
+    <Text Class="grid-resultheading">Entities</Text>
+
+    <plaintext class="grid-results">@SpanResults</plaintext>
+</div>
+
+
+@functions {
+    private MonacoEditorYaml yamlEditor;
+
+    private LucyEngine engine = null;
+    private LucyRecognizer recognizer = null;
+    private string lucyModel = null;
+    private JsonConverter patternModelConverter = new PatternModelConverter();
+
+    private IDeserializer yamlDeserializer = new DeserializerBuilder()
+                                                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                                .Build();
+    private ISerializer yamlToJsonSerializer = new SerializerBuilder()
+                                            .JsonCompatible()
+                                            .Build();
+
+    public string Yaml { get; set; } =
+@"# match on any token with ___, you can name a wildcard slot by using (name:___)
+# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
+locale: en
+externalEntities: []
+macros:
+  $quantity: a|an|some|@number
+  $beverages: '@beer|@wine|@whiskey|@coffee'
+entities:
+  - name: '@name'
+    patterns:
+    - name is ___
+
+# variations on words which will be captured as @container entitiy
+  - name: '@container'
+    patterns:
+    - glass
+    - shot
+    - shotglass
+    - tumbler
+    - mug
+    - pint
+    - pitcher
+    - cup
+
+# If you change the pattern to an array it will normalize to a first value in each array.
+  - name: '@drinkSize'
+    patterns:
+    - [s, small, short]
+    - [m, medium, tall]
+    - [l, large, big]
+    - [xl, extra large, venti, giant, (humungous)~]
+
+  - name: '@drinkTemp'
+    patterns: 
+    - [cold, chilled, cool, icy, iced, freezing cold]
+    - warm
+    - [hot, heated, steaming, '(steaming|really)? hot']
+
+
+# ---------- BEER
+  - name: '@beerLabel'
+    patterns:
+    - coors
+    - (heiniken)~
+    - (corona)~
+    - miller
+
+  - name: '@beerStyle'
+    patterns:
+    - pilsner
+    - [ipa, india pale, india pale ale]
+    - ale
+    - porter
+    
+  - name: '@beer'
+    patterns:
+    - (@drinkTemp|@container|@beerStyle|@beerLabel)+ (beer)?
+    - ($quantity)? (of|@drinkTemp|@container|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
+    examples:
+    - a cold pitcher of coors
+    - a cold mug of beer
+    - 2 pints of ipa 
+
+# ---------- WINE
+  - name: '@wineLabel'
+    patterns:
+    - house
+    - big house
+    - columbia crest
+
+  - name: '@wineStyle'
+    patterns:
+    - red
+    - white
+
+  - name: '@wine'
+    patterns:
+    - '(@wineStyle|@wineLabel) (wine|vino)?'
+    - ($quantity)? (of|@wineStyle|@wineStyle|wineDescription:___)* (wine|vino)
+
+# ---------- WHISKY
+  - name: '@whiskeyStyle'
+    patterns:
+    - neat
+    - [ontherocks, on the rocks, on ice]
+    - [water, splash of water]
+
+  - name: '@whiskeyLabel'
+    patterns:
+    - clyde mills
+    - bushmills
+    - [makers mark, makers]
+    - glenhaven
+
+  - name: '@whiskey'
+    patterns:
+    - '(@whiskeyLabel|@whiskeyStyle) (whiskey|borboun)?~ (@whiskeyStyle)*'
+    - ($quantity)? (of|@whiskeyStyle|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel|@whiskeyStyle)*
+
+# ---------- COFFEE
+  - name: '@coffeeStyle'
+    patterns:
+    - [french, french roast]
+    - black
+    - espresso
+    - (cappucino)~
+    - (latte)~
+
+  - name: '@coffeeAdditives'
+    patterns:
+    - milk
+    - [nondairycreamer, '(non-dairy|nondairy)? creamer']
+    - [halfnhalf, half and half, half in half]
+    - sugar
+    
+  - name: '@coffee'
+    patterns:
+    - (@coffeeStyle|@coffeeAdditives)* (coffee)? (with)? (@coffeeStyle|@coffeeAdditives)* (@conjunction @coffeeAdditives)*
+
+# -------- DRINK ORDER
+
+  - name: '@drinkOrder'
+    patterns:
+    - (a|an|some|@number)? (@drinkSize|@container|@drinkTemp)* (of)? (@drinkTemp)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
+
+  - name: '@drinkOrders'
+    patterns:
+    - '@drinkOrder (@conjunction|@drinkOrder)*'
+
+  - name: '@desireIntent'
+    patterns:
+    - (like|like to|have|order|bring us|bring me) (@drinkOrders)+
+
+# ------------ MISC
+  - name: '@conjunction'
+    patterns: 
+    - or
+    - and
+";
+
+    public string SpanResults { get; set; }
+
+    public string Text { get; set; }
+
+    private string error;
+    public string Error { get { return error; } set { error = value; } }
+
+    private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
+
+    protected override void OnInitialized()
+    {
+    }
+
+    async Task OnTextChanged(string value)
+    {
+        try
+        {
+            var yaml = await yamlEditor.GetValue();
+            if (lucyModel != yaml)
+            {
+                LoadModel(yaml);
+            }
+            var text = value.Trim() ?? string.Empty;
+            if (text.Length > 0)
+            {
+                var results = engine.MatchEntities(text);
+
+                this.SpanResults = LucyEngine.VisualizeResultsAsSpans(text, results);
+                // this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
+
+                @*var activity = new Activity(ActivityTypes.Message) { Text = text };
+                    var tc = new TurnContext(new TestAdapter(), activity);
+                    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+                    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
+                    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+                    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());*@
+            }
+        }
+        catch (SemanticErrorException err)
+        {
+            this.Error = err.Message;
+            //this.editor.ScrollToLine(err.Start.Line);
+            //var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
+            //this.editor.Select(line.Offset, line.Length);
+        }
+        catch (SyntaxErrorException err)
+        {
+            this.Error = err.Message;
+            //this.error.Visibility = Visibility.Visible;
+            //this.editor.ScrollToLine(err.Start.Line);
+            //var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
+            //this.editor.Select(line.Offset, line.Length);
+        }
+        catch (Exception err)
+        {
+            this.Error = err.Message;
+            //this.error.Content = err.Message;
+            //this.error.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void LoadModel(string yaml)
+    {
+        // Trace.TraceInformation("Loading model");
+        var reader = new StringReader(yaml);
+        var x = yamlDeserializer.Deserialize(new StringReader(yaml));
+        var json = yamlToJsonSerializer.Serialize(x);
+        var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
+        engine = new LucyEngine(model, useAllBuiltIns: true);
+        recognizer = new LucyRecognizer()
+        {
+            Model = model,
+        };
+
+        @*StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 100; i++)
+            {
+                sb.AppendLine(engine.GenerateExample("desireIntent"));
+            }*@
+        // this.examplesBox.Text = sb.ToString();
+
+        if (engine.Warnings.Any())
+        {
+            this.Error = String.Join("\n", engine.Warnings);
+        }
+        else
+        {
+            this.Error = null;
+        }
+        lucyModel = yaml;
+    }
+}
