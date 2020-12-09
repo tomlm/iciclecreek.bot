@@ -194,7 +194,8 @@ namespace Lucy
                 }
             } while (count != context.Entities.Count);
 
-            context.MergeOverlappingEntities(context.Entities);
+            context.MergeEntities(context.Entities);
+            context.ResolveEntities(context.Entities);
 
             // filter out internal entities
             if (includeInternal)
@@ -204,13 +205,7 @@ namespace Lucy
                 return merged;
             }
 
-            // score each entity
-            foreach (var entity in context.Entities)
-            {
-                entity.Score = (float)(1 + entity.GetAllEntities().Count()) / context.TokenEntities.Count;
-            }
-
-            return context.Entities;
+            return context.Entities.OrderByDescending(e => e.Score);
         }
 
         public IEnumerable<string> GenerateExamples(string entityType)
@@ -296,28 +291,40 @@ namespace Lucy
             }
         }
 
+        public static string VisualEntities(string text, IEnumerable<LucyEntity> entities, bool showSpans = true, bool showHierarchy = true)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var entity in entities)
+            {
+                sb.AppendLine(VisualizeEntity(text, entity, showSpans, showHierarchy));
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Format entities as fixed width string.
         /// </summary>
         /// <param name="text">original text</param>
         /// <param name="entities">entities</param>
         /// <returns></returns>
-        public static string VisualizeResultsAsSpans(string text, IEnumerable<LucyEntity> entities)
+        public static string VisualizeEntity(string text, LucyEntity entity, bool showSpans = true, bool showHierarchy = true)
         {
-            if (!entities.Any())
+            if (entity == null)
             {
-                return "No entities found";
+                return "No entity";
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (var entity in entities.OrderByDescending(entity => entity.Score))
+            if (showSpans)
             {
+
                 sb.AppendLine($"==== {entity.Type} ({entity.Score})");
                 sb.AppendLine(text);
                 var allEntities = new List<LucyEntity>(entity.GetAllEntities())
                 {
                     entity
                 };
+
                 foreach (var grp in allEntities.GroupBy(e => e.Type.ToLower())
                                                     .OrderBy(grp => grp.Max(v => v.End - v.Start))
                                                     .ThenBy(grp => grp.Min(v => v.Start)))
@@ -328,25 +335,7 @@ namespace Lucy
                 sb.AppendLine();
             }
 
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Format entities as fixed width string.
-        /// </summary>
-        /// <param name="text">original text</param>
-        /// <param name="entities">entities</param>
-        /// <returns></returns>
-        public static string VizualizeResultsAsHierarchy(string text, IEnumerable<LucyEntity> entities)
-        {
-            if (!entities.Any())
-            {
-                return "No entities found";
-            }
-
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var entity in entities.OrderByDescending(entity => entity.GetAllEntities().Count()))
+            if (showHierarchy)
             {
                 sb.AppendLine(FormatEntityChildren(string.Empty, entity));
             }
@@ -357,14 +346,14 @@ namespace Lucy
         private static string FormatEntityChildren(string prefix, LucyEntity entity)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"{prefix} @{entity}");
+            sb.AppendLine($"{prefix} {entity}");
 
             if (String.IsNullOrEmpty(prefix))
             {
                 prefix = "=> ";
             }
 
-            foreach (var child in entity.Children)
+            foreach (var child in entity.Children.OrderBy(e => e.Start))
             {
                 sb.Append(FormatEntityChildren("    " + prefix, child));
             }
@@ -469,6 +458,10 @@ namespace Lucy
                 {
                     context.CurrentEntity.Resolution = context.CurrentEntity.Text;
                 }
+
+                context.ResolveEntities(context.CurrentEntity.Children);
+
+                context.CurrentEntity.Score = (float)(context.CurrentEntity.End - context.CurrentEntity.Start) / context.Text.Length;
 
                 context.AddNewEntity(context.CurrentEntity);
                 // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
@@ -681,6 +674,7 @@ namespace Lucy
                     case "quotedtext":
                         foreach (var quote in _quotedTextEntityRecognizer.Recognize(text, culture))
                         {
+                            quote.Score = (float)(quote.End - quote.Start) / text.Length;
                             context.AddNewEntity(quote);
                         }
                         return;
@@ -701,7 +695,7 @@ namespace Lucy
                         Start = result.Start,
                         End = result.End + 1,
                         Resolution = result.Resolution,
-                        Score = 1.0F
+                        Score = ((float)(result.End + 1) - result.Start) / text.Length
                     });
                 }
             }
@@ -709,66 +703,66 @@ namespace Lucy
 
         private Analyzer GetAnalyzerForLocale(string locale = "en")
         {
-            var language = CultureInfo.GetCultureInfo(locale).EnglishName.Split(' ').First();
-            switch (language)
+            locale = locale.Split('-').First();
+            switch (locale)
             {
-                case "Arabic":
+                case "ar":
                     return new ArabicAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Armenian":
+                case "hy":
                     return new ArmenianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Basque":
+                case "eu":
                     return new BasqueAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Catalan":
+                case "ca":
                     return new CatalanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Czech":
+                case "cs":
                     return new CzechAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Danish":
+                case "da":
                     return new DanishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Dutch":
+                case "nl":
                     return new DutchAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "English":
+                case "en":
                     return new EnglishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Finnish":
+                case "fi":
                     return new FinnishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "French":
+                case "fr":
                     return new FrenchAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Galician":
+                case "gl":
                     return new GalicianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "German":
+                case "de":
                     return new GermanAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Greek":
+                case "el":
                     return new GreekAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Hindi":
+                case "hi":
                     return new HindiAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Hungarian":
+                case "hu":
                     return new HungarianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Chinese":
-                case "Japanese":
-                case "Korean":
+                case "ch":
+                case "ja":
+                case "ko":
                     return new CJKAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Indonesian":
+                case "id":
                     return new IndonesianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Irish":
+                case "ga":
                     return new IrishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Italian":
+                case "it":
                     return new ItalianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Latvian":
+                case "lv":
                     return new LatvianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Norwegian":
+                case "no":
                     return new NorwegianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Persian":
+                case "fa":
                     return new PersianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Portuguese":
+                case "pt":
                     return new PortugueseAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Romanian":
+                case "ro":
                     return new RomanianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Russian":
+                case "ru":
                     return new RussianAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Spanish":
+                case "es":
                     return new SpanishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Swedish":
+                case "sv":
                     return new SwedishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
-                case "Turkish":
+                case "tr":
                     return new TurkishAnalyzer(LuceneVersion.LUCENE_48, stopwords: CharArraySet.EMPTY_SET);
                 default:
                     return new StandardAnalyzer(LuceneVersion.LUCENE_48, stopWords: CharArraySet.EMPTY_SET);

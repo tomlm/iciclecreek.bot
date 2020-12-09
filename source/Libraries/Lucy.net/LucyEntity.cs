@@ -60,10 +60,10 @@ namespace Lucy
         {
             if (Resolution == null)
             {
-                return $"{Type} [{Start},{End}]";
+                return $"@{Type} [{Start},{End}] {String.Join(",", this.Children.Select(c => '@'+c.Type))}";
             }
             var json = JsonConvert.SerializeObject(Resolution);
-            return $"{Type} {Text} [{Start},{End}] Resolution:{json}";
+            return $"@{Type} [{Start},{End}] '{Text}' Resolution:{json}";
         }
 
         public override bool Equals(object obj)

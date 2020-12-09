@@ -38,8 +38,7 @@ namespace Lucy.Tests
             string text = "the box is 9 inches by 7.";
 
             var results = engine.MatchEntities(text);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "boxSize").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -65,14 +64,17 @@ namespace Lucy.Tests
 
             string text = "flight from seattle to chicago.";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
-            Assert.AreEqual(1, results.Where(e => e.Type == "trip").Count());
-            Assert.AreEqual(1, results.Where(e => e.Type == "destination").Count());
-            Assert.AreEqual(1, results.Where(e => e.Type == "departure").Count());
-            Assert.AreEqual(2, results.Where(e => e.Type == "placeAndTime").Count());
-            Assert.AreEqual(2, results.Where(e => e.Type == "city").Count());
+            var trip = results.Where(e => e.Type == "trip").Single();
+            var departure = trip.Children.Where(e => e.Type == "departure").Single();
+            var departurePlace = departure.Children.Where(e => e.Type == "placeAndTime").Single();
+            var departureCity = departurePlace.Children.Where(e => e.Type == "city").Single();
+            Assert.AreEqual("seattle", departureCity.Resolution);
+            var destination = trip.Children.Where(e => e.Type == "destination").Single();
+            var desinationPlace = destination.Children.Where(e => e.Type == "placeAndTime").Single();
+            var destinationCity = desinationPlace.Children.Where(e => e.Type == "city").Single();
+            Assert.AreEqual("chicago", destinationCity.Resolution);
         }
     }
 }

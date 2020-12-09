@@ -18,7 +18,7 @@ namespace Lucy.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, includeInternal: true);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == TokenPatternMatcher.ENTITYTYPE).ToList();
             Assert.AreEqual(4, entities.Count);
@@ -48,7 +48,7 @@ namespace Lucy.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -76,7 +76,7 @@ namespace Lucy.Tests
 
             string text = "this is a test";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -105,7 +105,7 @@ namespace Lucy.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -133,7 +133,7 @@ namespace Lucy.Tests
 
             string text = "this is a tesst";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -161,7 +161,7 @@ namespace Lucy.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -170,7 +170,7 @@ namespace Lucy.Tests
 
             text = "this is a nottest notdog notfrog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(0, entities.Count);
@@ -196,7 +196,7 @@ namespace Lucy.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -224,7 +224,7 @@ namespace Lucy.Tests
 
             string text = "this is a test dog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -253,7 +253,7 @@ namespace Lucy.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, includeInternal: true);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -317,7 +317,7 @@ namespace Lucy.Tests
 
             string text = "this is a frog frog frog frog";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -326,7 +326,7 @@ namespace Lucy.Tests
 
             text = "this is a test dog frog";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -358,17 +358,17 @@ namespace Lucy.Tests
 
             string text = "flight from seattle to dez moiynes";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(2, entities.Count);
             Assert.AreEqual("test", entities[0].Type);
-            Assert.AreEqual("SEA", entities[0].Resolution);
-            Assert.AreEqual("seattle", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("DSM", entities[0].Resolution);
+            Assert.AreEqual("dez moiynes", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
 
             Assert.AreEqual("test", entities[1].Type);
-            Assert.AreEqual("DSM", entities[1].Resolution);
-            Assert.AreEqual("dez moiynes", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+            Assert.AreEqual("SEA", entities[1].Resolution);
+            Assert.AreEqual("seattle", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
         }
 
         [TestMethod]
@@ -394,8 +394,7 @@ namespace Lucy.Tests
 
             string text = "the box is 9 inches by 7.";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "boxsize").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -419,16 +418,14 @@ namespace Lucy.Tests
 
             string text = "x z";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(0, entities.Count);
 
             text = "x q ";
             results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -462,8 +459,7 @@ namespace Lucy.Tests
 
             string text = "the box is 9 inches by 7.";
             var results = engine.MatchEntities(text);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
-            Trace.TraceInformation("\n" + LucyEngine.VizualizeResultsAsHierarchy(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "boxsize").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -489,7 +485,7 @@ namespace Lucy.Tests
 
             string text = "nomatch test1 test2 nomatch";
             var results = engine.MatchEntities(text, null);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test3").ToList();
             Assert.AreEqual(1, entities.Count);
@@ -511,7 +507,7 @@ namespace Lucy.Tests
 
             string text = "I want ice cold beer";
             var results = engine.MatchEntities(text);
-            Trace.TraceInformation("\n" + LucyEngine.VisualizeResultsAsSpans(text, results));
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
             var entities = results.Where(e => e.Type == "test").ToList();
             Assert.AreEqual(1, entities.Count);

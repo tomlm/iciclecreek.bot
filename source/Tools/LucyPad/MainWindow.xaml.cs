@@ -66,8 +66,8 @@ namespace LucyPad
                     var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
 
                     this.tabs.SelectedIndex = 2;
-                    this.labelBox.Text = LucyEngine.VisualizeResultsAsSpans(text, results);
-                    this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
+                    this.labelBox.Text = LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: true, showHierarchy: false);
+                    this.entitiesBox.Text = LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: false, showHierarchy: true);
 
                     var activity = new Activity(ActivityTypes.Message) { Text = text };
                     var tc = new TurnContext(new TestAdapter(), activity);

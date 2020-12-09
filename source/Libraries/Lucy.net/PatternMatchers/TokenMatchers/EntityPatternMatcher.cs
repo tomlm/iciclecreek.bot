@@ -30,7 +30,6 @@ namespace Lucy.PatternMatchers
                 {
                     // add the matched entity to the children of the currentEntity.
                     context.AddToCurrentEntity(entity);
-                    context.CurrentEntity.End = entity.End;
 
                     matchResult.Matched = true;
                     matchResult.End = entity.End;

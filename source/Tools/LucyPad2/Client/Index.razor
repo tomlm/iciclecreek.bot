@@ -14,7 +14,28 @@
 
     <Text Class="grid-resultheading">Entities</Text>
 
-    <plaintext class="grid-results">@SpanResults</plaintext>
+    <Accordion Class="grid-results">
+        <Collapse Visible="@TopResultVisible">
+            <CollapseHeader>
+                <Heading Size="HeadingSize.Is6">
+                    <Button Clicked="@(()=> TopResultVisible= !TopResultVisible)">Top Result</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody>
+                <plaintext>@TopResult</plaintext>
+            </CollapseBody>
+        </Collapse>
+        <Collapse Visible="@AllResultsVisible">
+            <CollapseHeader>
+                <Heading Size="HeadingSize.Is6">
+                    <Button Clicked="@(()=>AllResultsVisible= !AllResultsVisible)">All Results</Button>
+                </Heading>
+            </CollapseHeader>
+            <CollapseBody>
+                <plaintext>@EntityResults</plaintext>
+            </CollapseBody>
+        </Collapse>
+    </Accordion>
 </div>
 
 
@@ -33,165 +54,39 @@
                                             .JsonCompatible()
                                             .Build();
 
-    public string Yaml { get; set; } =
-@"# match on any token with ___, you can name a wildcard slot by using (name:___)
-# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
-# put quantifiers on any token grouping...
-#   '?' ==> zero or one
-#   '*' ==> zero or more
-#   '+' ==> one or more
-#   '#' ==> max number of tokens to consume
-#   '~' ==> use fuzzy matching for the tokens in the group.
-# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
-locale: en
-externalEntities: []
-macros:
-  $quantity: a|an|some|@number
-  $beverages: '@beer|@wine|@whiskey|@coffee'
-entities:
-  - name: '@name'
-    patterns:
-    - name is ___
+    public bool TopResultVisible = true;
 
-# variations on words which will be captured as @container entitiy
-  - name: '@container'
-    patterns:
-    - glass
-    - shot
-    - shotglass
-    - tumbler
-    - mug
-    - pint
-    - pitcher
-    - cup
+    public bool AllResultsVisible = false;
 
-# If you change the pattern to an array it will normalize to a first value in each array.
-  - name: '@drinkSize'
-    patterns:
-    - [s, small, short]
-    - [m, medium, tall]
-    - [l, large, big]
-    - [xl, extra large, venti, giant, (humungous)~]
+    public string Yaml { get; set; }
 
-  - name: '@drinkTemp'
-    patterns: 
-    - [cold, chilled, cool, icy, iced, freezing cold]
-    - warm
-    - [hot, heated, steaming, '(steaming|really)? hot']
+    public string TopResult { get; set; }
 
-
-# ---------- BEER
-  - name: '@beerLabel'
-    patterns:
-    - coors
-    - (heiniken)~
-    - (corona)~
-    - miller
-
-  - name: '@beerStyle'
-    patterns:
-    - pilsner
-    - [ipa, india pale, india pale ale]
-    - ale
-    - porter
-    
-  - name: '@beer'
-    patterns:
-    - (@drinkTemp|@container|@beerStyle|@beerLabel)+ (beer)?
-    - ($quantity)? (of|@drinkTemp|@container|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
-    examples:
-    - a cold pitcher of coors
-    - a cold mug of beer
-    - 2 pints of ipa 
-
-# ---------- WINE
-  - name: '@wineLabel'
-    patterns:
-    - house
-    - big house
-    - columbia crest
-
-  - name: '@wineStyle'
-    patterns:
-    - red
-    - white
-
-  - name: '@wine'
-    patterns:
-    - '(@wineStyle|@wineLabel) (wine|vino)?'
-    - ($quantity)? (of|@wineStyle|@wineStyle|wineDescription:___)* (wine|vino)
-
-# ---------- WHISKY
-  - name: '@whiskeyStyle'
-    patterns:
-    - neat
-    - [ontherocks, on the rocks, on ice]
-    - [water, splash of water]
-
-  - name: '@whiskeyLabel'
-    patterns:
-    - clyde mills
-    - bushmills
-    - [makers mark, makers]
-    - glenhaven
-
-  - name: '@whiskey'
-    patterns:
-    - '(@whiskeyLabel|@whiskeyStyle) (whiskey|borboun)?~ (@whiskeyStyle)*'
-    - ($quantity)? (of|@whiskeyStyle|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel|@whiskeyStyle)*
-
-# ---------- COFFEE
-  - name: '@coffeeStyle'
-    patterns:
-    - [french, french roast]
-    - black
-    - espresso
-    - (cappucino)~
-    - (latte)~
-
-  - name: '@coffeeAdditives'
-    patterns:
-    - milk
-    - [nondairycreamer, '(non-dairy|nondairy)? creamer']
-    - [halfnhalf, half and half, half in half]
-    - sugar
-    
-  - name: '@coffee'
-    patterns:
-    - (@coffeeStyle|@coffeeAdditives)* (coffee)? (with)? (@coffeeStyle|@coffeeAdditives)* (@conjunction @coffeeAdditives)*
-
-# -------- DRINK ORDER
-
-  - name: '@drinkOrder'
-    patterns:
-    - (a|an|some|@number)? (@drinkSize|@container|@drinkTemp)* (of)? (@drinkTemp)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
-
-  - name: '@drinkOrders'
-    patterns:
-    - '@drinkOrder (@conjunction|@drinkOrder)*'
-
-  - name: '@desireIntent'
-    patterns:
-    - (like|like to|have|order|bring us|bring me) (@drinkOrders)+
-
-# ------------ MISC
-  - name: '@conjunction'
-    patterns: 
-    - or
-    - and
-";
-
-    public string SpanResults { get; set; }
+    public string EntityResults { get; set; }
 
     public string Text { get; set; }
 
-    private string error;
-    public string Error { get { return error; } set { error = value; } }
+    public string Error { get; set; }
 
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
 
     protected override void OnInitialized()
     {
+        this.Yaml = LoadResource("LucyPad2.Client.wwwroot.lucy.yaml");
+    }
+
+
+    private string LoadResource(string name)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using (Stream stream = assembly.GetManifestResourceStream(name))
+        {
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
     }
 
     async Task OnTextChanged(string value)
@@ -208,8 +103,10 @@ entities:
             {
                 var results = engine.MatchEntities(text);
 
-                this.SpanResults = LucyEngine.VisualizeResultsAsSpans(text, results);
-                // this.entitiesBox.Text = LucyEngine.VizualizeResultsAsHierarchy(text, results);
+                this.TopResultVisible = true;
+                this.AllResultsVisible = true;
+                this.TopResult = LucyEngine.VisualizeEntity(text, results.FirstOrDefault());
+                this.EntityResults = String.Join("\n\n", results.Select(entity => LucyEngine.VisualizeEntity(text, entity)));
 
                 @*var activity = new Activity(ActivityTypes.Message) { Text = text };
                     var tc = new TurnContext(new TestAdapter(), activity);

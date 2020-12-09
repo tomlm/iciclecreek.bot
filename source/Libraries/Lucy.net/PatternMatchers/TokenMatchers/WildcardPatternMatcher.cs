@@ -42,7 +42,7 @@ namespace Lucy.PatternMatchers
                         Type = entityType,
                         Start = wildcardEntity.Start,
                         End = tokenEntity.End,
-                        Score = 0.5f,
+                        Score = ((float)tokenEntity.End - wildcardEntity.Start) / context.Text.Length / 2,
                         Text = context.Text.Substring(wildcardEntity.Start, tokenEntity.End - wildcardEntity.Start),
                         Resolution = context.Text.Substring(wildcardEntity.Start, tokenEntity.End - wildcardEntity.Start),
                     };
@@ -78,7 +78,7 @@ namespace Lucy.PatternMatchers
             yield return ENTITYTYPE;
         }
 
-        public override string ToString() => $"{((this.entityType != ENTITYTYPE) ? this.entityType+":" : ENTITYTYPE)}___";
+        public override string ToString() => $"{((this.entityType != ENTITYTYPE) ? this.entityType + ":" : ENTITYTYPE)}___";
 
         public override IEnumerable<string> GenerateExamples(LucyEngine engine)
         {

@@ -105,6 +105,7 @@ namespace Lucy
             }
             CurrentEntity.Children.Add(entity);
             CurrentEntity.End = CurrentEntity.Children.Max(e => e.End);
+            CurrentEntity.Score = (float)(CurrentEntity.End - CurrentEntity.Start) / this.Text.Length;
         }
 
         public bool IsTokenMatched(LucyEntity tokenEntity)
@@ -143,7 +144,11 @@ namespace Lucy
                 .OrderByDescending(et => et.End).Where(entityToken => entityToken.End < textToken.Start).FirstOrDefault();
         }
 
-        public void MergeOverlappingEntities(LucyEntitySet entities)
+        /// <summary>
+        /// merge any overlapping entities of the same type.
+        /// </summary>
+        /// <param name="entities"></param>
+        public void MergeEntities(LucyEntitySet entities)
         {
             // merge entities which are overlapping.
             var mergedEntities = new LucyEntitySet(entities);
@@ -195,11 +200,72 @@ namespace Lucy
             }
         }
 
+        /// <summary>
+        /// Pick between overlapping entities of different types.
+        /// </summary>
+        /// <param name="entities"></param>
+        public void ResolveEntities(LucyEntitySet entities)
+        {
+            // merge entities which are overlapping.
+            var resolvedEntities = new LucyEntitySet(entities);
+
+            foreach (var entity in entities)
+            {
+                foreach (var alternateEntity in entities.Where(e => e != entity && e.Type != entity.Type))
+                {
+                    if (entity.GetAllEntities().Contains(alternateEntity))
+                    {
+                        resolvedEntities.Remove(alternateEntity);
+                    }
+                    else if (alternateEntity.GetAllEntities().Contains(entity))
+                    {
+                        resolvedEntities.Remove(entity);
+                    }
+                    // if alternateEntity is bigger on both ends
+                    else if ((alternateEntity.Start < entity.Start && alternateEntity.End > entity.End) ||
+                        // or overlaps on start
+                        (alternateEntity.Start <= entity.Start && alternateEntity.End >= entity.Start && alternateEntity.End <= entity.End) ||
+                        // or overlaps on the end
+                        (alternateEntity.Start >= entity.Start && alternateEntity.Start < entity.End && alternateEntity.End >= entity.End))
+                    {
+                        // then we need to pick which one to keep.
+                        if (entity.Score < alternateEntity.Score)
+                        {
+                            resolvedEntities.Remove(entity);
+                        }
+                        else if (entity.Score > alternateEntity.Score)
+                        {
+                            resolvedEntities.Remove(alternateEntity);
+                        }
+                        else if ((entity.End - entity.Start) > (alternateEntity.End - alternateEntity.Start))
+                        {
+                            resolvedEntities.Remove(entity);
+                        }
+                        else if ((entity.End - entity.Start) < (alternateEntity.End - alternateEntity.Start))
+                        {
+                            resolvedEntities.Remove(alternateEntity);
+                        }
+                        else
+                        {
+                            Trace.WriteLine($"Identical scores for different entities:\n{entity}\n{alternateEntity}");
+                        }
+                    }
+                }
+            }
+            entities.Clear();
+            foreach (var entity in resolvedEntities)
+            {
+                entities.Add(entity);
+            }
+        }
+
+
         private LucyEntity MergeEntities(LucyEntity entity, LucyEntity alternateEntity)
         {
             var mergedEntity = new LucyEntity()
             {
                 Type = entity.Type,
+                Score = Math.Max(entity.Score, alternateEntity.Score),
                 Start = Math.Min(entity.Start, alternateEntity.Start),
                 End = Math.Max(entity.End, alternateEntity.End),
             };
@@ -247,7 +313,7 @@ namespace Lucy
 
             if (mergedEntity.Children.Any())
             {
-                this.MergeOverlappingEntities(mergedEntity.Children);
+                this.MergeEntities(mergedEntity.Children);
             }
 
             return mergedEntity;
