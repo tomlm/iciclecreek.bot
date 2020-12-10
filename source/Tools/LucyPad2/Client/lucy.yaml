@@ -61,8 +61,7 @@ entities:
     
   - name: '@beer'
     patterns:
-    - (@drinkTemp|@container|@beerStyle|@beerLabel)+ (beer)?
-    - ($quantity)? (of|@drinkTemp|@container|@beerStyle|@beerLabel|beerDescription:___)* beer (@beerLabel)*
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp|@beerStyle|@beerLabel|beer)+ 
     examples:
     - a cold pitcher of coors
     - a cold mug of beer
@@ -82,14 +81,13 @@ entities:
 
   - name: '@wine'
     patterns:
-    - '(@wineStyle|@wineLabel) (wine|vino)?'
-    - ($quantity)? (of|@wineStyle|@wineStyle|wineDescription:___)* (wine|vino)
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@wineStyle|@wineLabel|wine|vino)+ 
 
 # ---------- WHISKY
   - name: '@whiskeyStyle'
     patterns:
     - neat
-    - [ontherocks, on the rocks, on ice]
+    - [ontherocks, on the rocks, on ice, with ice, on rocks]
     - [water, splash of water]
 
   - name: '@whiskeyLabel'
@@ -101,8 +99,7 @@ entities:
 
   - name: '@whiskey'
     patterns:
-    - '(@whiskeyLabel|@whiskeyStyle) (whiskey|borboun)?~ (@whiskeyStyle)*'
-    - ($quantity)? (of|@whiskeyStyle|whiskeyDescription:___)* (whiskey|borboun)~  (@whiskeyLabel|@whiskeyStyle)*
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@whiskeyLabel|@whiskeyStyle|(whiskey|borboun)~)+
 
 # ---------- COFFEE
   - name: '@coffeeStyle'
@@ -116,19 +113,20 @@ entities:
   - name: '@coffeeAdditives'
     patterns:
     - milk
+    - cream
     - [nondairycreamer, '(non-dairy|nondairy)? creamer']
     - [halfnhalf, half and half, half in half]
     - sugar
     
   - name: '@coffee'
     patterns:
-    - (@coffeeStyle|@coffeeAdditives)* (coffee)? (with)? (@coffeeStyle|@coffeeAdditives)* (@conjunction @coffeeAdditives)*
+    - ($quantity)? (@container)? (of)? (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)*
 
 # -------- DRINK ORDER
 
   - name: '@drinkOrder'
     patterns:
-    - (a|an|some|@number)? (@drinkSize|@container|@drinkTemp)* (of)? (@drinkTemp)? (@beer|@whiskey|@wine|@coffee|beverage|drink)
+    - (@beer|@whiskey|@wine|@coffee|a beverage|to drink)
 
   - name: '@drinkOrders'
     patterns:

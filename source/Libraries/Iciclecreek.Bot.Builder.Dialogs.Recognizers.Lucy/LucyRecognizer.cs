@@ -83,7 +83,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             }
 
             var recognizerResult = new RecognizerResult();
-            var lucyEntities = _engine.MatchEntities(activity.Text, activity.Locale, externalEntities);
+            var lucyEntities = _engine.MatchEntities(activity.Text, externalEntities);
             recognizerResult.Entities = GetRecognizerEntities(lucyEntities);
 
             var intents = this.Intents.GetValue(dialogContext.State) ?? new List<string>();

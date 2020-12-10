@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject HttpClient Http
 @inherits LayoutComponentBase
 <!-- layout -->
 <div class="grid">
@@ -22,6 +23,7 @@
                 </Heading>
             </CollapseHeader>
             <CollapseBody>
+                <text>@Elapsed</text>
                 <plaintext>@TopResult</plaintext>
             </CollapseBody>
         </Collapse>
@@ -40,7 +42,8 @@
 
 
 @functions {
-    private MonacoEditorYaml yamlEditor;
+
+   private MonacoEditorYaml yamlEditor;
 
     private LucyEngine engine = null;
     private LucyRecognizer recognizer = null;
@@ -68,11 +71,13 @@
 
     public string Error { get; set; }
 
+    public string Elapsed { get; set; }
+
     private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
 
     protected override void OnInitialized()
     {
-        this.Yaml = LoadResource("LucyPad2.Client.wwwroot.lucy.yaml");
+        this.Yaml = LoadResource("LucyPad2.Client.lucy.yaml");
     }
 
 
@@ -94,28 +99,47 @@
         try
         {
             var yaml = await yamlEditor.GetValue();
-            if (lucyModel != yaml)
-            {
-                LoadModel(yaml);
-            }
             var text = value.Trim() ?? string.Empty;
+            IEnumerable<LucyEntity> results = null;
             if (text.Length > 0)
             {
-                var results = engine.MatchEntities(text);
+#if embedded
+                if (lucyModel != yaml)
+                {
+                    LoadModel(yaml);
+                }
 
-                this.TopResultVisible = true;
-                this.AllResultsVisible = true;
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                results = engine.MatchEntities(text);
+                sw.Stop();
+                this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
+
+@*var activity = new Activity(ActivityTypes.Message) { Text = text };
+    var tc = new TurnContext(new TestAdapter(), activity);
+    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
+    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());*@
+#else
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                var result = await Http.PostAsJsonAsync("entities", new
+                {
+                    yaml,
+                    text
+                });
+                sw.Stop();
+                this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
+                results = JsonConvert.DeserializeObject<LucyEntity[]>(await result.Content.ReadAsStringAsync());
+#endif
+            }
+
+            this.TopResultVisible = true;
+                this.AllResultsVisible = false;
                 this.TopResult = LucyEngine.VisualizeEntity(text, results.FirstOrDefault());
                 this.EntityResults = String.Join("\n\n", results.Select(entity => LucyEngine.VisualizeEntity(text, entity)));
-
-                @*var activity = new Activity(ActivityTypes.Message) { Text = text };
-                    var tc = new TurnContext(new TestAdapter(), activity);
-                    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
-                    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
-                    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
-                    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());*@
             }
-        }
         catch (SemanticErrorException err)
         {
             this.Error = err.Message;
@@ -152,21 +176,21 @@
             Model = model,
         };
 
-        @*StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < 100; i++)
-            {
-                sb.AppendLine(engine.GenerateExample("desireIntent"));
-            }*@
-        // this.examplesBox.Text = sb.ToString();
+            @*StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 100; i++)
+                {
+                    sb.AppendLine(engine.GenerateExample("desireIntent"));
+                }*@
+            // this.examplesBox.Text = sb.ToString();
 
-        if (engine.Warnings.Any())
-        {
-            this.Error = String.Join("\n", engine.Warnings);
+            if (engine.Warnings.Any())
+            {
+                this.Error = String.Join("\n", engine.Warnings);
+            }
+            else
+            {
+                this.Error = null;
+            }
+            lucyModel = yaml;
         }
-        else
-        {
-            this.Error = null;
-        }
-        lucyModel = yaml;
-    }
 }

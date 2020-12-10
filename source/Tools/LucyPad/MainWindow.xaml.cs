@@ -63,10 +63,13 @@ namespace LucyPad
                 var text = this.query?.Text?.Trim() ?? string.Empty;
                 if (text.Length > 0)
                 {
+                    var sw = new System.Diagnostics.Stopwatch();
+                    sw.Start();
                     var results = engine.MatchEntities(text, includeInternal: this.showInternal.IsChecked.Value);
+                    sw.Stop();
 
                     this.tabs.SelectedIndex = 2;
-                    this.labelBox.Text = LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: true, showHierarchy: false);
+                    this.labelBox.Text = $"{sw.ElapsedMilliseconds} ms\n" + LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: true, showHierarchy: false);
                     this.entitiesBox.Text = LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: false, showHierarchy: true);
 
                     var activity = new Activity(ActivityTypes.Message) { Text = text };

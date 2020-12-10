@@ -134,7 +134,7 @@ namespace Lucy
         /// <param name="externalEntities">externally provided entities</param>
         /// <param name="includeInternal">include tokens in results</param>
         /// <returns>entities</returns>
-        public IEnumerable<LucyEntity> MatchEntities(string text, string culture = "en", IEnumerable<LucyEntity> externalEntities = null, bool includeInternal = false)
+        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeInternal = false)
         {
             var context = new MatchContext()
             {
@@ -152,7 +152,7 @@ namespace Lucy
 
             if (this.BuiltinEntities.Any())
             {
-                AddBuiltInEntities(context, text, culture);
+                AddBuiltInEntities(context, text, Locale);
                 context.ProcessNewEntities();
             }
 
@@ -197,7 +197,7 @@ namespace Lucy
             context.MergeEntities(context.Entities);
             context.ResolveEntities(context.Entities);
 
-            // filter out internal entities
+            // only include tokenEntities if they ask for them
             if (includeInternal)
             {
                 var merged = new List<LucyEntity>(context.TokenEntities);

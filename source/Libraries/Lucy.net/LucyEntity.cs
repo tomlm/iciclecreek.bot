@@ -44,6 +44,11 @@ namespace Lucy
         [JsonProperty("children")]
         public LucyEntitySet Children { get; set; } = new LucyEntitySet();
 
+        public bool Contains(LucyEntity entity)
+        {
+            return Children.Any(e => e.Contains(entity));
+        }
+
         public IEnumerable<LucyEntity> GetAllEntities()
         {
             foreach (var child in Children)
