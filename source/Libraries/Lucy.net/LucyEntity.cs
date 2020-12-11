@@ -46,6 +46,16 @@ namespace Lucy
 
         public bool Contains(LucyEntity entity)
         {
+            if (this == entity)
+            {
+                return true;
+            }
+
+            if (Children.Contains(entity))
+            {
+                return true;
+            }
+
             return Children.Any(e => e.Contains(entity));
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,19 +35,39 @@ namespace LucyPad2.Server.Controllers
         }
 
         [HttpPost]
-        public LucyEntity[] Post([FromBody] EntitiesRequest request)
+        public EntitiesResponse Post([FromBody] EntitiesRequest request)
         {
+            EntitiesResponse result = new EntitiesResponse();
             LucyEngine engine = null;
             if (!_cache.TryGetValue<LucyEngine>(request.yaml, out engine))
             {
-                var x = yamlDeserializer.Deserialize(new StringReader(request.yaml));
-                var json = yamlToJsonSerializer.Serialize(x);
-                var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
-                engine = new LucyEngine(model, useAllBuiltIns: true);
-                _cache.Set(request.yaml, engine);
+                try
+                {
+
+                    var x = yamlDeserializer.Deserialize(new StringReader(request.yaml));
+                    var json = yamlToJsonSerializer.Serialize(x);
+                    var model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
+                    engine = new LucyEngine(model, useAllBuiltIns: true);
+                    _cache.Set(request.yaml, engine);
+                }
+                catch (Exception err)
+                {
+                    result.message = err.Message;
+                    return result;
+                }
             }
 
-            return engine.MatchEntities(request.text).ToArray();
+            if (engine.Warnings.Any())
+            {
+                result.message = String.Join("\n", engine.Warnings);
+            }
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            result.entities = engine.MatchEntities(request.text).ToArray();
+            sw.Stop();
+            result.elapsed = sw.ElapsedMilliseconds;
+            return result;
         }
     }
 
@@ -55,4 +76,12 @@ namespace LucyPad2.Server.Controllers
         public string yaml { get; set; }
         public string text { get; set; }
     }
+
+    public class EntitiesResponse
+    {
+        public long elapsed { get; set; }
+        public string message { get; set; }
+        public LucyEntity[] entities { get; set; } = new LucyEntity[0];
+    }
+
 }

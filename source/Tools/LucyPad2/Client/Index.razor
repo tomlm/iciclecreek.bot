@@ -5,12 +5,17 @@
 <div class="grid">
     <TextEdit Class="grid-query" Placeholder="Enter utterance..." Text="@Text" TextChanged="@OnTextChanged" DelayTextOnKeyPress="true" />
 
-    <Text Class="grid-yamlheading">Lucy Yaml file</Text>
+    <Text Class="grid-yamlheading">
+        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/readme.md">Overview</Link>
+        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md">Help</Link>
+    </Text>
 
     <MonacoEditorYaml @ref="yamlEditor" Id="monacoEditorYaml" Value="@Yaml" CssClass="grid-yaml" />
 
-    <Alert Class="grid-alert" Color="Color.Warning" @bind-IsShow="ShowAlert">
-        <TextEdit IsPlaintext="true" @bind-Text="@Error" />
+    <Alert Class="grid-alert" @ref="alertBox" Color="Color.Warning">
+        <AlertDescription>
+            @Error
+        </AlertDescription>
     </Alert>
 
     <Text Class="grid-resultheading">Entities</Text>
@@ -40,10 +45,10 @@
     </Accordion>
 </div>
 
+@code {
 
-@functions {
-
-   private MonacoEditorYaml yamlEditor;
+    private MonacoEditorYaml yamlEditor;
+    private Alert alertBox;
 
     private LucyEngine engine = null;
     private LucyRecognizer recognizer = null;
@@ -69,17 +74,14 @@
 
     public string Text { get; set; }
 
-    public string Error { get; set; }
+    public string Error { get; set; } = "---";
 
     public string Elapsed { get; set; }
-
-    private bool ShowAlert { get { return !String.IsNullOrEmpty(this.Error); } set { } }
 
     protected override void OnInitialized()
     {
         this.Yaml = LoadResource("LucyPad2.Client.lucy.yaml");
     }
-
 
     private string LoadResource(string name)
     {
@@ -101,48 +103,56 @@
             var yaml = await yamlEditor.GetValue();
             var text = value.Trim() ?? string.Empty;
             IEnumerable<LucyEntity> results = null;
-            if (text.Length > 0)
+            if (text.Length == 0)
             {
-#if embedded
-                if (lucyModel != yaml)
-                {
-                    LoadModel(yaml);
-                }
-
-                var sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-                results = engine.MatchEntities(text);
-                sw.Stop();
-                this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
-
-@*var activity = new Activity(ActivityTypes.Message) { Text = text };
-    var tc = new TurnContext(new TestAdapter(), activity);
-    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
-    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
-    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
-    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());*@
-#else
-                var sw = new System.Diagnostics.Stopwatch();
-                sw.Start();
-                var result = await Http.PostAsJsonAsync("entities", new
-                {
-                    yaml,
-                    text
-                });
-                sw.Stop();
-                this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
-                results = JsonConvert.DeserializeObject<LucyEntity[]>(await result.Content.ReadAsStringAsync());
-#endif
+                return;
             }
+#if embedded
+    if (lucyModel != yaml)
+    {
+        LoadModel(yaml);
+    }
+
+    var sw = new System.Diagnostics.Stopwatch();
+    sw.Start();
+    results = engine.MatchEntities(text);
+    sw.Stop();
+    this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
+#else
+            var sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            var result = await Http.PostAsJsonAsync("entities", new EntitiesRequest
+            {
+                yaml = yaml,
+                text = text
+            });
+            sw.Stop();
+            // this.Elapsed = $"Network: {sw.Elapsed.TotalMilliseconds} ms";
+            var entityResponse = JsonConvert.DeserializeObject<EntitiesResponse>(await result.Content.ReadAsStringAsync());
+
+            this.Elapsed = $"{entityResponse.elapsed} ms";
+
+            if (!String.IsNullOrEmpty(entityResponse.message))
+            {
+                this.Error = entityResponse.message;
+                this.alertBox.Show();
+            }
+            else
+            {
+                this.alertBox.Hide();
+            }
+            results = entityResponse.entities;
+#endif
 
             this.TopResultVisible = true;
-                this.AllResultsVisible = false;
-                this.TopResult = LucyEngine.VisualizeEntity(text, results.FirstOrDefault());
-                this.EntityResults = String.Join("\n\n", results.Select(entity => LucyEngine.VisualizeEntity(text, entity)));
-            }
+            this.AllResultsVisible = false;
+            this.TopResult = LucyEngine.VisualizeEntity(text, results.FirstOrDefault());
+            this.EntityResults = String.Join("\n\n", results.Select(entity => LucyEngine.VisualizeEntity(text, entity)));
+        }
         catch (SemanticErrorException err)
         {
             this.Error = err.Message;
+            this.alertBox.Show();
             //this.editor.ScrollToLine(err.Start.Line);
             //var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
             //this.editor.Select(line.Offset, line.Length);
@@ -150,6 +160,7 @@
         catch (SyntaxErrorException err)
         {
             this.Error = err.Message;
+            this.alertBox.Show();
             //this.error.Visibility = Visibility.Visible;
             //this.editor.ScrollToLine(err.Start.Line);
             //var line = this.editor.Document.GetLineByNumber(err.Start.Line - 1);
@@ -158,6 +169,7 @@
         catch (Exception err)
         {
             this.Error = err.Message;
+            this.alertBox.Show();
             //this.error.Content = err.Message;
             //this.error.Visibility = Visibility.Visible;
         }
@@ -176,21 +188,18 @@
             Model = model,
         };
 
-            @*StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < 100; i++)
-                {
-                    sb.AppendLine(engine.GenerateExample("desireIntent"));
-                }*@
-            // this.examplesBox.Text = sb.ToString();
+        // this.examplesBox.Text = sb.ToString();
 
-            if (engine.Warnings.Any())
-            {
-                this.Error = String.Join("\n", engine.Warnings);
-            }
-            else
-            {
-                this.Error = null;
-            }
-            lucyModel = yaml;
+        if (engine.Warnings.Any())
+        {
+            this.Error = String.Join("\n", engine.Warnings);
+            this.alertBox.Show();
         }
+        else
+        {
+            this.Error = string.Empty;
+            this.alertBox.Hide();
+        }
+        lucyModel = yaml;
+    }
 }

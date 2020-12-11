@@ -196,6 +196,7 @@ namespace Lucy
 
             context.MergeEntities(context.Entities);
             context.ResolveEntities(context.Entities);
+            context.MergeEntities(context.Entities);
 
             // only include tokenEntities if they ask for them
             if (includeInternal)

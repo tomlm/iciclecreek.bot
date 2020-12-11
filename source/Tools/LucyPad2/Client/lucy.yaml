@@ -39,7 +39,7 @@ entities:
 
   - name: '@drinkTemp'
     patterns: 
-    - [cold, chilled, cool, icy, iced, freezing cold]
+    - [cold, chilled, cool, icy, iced, freezing cold, ice cold]
     - warm
     - [hot, heated, steaming, '(steaming|really)? hot']
 
@@ -61,7 +61,7 @@ entities:
     
   - name: '@beer'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp|@beerStyle|@beerLabel|beer)+ 
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@beerStyle|@beerLabel|beer)+ 
     examples:
     - a cold pitcher of coors
     - a cold mug of beer
@@ -120,7 +120,7 @@ entities:
     
   - name: '@coffee'
     patterns:
-    - ($quantity)? (@container)? (of)? (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)*
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)*
 
 # -------- DRINK ORDER
 
@@ -130,15 +130,20 @@ entities:
 
   - name: '@drinkOrders'
     patterns:
-    - '@drinkOrder (@conjunction|@drinkOrder)*'
+    - '@drinkOrder (@conjunction @drinkOrder)*'
 
   - name: '@desireIntent'
     patterns:
-    - (like|like to|have|order|bring us|bring me) (@drinkOrders)+
-
+    - (can|can you|I|we)? (also|want|would|like|to|have|order|you|bring|us|me)+ (@drinkOrders)+
+  
+  - name: '@desireIntents'
+    patterns:
+    - '@desireIntent (@conjunction @desireIntent)*'
+  
 # ------------ MISC
   - name: '@conjunction'
     patterns: 
     - or
-    - and
+    - [and, and also, also]
+
 
