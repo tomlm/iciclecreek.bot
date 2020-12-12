@@ -76,27 +76,33 @@ namespace Lucy.PatternMatchers
                             {
                                 case '(':
                                     var subText = GetSubParens(chars, out char lastChar).Trim();
-                                    if (!String.IsNullOrEmpty(subText))
+                                    if (!String.IsNullOrWhiteSpace(subText))
                                     {
-                                        variations.Add(subText);
+                                        variations.Add(subText.Trim());
                                     }
                                     ch = lastChar;
                                     repeatChar = true;
                                     break;
                                 case '|':
-                                    if (sb.Length > 0)
                                     {
-                                        variations.Add(sb.ToString());
+                                        var variation = sb.ToString();
+                                        if (!String.IsNullOrWhiteSpace(variation))
+                                        {
+                                            variations.Add(variation.Trim());
+                                        }
+                                        sb.Clear();
                                     }
-                                    sb.Clear();
                                     break;
 
                                 case ')':
-                                    if (sb.Length > 0)
                                     {
-                                        variations.Add(sb.ToString());
+                                        var variation = sb.ToString();
+                                        if (!String.IsNullOrWhiteSpace(variation))
+                                        {
+                                            variations.Add(variation.Trim());
+                                        }
+                                        sb.Clear();
                                     }
-                                    sb.Clear();
                                     inModifiers = true;
                                     break;
 
