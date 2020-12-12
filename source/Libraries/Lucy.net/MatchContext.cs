@@ -105,7 +105,7 @@ namespace Lucy
             }
             CurrentEntity.Children.Add(entity);
             CurrentEntity.End = CurrentEntity.Children.Max(e => e.End);
-            CurrentEntity.Score = (float)(CurrentEntity.End - CurrentEntity.Start) / this.Text.Length;
+            CurrentEntity.Score = CurrentEntity.GetAllEntities().Count() + ((float)(CurrentEntity.End - CurrentEntity.Start) / this.Text.Length);
         }
 
         public bool IsTokenMatched(LucyEntity tokenEntity)
@@ -264,7 +264,6 @@ namespace Lucy
             var mergedEntity = new LucyEntity()
             {
                 Type = entity.Type,
-                Score = Math.Max(entity.Score, alternateEntity.Score),
                 Start = Math.Min(entity.Start, alternateEntity.Start),
                 End = Math.Max(entity.End, alternateEntity.End),
             };
@@ -312,9 +311,12 @@ namespace Lucy
 
             if (mergedEntity.Children.Any())
             {
+                // mergedEntity.Resolution = String.Empty;
                 this.MergeEntities(mergedEntity.Children);
+                // this.ResolveEntities(mergedEntity.Children);
             }
 
+            mergedEntity.Score = mergedEntity.GetAllEntities().Count() + ((float)(mergedEntity.End - mergedEntity.Start) / this.Text.Length);
             return mergedEntity;
         }
     }

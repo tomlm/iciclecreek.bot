@@ -47,6 +47,7 @@ using Newtonsoft.Json.Linq;
 using builtin = Microsoft.Recognizers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.Recognizers.Text.Number.Chinese;
 
 namespace Lucy
 {
@@ -67,7 +68,7 @@ namespace Lucy
         {
             "age", "boolean", "currency", "datetime", "dimension", "email", "guid", "hashtag",
             "ip", "mention", "number", "numberrange", "ordinal", "percentage", "phonenumber", "temperature", "url",
-            "quotedtext"
+            "quotedtext", "integer", "fraction", "decimal"
         };
 
         public LucyEngine(LucyModel model, Analyzer exactAnalyzer = null, Analyzer fuzzyAnalyzer = null, bool useAllBuiltIns = false)
@@ -227,10 +228,11 @@ namespace Lucy
 
         public string GenerateExample(string entityType)
         {
-            var patterns = new List<EntityPattern>(this.EntityPatterns.Where(et => et.Name == entityType));
-            patterns.AddRange(this.WildcardEntityPatterns.Where(et => et.Name == entityType));
-            var ep = patterns[_rnd.Next(patterns.Count)];
-            return ep.PatternMatcher.GenerateExample(this);
+            //var patterns = new List<EntityPattern>(this.EntityPatterns.Where(et => et.Name == entityType));
+            //patterns.AddRange(this.WildcardEntityPatterns.Where(et => et.Name == entityType));
+            //var ep = patterns[_rnd.Next(patterns.Count)];
+            //return ep.PatternMatcher.GenerateExample(this);
+            return string.Empty;
         }
 
         public IEnumerable<LucyEntity> Tokenize(string text)
@@ -462,7 +464,7 @@ namespace Lucy
 
                 context.ResolveEntities(context.CurrentEntity.Children);
 
-                context.CurrentEntity.Score = (float)(context.CurrentEntity.End - context.CurrentEntity.Start) / context.Text.Length;
+                context.CurrentEntity.Score = context.CurrentEntity.GetAllEntities().Count() + ((float)(context.CurrentEntity.End - context.CurrentEntity.Start) / context.Text.Length);
 
                 context.AddNewEntity(context.CurrentEntity);
                 // Trace.TraceInformation($"\n [{textEntity.Start}] {context.EntityPattern} => {matchResult.Matched} {context.CurrentEntity}");
@@ -657,6 +659,9 @@ namespace Lucy
                     case "mention":
                         results = builtin.Sequence.SequenceRecognizer.RecognizeMention(text, culture);
                         break;
+                    case "fraction":
+                    case "decimal":
+                    case "integer":
                     case "number":
                         results = builtin.Number.NumberRecognizer.RecognizeNumber(text, culture);
                         break;
@@ -689,6 +694,24 @@ namespace Lucy
 
                 foreach (var result in results)
                 {
+                    var type = result.TypeName;
+                    if (type == "number")
+                    {
+                        var subType = (string)result.Resolution["subtype"];
+                        if (builtinEntities.Contains(subType))
+                        {
+                            context.AddNewEntity(new LucyEntity()
+                            {
+                                Text = result.Text,
+                                Type = subType,
+                                Start = result.Start,
+                                End = result.End + 1,
+                                Resolution = result.Resolution["value"],
+                                Score = ((float)(result.End + 1) - result.Start) / text.Length
+                            });
+                        }
+                    }
+
                     context.AddNewEntity(new LucyEntity()
                     {
                         Text = result.Text,

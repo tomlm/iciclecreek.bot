@@ -69,8 +69,8 @@ namespace LucyPad
                     sw.Stop();
 
                     this.tabs.SelectedIndex = 2;
-                    this.labelBox.Text = $"{sw.ElapsedMilliseconds} ms\n" + LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: true, showHierarchy: false);
-                    this.entitiesBox.Text = LucyEngine.VisualizeEntity(text, results.FirstOrDefault(), showSpans: false, showHierarchy: true);
+                    this.labelBox.Text = $"{sw.ElapsedMilliseconds} ms\n" + String.Join("\n", results.Select(s => LucyEngine.VisualizeEntity(text, s, showSpans: true, showHierarchy: false)));
+                    this.entitiesBox.Text = String.Join("\n", results.Select(s => LucyEngine.VisualizeEntity(text, s, showSpans: false, showHierarchy: true)));
 
                     var activity = new Activity(ActivityTypes.Message) { Text = text };
                     var tc = new TurnContext(new TestAdapter(), activity);

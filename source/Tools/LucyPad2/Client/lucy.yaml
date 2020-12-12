@@ -61,7 +61,7 @@ entities:
     
   - name: '@beer'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@beerStyle|@beerLabel|beer)+ 
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@beerStyle|@beerLabel|beer)+ (in a @container)? 
     examples:
     - a cold pitcher of coors
     - a cold mug of beer
@@ -81,7 +81,7 @@ entities:
 
   - name: '@wine'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@wineStyle|@wineLabel|wine|vino)+ 
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@wineStyle|@wineLabel|wine|vino)+ (in a @container)? 
 
 # ---------- WHISKY
   - name: '@whiskeyStyle'
@@ -99,7 +99,7 @@ entities:
 
   - name: '@whiskey'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@whiskeyLabel|@whiskeyStyle|(whiskey|borboun)~)+
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@whiskeyLabel|@whiskeyStyle|(whiskey|borboun)~)+ (in a @container)? 
 
 # ---------- COFFEE
   - name: '@coffeeStyle'
@@ -120,7 +120,7 @@ entities:
     
   - name: '@coffee'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)*
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)* (in a @container)? 
 
 # -------- DRINK ORDER
 
@@ -143,7 +143,7 @@ entities:
 # ------------ MISC
   - name: '@conjunction'
     patterns: 
-    - or
-    - [and, and also, also]
+    - [or, or (maybe|perhaps)]
+    - [and, and also, also, with]
 
 
