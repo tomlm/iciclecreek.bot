@@ -92,6 +92,7 @@ html, body {
     width: 100%;
     padding: 10px;
     overflow: hidden;
+    align-items: center;
 }
 
 .grid-query {
@@ -100,8 +101,30 @@ html, body {
 }
 
 .grid-yamlheading {
+    align-items: center;
     grid-column: 1;
     grid-row: 2;
+    margin: 10px;
+    overflow: hidden;
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: auto auto auto 1fr;
+}
+
+.grid-overview {
+    grid-column: 1;
+}
+
+.grid-help {
+    grid-column: 2;
+}
+
+.grid-samplesLabel {
+    grid-column: 3;
+}
+
+.grid-samplesCombo {
+    grid-column: 4;
 }
 
 .grid-alert {

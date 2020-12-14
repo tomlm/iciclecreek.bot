@@ -456,7 +456,11 @@ namespace Lucy
                 context.CurrentEntity.End = matchResult.End;
                 context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
 
-                if (context.CurrentEntity.Resolution == null && entityPattern.Resolution != null)
+                if (context.CurrentEntity.Children.Any())
+                {
+                    context.CurrentEntity.Resolution = null;
+                }
+                else if (context.CurrentEntity.Resolution == null && entityPattern.Resolution != null)
                 {
                     context.CurrentEntity.Resolution = entityPattern.Resolution;
                 }
@@ -491,7 +495,9 @@ namespace Lucy
                     {
                         foreach (var patternModel in entityModel.Patterns)
                         {
-                            var resolution = patternModel.FirstOrDefault();
+                            var first = patternModel.First();
+                            string resolution = first.Any(ch => ch == '@' || ch == '|' || ch == '+' || ch == '*' || ch == '?') || first.Contains("___") ? null : first.Trim('~', '(', ')');
+
                             foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                             {
                                 var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);

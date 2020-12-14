@@ -1,48 +1,26 @@
-# match on any token with ___, you can name a wildcard slot by using (name:___)
-# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
-# put quantifiers on any token grouping...
-#   '?' ==> zero or one
-#   '*' ==> zero or more
-#   '+' ==> one or more
-#   '#' ==> max number of tokens to consume
-#   '~' ==> use fuzzy matching for the tokens in the group.
-# Entities can be placed into a pattern with '@', creating a compound hierarchical result.
 locale: en
 externalEntities: []
 macros:
   $quantity: a|an|some|@number
   $beverages: '@beer|@wine|@whiskey|@coffee'
 entities:
-  - name: '@name'
+# -------- Intents
+  - name: '@desireIntent'
     patterns:
-    - name is ___
-
-# variations on words which will be captured as @container entitiy
-  - name: '@container'
+    - (can|can you|I|we)? (also|want|would|like|to|have|order|you|bring|us|me)+ (@drinkOrders)+
+  
+  - name: '@desireIntents'
     patterns:
-    - glass
-    - shot
-    - shotglass
-    - tumbler
-    - mug
-    - pint
-    - pitcher
-    - cup
+    - '@desireIntent (@conjunction @desireIntent)*'
 
-# If you change the pattern to an array it will normalize to a first value in each array.
-  - name: '@drinkSize'
+# -------- DRINK ORDER
+  - name: '@drinkOrder'
     patterns:
-    - [s, small, short]
-    - [m, medium, tall]
-    - [l, large, big]
-    - [xl, extra large, venti, giant, (humungous)~]
+    - (@beer|@whiskey|@wine|@coffee|a beverage|to drink)
 
-  - name: '@drinkTemp'
-    patterns: 
-    - [cold, chilled, cool, icy, iced, freezing cold, ice cold]
-    - warm
-    - [hot, heated, steaming, '(steaming|really)? hot']
-
+  - name: '@drinkOrders'
+    patterns:
+    - '@drinkOrder (@conjunction @drinkOrder)*'
 
 # ---------- BEER
   - name: '@beerLabel'
@@ -120,30 +98,39 @@ entities:
     
   - name: '@coffee'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)* (in a @container)? 
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee|joe)+ (with|@coffeeStyle|@coffeeAdditives)* (in a @container)? 
 
-# -------- DRINK ORDER
-
-  - name: '@drinkOrder'
-    patterns:
-    - (@beer|@whiskey|@wine|@coffee|a beverage|to drink)
-
-  - name: '@drinkOrders'
-    patterns:
-    - '@drinkOrder (@conjunction @drinkOrder)*'
-
-  - name: '@desireIntent'
-    patterns:
-    - (can|can you|I|we)? (also|want|would|like|to|have|order|you|bring|us|me)+ (@drinkOrders)+
-  
-  - name: '@desireIntents'
-    patterns:
-    - '@desireIntent (@conjunction @desireIntent)*'
-  
+ 
 # ------------ MISC
   - name: '@conjunction'
     patterns: 
     - [or, or (maybe|perhaps)]
     - [and, and also, also, with]
 
+
+# variations on words which will be captured as @container entitiy
+  - name: '@container'
+    patterns:
+    - glass
+    - shot
+    - shotglass
+    - tumbler
+    - mug
+    - pint
+    - pitcher
+    - cup
+
+# If you change the pattern to an array it will normalize to a first value in each array.
+  - name: '@drinkSize'
+    patterns:
+    - [s, small, short]
+    - [m, medium, tall]
+    - [l, large, big]
+    - [xl, extra large, venti, giant, (humungous)~]
+
+  - name: '@drinkTemp'
+    patterns: 
+    - [cold, chilled, cool, icy, iced, freezing cold, ice cold]
+    - warm
+    - [hot, heated, steaming, '(steaming|really)? hot']
 

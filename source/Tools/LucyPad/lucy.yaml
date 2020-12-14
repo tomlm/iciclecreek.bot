@@ -120,7 +120,7 @@ entities:
     
   - name: '@coffee'
     patterns:
-    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee)+ (with|@coffeeStyle|@coffeeAdditives)* (in a @container)? 
+    - ($quantity)? (@drinkSize)? (@container)? (of)? (@drinkTemp)* (@coffeeStyle|@coffeeAdditives|coffee|joe)+ (with|@coffeeStyle|@coffeeAdditives)* (in a @container)? 
 
 # -------- DRINK ORDER
 

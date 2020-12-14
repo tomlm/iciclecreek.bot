@@ -6,8 +6,16 @@
     <TextEdit Class="grid-query" Placeholder="Enter utterance..." Text="@Text" TextChanged="@OnTextChanged" DelayTextOnKeyPress="true" />
 
     <Text Class="grid-yamlheading">
-        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/readme.md">Overview</Link>
-        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md">Help</Link>
+        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/readme.md" Class="grid-overview">Overview</Link>
+        <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md" Class="grid-help">Help</Link>
+        <Text Class="grid-samplesLabel">Samples:</Text>
+        <Select Clsas="grid-samplesCombo" TValue="string" SelectedValue="@selectedExample" SelectedValueChanged="@OnSelectedExampleChanged">
+            <SelectItem Value="@("empty")">Empty</SelectItem>
+            <SelectItem Value="@("cars")">Cars</SelectItem>
+            <SelectItem Value="@("drinks")">Drinks</SelectItem>
+            <SelectItem Value="@("email")">Email</SelectItem>
+            <SelectItem Value="@("pizza")">Pizza</SelectItem>
+        </Select>
     </Text>
 
     <MonacoEditorYaml @ref="yamlEditor" Id="monacoEditorYaml" Value="@Yaml" CssClass="grid-yaml" />
@@ -49,6 +57,7 @@
 
     private MonacoEditorYaml yamlEditor;
     private Alert alertBox;
+    private string selectedExample;
 
     private LucyEngine engine = null;
     private LucyRecognizer recognizer = null;
@@ -80,7 +89,15 @@
 
     protected override void OnInitialized()
     {
-        this.Yaml = LoadResource("LucyPad2.Client.lucy.yaml");
+        this.selectedExample = "empty";
+        this.Yaml = LoadResource("LucyPad2.Client.empty.lucy.yaml");
+    }
+
+    async Task OnSelectedExampleChanged(string value)
+    {
+        this.selectedExample = value;
+        this.Yaml = LoadResource($"LucyPad2.Client.{value}.lucy.yaml");
+        await yamlEditor.SetValue(this.Yaml);
     }
 
     private string LoadResource(string name)
@@ -108,16 +125,16 @@
                 return;
             }
 #if embedded
-    if (lucyModel != yaml)
-    {
-        LoadModel(yaml);
-    }
+if (lucyModel != yaml)
+{
+LoadModel(yaml);
+}
 
-    var sw = new System.Diagnostics.Stopwatch();
-    sw.Start();
-    results = engine.MatchEntities(text);
-    sw.Stop();
-    this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
+var sw = new System.Diagnostics.Stopwatch();
+sw.Start();
+results = engine.MatchEntities(text);
+sw.Stop();
+this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
 #else
             var sw = new System.Diagnostics.Stopwatch();
             sw.Start();

@@ -1,0 +1,112 @@
+halocale: en
+externalEntities: []
+macros:
+entities:
+  - name: '@Order'
+    patterns:
+      - '@PizzaOrder ((and|and also) @PizzaOrder)*'
+    examples:
+      - I would like a personal pan pepperoni pizza with extra cheese on half.
+
+  - name: '@PizzaOrder'
+    patterns:
+      - (a|an|some|@integer)? (@Size)? (@Topping)* (@NamedPizza|combo|pizza|@Crust)? (@ComboPizza|@AddToppings|@RemoveToppings)* 
+    examples:
+      - I would like 2 large pepproni pan pizzas with extra cheese
+      - please bring me a large half peperoni and half anchovie sausage combo.
+
+  - name: '@ComboPizza'
+    patterns:
+    - '@PartialPizza (@PartialPizza|and @PartialPizza)*'
+
+  - name: '@PartialPizza'
+    patterns:
+    - '(on|with)? @fraction (@AddToppings|@RemoveToppings)+'
+    - '(@AddToppings|@RemoveToppings)+ on (the)? (other)? @fraction'
+
+  - name: '@AddToppings'
+    patterns:
+      - (add|and|with|also)* ((@ToppingQuantifier)* (@Topping)+)+
+
+  - name: '@RemoveToppings'
+    patterns:
+      - (remove|hold|delete|no|without) (@Topping|and|and also|the)+
+
+  - name: '@ToppingQuantifier'
+    patterns:
+      - [extra, 'lots of']
+      - [less, '(reduced|less|not as much)']
+      - [normal, 'some']
+
+  - name: '@NamedPizza'
+    patterns:
+      - marinera
+      - [meatlovers, meat lovers]
+      - hawaiian
+      - bbq
+      - napoli
+      - monaco
+      - supreme
+      - margherita
+
+  - name: '@Crust'
+    patterns:
+      - [Deep Dish, '(on)? deep dish (crust)?']
+      - [Pan, '(on)? (pan|regular|original|normal) (crust)?']
+      - [Stuffed Crust, '(on)? stuffed (crust)?']
+      - [Thin, '(on)? (thin|skinny) (crust)?']
+
+
+  - name: '@Size'
+    patterns:
+      - [Extra Large, XL, huge, super big, massive]
+      - [Large, large]
+      - [Medium, medium, regular, individual]
+      - [Party Size, party size]
+      - [Small, small, smallest, personal pan]
+
+  - name: '@Topping'
+    patterns:
+      - [Alfredo Sauce, '(alfredo|white)? sauce']
+      - [All, everything]
+      - [Anchovies, anchovie]
+      - [Artichokes, artichoke]
+      - [Bacon, bacon, bacon strips, strips of bacon, bacon bits]
+      - [Banana Pepper, '(yellow|banna)?~ pepper']
+      - ['(Barbecue)~', bbq]
+      - [Basil]
+      - [Beef, '(ground)? beef', hamburger]
+      - [Broccoli]
+      - [Canadian Bacon]
+      - [Cheddar, cheddar cheese]
+      - [Cheese]
+      - [Chicken, grilled chicken]
+      - [Corn]
+      - [Eggplant, egg plant]
+      - [Garlic]
+      - [Green Olive]
+      - [Ham]
+      - [Hot Sauce]
+      - [Jalapeno, 'jalapeno (pepper)?']
+      - [Lettuce]
+      - [Meatballs]
+      - [Mozzarella, '(mozzarella)~ (cheese)?']
+      - [Mushroom]
+      - [Olive, black olive]
+      - [Onions, grilled onions]
+      - [Oregano]
+      - [Parmesan Cheese, '(parmesan)~ (cheese)?']
+      - ['(Pepperoni)~']
+      - [Peppers, green peppers]
+      - [Pesto, pesto sauce]
+      - [Pineapple]
+      - [Ranch, ranch sauce]
+      - [Red Peppers]
+      - [Salami]
+      - [Sausage, (italian|spicy) sausage]
+      - [Spinach]
+      - [Sun Dried Tomato, (sun-dried|sundried|dried) (tomato)~]
+      - [(Tomato)~]
+      - [Turkey]
+      - [(Zuccini)~]
+

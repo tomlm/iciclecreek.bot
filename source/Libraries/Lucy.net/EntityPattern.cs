@@ -24,7 +24,7 @@ namespace Lucy
         public EntityPattern(string name, string resolution, PatternMatcher pattern)
         {
             this.Name = name.TrimStart('@');
-            this.Resolution = resolution?.Trim('(', ')', '~').Trim();
+            this.Resolution = resolution?.Trim();
             this.PatternMatcher = pattern;
         }
 
