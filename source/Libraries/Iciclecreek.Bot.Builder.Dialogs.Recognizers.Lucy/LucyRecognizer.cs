@@ -125,7 +125,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     {
                         return GetRecognizerEntities(lucyEntity.Children);
                     }
-                    return JToken.FromObject(lucyEntity.Resolution);
+                    return JToken.FromObject(lucyEntity.Resolution ?? String.Empty);
                 }));
 
                 instancesObject[grp.Key] = JArray.FromObject(grp.Select(lucyEntity =>

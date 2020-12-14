@@ -32,7 +32,7 @@ namespace Lucy.PatternMatchers
             StringBuilder sb = new StringBuilder();
             var inVariations = false;
             bool inModifiers = false;
-            byte maxTokens = byte.MaxValue;
+            byte maxTokens = 16;
             var modifierOrdinality = Ordinality.One;
             var fuzzyMatch = defaultFuzzyMatch;
             var chars = pattern.GetEnumerator();
@@ -55,7 +55,7 @@ namespace Lucy.PatternMatchers
                                 }
 
                                 variations = new List<string>();
-                                maxTokens = byte.MaxValue;
+                                maxTokens = 16;
                                 inVariations = true;
                                 inModifiers = false;
                                 modifierOrdinality = Ordinality.One;
@@ -179,7 +179,11 @@ namespace Lucy.PatternMatchers
 
             if (sequence.PatternMatchers.Count == 1)
             {
-                return sequence.PatternMatchers.Single();
+                var first = sequence.PatternMatchers.Single();
+                if (first is TokenPatternMatcher || first is EntityPatternMatcher || first is SequencePatternMatcher)
+                {
+                    return first;
+                }
             }
 
             return sequence;
@@ -238,30 +242,19 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        private void AddVariations(SequencePatternMatcher sequence, List<string> variations, Ordinality modifierOrdinality, bool fuzzyMatch, byte maxTokens)
+        private void AddVariations(SequencePatternMatcher sequence, List<string> variations, Ordinality modifierOrdinality, bool fuzzyMatch, byte maxMatches)
         {
-            switch (modifierOrdinality)
+            if (modifierOrdinality == Ordinality.One)
             {
-                case Ordinality.ZeroOrOne:
-                    sequence.PatternMatchers.Add(new ZeroOrOnePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch))));
-                    break;
-                case Ordinality.ZeroOrMore:
-                    sequence.PatternMatchers.Add(new ZeroOrMorePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
-                    break;
-                case Ordinality.One:
-                    if (variations.Count == 1)
-                    {
-                        sequence.PatternMatchers.Add(variations.Select(v => Parse(v, fuzzyMatch)).Single());
-                    }
-                    else
-                    {
-                        sequence.PatternMatchers.Add(new OneOfPatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch))));
-                    }
-                    break;
-                case Ordinality.OneOrMore:
-                    sequence.PatternMatchers.Add(new OneOrMorePatternMatcher(variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxTokens: maxTokens));
-                    break;
+                if (variations.Count == 1)
+                {
+                    // collapse down...
+                    sequence.PatternMatchers.Add(variations.Select(v => Parse(v, fuzzyMatch)).Single());
+                    return;
+                }
             }
+            sequence.PatternMatchers.Add(new OrdinalityPatternMatcher(modifierOrdinality, variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxMatches));
+            return;
         }
 
         private const string NAMEDWILDCARD = ":" + WildcardPatternMatcher.ENTITYTYPE;

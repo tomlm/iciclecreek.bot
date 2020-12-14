@@ -24,22 +24,18 @@ namespace Lucy.PatternMatchers.Matchers
 
         public HashSet<String> FuzzyTokens { get; set; } = new HashSet<string>();
 
-        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
+        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatternMatcher)
         {
-            var matchResult = new MatchResult();
+            var tokenEntity = startToken;
             if (tokenEntity != null)
             {
-
                 var resolution = tokenEntity?.Resolution as TokenResolution;
                 if (resolution != null)
                 {
                     // see if it matches the normal token
                     if (this.Token == resolution.Token)
                     {
-                        matchResult.Matched = true;
-                        matchResult.End = tokenEntity.End;
-                        matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
-                        return matchResult;
+                        return new MatchResult(true, this, context.GetNextTokenEntity(tokenEntity), tokenEntity.Start, tokenEntity.End);
                     }
 
                     // if we have fuzzyTokens, see if it matches any of the fuzzy tokens.
@@ -51,10 +47,7 @@ namespace Lucy.PatternMatchers.Matchers
                             {
                                 if (fuzzyToken2 == fuzzyToken)
                                 {
-                                    matchResult.Matched = true;
-                                    matchResult.End = tokenEntity.End;
-                                    matchResult.NextToken = context.GetNextTokenEntity(tokenEntity);
-                                    return matchResult;
+                                    return new MatchResult(true, this, context.GetNextTokenEntity(tokenEntity), tokenEntity.Start, tokenEntity.End);
                                 }
                             }
                         }
@@ -62,7 +55,7 @@ namespace Lucy.PatternMatchers.Matchers
                 }
             }
 
-            return matchResult;
+            return new MatchResult(false, this);
         }
 
         public override string ToString() => $"{(FuzzyTokens.Any() ? $"{Token}~" : Token)}";

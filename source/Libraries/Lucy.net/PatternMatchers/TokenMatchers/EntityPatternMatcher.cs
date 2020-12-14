@@ -20,9 +20,11 @@ namespace Lucy.PatternMatchers
 
         public string EntityType { get; set; }
 
-        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
+        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatterMatcher)
         {
-            var matchResult = new MatchResult();
+            var tokenEntity = startToken;
+
+            var matchResult = new MatchResult(false, this, tokenEntity);
             if (tokenEntity != null)
             {
                 var entity = context.Entities.FirstOrDefault(le => le.Start == tokenEntity.Start && le.Type == EntityType);

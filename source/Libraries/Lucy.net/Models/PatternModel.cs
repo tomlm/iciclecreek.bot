@@ -31,11 +31,6 @@ namespace Lucy
             }
         }
 
-        public bool IsNormalized()
-        {
-            return this.patterns.Count > 1;
-        }
-
         public IEnumerator<string> GetEnumerator() => this.patterns.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)this.patterns).GetEnumerator();
 

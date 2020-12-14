@@ -90,7 +90,7 @@ namespace Lucy.Tests
                 }
             });
 
-            string text = "I would like coors beer";
+            string text = "like coors beer";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
@@ -216,7 +216,7 @@ namespace Lucy.Tests
                 }
             });
 
-            string text = "I would like a clyde mills drink.";
+            string text = "like a clyde mills drink.";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 
@@ -238,18 +238,18 @@ namespace Lucy.Tests
                 },
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@size", Patterns = new List<PatternModel>() { "(small|medium|large)" } },
+                    new EntityModel() { Name = "@size", Patterns = new List<PatternModel>() { "small" } },
                     new EntityModel() {
                         Name = "@drink",
                         Patterns = new List<PatternModel>()
                         {
-                            "a (@size)? (label:___)* (drink|cocktail|beverage)?"
+                            "a (@size)? (label:___)* cocktail"
                         }
                     },
                 }
             });
 
-            string text = "I would like a clyde mills cocktail.";
+            string text = "a clyde mills cocktail.";
             var results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
 

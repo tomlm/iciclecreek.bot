@@ -35,61 +35,54 @@ namespace Lucy.PatternMatchers
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext context, LucyEntity tokenEntity)
+        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatternMatcher)
         {
+            var tokenEntity = startToken;
             // try to match each element in the sequence.
             int end = 0;
             for (int iPattern = 0; iPattern < PatternMatchers.Count; iPattern++)
             {
-                MatchResult matchResult = null;
+                if (tokenEntity == null)
+                {
+                    // ran out of tokens, this sequence couldn't be completed
+                    return new MatchResult(false, this);
+                }
+                var matchResult = new MatchResult(false, this, tokenEntity);
                 var patternMatcher = PatternMatchers[iPattern];
                 var maxTokens = patternMatcher.MaxTokens;
-                do
+                if (patternMatcher.ContainsWildcard())
                 {
-                    if (patternMatcher.ContainsWildcard())
-                    {
-                        // look ahead to non wild card
-                        var endPatternMatcher = PatternMatchers.Skip(iPattern).Where(pm => !pm.ContainsWildcard()).FirstOrDefault();
-                        if (endPatternMatcher != null)
-                        {
-                            matchResult = endPatternMatcher.Matches(context, tokenEntity);
-                            // if it matched AND moved forward, then we are done
-                            if (matchResult.Matched)
-                            {
-                                if (matchResult.Matched && matchResult.NextToken != tokenEntity)
-                                {
-                                    // skip forward to endPatternMatcher and run again...
-                                    iPattern = PatternMatchers.IndexOf(endPatternMatcher) - 1;
-                                    continue;
-                                }
-                            }
-                        }
-                    }
+                    // look ahead to non wild card
+                    nextPatternMatcher = PatternMatchers.Skip(iPattern).Where(pm => !pm.ContainsWildcard()).FirstOrDefault();
 
-                    var result = patternMatcher.Matches(context, tokenEntity);
+                    // run wildcard pattern matcher
+                    matchResult = patternMatcher.Matches(context, tokenEntity, nextPatternMatcher);
 
-                    // if the element did not match, then sequence is bad, return failure
-                    if (result.Matched == false)
+                    // if the match was not the wildcard pattern, then advance to that.
+                    if (matchResult.NextPatternMatch != null)
                     {
-                        // unless we already have a result from this pattern matcher, then we can continue on.
-                        if (matchResult != null)
-                        {
-                            break;
-                        }
-                        return result;
+                        Debug.Assert(matchResult.NextPatternMatch.PatternMatcher == nextPatternMatcher);
+                        matchResult = matchResult.NextPatternMatch;
+                        iPattern = PatternMatchers.IndexOf(matchResult.PatternMatcher);
+                        Debug.Assert(iPattern >= 0);
                     }
-                    matchResult = result;
-                    tokenEntity = matchResult.NextToken;
-                    end = Math.Max(result.End, end);
-                } while (matchResult.Repeat && --maxTokens > 0);
+                }
+                else
+                {
+                    matchResult = patternMatcher.Matches(context, tokenEntity, nextPatternMatcher);
+                }
+
+                // if the element did not match, then sequence is bad, return failure
+                if (matchResult.Matched == false)
+                {
+                    return new MatchResult(false, this, tokenEntity);
+                }
+
+                tokenEntity = matchResult.NextToken;
+                end = Math.Max(matchResult.End, end);
             }
 
-            return new MatchResult()
-            {
-                Matched = true,
-                End = end,
-                NextToken = tokenEntity
-            };
+            return new MatchResult(true, this, tokenEntity, startToken.Start, end);
         }
 
         public override IEnumerable<string> GetEntityReferences()
@@ -119,7 +112,7 @@ namespace Lucy.PatternMatchers
 
                 foreach (var example in pm.GenerateExamples(engine))
                 {
-                    foreach(var previousExample in examples)
+                    foreach (var previousExample in examples)
                     {
                         newExamples.Add($"{previousExample} {example}".Trim());
                     }

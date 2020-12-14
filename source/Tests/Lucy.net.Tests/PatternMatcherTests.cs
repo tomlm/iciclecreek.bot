@@ -432,6 +432,91 @@ namespace Lucy.Tests
         }
 
         [TestMethod]
+        public void NestedPatternOrdinalityTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test", Patterns = new List<PatternModel>(){ "(x y)+" } },
+                }
+            });
+
+            string text = "x y x y";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+
+            text = "x x z y y";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+        }
+
+        [TestMethod]
+        public void NestedPatternOrdinalityTests2()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test", Patterns = new List<PatternModel>(){ "((x) (y))+" } },
+                }
+            });
+
+            string text = "x y x y";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+
+            text = "x x z y y";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+        }
+
+
+        [TestMethod]
+        public void NestedPatternOrdinalityTests3()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test", Patterns = new List<PatternModel>(){ "((x)* (y)+)+" } },
+                }
+            });
+
+            string text = "x x";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+
+            text = "y y";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+
+            text = "x x z y y";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(0, entities.Count);
+
+            text = "x x y y";
+            results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+            entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+        }
+
+        [TestMethod]
         public void MacroTest()
         {
             var engine = new LucyEngine(new LucyModel()

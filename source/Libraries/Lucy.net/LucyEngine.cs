@@ -135,7 +135,7 @@ namespace Lucy
         /// <param name="externalEntities">externally provided entities</param>
         /// <param name="includeInternal">include tokens in results</param>
         /// <returns>entities</returns>
-        public IEnumerable<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeInternal = false)
+        public IList<LucyEntity> MatchEntities(string text, IEnumerable<LucyEntity> externalEntities = null, bool includeInternal = false)
         {
             var context = new MatchContext()
             {
@@ -197,7 +197,6 @@ namespace Lucy
 
             context.MergeEntities(context.Entities);
             context.ResolveEntities(context.Entities);
-            context.MergeEntities(context.Entities);
 
             // only include tokenEntities if they ask for them
             if (includeInternal)
@@ -207,7 +206,7 @@ namespace Lucy
                 return merged;
             }
 
-            return context.Entities.OrderByDescending(e => e.Score);
+            return context.Entities.OrderByDescending(e => e.Score).ToList();
         }
 
         public IEnumerable<string> GenerateExamples(string entityType)
@@ -447,7 +446,7 @@ namespace Lucy
             };
 
             // see if it matches at this textEntity starting position.
-            var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity);
+            var matchResult = entityPattern.PatternMatcher.Matches(context, textEntity, nextPatternMatcher: null);
             //System.Diagnostics.Trace.TraceInformation($"[{textEntity.Start}] {context.EntityPattern} => \"{textEntity}\" {matchResult.Matched}");
 
             // if it matches
@@ -457,11 +456,12 @@ namespace Lucy
                 context.CurrentEntity.End = matchResult.End;
                 context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
 
-                if (context.CurrentEntity.Resolution == null && !context.CurrentEntity.Children.Any())
+                if (context.CurrentEntity.Resolution == null && entityPattern.Resolution != null)
                 {
-                    context.CurrentEntity.Resolution = context.CurrentEntity.Text;
+                    context.CurrentEntity.Resolution = entityPattern.Resolution;
                 }
 
+                context.MergeEntities(context.CurrentEntity.Children);
                 context.ResolveEntities(context.CurrentEntity.Children);
 
                 context.CurrentEntity.Score = context.CurrentEntity.GetAllEntities().Count() + ((float)(context.CurrentEntity.End - context.CurrentEntity.Start) / context.Text.Length);
@@ -489,7 +489,7 @@ namespace Lucy
                 {
                     foreach (var patternModel in entityModel.Patterns)
                     {
-                        var resolution = entityModel.Patterns.Any(p => p.IsNormalized()) ? patternModel.First() : null;
+                        var resolution = patternModel.FirstOrDefault();
                         foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                         {
                             var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);

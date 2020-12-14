@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using J2N.IO;
 
 namespace Lucy.PatternMatchers
 {
     public class MatchResult
     {
+        public MatchResult(bool matched, PatternMatcher matcher, LucyEntity nextToken = null, int start = 0, int end = 0)
+        {
+            Matched = matched;
+            PatternMatcher = matcher;
+            NextToken = nextToken;
+            Start = start;
+            End = end;
+        }
+
         /// <summary>
         /// True if the matcher was successful
         /// </summary>
         public bool Matched { get; set; }
-
-        /// <summary>
-        /// Set to true to have this matcher run again on the next token
-        /// </summary>
-        public bool Repeat { get; set; } = false;
 
         /// <summary>
         /// End of recognized sequence.
@@ -22,8 +27,25 @@ namespace Lucy.PatternMatchers
         public int End { get; set; }
 
         /// <summary>
+        /// Start of recognized sequence
+        /// </summary>
+        public int Start { get; set; }
+
+        /// <summary>
         /// Next token to process
         /// </summary>
         public LucyEntity NextToken { get; set; }
+
+        /// <summary>
+        /// Pattern which matched.
+        /// </summary>
+        public PatternMatcher PatternMatcher { get; set; }
+
+        /// <summary>
+        /// If there is a NextPattern and it was matched, this is the result of that operation.
+        /// </summary>
+        public MatchResult NextPatternMatch { get; set; }
+
+        public override string ToString() => $"[{Start},{End}] {Matched} {PatternMatcher} NextToken:'{NextToken?.Text}'";
     }
 }

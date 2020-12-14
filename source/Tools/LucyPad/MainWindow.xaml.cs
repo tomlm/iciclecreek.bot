@@ -72,12 +72,12 @@ namespace LucyPad
                     this.labelBox.Text = $"{sw.ElapsedMilliseconds} ms\n" + String.Join("\n", results.Select(s => LucyEngine.VisualizeEntity(text, s, showSpans: true, showHierarchy: false)));
                     this.entitiesBox.Text = String.Join("\n", results.Select(s => LucyEngine.VisualizeEntity(text, s, showSpans: false, showHierarchy: true)));
 
-                    var activity = new Activity(ActivityTypes.Message) { Text = text };
-                    var tc = new TurnContext(new TestAdapter(), activity);
-                    var dc = new DialogContext(new DialogSet(), tc, new DialogState());
-                    var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
-                    // this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
-                    this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());
+                    //var activity = new Activity(ActivityTypes.Message) { Text = text };
+                    //var tc = new TurnContext(new TestAdapter(), activity);
+                    //var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+                    //var recognizerResult = recognizer.RecognizeAsync(dc, activity).Result;
+                    //// this.recognizerBox.Text = JsonConvert.SerializeObject(recognizerResult, new JsonSerializerSettings() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore });
+                    //this.recognizerBox.Text = new Serializer().Serialize(JObject.FromObject(recognizerResult).ToObject<ExpandoObject>());
                 }
             }
             catch (SemanticErrorException err)
