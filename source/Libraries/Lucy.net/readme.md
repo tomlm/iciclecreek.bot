@@ -1,10 +1,10 @@
 ![Lucy Logo](icon256.png)
 
 # Lucy Overview
-Lucy is an Entity Recognition engine which defines a simple yaml syntax for recognizing **entities** in text.
+Lucy is an Entity Recognition engine which defines a simple yaml syntax for recognizing entities in text.
 
 #  Core concept
-Lucy's core concept is
+Lucy's core concept is that:
 > **Entities** are cascading patterns of **tokens** and **entities**.
 
 Lucy focuses on **capturing your knowledge** by focusing on **token patterns**.
