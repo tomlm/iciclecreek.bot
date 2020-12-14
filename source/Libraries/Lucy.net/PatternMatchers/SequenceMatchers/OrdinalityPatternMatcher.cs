@@ -42,6 +42,8 @@ namespace Lucy.PatternMatchers
         public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatternMatcher)
         {
             var tokenEntity = startToken;
+            int start = startToken?.Start ?? 0;
+            int end = 0;
             int minMatches = 1;
             int maxMatches = this.MaxMatches;
             switch (Ordinality)
@@ -60,10 +62,9 @@ namespace Lucy.PatternMatchers
                     break;
             }
 
-            int end = 0;
             int matched = 0;
             MatchResult matchResult = null;
-            bool found = false;
+            bool found;
             do
             {
                 found = false;
@@ -82,7 +83,7 @@ namespace Lucy.PatternMatchers
                         if (matched == maxMatches)
                         {
                             // then we are done;
-                            return new MatchResult(true, this, tokenEntity, startToken.Start, end)
+                            return new MatchResult(true, this, tokenEntity, start, end)
                             {
                                 NextPatternMatch = result.NextPatternMatch
                             };
@@ -108,7 +109,7 @@ namespace Lucy.PatternMatchers
                 };
             }
 
-            return new MatchResult(true, this, tokenEntity, startToken.Start, end)
+            return new MatchResult(true, this, tokenEntity, start, end)
             {
                 NextPatternMatch = matchResult?.NextPatternMatch
             };

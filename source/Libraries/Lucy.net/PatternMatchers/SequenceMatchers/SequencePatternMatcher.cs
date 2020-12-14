@@ -39,14 +39,10 @@ namespace Lucy.PatternMatchers
         {
             var tokenEntity = startToken;
             // try to match each element in the sequence.
+            int start = startToken?.Start ?? 0;
             int end = 0;
             for (int iPattern = 0; iPattern < PatternMatchers.Count; iPattern++)
             {
-                if (tokenEntity == null)
-                {
-                    // ran out of tokens, this sequence couldn't be completed
-                    return new MatchResult(false, this);
-                }
                 var matchResult = new MatchResult(false, this, tokenEntity);
                 var patternMatcher = PatternMatchers[iPattern];
                 if (patternMatcher.ContainsWildcard())
@@ -81,7 +77,7 @@ namespace Lucy.PatternMatchers
                 end = Math.Max(matchResult.End, end);
             }
 
-            return new MatchResult(true, this, tokenEntity, startToken.Start, end);
+            return new MatchResult(true, this, tokenEntity, start, end);
         }
 
         public override IEnumerable<string> GetEntityReferences()

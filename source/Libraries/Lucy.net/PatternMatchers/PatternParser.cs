@@ -44,7 +44,7 @@ namespace Lucy.PatternMatchers
                     {
                         case '(':
                             Ordinality modifierOrdinality = Ordinality.One;
-                            AddVariationText(sequence, sb, fuzzyMatch);
+                            AddTextToSequence(sequence, sb, fuzzyMatch);
 
                             var subText = GetPatternGroup(chars).Trim();
 
@@ -99,8 +99,15 @@ namespace Lucy.PatternMatchers
 
                         case '|':
                             {
-                                AddVariationText(sequence, sb, fuzzyMatch);
-                                ordinalityPatternMatcher.PatternMatchers.Add(sequence);
+                                AddTextToSequence(sequence, sb, fuzzyMatch);
+                                if (sequence.PatternMatchers.Count == 1)
+                                {
+                                    ordinalityPatternMatcher.PatternMatchers.Add(sequence.PatternMatchers.Single());
+                                }
+                                else
+                                {
+                                    ordinalityPatternMatcher.PatternMatchers.Add(sequence);
+                                }
                                 sequence = new SequencePatternMatcher();
                             }
                             break;
@@ -112,7 +119,7 @@ namespace Lucy.PatternMatchers
                 } while (repeatChar);
             }
 
-            AddVariationText(sequence, sb, fuzzyMatch);
+            AddTextToSequence(sequence, sb, fuzzyMatch);
 
             if (sequence.PatternMatchers.Any())
             {
@@ -142,7 +149,7 @@ namespace Lucy.PatternMatchers
             return result;
         }
 
-        private void AddVariationText(SequencePatternMatcher sequence, StringBuilder sb, bool fuzzyMatch)
+        private void AddTextToSequence(SequencePatternMatcher sequence, StringBuilder sb, bool fuzzyMatch)
         {
             var variation = sb.ToString().Trim();
             if (variation.Length > 0)

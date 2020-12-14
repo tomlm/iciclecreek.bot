@@ -487,23 +487,26 @@ namespace Lucy
             {
                 foreach (var entityModel in _lucyModel.Entities)
                 {
-                    foreach (var patternModel in entityModel.Patterns)
+                    if (entityModel.Patterns != null)
                     {
-                        var resolution = patternModel.FirstOrDefault();
-                        foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
+                        foreach (var patternModel in entityModel.Patterns)
                         {
-                            var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
-                            if (patternMatcher != null)
+                            var resolution = patternModel.FirstOrDefault();
+                            foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                             {
-                                // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
-                                if (patternMatcher.ContainsWildcard())
+                                var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
+                                if (patternMatcher != null)
                                 {
-                                    // we want to process wildcard patterns last
-                                    WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
-                                }
-                                else
-                                {
-                                    EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                    // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
+                                    if (patternMatcher.ContainsWildcard())
+                                    {
+                                        // we want to process wildcard patterns last
+                                        WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                    }
+                                    else
+                                    {
+                                        EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                    }
                                 }
                             }
                         }
