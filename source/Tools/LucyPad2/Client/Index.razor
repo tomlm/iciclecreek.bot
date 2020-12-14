@@ -10,7 +10,7 @@
         <Link Target="Target.Blank" To="https://github.com/tomlm/iciclecreek.bot/blob/master/source/Libraries/Lucy.net/help.md" Class="grid-help">Help</Link>
         <Text Class="grid-samplesLabel">Samples:</Text>
         <Select Clsas="grid-samplesCombo" TValue="string" SelectedValue="@selectedExample" SelectedValueChanged="@OnSelectedExampleChanged">
-            <SelectItem Value="@("empty")">Empty</SelectItem>
+            <SelectItem Value="@("simple")">Simple</SelectItem>
             <SelectItem Value="@("cars")">Cars</SelectItem>
             <SelectItem Value="@("drinks")">Drinks</SelectItem>
             <SelectItem Value="@("email")">Email</SelectItem>
@@ -89,8 +89,8 @@
 
     protected override void OnInitialized()
     {
-        this.selectedExample = "empty";
-        this.Yaml = LoadResource("LucyPad2.Client.empty.lucy.yaml");
+        this.selectedExample = "simple";
+        this.Yaml = LoadResource("LucyPad2.Client.simple.lucy.yaml");
     }
 
     async Task OnSelectedExampleChanged(string value)

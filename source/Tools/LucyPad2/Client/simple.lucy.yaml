@@ -13,5 +13,15 @@ macros:
 entities:
   - name: '@name'
     patterns:
-    - name is ___
+      - name is ___
 
+  - name: '@color'
+    patterns:
+      - red
+      - [green, verde]
+      - [blue, (aqua)~]
+
+  - name: '@favoriteColor'
+    patterns:
+      - I (prefer|like|love) @color
+      - (my)? (fav|favorite)~  (color)? is @color
