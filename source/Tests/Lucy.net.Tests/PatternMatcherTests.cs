@@ -501,19 +501,19 @@ namespace Lucy.Tests
             results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
             entities = results.Where(e => e.Type == "test").ToList();
-            Assert.AreEqual(0, entities.Count);
+            Assert.AreEqual(1, entities.Count);
 
             text = "x x z y y";
             results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
             entities = results.Where(e => e.Type == "test").ToList();
-            Assert.AreEqual(0, entities.Count);
+            Assert.AreEqual(1, entities.Count);
 
             text = "x x y y";
             results = engine.MatchEntities(text, null);
             Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
             entities = results.Where(e => e.Type == "test").ToList();
-            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual(3, entities.Count);
         }
 
         [TestMethod]

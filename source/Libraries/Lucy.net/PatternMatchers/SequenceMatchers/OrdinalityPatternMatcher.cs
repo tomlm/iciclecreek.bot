@@ -14,6 +14,12 @@ namespace Lucy.PatternMatchers
         {
         }
 
+        public OrdinalityPatternMatcher(Ordinality ordinality, int maxMatches = Byte.MaxValue)
+        {
+            this.MaxMatches = maxMatches;
+            this.Ordinality = ordinality;
+        }
+
         public OrdinalityPatternMatcher(Ordinality ordinality, IEnumerable<PatternMatcher> patternMatchers, int maxMatches = Byte.MaxValue)
         {
             this.MaxMatches = maxMatches;
@@ -121,7 +127,7 @@ namespace Lucy.PatternMatchers
             }
         }
 
-        public override string ToString() => $"{Ordinality}{(this.MaxTokens < 16 ? this.MaxTokens.ToString() : String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
+        public override string ToString() => $"{Ordinality}{(this.MaxMatches < 16 ? this.MaxMatches.ToString() : String.Empty)}({string.Join(",", PatternMatchers.Select(p => p.ToString()))})";
 
         public override IEnumerable<string> GenerateExamples(LucyEngine engine)
         {

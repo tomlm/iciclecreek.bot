@@ -25,236 +25,160 @@ namespace Lucy.PatternMatchers
         /// </summary>
         /// <param name="pattern">pattern to parse</param>
         /// <returns></returns>
-        public PatternMatcher Parse(string pattern, bool defaultFuzzyMatch = false)
+        public PatternMatcher Parse(string pattern, bool defaultFuzzyMatch = false, Ordinality ordinality = Ordinality.One, int maxMatches = 16)
         {
+            OrdinalityPatternMatcher ordinalityPatternMatcher = new OrdinalityPatternMatcher(ordinality, maxMatches);
             SequencePatternMatcher sequence = new SequencePatternMatcher();
-            List<string> variations = null;
             StringBuilder sb = new StringBuilder();
-            var inVariations = false;
-            bool inModifiers = false;
-            byte maxTokens = 16;
-            var modifierOrdinality = Ordinality.One;
             var fuzzyMatch = defaultFuzzyMatch;
             var chars = pattern.GetEnumerator();
             while (chars.MoveNext())
             {
                 char ch = chars.Current;
-                bool repeatChar = false;
+                bool repeatChar;
                 do
                 {
                     repeatChar = false;
-                    if (!inVariations)
+
+                    switch (ch)
                     {
-                        switch (ch)
-                        {
-                            case '(':
-                                if (sb.Length > 0)
+                        case '(':
+                            Ordinality modifierOrdinality = Ordinality.One;
+                            AddVariationText(sequence, sb, fuzzyMatch);
+
+                            var subText = GetPatternGroup(chars).Trim();
+
+                            bool inModifiers = true;
+                            while (inModifiers && chars.MoveNext())
+                            {
+                                ch = chars.Current;
+                                switch (ch)
                                 {
-                                    AddPatternMatchersForText(sequence.PatternMatchers, sb.ToString().Trim(), fuzzyMatch);
-                                    sb.Clear();
+                                    case '~':
+                                        fuzzyMatch = !defaultFuzzyMatch;
+                                        break;
+
+                                    case '?':
+                                        modifierOrdinality = Ordinality.ZeroOrOne;
+                                        break;
+
+                                    case '+':
+                                        modifierOrdinality = Ordinality.OneOrMore;
+                                        break;
+
+                                    case '*':
+                                        modifierOrdinality = Ordinality.ZeroOrMore;
+                                        break;
+
+                                    default:
+                                        if (byte.TryParse(ch.ToString(), out byte num))
+                                        {
+                                            maxMatches = num;
+                                        }
+                                        else
+                                        {
+                                            var patternMatcher = Parse(subText, fuzzyMatch, modifierOrdinality, maxMatches);
+                                            sequence.PatternMatchers.Add(patternMatcher);
+
+                                            // break out of modifier loop
+                                            inModifiers = false;
+                                            repeatChar = true;
+                                        }
+                                        break;
                                 }
-
-                                variations = new List<string>();
-                                maxTokens = 16;
-                                inVariations = true;
-                                inModifiers = false;
-                                modifierOrdinality = Ordinality.One;
-                                fuzzyMatch = defaultFuzzyMatch;
-                                break;
-
-                            default:
-                                sb.Append(ch);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (!inModifiers)
-                        {
-                            // we are parsing paren content.
-                            switch (ch)
-                            {
-                                case '(':
-                                    var subText = GetSubParens(chars, out char lastChar).Trim();
-                                    if (!String.IsNullOrWhiteSpace(subText))
-                                    {
-                                        variations.Add(subText.Trim());
-                                    }
-                                    ch = lastChar;
-                                    repeatChar = true;
-                                    break;
-                                case '|':
-                                    {
-                                        var variation = sb.ToString();
-                                        if (!String.IsNullOrWhiteSpace(variation))
-                                        {
-                                            variations.Add(variation.Trim());
-                                        }
-                                        sb.Clear();
-                                    }
-                                    break;
-
-                                case ')':
-                                    {
-                                        var variation = sb.ToString();
-                                        if (!String.IsNullOrWhiteSpace(variation))
-                                        {
-                                            variations.Add(variation.Trim());
-                                        }
-                                        sb.Clear();
-                                    }
-                                    inModifiers = true;
-                                    break;
-
-                                default:
-                                    sb.Append(ch);
-                                    break;
                             }
-                        }
-                        else if (inModifiers)
-                        {
-                            switch (ch)
+                            if (inModifiers)
                             {
-                                case '~':
-                                    fuzzyMatch = !defaultFuzzyMatch;
-                                    break;
+                                // paren was end of string.
+                                var patternMatcher = Parse(subText, fuzzyMatch, modifierOrdinality, maxMatches);
+                                sequence.PatternMatchers.Add(patternMatcher);
+                            }
+                            maxMatches = 16;
+                            fuzzyMatch = defaultFuzzyMatch;
+                            break;
 
-                                case '?':
-                                    modifierOrdinality = Ordinality.ZeroOrOne;
-                                    break;
-
-                                case '+':
-                                    modifierOrdinality = Ordinality.OneOrMore;
-                                    break;
-
-                                case '*':
-                                    modifierOrdinality = Ordinality.ZeroOrMore;
-                                    break;
-
-                                default:
-                                    if (byte.TryParse(ch.ToString(), out byte num))
-                                    {
-                                        maxTokens = num;
-                                    }
-                                    else if (variations.Any())
-                                    {
-                                        AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch, maxTokens);
-                                        // we need to reprocess this char with new state.
-                                        variations.Clear();
-                                        sb.Clear();
-                                        inVariations = false;
-                                        inModifiers = false;
-                                        modifierOrdinality = Ordinality.One;
-                                        repeatChar = true;
-                                    }
-                                    break;
+                        case '|':
+                            {
+                                AddVariationText(sequence, sb, fuzzyMatch);
+                                ordinalityPatternMatcher.PatternMatchers.Add(sequence);
+                                sequence = new SequencePatternMatcher();
                             }
                             break;
-                        }
+
+                        default:
+                            sb.Append(ch);
+                            break;
                     }
                 } while (repeatChar);
             }
 
-            if (inVariations)
+            AddVariationText(sequence, sb, fuzzyMatch);
+
+            if (sequence.PatternMatchers.Any())
             {
-                if (inModifiers && variations.Any())
+                if (sequence.PatternMatchers.Count == 1)
                 {
-                    AddVariations(sequence, variations, modifierOrdinality, fuzzyMatch, maxTokens);
+                    ordinalityPatternMatcher.PatternMatchers.Add(sequence.PatternMatchers.Single());
                 }
                 else
                 {
-                    throw new Exception("Closing paren not found!");
+                    ordinalityPatternMatcher.PatternMatchers.Add(sequence);
                 }
             }
 
-            if (sb.Length > 0)
+            // if this is a oneOf, maxMatches with a single pattern matcher, just the inner patternmatcher.
+            PatternMatcher result = ordinalityPatternMatcher;
+            if (ordinalityPatternMatcher.PatternMatchers.Count == 1 && ordinalityPatternMatcher.Ordinality == Ordinality.One)
             {
-                AddPatternMatchersForText(sequence.PatternMatchers, sb.ToString().Trim(), fuzzyMatch);
+                result = ordinalityPatternMatcher.PatternMatchers.Single();
             }
 
-            if (sequence.PatternMatchers.Count == 0)
+            // if it is a sequence with only one patternMatcher, just the inner patternmatcher
+            if (result is SequencePatternMatcher spm && spm.PatternMatchers.Count == 1)
             {
-                return null;
+                result = spm.PatternMatchers.Single();
             }
 
-            if (sequence.PatternMatchers.Count == 1)
-            {
-                var first = sequence.PatternMatchers.Single();
-                if (first is TokenPatternMatcher || first is EntityPatternMatcher || first is SequencePatternMatcher)
-                {
-                    return first;
-                }
-            }
-
-            return sequence;
+            return result;
         }
 
-        public string GetSubParens(CharEnumerator chars, out char ch)
+        private void AddVariationText(SequencePatternMatcher sequence, StringBuilder sb, bool fuzzyMatch)
         {
-            ch = ' ';
-            bool inModifiers = false;
-            StringBuilder sb = new StringBuilder("(");
+            var variation = sb.ToString().Trim();
+            if (variation.Length > 0)
+            {
+                var patternMatcher = CreateTextPatternMatcher(variation, fuzzyMatch);
+                sequence.PatternMatchers.Add(patternMatcher);
+                sb.Clear();
+            }
+        }
+
+        public string GetPatternGroup(CharEnumerator chars)
+        {
+            StringBuilder sb = new StringBuilder();
+            int parenCount = 1;
             while (chars.MoveNext())
             {
-                ch = chars.Current;
-                if (!inModifiers)
-                {
+                char ch = chars.Current;
 
-                    // we are in subparen content.
-                    switch (ch)
-                    {
-                        case ')':
-                            inModifiers = true;
-                            sb.Append(ch);
-                            break;
-                        default:
-                            sb.Append(ch);
-                            break;
-                    }
-                }
-                else
+                // we are in subparen content.
+                switch (ch)
                 {
-                    switch (ch)
-                    {
-                        case '~':
-                        case '?':
-                        case '*':
-                        case '+':
-                            sb.Append(ch);
-                            break;
-                        default:
+                    case '(':
+                        parenCount++;
+                        break;
+
+                    case ')':
+                        parenCount--;
+                        if (parenCount == 0)
+                        {
                             return sb.ToString();
-                    }
+                        }
+                        break;
                 }
+                sb.Append(ch);
             }
-            return sb.ToString();
-        }
-
-        private void AddPatternMatchersForText(List<PatternMatcher> patternMatchers, string text, bool fuzzyMatch)
-        {
-            if (!String.IsNullOrEmpty(text))
-            {
-                var patternMatcher = CreateTextPatternMatcher(text, fuzzyMatch);
-                if (patternMatcher != null)
-                {
-                    patternMatchers.Add(patternMatcher);
-                }
-            }
-        }
-
-        private void AddVariations(SequencePatternMatcher sequence, List<string> variations, Ordinality modifierOrdinality, bool fuzzyMatch, byte maxMatches)
-        {
-            if (modifierOrdinality == Ordinality.One)
-            {
-                if (variations.Count == 1)
-                {
-                    // collapse down...
-                    sequence.PatternMatchers.Add(variations.Select(v => Parse(v, fuzzyMatch)).Single());
-                    return;
-                }
-            }
-            sequence.PatternMatchers.Add(new OrdinalityPatternMatcher(modifierOrdinality, variations.OrderByDescending(v => v.Length).Select(v => Parse(v, fuzzyMatch)), maxMatches));
-            return;
+            throw new ArgumentOutOfRangeException("Missing matching paren");
         }
 
         private const string NAMEDWILDCARD = ":" + WildcardPatternMatcher.ENTITYTYPE;

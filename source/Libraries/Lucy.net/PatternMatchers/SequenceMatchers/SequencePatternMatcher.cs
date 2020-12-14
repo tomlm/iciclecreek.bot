@@ -49,7 +49,6 @@ namespace Lucy.PatternMatchers
                 }
                 var matchResult = new MatchResult(false, this, tokenEntity);
                 var patternMatcher = PatternMatchers[iPattern];
-                var maxTokens = patternMatcher.MaxTokens;
                 if (patternMatcher.ContainsWildcard())
                 {
                     // look ahead to non wild card
