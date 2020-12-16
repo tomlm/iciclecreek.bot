@@ -89,6 +89,7 @@ namespace Lucy
             CurrentEntity.Children.Add(entity);
 
             this.MergeEntities(CurrentEntity.Children);
+            this.ResolveEntities(CurrentEntity.Children);
 
             CurrentEntity.End = CurrentEntity.Children.Max(e => e.End);
             CurrentEntity.Score = CurrentEntity.GetAllEntities().Count() + ((float)(CurrentEntity.End - CurrentEntity.Start) / this.Text.Length);
@@ -217,7 +218,7 @@ namespace Lucy
         /// <param name="entities"></param>
         public void ResolveEntities(LucyEntitySet entities)
         {
-            if (entities.Count > 0)
+            if (entities.Count > 1)
             {
                 var workingEntities = new LucyEntitySet(entities);
 
@@ -321,9 +322,8 @@ namespace Lucy
 
             if (mergedEntity.Children.Count > 1)
             {
-                // mergedEntity.Resolution = String.Empty;
                 this.MergeEntities(mergedEntity.Children);
-                // this.ResolveEntities(mergedEntity.Children);
+                this.ResolveEntities(mergedEntity.Children);
             }
 
             mergedEntity.Score = mergedEntity.GetAllEntities().Count() + ((float)(mergedEntity.End - mergedEntity.Start) / this.Text.Length);

@@ -1,11 +1,9 @@
-# sample for searching email.
-locale: en
 macros:
   $stopwords: which|is|that
 entities:
   - name: emailIntent
     patterns:
-    - ((email|(electronic)? messages|e-mail)+|@sentDate|@receivedDate|@sentBy|@sentTo|@sentCc|@subject|@importance)+
+    - (@documentType|@sentDate|@receivedDate|@sentBy|@sentTo|@sentCc|@subject|@importance)+
     examples:
     - email from chris sent last week about dogs from asia.
     - chris' email sent last may about camping trip.
@@ -18,6 +16,13 @@ entities:
     - [lilich, lili, lili cheng, lili boss]
     - [sgellock, scott, scott gellock]
   
+  - name: '@documentType'
+    patterns:
+      - [email, '(electronic)? messages',e-mail]
+      - [presentation, 'powerpoint (doc|document)?', ppt, pptx]
+      - [document, 'word (doc|document)', doc, docx]
+      - [spreadsheet, 'excel (doc|document)?', xls, xlsx]
+
   - name: sentDate
     patterns:
     - sent @datetime
@@ -50,3 +55,4 @@ entities:
     
     
     
+

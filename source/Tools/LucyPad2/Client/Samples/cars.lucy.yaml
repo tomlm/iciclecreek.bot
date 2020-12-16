@@ -1,25 +1,25 @@
 # sample for searching for cars for sale.
 locale: en
 macros:
-  $carEntities: '@colors|@style|@truckStyle|@doorStyle|@topStyle|@truckCapacity|@rimStyle|@tireStyle|@engineStyle|@transmissionStyle|@factoryOptions|@stereoOptions|@accessories|@interior|@warrantee|@financing'
+  $carEntities: "@colors|@style|@truckStyle|@doorStyle|@topStyle|@truckCapacity|@rimStyle|@tireStyle|@engineStyle|@transmissionStyle|@factoryOptions|@stereoOptions|@accessories|@interior|@warrantee|@financing"
   $stopWords: with|and|or|a|an|i'd love|um
-  
+
 entities:
   - name: purchaseInquiryIntent
     patterns:
-    - '@purchaseIntent (@carDescription|purchaseIntent)+'
+      - "@purchaseIntent (@carDescription|purchaseIntent)+"
     examples:
-    - I am interested in a red pickup with moonroof, gps navigation system, 2 door with manual transmission and some fuzzy dice.
-    - can you show me a 4 door convertible with stick shift?
+      - I am interested in a red pickup with moonroof, gps navigation system, 2 door with manual transmission and some fuzzy dice.
+      - can you show me a 4 door convertible with stick shift?
 
   - name: purchaseIntent
     patterns:
-    - (i)? (want|would like|shopping for|interested in|looking for|show me|) (a|something like)?
-  
+      - (i)? (want|would like|shopping for|interested in|looking for|show me|) (a|something like)?
+
   - name: carDescription
     patterns:
-    - ($carEntities|$stopWords) ($carEntities|$stopWords|(description:___)*)*
-  
+      - ($carEntities|$stopWords) ($carEntities|$stopWords|(description:___)*)*
+
   - name: colors
     patterns:
       - red
@@ -34,7 +34,7 @@ entities:
   - name: style
     patterns:
       - sedan
-      - [truck, suv, 'pickup (truck)?', 'pick up (truck)?']
+      - [truck, suv, "pickup (truck)?", "pick up (truck)?"]
       - [wagon, station wagon]
       - bus
       - [hatchback, hatch back]
@@ -79,7 +79,7 @@ entities:
 
   - name: transmissionStyle
     patterns:
-      - [manual, "stick (shift)?", 'manual (transmission)?']
+      - [manual, "stick (shift)?", "manual (transmission)?"]
       - [automatic]
 
   - name: factoryOptions
@@ -95,24 +95,32 @@ entities:
   - name: stereoOptions
     patterns:
       - [stereo, stereo system]
-      - [gps, navigation system, nav system, navsystem, navigation, global positioning system, g p s]
+      - [
+          gps,
+          navigation system,
+          nav system,
+          navsystem,
+          navigation,
+          global positioning system,
+          g p s,
+        ]
       - [bluetooth, blue tooth]
       - [handsfree, hands free]
-      - [android, 'android (auto)? (support)?']
-      - [apple, '(apple|siri|ios) (support)?']
+      - [android, "android (auto)? (support)?"]
+      - [apple, "(apple|siri|ios) (support)?"]
       - [subwoofers, sub woofers]
       - ["(cassette)~", tape player, tape drive]
 
   - name: accessories
     patterns:
-      - [dice, '(pair of)? fuzzy dice']
+      - [dice, "(pair of)? fuzzy dice"]
       - [freshner, air freshner, pine tree]
       - [sunglasses, sun glasses]
       - [gloves, driving gloves]
       - [mats, floor mats]
       - [radar, radar detector]
       - [mudflaps, mud flaps]
-      - [noveltyhorn, (loud|crazy|novelty|train)* horn ]
+      - [noveltyhorn, (loud|crazy|novelty|train)* horn]
 
   - name: interior
     patterns:
@@ -129,7 +137,6 @@ entities:
   - name: financing
     patterns:
       - [zero, "(for)? zero percent (financing)?", no money down, zero down]
-      - [cash, '(for|with|accept)? cash']
-      - [check, '(with|accept)? (a)? check']
+      - [cash, "(for|with|accept)? cash"]
+      - [check, "(with|accept)? (a)? check"]
       - [loan, financing]
-
