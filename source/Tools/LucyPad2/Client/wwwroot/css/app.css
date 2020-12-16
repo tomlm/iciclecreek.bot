@@ -81,7 +81,7 @@ html, body {
     width: 100%;
 }
 
-.grid {
+.grid-app {
     font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
     display: grid;
     grid-template-columns: 1fr 1fr;

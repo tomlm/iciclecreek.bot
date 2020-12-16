@@ -11,7 +11,7 @@ entities:
       - 2 large pepproni pan pizzas with extra cheese
       - a large half peperoni and half anchovie sausage combo.
     patterns:
-      - (a|an|some|@integer)? (@Size)? (combo|pizza|@Crust|@ComboPizza|@AddToppings|@RemoveToppings)+ (@Size)? 
+      - (a|an|some|@integer)? (@Size)? (combo|pizzas|@Crust|@ComboPizza|@NamedPizza|@AddToppings|@RemoveToppings)+ (@Size)? 
 
   - name: '@ComboPizza'
     patterns:
