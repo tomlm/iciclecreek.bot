@@ -18,7 +18,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>(){"name is (___)+"} },
+                    new EntityModel() { Name = "@name", Patterns = new List<PatternModel>(){"name is (value:___)+"} },
                 }
             });
 
@@ -41,7 +41,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is ___"} },
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (value:___)"} },
                 }
             });
 
@@ -63,7 +63,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@beer", Patterns = new List<PatternModel>(){"___ beer"} },
+                    new EntityModel() { Name = "@beer", Patterns = new List<PatternModel>(){"(value:___) beer"} },
                 }
             });
 
@@ -86,7 +86,7 @@ namespace Lucy.Tests
                 Entities = new List<EntityModel>()
                 {
                     new EntityModel() { Name = "@desire", Patterns = new List<PatternModel>(){"like"} },
-                    new EntityModel() { Name = "@beer", Patterns = new List<PatternModel>(){"(___)+2 beer"} },
+                    new EntityModel() { Name = "@beer", Patterns = new List<PatternModel>(){"(value:___)+2 beer"} },
                 }
             });
 
@@ -108,7 +108,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is ___ ___"} },
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (value:___) (value:___)"} },
                     new EntityModel() { Name = "@entity",Patterns = new List<PatternModel>(){"end"} },
                 }
             });
@@ -143,7 +143,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (___)+"} },
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (value:___)+"} },
                     new EntityModel() { Name = "@entity",Patterns = new List<PatternModel>(){"end"} },
                 }
             });
@@ -178,7 +178,7 @@ namespace Lucy.Tests
             {
                 Entities = new List<EntityModel>()
                 {
-                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (___)+"} },
+                    new EntityModel() { Name = "@name",Patterns = new List<PatternModel>(){"name is (value:___)+"} },
                     new EntityModel() { Name = "@conjunction",Patterns = new List<PatternModel>(){"(and|or)"} },
                 }
             });
@@ -210,7 +210,7 @@ namespace Lucy.Tests
                         Name = "@drink",
                         Patterns = new List<PatternModel>()
                         {
-                            "a (@size)? (___)* (drink|cocktail|beverage)?"
+                            "a (@size)? (value:___)* (drink|cocktail|beverage)?"
                         }
                     },
                 }
@@ -223,7 +223,7 @@ namespace Lucy.Tests
             var entities = results.Where(e => e.Type == "drink").ToList();
             Assert.AreEqual(1, entities.Count);
             var entity = entities.Single().Children.Single();
-            Assert.AreEqual("wildcard", entity.Type);
+            Assert.AreEqual("value", entity.Type);
             Assert.AreEqual("clyde mills", entity.Resolution);
         }
 

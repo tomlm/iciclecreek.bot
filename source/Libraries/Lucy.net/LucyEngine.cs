@@ -158,10 +158,7 @@ namespace Lucy
             }
 
             // add all @Token entities
-            foreach (var tokenEntity in Tokenize(text))
-            {
-                context.AddTokenEntity(tokenEntity);
-            }
+            context.TokenEntities.AddRange(Tokenize(text));
 
             int count = 0;
             do
@@ -234,8 +231,9 @@ namespace Lucy
             return string.Empty;
         }
 
-        public IEnumerable<LucyEntity> Tokenize(string text)
+        public IEnumerable<TokenEntity> Tokenize(string text)
         {
+            TokenEntity previous = null;
             using (var tokenStream = _exactAnalyzer.GetTokenStream("name", text))
             {
                 var termAtt = tokenStream.GetAttribute<ICharTermAttribute>();
@@ -265,19 +263,20 @@ namespace Lucy
                         Token = token
                     };
 
-                    var lucyEntity = new LucyEntity()
+                    var tokenEntity = new TokenEntity()
                     {
                         Type = TokenPatternMatcher.ENTITYTYPE,
                         Text = text.Substring(start, end - start),
                         Start = offsetAtt.StartOffset,
                         End = end,
-                        Resolution = resolution
+                        Resolution = resolution,
+                        Previous = previous
                     };
 
                     if (_fuzzyAnalyzer != null && !skipFuzzy)
                     {
                         // get fuzzyText
-                        using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", lucyEntity.Text))
+                        using (var fuzzyTokenStream = _fuzzyAnalyzer.GetTokenStream("name", tokenEntity.Text))
                         {
                             var fuzzyTermAtt = fuzzyTokenStream.GetAttribute<ICharTermAttribute>();
                             fuzzyTokenStream.Reset();
@@ -287,8 +286,12 @@ namespace Lucy
                             }
                         }
                     }
-
-                    yield return lucyEntity;
+                    if (previous != null)
+                    {
+                        previous.Next = tokenEntity;
+                    }
+                    previous = tokenEntity;
+                    yield return tokenEntity;
                 }
             }
         }
@@ -435,7 +438,7 @@ namespace Lucy
             }
         }
 
-        private void ProcessEntityPattern(MatchContext context, LucyEntity textEntity, EntityPattern entityPattern)
+        private void ProcessEntityPattern(MatchContext context, TokenEntity textEntity, EntityPattern entityPattern)
         {
             context.EntityPattern = entityPattern;
             context.CurrentEntity = new LucyEntity()
@@ -456,13 +459,18 @@ namespace Lucy
                 context.CurrentEntity.End = matchResult.End;
                 context.CurrentEntity.Text = context.Text.Substring(context.CurrentEntity.Start, context.CurrentEntity.End - context.CurrentEntity.Start);
 
-                if (context.CurrentEntity.Children.Any())
+                //if (context.CurrentEntity.Children.Any())
+                //{
+                //    context.CurrentEntity.Resolution = null;
+                //}
+                //else
+                if (context.CurrentEntity.Resolution == null)
                 {
-                    context.CurrentEntity.Resolution = null;
-                }
-                else if (context.CurrentEntity.Resolution == null && entityPattern.Resolution != null)
-                {
-                    context.CurrentEntity.Resolution = entityPattern.Resolution;
+                    if (entityPattern.Resolution != null)
+                    {
+                        context.CurrentEntity.Resolution = entityPattern.Resolution;
+                    }
+                    context.CurrentEntity.Children.RemoveWhere(et => et.Type == WildcardPatternMatcher.ENTITYTYPE);
                 }
 
                 context.MergeEntities(context.CurrentEntity.Children);

@@ -7,7 +7,7 @@ namespace Lucy.PatternMatchers
 {
     public class MatchResult
     {
-        public MatchResult(bool matched, PatternMatcher matcher, LucyEntity nextToken = null, int start = 0, int end = 0)
+        public MatchResult(bool matched, PatternMatcher matcher, TokenEntity nextToken = null, int start = 0, int end = 0)
         {
             Matched = matched;
             PatternMatcher = matcher;
@@ -34,7 +34,7 @@ namespace Lucy.PatternMatchers
         /// <summary>
         /// Next token to process
         /// </summary>
-        public LucyEntity NextToken { get; set; }
+        public TokenEntity NextToken { get; set; }
 
         /// <summary>
         /// Pattern which matched.

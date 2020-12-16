@@ -22,7 +22,7 @@ namespace Lucy.PatternMatchers
         /// <param name="matchContext">match context.</param>
         /// <param name="tokenEntity">token entity</param>
         /// <returns>matchresult</returns>
-        public abstract MatchResult Matches(MatchContext matchContext, LucyEntity tokenEntity, PatternMatcher nextPatternMatcher);
+        public abstract MatchResult Matches(MatchContext matchContext, TokenEntity tokenEntity, PatternMatcher nextPatternMatcher);
 
         public virtual bool ContainsWildcard()
         {

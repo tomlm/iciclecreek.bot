@@ -35,7 +35,7 @@ namespace Lucy.PatternMatchers
         /// <param name="context"></param>
         /// <param name="start"></param>
         /// <returns></returns>
-        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatternMatcher)
+        public override MatchResult Matches(MatchContext context, TokenEntity startToken, PatternMatcher nextPatternMatcher)
         {
             var tokenEntity = startToken;
             // try to match each element in the sequence.

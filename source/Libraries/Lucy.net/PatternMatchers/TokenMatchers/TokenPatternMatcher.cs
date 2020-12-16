@@ -24,7 +24,7 @@ namespace Lucy.PatternMatchers.Matchers
 
         public HashSet<String> FuzzyTokens { get; set; } = new HashSet<string>();
 
-        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatternMatcher)
+        public override MatchResult Matches(MatchContext context, TokenEntity startToken, PatternMatcher nextPatternMatcher)
         {
             var tokenEntity = startToken;
             if (tokenEntity != null)
@@ -35,7 +35,7 @@ namespace Lucy.PatternMatchers.Matchers
                     // see if it matches the normal token
                     if (this.Token == resolution.Token)
                     {
-                        return new MatchResult(true, this, context.GetNextTokenEntity(tokenEntity), tokenEntity.Start, tokenEntity.End);
+                        return new MatchResult(true, this, tokenEntity.Next, tokenEntity.Start, tokenEntity.End);
                     }
 
                     // if we have fuzzyTokens, see if it matches any of the fuzzy tokens.
@@ -47,7 +47,7 @@ namespace Lucy.PatternMatchers.Matchers
                             {
                                 if (fuzzyToken2 == fuzzyToken)
                                 {
-                                    return new MatchResult(true, this, context.GetNextTokenEntity(tokenEntity), tokenEntity.Start, tokenEntity.End);
+                                    return new MatchResult(true, this, tokenEntity.Next, tokenEntity.Start, tokenEntity.End);
                                 }
                             }
                         }

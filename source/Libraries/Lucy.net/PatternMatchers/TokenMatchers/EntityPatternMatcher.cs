@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using J2N.IO;
-using Lucene.Net.Codecs.Compressing;
 
 namespace Lucy.PatternMatchers
 {
@@ -20,7 +15,7 @@ namespace Lucy.PatternMatchers
 
         public string EntityType { get; set; }
 
-        public override MatchResult Matches(MatchContext context, LucyEntity startToken, PatternMatcher nextPatterMatcher)
+        public override MatchResult Matches(MatchContext context, TokenEntity startToken, PatternMatcher nextPatterMatcher)
         {
             var tokenEntity = startToken;
 

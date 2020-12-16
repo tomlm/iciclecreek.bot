@@ -163,7 +163,7 @@ this.Elapsed = $"{sw.Elapsed.TotalMilliseconds} ms";
 
             this.TopResultVisible = true;
             this.AllResultsVisible = false;
-            this.TopResult = LucyEngine.VisualizeEntity(text, results.FirstOrDefault());
+            this.TopResult = LucyEngine.VisualEntities(text, results);
             this.EntityResults = String.Join("\n\n", results.Select(entity => LucyEngine.VisualizeEntity(text, entity)));
         }
         catch (SemanticErrorException err)
