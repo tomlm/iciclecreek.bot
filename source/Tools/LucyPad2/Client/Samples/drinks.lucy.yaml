@@ -1,3 +1,4 @@
+# sample for ordering drinks (beer, wine, whiskey, coffee)
 locale: en
 externalEntities: []
 macros:

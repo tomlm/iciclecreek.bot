@@ -1,3 +1,5 @@
+# sample for searching for cars for sale.
+locale: en
 macros:
   $carEntities: '@colors|@style|@truckStyle|@doorStyle|@topStyle|@truckCapacity|@rimStyle|@tireStyle|@engineStyle|@transmissionStyle|@factoryOptions|@stereoOptions|@accessories|@interior|@warrantee|@financing'
   $stopWords: with|and|or|a|an|i'd love|um
@@ -18,7 +20,6 @@ entities:
     patterns:
     - ($carEntities|$stopWords) ($carEntities|$stopWords|(description:___)*)*
   
-
   - name: colors
     patterns:
       - red

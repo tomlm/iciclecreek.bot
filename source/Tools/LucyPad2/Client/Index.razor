@@ -90,13 +90,13 @@
     protected override void OnInitialized()
     {
         this.selectedExample = "simple";
-        this.Yaml = LoadResource("LucyPad2.Client.simple.lucy.yaml");
+        this.Yaml = LoadResource("LucyPad2.Client.Samples.simple.lucy.yaml");
     }
 
     async Task OnSelectedExampleChanged(string value)
     {
         this.selectedExample = value;
-        this.Yaml = LoadResource($"LucyPad2.Client.{value}.lucy.yaml");
+        this.Yaml = LoadResource($"LucyPad2.Client.Samples.{value}.lucy.yaml");
         await yamlEditor.SetValue(this.Yaml);
     }
 

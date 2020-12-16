@@ -11,11 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="simple.lucy.yaml" />
-    <EmbeddedResource Include="email.lucy.yaml" />
-    <EmbeddedResource Include="cars.lucy.yaml" />
-    <EmbeddedResource Include="pizza.lucy.yaml" />
-    <EmbeddedResource Include="drinks.lucy.yaml" />
+    <EmbeddedResource Include="Samples\simple.lucy.yaml" />
+    <EmbeddedResource Include="Samples\email.lucy.yaml" />
+    <EmbeddedResource Include="Samples\cars.lucy.yaml" />
+    <EmbeddedResource Include="Samples\pizza.lucy.yaml" />
+    <EmbeddedResource Include="Samples\drinks.lucy.yaml" />
   </ItemGroup>
 
   <ItemGroup>

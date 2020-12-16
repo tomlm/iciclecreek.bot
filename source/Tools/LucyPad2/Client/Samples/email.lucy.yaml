@@ -1,3 +1,5 @@
+# sample for searching email.
+locale: en
 macros:
   $stopwords: which|is|that
 entities:

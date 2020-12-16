@@ -1,4 +1,5 @@
-halocale: en
+# sample for ordering pizzas
+locale: en
 externalEntities: []
 macros:
 entities:
@@ -6,7 +7,7 @@ entities:
     patterns:
       - '@PizzaOrder ((and|and also) @PizzaOrder)*'
     examples:
-      - I would like a personal pan pepperoni pizza with extra cheese on half.
+      - I would like a personal pan pepperoni pizza with extra cheese.
 
   - name: '@PizzaOrder'
     patterns:
@@ -109,4 +110,3 @@ entities:
       - [(Tomato)~]
       - [Turkey]
       - [(Zuccini)~]
-
