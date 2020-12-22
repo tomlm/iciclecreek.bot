@@ -2,10 +2,7 @@ locale: en
 externalEntities: []
 macros:
 entities:
-  - name: '@order'
-    patterns:
-      - '(@PizzaOrder (___)*)+'
-
+  # captures @PizzaOrder and the entities it consumes 
   - name: "@PizzaOrder"
     examples:
       - 2 large pepproni pan pizzas with extra cheese
@@ -13,11 +10,13 @@ entities:
     patterns:
       - (a|an|some|@integer)? (@Size)? (combo|pizzas|@Crust|@ComboPizza|@NamedPizza|@AddToppings|@RemoveToppings)+ (@Size)? 
 
+  # captures the combination of @PizzaSide entities into a @ComboPizza
   - name: '@ComboPizza'
     patterns:
-      - '@HalfPizza ((and|also|and also)? (@HalfPizza))*'
-
-  - name: "@HalfPizza"
+      - '@PizzaSide ((and|also|and also)? (@PizzaSide))*'
+      
+  # captures partial pizza orders
+  - name: "@PizzaSide"
     examples:
       - on half add peperoni and no olives
       - add pesto and bacon to the other half
@@ -25,20 +24,29 @@ entities:
       - (on|to|with)? (the)? (one|other)? (side|half) (@NamedPizza|@AddToppings|@RemoveToppings)+ 
       - (@NamedPizza|@AddToppings|@RemoveToppings)+ ((on|to)? one (half|side)|(on|to)? the other (half|side)?)
 
+  # defines add phrases with @ToppingOption
   - name: "@AddToppings"
     examples:
       - add bacon, sausage and extra olives
       - also add garlic, pesto and maybe some mushrooms
     patterns:
-      - (add|with|also|maybe|and)* ((and|and also|maybe|with)* (@ToppingQuantifier)* (@Topping)+)+
+      - (add|with|also|maybe|and)* ((and|and also|maybe|with)* (@ToppingOption)+)+
 
+  # defines removal phrases with @ToppingOption
   - name: "@RemoveToppings"
     examples:
       - remove anochovies and olives
       - no onions or peppers
     patterns:
-      - (and)? (remove|hold|delete|no|without) ((and|or)? @Topping)+
+      - (and)? (remove|hold|delete|no|without) ((and|or)? @ToppingOption)+
 
+  # defines combination of ToppinqQuantifier and @topping
+  - name: "@ToppingOption"
+    examples:
+      - extra cheese
+    patterns:
+      - '(@ToppingQuantifier)? @Topping'
+      
   - name: "@ToppingQuantifier"
     patterns:
       - [extra, "lots of"]
@@ -58,10 +66,11 @@ entities:
 
   - name: "@Crust"
     patterns:
-      - [Deep Dish, "(on)? deep dish (crust)?"]
-      - [Pan, "(on)? (pan|regular|original|normal) (crust)?"]
-      - [Stuffed Crust, "(on)? stuffed (crust)?"]
+      - [DeepDish, Deep Dish, "(on)? deep dish (crust)?"]
+      - [Regular, "(on)? (pan|regular|original|normal) (crust)?"]
+      - [Stuffed, Stuffed Crust, "(on)? stuffed (crust)?"]
       - [Thin, "(on)? (thin|skinny) (crust)?"]
+      - [Thick, "(on)? thick (crust)?"]
 
   - name: "@Size"
     patterns:
