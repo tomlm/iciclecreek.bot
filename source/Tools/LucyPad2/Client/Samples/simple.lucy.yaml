@@ -26,3 +26,8 @@ entities:
     patterns:
       - I (prefer|like|love) @color
       - (my)? (fav|favorite)~  (color)? is @color
+
+  # match using a characater regex 
+  - name: '@tailNumber'
+    patterns: 
+    - /N[\dA-Z]{3,5}/

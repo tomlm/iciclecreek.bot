@@ -14,15 +14,30 @@ For example, ```@dimension``` outputs a structure ```{ value:13, units:inches }`
 Entities are made up of 1..N token patterns.
 
 # Patterns
-A pattern is a sequence of tokens and/or entities.  Patterns look a like regular 
-expression but they are not.  A regular expression defines sequences at the 
-**character** level, while Lucy patterns are expressed at the **token** level.  
+A pattern is a definition of the sequence tokens and/or entities which make up your entity. 
 
-Lucy uses Lucene language tokenizers to normalize text into tokens with best practices of stemming, punctation, etc. Since your token patterns are matched at the token level
-you don't have to worry about punctionation, stemming, etc.
+Lucy uses Lucene language text tokenizers (analyzers) to normalize text into tokens
+with using stemming, punctation, case normalization, etc. This allows you to work
+purely at the token level freeing you from worrying about about punctionation, stemming, etc.
 
-Given a simple pattern ```walk the dog``` you are telling Lucy to look for 
+A simple pattern such as ```walking the dog``` is defining that Lucy should look for 
 a sequence of normalized tokens ```["walk", "the", "dog"]```.
+
+> NOTE: Patterns are evaluated at the **token** level after normalization using
+> Lucene text analzyers.
+ 
+Alternatively, a pattern can be defined as a traditional character stream based regular expression.
+To signal that the pattern is a regular expression the pattern should start and ends with '/' char.
+
+```yaml
+  # match tail numbers like N185LM 
+  - name: '@tailNumber'
+    patterns: 
+    - /N[\dA-Z]{5}/
+```
+> NOTE: The regex character pattern matching is only recommended to be used for
+> matching character entities that are structured and impossible to recognize at
+> the token level. (such as part numbers, SSN numbers, etc.). 
 
 ## Token patterns
 Matching a set of alternative tokens is the simplest case. To do this is easy:
@@ -176,7 +191,7 @@ You can assign entity names inline when defining a wildcard by using the pattern
 
 # Lucy file format
 
-A luce file (**xxx.luce.yaml**) has 4 top level properties:
+A Lucy file (**xxx.lucy.yaml**) has 4 top level properties:
 
 | name                                  | description                 |
 |---------------------------------------|-----------------------------|

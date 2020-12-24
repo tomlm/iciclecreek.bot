@@ -123,6 +123,11 @@ namespace Lucy
         public List<EntityPattern> WildcardEntityPatterns { get; set; } = new List<EntityPattern>();
 
         /// <summary>
+        /// Regex patterns to match
+        /// </summary>
+        public List<RegexPatternMatcher> RegexEntityPatterns { get; set; } = new List<RegexPatternMatcher>();
+
+        /// <summary>
         /// Warning messages
         /// </summary>
         public List<string> Warnings { get; set; } = new List<string>();
@@ -154,6 +159,19 @@ namespace Lucy
             if (this.BuiltinEntities.Any())
             {
                 AddBuiltInEntities(context, text, Locale);
+                context.ProcessNewEntities();
+            }
+
+            // Add regex pattern entities
+            if (this.RegexEntityPatterns.Any())
+            {
+                foreach (var regex in this.RegexEntityPatterns)
+                {
+                    foreach (var entity in regex.Matches(text))
+                    {
+                        context.NewEntities.Add(entity);
+                    }
+                }
                 context.ProcessNewEntities();
             }
 
@@ -508,18 +526,25 @@ namespace Lucy
 
                             foreach (var pattern in patternModel.Select(pat => ExpandMacros(pat)).OrderByDescending(pat => pat.Length))
                             {
-                                var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
-                                if (patternMatcher != null)
+                                if (pattern.StartsWith('/') && pattern.EndsWith('/'))
                                 {
-                                    // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
-                                    if (patternMatcher.ContainsWildcard())
+                                    RegexEntityPatterns.Add(new RegexPatternMatcher(entityModel.Name, pattern.Trim('/')));
+                                }
+                                else
+                                {
+                                    var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
+                                    if (patternMatcher != null)
                                     {
-                                        // we want to process wildcard patterns last
-                                        WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
-                                    }
-                                    else
-                                    {
-                                        EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                        // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
+                                        if (patternMatcher.ContainsWildcard())
+                                        {
+                                            // we want to process wildcard patterns last
+                                            WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                        }
+                                        else
+                                        {
+                                            EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                        }
                                     }
                                 }
                             }

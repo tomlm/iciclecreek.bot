@@ -601,5 +601,27 @@ namespace Lucy.Tests
             Assert.AreEqual("ice cold", entities[0].Children.First().Text);
         }
 
+        [TestMethod]
+        public void RegexPatternMatcher()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel() { Name = "@test", Patterns = new List<PatternModel>(){ "/N[\\dA-Z]{5}/" } }
+                }
+            });
+
+            string text = "I fly N185LM and used to fly N87405.";
+            var results = engine.MatchEntities(text);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(2, entities.Count);
+            Assert.AreEqual("test", entities[0].Type);
+            Assert.AreEqual("N185LM", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("N87405", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
+        }
+
     }
 }
