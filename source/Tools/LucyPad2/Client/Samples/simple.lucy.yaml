@@ -23,11 +23,17 @@ entities:
       - [blue, (aqua)~]
 
   - name: '@favoriteColor'
+    examples:
+     - I like blue
+     - red is my favorite
     patterns:
       - I (prefer|like|love) @color
       - (my)? (fav|favorite)~  (color)? is @color
+      - '@color is my (fav|favorite)~'
 
-  # match using a characater regex 
+  # match using a characater regex pattern /regex/
   - name: '@tailNumber'
+    examples:
+      - N185LM
     patterns: 
-    - /N[\dA-Z]{3,5}/
+      - /N[\dA-Z]{3,5}/
