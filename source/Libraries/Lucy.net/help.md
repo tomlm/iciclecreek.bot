@@ -181,7 +181,7 @@ by any pattern in the system.
 
 ## Named wildcards
 You can assign entity names inline when defining a wildcard by using the pattern
-```(name:___)```. 
+```(entityname:___)```. 
 
 ```yaml
   - name: '@name'
@@ -223,6 +223,8 @@ An **entity** definition is a object with 3 properties:
 |------------|---------------------------------------------------------------------------|
 | name       | the name of the entity                                                    |
 | fuzzyMatch | sets the default fuzzyMatch for all tokens in the patterns of this entity |
+| ignore     | tokens to ignore when evaluating this entity                              |
+| examples   | example phrases, not used by Lucy but could be used by ML systems         |
 | patterns   | is array of pattern strings (see [Patterns](#Patterns) )                  |
 
 > the name does not have to start with '@', but by convention it makes the file easier to read.

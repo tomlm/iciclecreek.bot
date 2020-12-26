@@ -47,7 +47,7 @@ namespace Lucy.PatternMatchers
                 {
                     // if last child is a wildcard and it's end matches the last token's end
                     // then we will merge the wildcards together.
-                    var previousToken = tokenEntity?.Previous;
+                    var previousToken = context.GetPrevTokenEntity(tokenEntity);
                     var wildcardEntity = context.CurrentEntity.Children.FirstOrDefault(wildcard => wildcard.Type == this.entityType && wildcard.End == previousToken.End);
                     if (wildcardEntity != null)
                     {
@@ -81,7 +81,7 @@ namespace Lucy.PatternMatchers
                         context.AddToCurrentEntity(newEntity);
                     }
 
-                    return new MatchResult(true, this, tokenEntity?.Next, tokenEntity.Start, tokenEntity.End);
+                    return new MatchResult(true, this, context.GetNextTokenEntity(tokenEntity), tokenEntity.Start, tokenEntity.End);
                 }
             }
 

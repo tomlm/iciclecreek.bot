@@ -107,7 +107,12 @@ namespace Lucy
         /// <returns></returns>
         public TokenEntity GetFirstTokenEntity(int start = 0)
         {
-            return this.TokenEntities.Where(e => e.Start >= start).FirstOrDefault();
+            if (this.EntityPattern != null)
+            {
+                return this.TokenEntities.Where(tokenEntity => tokenEntity.Start >= start && !this.EntityPattern.Ignore.Contains(tokenEntity.Text)).FirstOrDefault();
+            }
+
+            return this.TokenEntities.Where(tokenEntity => tokenEntity.Start >= start).FirstOrDefault();
         }
 
         /// <summary>
@@ -117,7 +122,27 @@ namespace Lucy
         /// <returns></returns>
         public TokenEntity GetLastTokenEntity()
         {
-            return this.TokenEntities.LastOrDefault();
+            return this.TokenEntities.LastOrDefault(tokenEntity => !this.EntityPattern.Ignore.Contains(tokenEntity.Text));
+        }
+
+        public TokenEntity GetNextTokenEntity(TokenEntity tokenEntity)
+        {
+            var result = tokenEntity.Next;
+            while (result != null && this.EntityPattern.Ignore.Contains(result.Text))
+            {
+                result = result.Next;
+            }
+            return result;
+        }
+
+        public TokenEntity GetPrevTokenEntity(TokenEntity tokenEntity)
+        {
+            var result = tokenEntity?.Previous;
+            while (result != null && this.EntityPattern.Ignore.Contains(result.Text))
+            {
+                result = result.Previous;
+            }
+            return result;
         }
 
         /// <summary>

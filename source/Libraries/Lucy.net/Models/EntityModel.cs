@@ -44,6 +44,12 @@ namespace Lucy
         [JsonProperty("patterns")]
         public List<PatternModel> Patterns { get; set; }  = new List<PatternModel>();
 
+        /// <summary>
+        /// Ignore tokens.
+        /// </summary>
+        [JsonProperty("ignore")]
+        public List<string> Ignore{ get; set; } = new List<string>();
+
         public override string ToString() => $"{Name}{(FuzzyMatch ? "~" : "")}";
     }
 }

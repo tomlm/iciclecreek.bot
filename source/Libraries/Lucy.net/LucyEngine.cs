@@ -144,7 +144,7 @@ namespace Lucy
         {
             var context = new MatchContext()
             {
-                Text = text
+                Text = text,
             };
 
             if (externalEntities != null)
@@ -535,15 +535,17 @@ namespace Lucy
                                     var patternMatcher = _patternParser.Parse(pattern, entityModel.FuzzyMatch);
                                     if (patternMatcher != null)
                                     {
+                                        var ignoreWords = entityModel.Ignore.Select(ignoreText => ((TokenResolution)Tokenize(ignoreText).First().Resolution).Token);
+
                                         // Trace.TraceInformation($"{expandedPattern} => {patternMatcher}");
                                         if (patternMatcher.ContainsWildcard())
                                         {
                                             // we want to process wildcard patterns last
-                                            WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                            WildcardEntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher, ignoreWords));
                                         }
                                         else
                                         {
-                                            EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher));
+                                            EntityPatterns.Add(new EntityPattern(entityModel.Name, resolution, patternMatcher, ignoreWords));
                                         }
                                     }
                                 }

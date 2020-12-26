@@ -623,5 +623,33 @@ namespace Lucy.Tests
             Assert.AreEqual("N87405", text.Substring(entities[1].Start, entities[1].End - entities[1].Start));
         }
 
+        [TestMethod]
+        public void IgnoreTokenTests()
+        {
+            var engine = new LucyEngine(new LucyModel()
+            {
+                Locale = "en",
+                Entities = new List<EntityModel>()
+                {
+                    new EntityModel()
+                    {
+                        Name = "@test",
+                        Ignore = new List<string>() { "is" },
+                        Patterns = new List<PatternModel>() { new PatternModel("name (value:___)") }
+                    }
+                }
+            });
+
+            string text = "my name is joe";
+            var results = engine.MatchEntities(text, null);
+            Trace.TraceInformation("\n" + LucyEngine.VisualEntities(text, results));
+
+            var entities = results.Where(e => e.Type == "test").ToList();
+            Assert.AreEqual(1, entities.Count);
+            Assert.AreEqual("test", entities[0].Type);
+            Assert.AreEqual("name is joe", text.Substring(entities[0].Start, entities[0].End - entities[0].Start));
+            Assert.AreEqual("joe", entities[0].Children.First().Resolution);
+        }
+
     }
 }

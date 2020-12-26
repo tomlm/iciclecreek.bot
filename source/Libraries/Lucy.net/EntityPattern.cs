@@ -15,17 +15,19 @@ namespace Lucy
 
         }
 
-        public EntityPattern(string name, PatternMatcher pattern)
+        public EntityPattern(string name, PatternMatcher pattern, IEnumerable<string> ignore = null)
         {
             this.Name = name.TrimStart('@');
             this.PatternMatcher = pattern;
+            this.Ignore = new HashSet<string>(ignore ?? new List<string>());
         }
 
-        public EntityPattern(string name, string resolution, PatternMatcher pattern)
+        public EntityPattern(string name, string resolution, PatternMatcher pattern, IEnumerable<string> ignore = null)
         {
             this.Name = name.TrimStart('@');
             this.Resolution = resolution?.Trim();
             this.PatternMatcher = pattern;
+            this.Ignore = new HashSet<string>(ignore ?? new List<string>());
         }
 
         /// <summary>
@@ -42,6 +44,11 @@ namespace Lucy
         /// Pattern to evalute for this name/resolution
         /// </summary>
         public PatternMatcher PatternMatcher { get; set; }
+
+        /// <summary>
+        /// Ignore list
+        /// </summary>
+        public HashSet<string> Ignore { get; set; } = new HashSet<string>();
 
         public override string ToString() => $"{Name} => {PatternMatcher}";
     }
