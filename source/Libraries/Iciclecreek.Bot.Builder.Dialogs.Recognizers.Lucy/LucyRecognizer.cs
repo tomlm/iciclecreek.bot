@@ -21,7 +21,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
     public class LucyRecognizer : Recognizer
     {
         private LucyEngine _engine = null;
-        private JsonConverter patternModelConverter = new PatternModelConverter();
+        private JsonConverter patternModelConverter = new PatternConverter();
 
         private IDeserializer yamlDeserializer = new DeserializerBuilder()
                                                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
@@ -39,11 +39,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         /// <summary>
         /// Lucy model
         /// </summary>
-        [JsonProperty("lucyModel")]
-        public LucyModel Model { get; set; }
+        [JsonProperty("model")]
+        public LucyDocument Model { get; set; }
 
         /// <summary>
-        /// Gets or sets the ResourceID for the Lucy model.
+        /// Gets or sets the ResourceID for the Lucy model (if not already defined in the Model property).
         /// </summary>
         [JsonProperty("resourceId")]
         public StringExpression ResourceId { get; set; }
@@ -69,7 +69,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     var yaml = await modelResource.ReadTextAsync();
                     var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
                     var json = yamlSerializer.Serialize(yobj);
-                    this.Model = JsonConvert.DeserializeObject<LucyModel>(json, patternModelConverter);
+                    this.Model = JsonConvert.DeserializeObject<LucyDocument>(json, patternModelConverter);
                 }
                 this._engine = new LucyEngine(this.Model);
             }
