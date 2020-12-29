@@ -18,6 +18,9 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
+    /// <summary>
+    /// intent recgonizer which uses a Lucy model to recognize entities.
+    /// </summary>
     public class LucyRecognizer : Recognizer
     {
         private LucyEngine _engine = null;
@@ -30,6 +33,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         private ISerializer yamlSerializer = new SerializerBuilder()
                                                 .JsonCompatible()
                                                 .Build();
+
+        public const System.String MatchedIntent = "Matched";
 
         public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
@@ -63,9 +68,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             {
                 if (this.Model == null)
                 {
-                    var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>();
+                    var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>() ?? throw new ArgumentException("No resource Explorer was found in dialog context");
                     var modelId = ResourceId.GetValue(dialogContext.State);
-                    var modelResource = resourceExplorer.GetResource(modelId);
+                    var modelResource = resourceExplorer.GetResource(modelId) ?? throw new ArgumentException($"{modelId} not found");
                     var yaml = await modelResource.ReadTextAsync();
                     var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
                     var json = yamlSerializer.Serialize(yobj);
@@ -89,23 +94,20 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             var intents = this.Intents.GetValue(dialogContext.State) ?? new List<string>();
             if (intents.Any())
             {
-                foreach (var intent in intents)
+                foreach (var lucyEntity in lucyEntities.Where(entity => intents.Contains(entity.Type)))
                 {
-                    if (lucyEntities.Where(lucyEntity => lucyEntity.Type == intent).Any())
-                    {
-                        recognizerResult.Intents.Add(intent, new IntentScore() { Score = 1.0f });
-                    }
+                    recognizerResult.Intents.Add(lucyEntity.Type, new IntentScore() { Score = lucyEntity.Score });
                 }
             }
             else
             {
                 if (recognizerResult.Entities.Count > externalEntities.Count + 1)
                 {
-                    recognizerResult.Intents.Add("matched", new IntentScore() { Score = 1.0f });
+                    recognizerResult.Intents.Add(MatchedIntent, new IntentScore() { Score = lucyEntities.Max(e => e.Score) });
                 }
                 else
                 {
-                    recognizerResult.Intents.Add("None", new IntentScore { Score = 1.0f });
+                    recognizerResult.Intents.Add(NoneIntent, new IntentScore { Score = 1.0f });
                 }
             }
 

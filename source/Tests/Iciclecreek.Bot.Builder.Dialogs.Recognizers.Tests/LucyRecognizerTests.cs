@@ -131,7 +131,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             var dc = new DialogContext(new DialogSet(), tc, new DialogState());
             var results = await recognizer.RecognizeAsync(dc, activity);
 
-            Assert.AreEqual(1.0f, results.Intents["matched"].Score);
+            Assert.IsTrue(results.Intents[LucyRecognizer.MatchedIntent].Score > 0);
             Assert.IsNotNull(results.Entities.Property("colors"));
 
             string colorProperty = (string)results.Entities["colors"][0];
