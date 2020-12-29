@@ -1,0 +1,48 @@
+{
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "recognizer": {
+            "$kind": "Iciclecreek.LucyRecognizer",
+            "model": {
+                "locale": "en",
+                "entities": [
+                    {
+                        "name": "colors",
+                        "patterns": [
+                            [ "red", "rojo" ],
+                            "green",
+                            "blue",
+                            "yellow",
+                            "purple",
+                            "white",
+                            "orange"
+                        ]
+                    }
+                ]
+            }
+        },
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnIntent",
+                "intent": "Matched",
+                "actions": [
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "${turn.recognized.entities.colors[0]}"
+                    }
+                ]
+            }
+        ]
+    },
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "I like rojo"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "red"
+        }
+    ]
+}

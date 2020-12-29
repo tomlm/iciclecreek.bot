@@ -1,0 +1,10 @@
+entities:
+  - name: "@colors"
+    patterns:
+    - [red, rojo]
+    - green
+    - blue
+    - yellow
+    - purple
+    - white
+    - orange

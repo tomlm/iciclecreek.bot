@@ -19,22 +19,16 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
-    /// intent recgonizer which uses a Lucy model to recognize entities.
+    /// Bot Framework ecgonizer which uses a Lucy model to recognize entities.
     /// </summary>
     public class LucyRecognizer : Recognizer
     {
         private LucyEngine _engine = null;
-        private JsonConverter patternModelConverter = new PatternConverter();
 
-        private IDeserializer yamlDeserializer = new DeserializerBuilder()
-                                                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                                                    .Build();
+        public const string MatchedIntent = "Matched";
 
-        private ISerializer yamlSerializer = new SerializerBuilder()
-                                                .JsonCompatible()
-                                                .Build();
-
-        public const System.String MatchedIntent = "Matched";
+        [JsonProperty("$kind")]
+        public const string Kind = "Iciclecreek.LucyRecognizer";
 
         public LucyRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
@@ -57,7 +51,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
         public Recognizer ExternalEntityRecognizer { get; set; }
 
         /// <summary>
-        /// Gets or sets Intents to emit as intents when matched.
+        /// Gets or sets Intents to emit as intents when matched. (Default intent is "Matched")
         /// </summary>
         [JsonProperty("intents")]
         public ArrayExpression<string> Intents { get; set; } = new ArrayExpression<string>();
@@ -71,12 +65,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>() ?? throw new ArgumentException("No resource Explorer was found in dialog context");
                     var modelId = ResourceId.GetValue(dialogContext.State);
                     var modelResource = resourceExplorer.GetResource(modelId) ?? throw new ArgumentException($"{modelId} not found");
-                    var yaml = await modelResource.ReadTextAsync();
-                    var yobj = yamlDeserializer.Deserialize(new StringReader(yaml));
-                    var json = yamlSerializer.Serialize(yobj);
-                    this.Model = JsonConvert.DeserializeObject<LucyDocument>(json, patternModelConverter);
+                    var yamlOrJson = await modelResource.ReadTextAsync();
+                    this._engine = new LucyEngine(yamlOrJson);
                 }
-                this._engine = new LucyEngine(this.Model);
+                else
+                {
+                    this._engine = new LucyEngine(this.Model);
+                }
             }
 
             List<LucyEntity> externalEntities = new List<LucyEntity>();
@@ -99,16 +94,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                     recognizerResult.Intents.Add(lucyEntity.Type, new IntentScore() { Score = lucyEntity.Score });
                 }
             }
-            else
+            else if (recognizerResult.Entities.Count > externalEntities.Count + 1)
             {
-                if (recognizerResult.Entities.Count > externalEntities.Count + 1)
-                {
-                    recognizerResult.Intents.Add(MatchedIntent, new IntentScore() { Score = lucyEntities.Max(e => e.Score) });
-                }
-                else
-                {
-                    recognizerResult.Intents.Add(NoneIntent, new IntentScore { Score = 1.0f });
-                }
+                recognizerResult.Intents.Add(MatchedIntent, new IntentScore() { Score = lucyEntities.Max(e => e.Score) });
+            }
+
+            if (!recognizerResult.Intents.Any())
+            {
+                recognizerResult.Intents.Add(NoneIntent, new IntentScore { Score = 1.0f });
             }
 
             return recognizerResult;

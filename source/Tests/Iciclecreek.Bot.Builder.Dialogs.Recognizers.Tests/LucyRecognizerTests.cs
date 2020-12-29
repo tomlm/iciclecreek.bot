@@ -38,7 +38,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
             ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
-            //            ComponentRegistration.Add(new QLuceneComponentRegistration());
+            ComponentRegistration.Add(new LucyRecognizerComponentRegistration());
 
             var parent = Environment.CurrentDirectory;
             while (!string.IsNullOrEmpty(parent))
@@ -54,9 +54,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             }
 
             ResourceExplorer = new ResourceExplorer();
-            ResourceExplorer.ResourceTypes.Add("yaml");
             ResourceExplorer.AddFolder(parent, monitorChanges: false);
-
         }
 
         [TestMethod]
@@ -64,7 +62,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         {
             var recognizer = new LucyRecognizer()
             {
-                ResourceId = "lucy.yaml",
+                ResourceId = "test.lucy.yaml",
                 ExternalEntityRecognizer = new MockLuisRecognizer()
             };
             var activity = new Activity(ActivityTypes.Message) { Text = "height is 6 inches" };
@@ -105,7 +103,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         {
             var recognizer = new LucyRecognizer()
             {
-                ResourceId = "lucy.yaml",
+                ResourceId = "test.lucy.yaml",
                 Intents = new string[] { "Add()" },
                 ExternalEntityRecognizer = new MockLuisRecognizer()
             };
@@ -119,11 +117,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         }
 
         [TestMethod]
-        public async Task TestMatching()
+        public async Task TestMatchedIntent()
         {
             var recognizer = new LucyRecognizer()
             {
-                ResourceId = "lucy.yaml"
+                ResourceId = "test.lucy.yaml"
             };
             var activity = new Activity(ActivityTypes.Message) { Text = "favorite color is blue" };
             var tc = new TurnContext(new TestAdapter(), activity);
@@ -140,6 +138,37 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             Assert.AreEqual("colors", (String)colorProperty2.type);
             Assert.AreEqual(18, (int)colorProperty2.startIndex);
             Assert.AreEqual(22, (int)colorProperty2.endIndex);
+        }
+
+        [TestMethod]
+        public async Task TestNoneIntent()
+        {
+            var recognizer = new LucyRecognizer()
+            {
+                ResourceId = "test.lucy.yaml"
+            };
+            var activity = new Activity(ActivityTypes.Message) { Text = "xxxx" };
+            var tc = new TurnContext(new TestAdapter(), activity);
+            tc.TurnState.Add(ResourceExplorer);
+            var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+            var results = await recognizer.RecognizeAsync(dc, activity);
+
+            Assert.AreEqual(1, results.Intents.Count);
+            Assert.IsTrue(results.Intents[LucyRecognizer.NoneIntent].Score > 0);
+        }
+
+        [TestMethod]
+        public async Task TestDialogInlineModel()
+        {
+            var script = ResourceExplorer.LoadType<TestScript>("Lucy_TestRecognizer_Inline.test.dialog");
+            await script.ExecuteAsync(ResourceExplorer);
+        }
+
+        [TestMethod]
+        public async Task TestDialogResourceModel()
+        {
+            var script = ResourceExplorer.LoadType<TestScript>("Lucy_TestRecognizer_Resource.test.dialog");
+            await script.ExecuteAsync(ResourceExplorer);
         }
 
     }

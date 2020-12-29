@@ -1,0 +1,110 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IEntityRecognizer)",
+    "title": "Lucy Recognizer",
+    "description": "Recognizer which uses Lucy Entity Recognition engine.",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Optional unique id using with RecognizerSet.  Other recognizers should return 'DeferToRecognizer_{Id}' intent when cross training data for this recognizer."
+        },
+        "resourceId": {
+            "type": "string",
+            "title": "resourceId.",
+            "description": "resource id for YAML or JSON Lucy Document definition."
+        },
+        "model": {
+            "type": "object",
+            "title": "Language Model",
+            "description": "Lucy Language model definition.",
+            "properties": {
+                "locale": {
+                    "type": "string",
+                    "title": "Locale",
+                    "description": "The locale for the model.",
+                    "default": "en"
+                },
+                "entities": {
+                    "type": "array",
+                    "title": "Entities",
+                    "description": "Entity definitions",
+                    "items": {
+                        "type": "object",
+                        "required": [ "name", "patterns" ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Name",
+                                "description": "Name of the entity"
+                            },
+                            "fuzzyMatch": {
+                                "type": "boolean",
+                                "title": "Fuzzy Match",
+                                "description": "Apply fuzzy matching logic to all tokens in patterns.",
+                                "default": false
+                            },
+                            "patterns": {
+                                "type": "array",
+                                "title": "Patterns",
+                                "description": "Patterns for the entity",
+                                "items": [
+                                    {
+                                        "oneOf": [
+                                            { "type": "string" },
+                                            {
+                                                "type": "array",
+                                                "items": { "type": "string" }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "ignore": {
+                                "type": "array",
+                                "title": "Ignore",
+                                "description": "Tokens to ignore, any token in this list will be skipped when evaluating patterns.",
+                                "items": { "type": "string" }
+                            },
+                            "examples": {
+                                "type": "array",
+                                "title": "Examples",
+                                "description": "Example utterances for this entity pattern.",
+                                "items": { "type": "string" }
+                            }
+                        }
+                    }
+
+                },
+                "macros": {
+                    "type": "object",
+                    "title": "Macros",
+                    "description": "Name/value macro definitions.",
+                    "additionalProperties": { "type": "string" }
+                },
+                "externalEntities": {
+                    "type": "array",
+                    "title": "External Entities",
+                    "description": "External entities (for validation)",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "externalEntityRecognizer": {
+                "$kind": "Microsoft.IRecognizer",
+                "title": "External entity recognizer",
+                "description": "Entities recognized by this external recognizer will be passed as external entities to Lucy."
+            },
+            "intents": {
+                "type": "array",
+                "title": "Intents",
+                "description": "Entity name to promote to intents. (Default intent will be 'Matched')",
+                "items": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
