@@ -38,7 +38,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
             ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
-            ComponentRegistration.Add(new LucyRecognizerComponentRegistration());
+            ComponentRegistration.Add(new LucyComponentRegistration());
 
             var parent = Environment.CurrentDirectory;
             while (!string.IsNullOrEmpty(parent))

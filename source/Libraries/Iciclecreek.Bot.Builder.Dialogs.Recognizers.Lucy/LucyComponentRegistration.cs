@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
@@ -7,12 +6,12 @@ using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json;
 
-namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
+namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 {
     /// <summary>
     /// Class which contains registration of components for Icicilecreek custom recognizers
     /// </summary>
-    public class LucyRecognizerComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class LucyComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
     {
         /// <summary>
         /// Gets declarative type registrations.
