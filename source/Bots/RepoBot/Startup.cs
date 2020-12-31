@@ -1,4 +1,5 @@
 using Iciclecreek.Bot.Builder.Dialogs.Adaptive.GitHub;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure.Blobs;
@@ -10,12 +11,9 @@ using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Bot.Builder.Integration.AspNet.Core.Skills;
-using Microsoft.Bot.Builder.Skills;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Octokit;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +34,7 @@ namespace RepoBot
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
             ComponentRegistration.Add(new GithubComponentRegistration());
+            ComponentRegistration.Add(new LucyComponentRegistration());
 
             services.AddSingleton<Settings>((s) =>
             {
