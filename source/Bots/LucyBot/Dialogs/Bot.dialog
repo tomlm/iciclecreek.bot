@@ -17,7 +17,7 @@
     "triggers": [
         {
             "$kind": "Microsoft.OnConversationUpdateActivity",
-            "actions": [
+            "actions": [ 
                 {
                     "$kind": "Microsoft.Foreach",
                     "itemsProperty": "turn.Activity.membersAdded",
@@ -42,7 +42,7 @@
         {
             "$kind": "Microsoft.OnIntent",
             "intent": "Matched",
-            "condition": "exists(@greeting)",
+            "entities": [ "greeting" ],
             "actions": [
                 {
                     "$kind": "Microsoft.SendActivity",
@@ -51,6 +51,20 @@
             ],
             "$designer": {
                 "name": "OnGreetingIntent"
+            }
+        },
+        {
+            "$kind": "Microsoft.OnIntent",
+            "intent": "Matched",
+            "entities": [ "goodbye" ],
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "${Goodbye()}"
+                }
+            ],
+            "$designer": {
+                "name": "OnGoodbyeIntent"
             }
         }
     ]

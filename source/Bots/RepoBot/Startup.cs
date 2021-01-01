@@ -101,6 +101,7 @@ namespace RepoBot
                     .UseLanguageGeneration();
 
                 bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("RepoBot.dialog"));
+                resourceExplorer.Changed += (sender, e) => bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("RepoBot.dialog"));
                 return (IBot)bot;
             });
 

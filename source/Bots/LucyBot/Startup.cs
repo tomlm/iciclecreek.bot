@@ -64,7 +64,7 @@ namespace LucyBot
                     .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
                     .UseDebugger(5001)
                     .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()))
-                    .Use(new ShowTypingMiddleware(delay: 1000));
+                    .Use(new ShowTypingMiddleware(delay: 1500));
 
                 adapter.OnTurnError = async (turnContext, exception) =>
                 {
@@ -89,6 +89,7 @@ namespace LucyBot
                     .UseLanguageGeneration();
 
                 bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("Bot.dialog"));
+                resourceExplorer.Changed += (sender, e) => bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("Bot.dialog"));
                 return (IBot)bot;
             });
 

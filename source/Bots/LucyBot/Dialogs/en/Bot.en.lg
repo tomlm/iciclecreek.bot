@@ -1,7 +1,7 @@
 [import](common.lg)
 
 # WelcomeUser
-- Welcome to the EmptyBot sample
+- Welcome to the LucyBot template
 
 # Greeting
 - Hello!
@@ -9,5 +9,8 @@
 - Howdy partner!
 - G'day!
 
-# AcknowledgePublicEvent
-- Oooooo, something happened!
+# Goodbye
+- Goodbye!
+- See you later!
+- Bye bye!
+- Have a nice day!
