@@ -1,0 +1,12 @@
+locale: en
+externalEntities:
+macros:
+entities:
+- name: '@greeting'
+  patterns:
+  - hello
+  - hi
+  - greetings
+  - good (day|morning|afternoon|evening)
+
+

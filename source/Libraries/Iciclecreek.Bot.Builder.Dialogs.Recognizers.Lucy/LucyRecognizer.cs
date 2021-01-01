@@ -10,6 +10,7 @@ using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -103,6 +104,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             {
                 recognizerResult.Intents.Add(NoneIntent, new IntentScore { Score = 1.0f });
             }
+
+            await dialogContext.Context.TraceActivityAsync(nameof(LucyRecognizer), JObject.FromObject(recognizerResult), "RecognizerResult", "Lucy RecognizerResult", cancellationToken).ConfigureAwait(false);
+            this.TrackRecognizerResult(dialogContext, "LucyRecognizerResult", this.FillRecognizerResultTelemetryProperties(recognizerResult, telemetryProperties), telemetryMetrics);
 
             return recognizerResult;
         }

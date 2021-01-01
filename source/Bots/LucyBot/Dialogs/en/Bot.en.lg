@@ -1,0 +1,13 @@
+[import](common.lg)
+
+# WelcomeUser
+- Welcome to the EmptyBot sample
+
+# Greeting
+- Hello!
+- Hi!
+- Howdy partner!
+- G'day!
+
+# AcknowledgePublicEvent
+- Oooooo, something happened!
