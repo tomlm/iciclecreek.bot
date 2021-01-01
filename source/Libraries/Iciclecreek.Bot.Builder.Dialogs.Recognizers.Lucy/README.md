@@ -64,13 +64,14 @@ Or in a .yaml resource such as **example.yaml**.
 ```
 
 ## Intents
-The default is that if any entities are found then an intent of "Matched" is found.  If you want to treat specific entities as intents, then you
-simply add an **intents** array with the entities to promote to intents.
+The default is that if any entities are found then an intent of "Matched" is returned.
+
+You can promote any named entity to an intent by adding it to the the **intents** array.
 
 ```json
 "recognizer": {
     "$kind": "Iciclecreek.LucyRecognizer",
     "resourceId": "example.yaml",
-    "intents": [ "colors" ] 
+    "intents": [ "drinkOrder",... ] 
 },
 ```
