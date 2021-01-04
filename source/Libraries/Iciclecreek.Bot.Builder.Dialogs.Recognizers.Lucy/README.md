@@ -1,7 +1,7 @@
 # LucyRecognizer
 [Lucy](https://github.com/tomlm/lucy) is an Entity Recognition engine which defines a simple syntax for recognizing entities in text.  
 See 
-* [Lucy Documentation ](https://github.com/tomlm/lucy/help.md) 
+* [Lucy Documentation ](https://github.com/tomlm/lucy/blob/main/help.md) 
 * [LucyPad2](https://lucypad2.azurewebsites.net) - online editor for working with Lucy models.
 
 # Usage 
