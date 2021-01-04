@@ -1,4 +1,4 @@
-# Iciclecreek Templates
+# Iciclecreek Bot Templates
 
 ## Installation
 ```dotnet new -i Iciclecreek.Bot.Templates```
