@@ -4,7 +4,7 @@ macros:
 entities:
 - name: '@example'
   patterns:
-  - test
+  - example
 - name: '@exit'
   patterns:
   - (exit|end|quit|done|cancel)
