@@ -8,7 +8,7 @@
 ### LucyBot
 Creates a Azure Function bot with Lucy Recognizer configured in the default bot.dialog.
 
-``dotnet new lucybot --name {botName}```
+```dotnet new lucybot --name {botName}```
 
 ## Dialog Templates
 
