@@ -1,4 +1,5 @@
 # Iciclecreek Bot Templates
+This is a package which adds new templates to dotnet tempalte libraries. 
 
 ## Installation
 ```
@@ -6,6 +7,7 @@ dotnet new -i Iciclecreek.Bot.Templates
 ```
 
 ## Bot Templates
+Templates for creating bots.
 
 ### LucyBot
 Creates a Azure Function bot with Lucy Recognizer configured in the default bot.dialog.
@@ -14,7 +16,8 @@ Creates a Azure Function bot with Lucy Recognizer configured in the default bot.
 dotnet new lucybot --name {botName}
 ```
 
-## Dialog Templates
+## Dialog Item Templates
+Item templates for creating dialogs.
 
 ### LucyDialog
 Creates a adaptive dialog configured with LucyRecognizer.
