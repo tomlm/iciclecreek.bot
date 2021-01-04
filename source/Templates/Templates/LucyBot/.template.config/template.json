@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Tom Laird-McConnell",
+    "classifications": [ "Azure", "Function", "Bot" ],
+    "identity": "Iciclecreek.Bots.LucyFunctionBot",
+    "name": "Lucy Azure Function Bot",
+    "shortName": "lucybot",
+    "sourceName": "LucyBot",
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    }
+}

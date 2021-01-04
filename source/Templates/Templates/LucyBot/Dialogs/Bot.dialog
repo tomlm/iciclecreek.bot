@@ -50,7 +50,7 @@
                 }
             ],
             "$designer": {
-                "name": "OnGreetingIntent"
+                "name": "OnIntent(greeting)"
             }
         },
         {
@@ -64,7 +64,19 @@
                 }
             ],
             "$designer": {
-                "name": "OnGoodbyeIntent"
+                "name": "OnIntent(Goodbye)"
+            }
+        },
+        {
+            "$kind": "Microsoft.OnUnknownIntent",
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "${Unknown()}"
+                }
+            ],
+            "$designer": {
+                "name": "OnUnknownIntent"
             }
         }
     ]

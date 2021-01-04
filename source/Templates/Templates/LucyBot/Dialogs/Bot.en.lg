@@ -1,13 +1,15 @@
 [import](common.lg)
 
 # WelcomeUser
-- Welcome to the LucyBot template
+- Welcome! I'm LucyBot.
+
+# Unknown
+- I don't understand that.
 
 # Greeting
 - Hello!
 - Hi!
-- Howdy partner!
-- G'day!
+- Howdy!
 
 # Goodbye
 - Goodbye!

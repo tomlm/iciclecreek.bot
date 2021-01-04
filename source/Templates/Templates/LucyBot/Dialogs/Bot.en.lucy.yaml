@@ -10,6 +10,7 @@ entities:
   - greetings
   - good (day|morning|afternoon|evening)
   - yo
+  - salutations
 
 - name: '@goodbye'
   patterns:
@@ -18,5 +19,6 @@ entities:
   - see you
   - (sayanara)~
   - bye
+
 
 

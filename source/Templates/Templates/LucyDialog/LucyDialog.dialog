@@ -1,0 +1,77 @@
+{
+    "$schema": "../schemas/bot.schema",
+    "$kind": "Microsoft.AdaptiveDialog",
+    "generator": "LucyDialog.lg",
+    "recognizer": {
+        "$kind": "Microsoft.MultiLanguageRecognizer",
+        "recognizers": {
+            "en": {
+                "$kind": "Iciclecreek.LucyRecognizer",
+                "resourceId": "LucyDialog.en.lucy.yaml"
+            }
+        }
+    },
+    "autoEndDialog": false,
+    "defaultResultProperty": "dialog.result",
+    "triggers": [
+        {
+            "$kind": "Microsoft.OnBeginDialog",
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "OnBeginDialog triggered"
+                }
+            ],
+            "$designer": {
+                "name": "OnBeginDialog"
+            }
+        },
+        {
+            "$kind": "Microsoft.OnIntent",
+            "intent": "Matched",
+            "entities": [
+                "example"
+            ],
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "OnIntent(example) triggered"
+                }
+            ],
+            "$designer": {
+                "name": "OnIntent(example)"
+            }
+        },
+        {
+            "$kind": "Microsoft.OnIntent",
+            "intent": "Matched",
+            "entities": [
+                "exit"
+            ],
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "OnIntent(exit) triggered...ending dialog"
+                },
+                {
+                    "$kind": "Microsoft.EndDialog"
+                }
+            ],
+            "$designer": {
+                "name": "OnIntent(exit)"
+            }
+        },
+        {
+            "$kind": "Microsoft.OnUnknownIntent",
+            "actions": [
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "OnUnknownIntent triggered"
+                }
+            ],
+            "$designer": {
+                "name": "OnUnknownIntent"
+            }
+        }
+    ]
+}

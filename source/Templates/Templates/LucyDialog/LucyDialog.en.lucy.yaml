@@ -1,0 +1,10 @@
+locale: en
+externalEntities:
+macros:
+entities:
+- name: '@example'
+  patterns:
+  - test
+- name: '@exit'
+  patterns:
+  - (exit|end|quit|done|cancel)
