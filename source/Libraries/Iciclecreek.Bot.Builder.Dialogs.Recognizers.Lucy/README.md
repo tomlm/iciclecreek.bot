@@ -56,6 +56,22 @@ Or you can put the model in a .json resource such as **example.json**
 ```
 
 Or in a .yaml resource such as **example.yaml**. 
+example.yaml:
+```yaml
+locale: en
+entities:
+  - name: '@colors'
+    patterns:
+       - [red, rojo]
+       - green
+       - blue
+       - yellow
+       - purple
+       - white
+       - orange
+```
+
+
 ```json
 "recognizer": {
     "$kind": "Iciclecreek.LucyRecognizer",
