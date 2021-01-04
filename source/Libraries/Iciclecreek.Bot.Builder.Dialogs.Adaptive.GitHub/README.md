@@ -104,3 +104,19 @@ This library adds event triggers for Github events.  This allows you to write a 
 
 # Actions
 This library also adds 450 actions for using Github APIs. 
+
+# Sample
+```json
+    {
+      "$kind": "GitHub.OnIssueCommentEvent",
+      "condition": "turn.activity.value.user.login != 'RepoBot'",
+      "actions": [
+        {
+          "$kind": "GitHub.Issue.Comment.Create",
+          "repositoryId": "=turn.activity.value.repository.id",
+          "number": "=turn.activity.value.issue.id",
+          "newComment": "You said:\n${turn.activity.value.comment.body}"
+        }
+      ]
+    }
+```
