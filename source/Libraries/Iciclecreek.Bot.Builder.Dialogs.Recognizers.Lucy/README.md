@@ -1,7 +1,7 @@
 # LucyRecognizer
 [Lucy](https://github.com/tomlm/lucy) is an Entity Recognition engine which defines a simple syntax for recognizing entities in text.  
 See 
-* [Lucy Documentation ](https://github.com/tomlm/lucy/help.md) 
+* [Lucy Documentation ](https://github.com/tomlm/lucy/blob/main/help.md) 
 * [LucyPad2](https://lucypad2.azurewebsites.net) - online editor for working with Lucy models.
 
 # Usage 
@@ -56,6 +56,22 @@ Or you can put the model in a .json resource such as **example.json**
 ```
 
 Or in a .yaml resource such as **example.yaml**. 
+example.yaml:
+```yaml
+locale: en
+entities:
+  - name: '@colors'
+    patterns:
+       - [red, rojo]
+       - green
+       - blue
+       - yellow
+       - purple
+       - white
+       - orange
+```
+
+
 ```json
 "recognizer": {
     "$kind": "Iciclecreek.LucyRecognizer",
