@@ -20,10 +20,10 @@ dotnet new lucybot --name {botName}
 Item templates for creating dialogs.
 
 ### LucyDialog Template
-Creates a adaptive dialog configured with LucyRecognizer.
-
-In the Dialogs folder:
+Creates a new adaptive dialog configured with LucyRecognizer.
 
 ```
+cd Dialogs
 dotnet new lucydialog --name {dialogname}
+cd ..
 ```
