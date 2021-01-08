@@ -13,6 +13,8 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -81,19 +83,40 @@ namespace LucyBot
             services.AddSingleton<IBot>((s) =>
             {
                 // create bot using resourceexplorer and .dialog file
+                var config = s.GetService<IConfiguration>();
+                string rootPath = GetDialogsFolder(config, context.ApplicationRootPath);
                 var resourceExplorer = new ResourceExplorer()
-                    .AddFolder(context.ApplicationRootPath);
+                    .AddFolder(rootPath);
 
                 var bot = new Bot()
                     .UseResourceExplorer(resourceExplorer)
                     .UseLanguageGeneration();
 
                 bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("Bot.dialog"));
-                resourceExplorer.Changed += (sender, e) => bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("Bot.dialog"));
+                resourceExplorer.Changed += (sender, e) =>
+                {
+                    Console.WriteLine("Resources changed, reloading...");
+                    bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("Bot.dialog"));
+                };
                 return (IBot)bot;
             });
-
-
+        }
+        private string GetDialogsFolder(IConfiguration config, string root)
+        {
+            if (config.GetValue<string>("AzureWebJobsStorage") == "UseDevelopmentStorage=true")
+            {
+                // we want the source dialogs folder, not the output content dialogs so we can edit and reload automatically
+                for (int i = 0; i < 3; i++)
+                {
+                    root = Path.GetDirectoryName(root);
+                    var dialogsPath = Path.Combine(root, "Dialogs");
+                    if (Directory.Exists(dialogsPath))
+                    {
+                        return dialogsPath;
+                    }
+                }
+            }
+            return Path.Combine(root, "Dialogs");
         }
     }
 
