@@ -1,14 +1,14 @@
 {
     "$schema": "../schemas/bot.schema",
     "$kind": "Microsoft.AdaptiveDialog",
-    "id": "Bot",
-    "generator": "Bot.lg",
+    "id": "LucyBot",
+    "generator": "LucyBot.lg",
     "recognizer": {
         "$kind": "Microsoft.MultiLanguageRecognizer",
         "recognizers": {
             "en": {
                 "$kind": "Iciclecreek.LucyRecognizer",
-                "resourceId": "Bot.en.lucy.yaml"
+                "resourceId": "LucyBot.en.lucy.yaml"
             }
         }
     },

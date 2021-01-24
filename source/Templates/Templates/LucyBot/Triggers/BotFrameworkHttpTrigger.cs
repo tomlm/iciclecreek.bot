@@ -12,10 +12,10 @@ namespace LucyBot
 {
     public class BotFrameworkHttpTrigger
     {
-        private readonly BotFrameworkHttpAdapter _adapter;
+        private readonly IBotFrameworkHttpAdapter _adapter;
         private readonly IBot _bot;
 
-        public BotFrameworkHttpTrigger(BotFrameworkHttpAdapter adapter, IBot bot)
+        public BotFrameworkHttpTrigger(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             this._adapter = adapter ?? throw new ArgumentNullException(nameof(adapter));
             this._bot = bot ?? throw new ArgumentNullException(nameof(bot));
