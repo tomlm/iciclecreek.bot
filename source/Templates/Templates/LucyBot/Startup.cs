@@ -16,8 +16,11 @@ using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,11 +30,21 @@ namespace LucyBot
 {
     public class Startup : FunctionsStartup
     {
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            // auto-detect SkillHostEndpoint
+            FunctionsHostBuilderContext context = builder.GetContext();
+            var hostname = builder.ConfigurationBuilder.Build().GetValue<string>("WEBSITE_HOSTNAME");
+            var protocol = hostname.StartsWith("localhost") ? "http" : "https";
+            builder.ConfigurationBuilder.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("SkillHostEndpoint", $"{protocol}://{hostname}/api") });
+        }
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var context = builder.GetContext();
             var configuration = context.Configuration;
             var services = builder.Services;
+            var hostname = configuration.GetValue<string>("WEBSITE_HOSTNAME");
 
             // Adaptive component registration
             ComponentRegistration.Add(new DialogsComponentRegistration());
@@ -55,29 +68,45 @@ namespace LucyBot
             services.AddSingleton<SkillHandler>();
 
             // bot framework adapter defintion
-            services.AddSingleton<BotAdapter>(s => (BotAdapter)s.GetService<IBotFrameworkHttpAdapter>());
-            services.AddSingleton<IBotFrameworkHttpAdapter>(s =>
-                {
-                    // create botframework adapter for processing conversations with users.
-                    var adapter = new BotFrameworkHttpAdapter(s.GetService<ICredentialProvider>())
-                             .Use(new RegisterClassMiddleware<IConfiguration>(s.GetService<IConfiguration>()))
-                             .UseStorage(s.GetService<IStorage>())
-                             .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
-                             .UseDebugger(5001)
-                             .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()));
+            services.AddSingleton<BotFrameworkHttpAdapter>(s =>
+            {
+                // create botframework adapter for processing conversations with users.
+                var adapter = new BotFrameworkHttpAdapter(s.GetService<ICredentialProvider>(), s.GetService<AuthenticationConfiguration>())
+                    .Use(new RegisterClassMiddleware<IConfiguration>(s.GetService<IConfiguration>()))
+                    .UseStorage(s.GetService<IStorage>())
+                    .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
+                    .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()));
 
-                    adapter.OnTurnError = async (turnContext, exception) =>
+                if (hostname.StartsWith("localhost") && int.TryParse(hostname.Split(':')[1], out var port))
+                {
+                    adapter.UseDebugger(port + 1000);
+                }
+
+                adapter.OnTurnError = async (turnContext, exception) =>
+                {
+                    var log = s.GetService<ILogger>();
+                    var conversationState = turnContext.TurnState.Get<ConversationState>();
+                    await conversationState.ClearStateAsync(turnContext).ConfigureAwait(false);
+                    await conversationState.SaveChangesAsync(turnContext).ConfigureAwait(false);
+
+                    try
                     {
                         await turnContext.TraceActivityAsync("OnTurnError Trace", exception.ToString(), "https://www.botframework.com/schemas/error", "TurnError");
-                        System.Diagnostics.Trace.Fail(exception.Message, exception.ToString());
                         await turnContext.SendActivityAsync(exception.Message).ConfigureAwait(false);
-                        var conversationState = turnContext.TurnState.Get<ConversationState>();
-                        await conversationState.ClearStateAsync(turnContext).ConfigureAwait(false);
-                        await conversationState.SaveChangesAsync(turnContext).ConfigureAwait(false);
-                    };
+                    }
+                    catch (Exception err)
+                    {
+                        log?.LogError(err, err.Message);
+                    }
 
-                    return (IBotFrameworkHttpAdapter)adapter;
-                });
+                    log?.LogError(exception, exception.Message);
+                };
+
+                return (BotFrameworkHttpAdapter)adapter;
+            });
+            services.AddSingleton<BotAdapter>(s => (BotAdapter)s.GetService<BotFrameworkHttpAdapter>());
+            services.AddSingleton<IBotFrameworkHttpAdapter>(s => (IBotFrameworkHttpAdapter)s.GetService<BotFrameworkHttpAdapter>());
+
 
             // bot
             services.AddSingleton<IBot>((s) =>
@@ -94,7 +123,7 @@ namespace LucyBot
 
                 bot.InitialTurnState.Set<BotFrameworkClient>(s.GetService<SkillHttpClient>());
                 bot.InitialTurnState.Set(s.GetService<SkillConversationIdFactoryBase>());
-                
+
                 bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("LucyBot.dialog"));
                 resourceExplorer.Changed += (sender, e) =>
                 {

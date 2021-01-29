@@ -4,7 +4,7 @@
         {
             "type": "bot",
             "request": "launch",
-            "name": "Debug LucyBot Dialogs",
+            "name": "LucyBot Dialog Debugger",
             "command": "func.exe",
             "args": [
                 "start",
