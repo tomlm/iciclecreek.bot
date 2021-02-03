@@ -35,7 +35,9 @@ namespace LucyBot
             log.LogInformation($"Messages endpoint triggered [{activity.Type}]");
             string auth = req.Headers.ContainsKey("Authorization") ? req.Headers["Authorization"].ToString() : null;
             var result = await _adapter.ProcessActivityAsync(auth, activity, _bot.OnTurnAsync, default(CancellationToken));
-            return new OkObjectResult(result);
+            if (result != null)
+                return new JsonResult(result);
+            return new OkResult();
         }
     }
 }

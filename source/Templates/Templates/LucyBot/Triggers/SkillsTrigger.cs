@@ -47,7 +47,9 @@ namespace LucyBot
             var activity = JsonConvert.DeserializeObject<Activity>(body, serializationSettings);
             var result = await _skillHandler.HandleReplyToActivityAsync(req.Headers["Authorization"], conversationId, activityId, activity);
 
-            return new JsonResult(result, serializationSettings);
+            if (result != null)
+                return new JsonResult(result);
+            return new OkResult();
         }
 
 
@@ -56,13 +58,13 @@ namespace LucyBot
            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v3/conversations/{conversationId}/activities")] HttpRequest req,
            string conversationId, ILogger log)
         {
-           log.LogInformation($"Skill SendToConversationAsync endpoint triggered.");
+            log.LogInformation($"Skill SendToConversationAsync endpoint triggered.");
 
-           var body = await req.ReadAsStringAsync();
-           var activity = JsonConvert.DeserializeObject<Activity>(body, serializationSettings);
-           var result = await _skillHandler.HandleSendToConversationAsync(req.Headers["Authorization"], conversationId, activity);
+            var body = await req.ReadAsStringAsync();
+            var activity = JsonConvert.DeserializeObject<Activity>(body, serializationSettings);
+            var result = await _skillHandler.HandleSendToConversationAsync(req.Headers["Authorization"], conversationId, activity);
 
-           return new JsonResult(result, serializationSettings);
+            return new JsonResult(result, serializationSettings);
         }
     }
 }
