@@ -64,7 +64,9 @@ namespace LucyBot
             var activity = JsonConvert.DeserializeObject<Activity>(body, serializationSettings);
             var result = await _skillHandler.HandleSendToConversationAsync(req.Headers["Authorization"], conversationId, activity);
 
-            return new JsonResult(result, serializationSettings);
+            if (result != null)
+                return new JsonResult(result);
+            return new OkResult();
         }
     }
 }
