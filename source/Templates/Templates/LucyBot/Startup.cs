@@ -75,6 +75,7 @@ namespace LucyBot
                     .Use(new RegisterClassMiddleware<IConfiguration>(s.GetService<IConfiguration>()))
                     .UseStorage(s.GetService<IStorage>())
                     .UseBotState(s.GetService<UserState>(), s.GetService<ConversationState>())
+                    //.Use(new TranscriptLoggerMiddleware(s.GetService<ITranscriptStore>()))
                     .Use(new RegisterClassMiddleware<QueueStorage>(s.GetService<QueueStorage>()));
 
                 if (hostname.StartsWith("localhost") && int.TryParse(hostname.Split(':')[1], out var port))
@@ -113,7 +114,9 @@ namespace LucyBot
             {
                 // create bot using resourceexplorer and .dialog file
                 var config = s.GetService<IConfiguration>();
-                string rootPath = GetDialogsFolder(config, context.ApplicationRootPath);
+                string rootDialogFolder = "LucyBot";
+                string rootDialog = "LucyBot.dialog";
+                string rootPath = GetDialogsFolder(config, context.ApplicationRootPath, rootDialogFolder);
                 var resourceExplorer = new ResourceExplorer()
                     .AddFolder(rootPath);
 
@@ -123,32 +126,35 @@ namespace LucyBot
 
                 bot.InitialTurnState.Set<BotFrameworkClient>(s.GetService<SkillHttpClient>());
                 bot.InitialTurnState.Set(s.GetService<SkillConversationIdFactoryBase>());
+                bot.InitialTurnState.Set<BotAdapter>(s.GetService<BotAdapter>());
+                bot.InitialTurnState.Add(s.GetService<QueueStorage>());
+                // bot.InitialTurnState.Add(s.GetService<ITranscriptStore>());
 
-                bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("LucyBot.dialog"));
+                bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource(rootDialog));
                 resourceExplorer.Changed += (sender, e) =>
                 {
                     Console.WriteLine("Resources changed, reloading...");
-                    bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("LucyBot.dialog"));
+                    bot.RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource(rootDialog));
                 };
                 return (IBot)bot;
             });
         }
-        private string GetDialogsFolder(IConfiguration config, string root)
+        private string GetDialogsFolder(IConfiguration config, string root, string rootDialogFolder)
         {
-            if (config.GetValue<string>("AzureWebJobsStorage") == "UseDevelopmentStorage=true")
+            if (config.GetValue<string>("WEBSITE_HOSTNAME").StartsWith("localhost"))
             {
                 // we want the source dialogs folder, not the output content dialogs so we can edit and reload automatically
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     root = Path.GetDirectoryName(root);
-                    var dialogsPath = Path.Combine(root, "LucyBot");
+                    var dialogsPath = Path.Combine(root, rootDialogFolder);
                     if (Directory.Exists(dialogsPath))
                     {
                         return dialogsPath;
                     }
                 }
             }
-            return Path.Combine(root, "LucyBot");
+            return Path.Combine(root, rootDialogFolder);
         }
     }
 

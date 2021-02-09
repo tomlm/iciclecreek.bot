@@ -84,7 +84,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
             }
 
             var recognizerResult = new RecognizerResult();
-            var lucyEntities = _engine.MatchEntities(activity.Text, externalEntities);
+            var lucyEntities = _engine.MatchEntities(activity.Text ?? string.Empty, externalEntities);
             recognizerResult.Entities = GetRecognizerEntities(lucyEntities);
 
             var intents = this.Intents.GetValue(dialogContext.State) ?? new List<string>();
@@ -165,7 +165,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                             Start = start,
                             End = end,
                             // Score = metadata.Score,
-                            Text = activity.Text.Substring(start, end - start)
+                            Text = activity.Text?.Substring(start, end - start)
                         };
 
                         if (resolution is JObject && resolution.Property("$instance") != null)

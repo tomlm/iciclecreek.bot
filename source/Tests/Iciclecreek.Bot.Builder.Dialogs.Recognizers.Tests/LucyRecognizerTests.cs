@@ -54,6 +54,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             }
 
             ResourceExplorer = new ResourceExplorer();
+            ResourceExplorer.AddResourceType("yaml");
             ResourceExplorer.AddFolder(parent, monitorChanges: false);
         }
 
@@ -170,6 +171,25 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
             var script = ResourceExplorer.LoadType<TestScript>("Lucy_TestRecognizer_Resource.test.dialog");
             await script.ExecuteAsync(ResourceExplorer);
         }
+
+        [TestMethod]
+        public async Task TestValueMessage()
+        {
+            var recognizer = new LucyRecognizer()
+            {
+                ResourceId = "test.lucy.yaml",
+                Intents = new string[] { "Add()" }
+            };
+            var activity = new Activity(ActivityTypes.Message) { Text=null, Value = new { url = "http://foo.com" }  };
+            var tc = new TurnContext(new TestAdapter(), activity);
+            tc.TurnState.Add(ResourceExplorer);
+            var dc = new DialogContext(new DialogSet(), tc, new DialogState());
+            var results = await recognizer.RecognizeAsync(dc, activity);
+
+            Assert.AreEqual(1, results.Intents.Count);
+            Assert.IsTrue(results.Intents[LucyRecognizer.NoneIntent].Score > 0);
+        }
+
 
     }
 }
