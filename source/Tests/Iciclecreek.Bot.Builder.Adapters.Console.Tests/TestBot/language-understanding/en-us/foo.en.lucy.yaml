@@ -1,0 +1,24 @@
+locale: en
+externalEntities:
+macros:
+entities:
+- name: '@greeting'
+  patterns:
+  - hello
+  - hi
+  - hiya
+  - greetings
+  - good (day|morning|afternoon|evening)
+  - yo
+  - salutations
+
+- name: '@goodbye'
+  patterns:
+  - goodbye
+  - good bye
+  - see you
+  - (sayanara)~
+  - bye
+
+
+

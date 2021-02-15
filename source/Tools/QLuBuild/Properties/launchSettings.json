@@ -2,8 +2,8 @@
   "profiles": {
     "QLuBuild": {
       "commandName": "Project",
-      "commandLineArgs": ".",
-      "workingDirectory": "c:\\source\\devops\\Meeting_assistant2\\MSMeeting-Assistant\\"
+      "commandLineArgs": ". --prebuild",
+      "workingDirectory": "C:\\source\\devops\\Bondi\\KeurigSkill\\KeurigSkill\\knowledge-base\\source"
     }
   }
 }
