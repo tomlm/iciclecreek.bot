@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "Read Text File",
+    "description": "Read a text file into a property",
+    "type": "object",
+    "required": [
+        "path"
+    ],
+    "properties": {
+        "disabled": {
+            "$ref": "schema:#/definitions/booleanExpression",
+            "title": "Disabled",
+            "description": "Disable this action"
+        },
+        "path": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Path",
+            "description": "Path to the file to read"
+        },
+        "property": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Property",
+            "description": "Property to put the contents of the file in."
+        }
+    }
+}

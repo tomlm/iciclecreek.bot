@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.11.0</Version>
+    <Version>4.11.1</Version>
     <Description>ConsoleAdapter for writing command line interfaces using natural language.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -11,8 +11,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>bot,adaptive,javascript</PackageTags>
-    <AssemblyVersion>4.11.0.0</AssemblyVersion>
+    <PackageTags>bot,adaptive</PackageTags>
+    <AssemblyVersion>4.11.1.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
@@ -20,11 +20,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdaptiveExpressions" Version="4.11.1" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.1" />
   </ItemGroup>
 
 </Project>
