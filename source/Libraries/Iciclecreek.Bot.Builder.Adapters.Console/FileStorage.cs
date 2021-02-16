@@ -30,7 +30,7 @@ namespace Iciclecreek.Bot.Builder
             this.folder = folder;
         }
 
-        public Task DeleteAsync(string[] keys, CancellationToken cancellationToken = default) 
+        public Task DeleteAsync(string[] keys, CancellationToken cancellationToken = default)
         {
             foreach (var key in keys)
             {
@@ -55,7 +55,7 @@ namespace Iciclecreek.Bot.Builder
             return storeItems;
         }
 
-        public async Task WriteAsync(IDictionary<string, object> changes, CancellationToken cancellationToken = default) 
+        public async Task WriteAsync(IDictionary<string, object> changes, CancellationToken cancellationToken = default)
         {
             // Similar to the Read method, the funky threading in here is due to 
             // concurrency and async methods. 
@@ -159,12 +159,16 @@ namespace Iciclecreek.Bot.Builder
             {
                 try
                 {
-                    using (TextReader file = new StreamReader(File.OpenRead(path)))
+                    if (File.Exists(path))
                     {
-                        json = await file.ReadToEndAsync().ConfigureAwait(false);
-                    }
+                        using (TextReader file = new StreamReader(File.OpenRead(path)))
+                        {
+                            json = await file.ReadToEndAsync().ConfigureAwait(false);
+                        }
 
-                    return JsonConvert.DeserializeObject(json, serializationSettings);
+                        return JsonConvert.DeserializeObject(json, serializationSettings);
+                    }
+                    return null;
                 }
                 catch (FileNotFoundException)
                 {

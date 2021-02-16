@@ -1,0 +1,24 @@
+[import](common.lg)
+
+# WelcomeUser
+- Welcome ${turn.activity.membersAdded[0].name}! I'm ConsoleBot.
+
+# Unknown
+- I don't understand that.
+
+# Greeting
+- Hello!
+- Hi!
+- Howdy!
+
+# Goodbye
+- Goodbye!
+- See you later!
+- Bye bye!
+- Have a nice day!
+
+# EndConversationActivity
+[Activity
+   type = endOfConversation
+]
+ 

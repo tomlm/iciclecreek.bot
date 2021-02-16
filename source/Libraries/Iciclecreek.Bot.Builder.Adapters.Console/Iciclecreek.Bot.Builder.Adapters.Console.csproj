@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.11.1</Version>
+    <Version>4.11.2</Version>
     <Description>ConsoleAdapter for writing command line interfaces using natural language.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -12,7 +12,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <PackageTags>bot,adaptive</PackageTags>
-    <AssemblyVersion>4.11.1.0</AssemblyVersion>
+    <AssemblyVersion>4.11.2.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
@@ -25,8 +25,9 @@
     <Content Include="**/*.lu" />
     <Content Include="**/*.schema" />
     <Content Include="**/*.qna" />
+    <Content Include="**/*.yaml" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>

@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Ada
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iciclecreek.Bot.Builder.Adapters.Console.Tests", "tests\Iciclecreek.Bot.Builder.Adapters.Console.Tests\Iciclecreek.Bot.Builder.Adapters.Console.Tests.csproj", "{6DA8C1E5-4D6A-43CE-9596-109569235E0D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RunBot", "Tools\RunBot\RunBot.csproj", "{C04ADB59-FCF7-40D9-99CD-6952D9E37165}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,10 @@ Global
 		{6DA8C1E5-4D6A-43CE-9596-109569235E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DA8C1E5-4D6A-43CE-9596-109569235E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DA8C1E5-4D6A-43CE-9596-109569235E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C04ADB59-FCF7-40D9-99CD-6952D9E37165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C04ADB59-FCF7-40D9-99CD-6952D9E37165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C04ADB59-FCF7-40D9-99CD-6952D9E37165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C04ADB59-FCF7-40D9-99CD-6952D9E37165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +184,7 @@ Global
 		{13118DC3-368A-493A-A2DC-834B54A7ADC0} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{1715C93D-E90E-4D77-97E6-0C4F890D3A5D} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{6DA8C1E5-4D6A-43CE-9596-109569235E0D} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
+		{C04ADB59-FCF7-40D9-99CD-6952D9E37165} = {24ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Description>Runs a dialog file from command console.</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Tools/RunBot</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,iciclecreek</PackageTags>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>runbot</ToolCommandName>
+    <RootNamespace>Iciclecreek.Bot</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Iciclecreek.Bot.Builder.Adapters.Console" Version="4.11.1" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.11.8-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Debugging" Version="4.11.1-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="4.11.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="RunBot/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Remove="C:\Users\tomlm\.nuget\packages\iciclecreek.bot.builder.adapters.console\4.11.1\contentFiles\any\netstandard2.0\Schemas\Iciclecreek.DeleteFile.schema" />
+    <Content Remove="C:\Users\tomlm\.nuget\packages\iciclecreek.bot.builder.adapters.console\4.11.1\contentFiles\any\netstandard2.0\Schemas\Iciclecreek.ReadTextFile.schema" />
+    <Content Remove="C:\Users\tomlm\.nuget\packages\iciclecreek.bot.builder.adapters.console\4.11.1\contentFiles\any\netstandard2.0\Schemas\Iciclecreek.WriteTextFile.schema" />
+  </ItemGroup>
+</Project>

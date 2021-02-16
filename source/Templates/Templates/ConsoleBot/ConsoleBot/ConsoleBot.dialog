@@ -1,0 +1,94 @@
+{
+  "$schema": "../schemas/bot.schema",
+  "$kind": "Microsoft.AdaptiveDialog",
+  "id": "ConsoleBot",
+  "generator": "ConsoleBot.lg",
+  "recognizer": {
+    "$kind": "Microsoft.MultiLanguageRecognizer",
+    "recognizers": {
+      "en": {
+        "$kind": "Iciclecreek.LucyRecognizer",
+        "resourceId": "ConsoleBot.en.lucy.yaml"
+      }
+    }
+  },
+  "autoEndDialog": false,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnConversationUpdateActivity",
+      "actions": [
+        {
+          "$kind": "Microsoft.Foreach",
+          "itemsProperty": "turn.Activity.membersAdded",
+          "actions": [
+            {
+              "$kind": "Microsoft.IfCondition",
+              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
+              "actions": [
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "activity": "${WelcomeUser()}"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "$designer": {
+        "name": "OnConversationUpdateActivity"
+      }
+    },
+    {
+      "$kind": "Microsoft.OnIntent",
+      "intent": "Matched",
+      "entities": [
+        "greeting"
+      ],
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "activity": "${Greeting()}"
+        }
+      ],
+      "$designer": {
+        "name": "OnIntent(greeting)"
+      }
+    },
+    {
+      "$kind": "Microsoft.OnIntent",
+      "intent": "Matched",
+      "entities": [
+        "goodbye"
+      ],
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "activity": "${Goodbye()}"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "ePhEZN"
+          },
+          "activity": "${EndConversationActivity()}"
+        }
+      ],
+      "$designer": {
+        "name": "OnIntent(Goodbye)"
+      }
+    },
+    {
+      "$kind": "Microsoft.OnUnknownIntent",
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "activity": "${Unknown()}"
+        }
+      ],
+      "$designer": {
+        "name": "OnUnknownIntent"
+      }
+    }
+  ]
+}
