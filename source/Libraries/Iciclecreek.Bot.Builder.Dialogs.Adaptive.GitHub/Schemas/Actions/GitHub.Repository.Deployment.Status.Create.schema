@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Create",
-  "description": "Create",
+  "title": "GitHub.Repository.Deployment.Status.Create",
+  "description": "GitHub Repository Deployment Status Create Action",
   "type": "object",
   "required": [
     "deploymentId",

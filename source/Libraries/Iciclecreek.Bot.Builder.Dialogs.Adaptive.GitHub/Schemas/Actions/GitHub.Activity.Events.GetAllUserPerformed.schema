@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllUserPerformed",
-  "description": "Get all user performed",
+  "title": "GitHub.Activity.Events.GetAllUserPerformed",
+  "description": "GitHub Activity Events GetAllUserPerformed Action",
   "type": "object",
   "required": [
     "user"

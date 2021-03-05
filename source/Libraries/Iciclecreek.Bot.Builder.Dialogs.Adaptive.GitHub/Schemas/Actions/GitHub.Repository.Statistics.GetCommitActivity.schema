@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetCommitActivity",
-  "description": "Get commit activity",
+  "title": "GitHub.Repository.Statistics.GetCommitActivity",
+  "description": "GitHub Repository Statistics GetCommitActivity Action",
   "type": "object",
   "required": [],
   "properties": {

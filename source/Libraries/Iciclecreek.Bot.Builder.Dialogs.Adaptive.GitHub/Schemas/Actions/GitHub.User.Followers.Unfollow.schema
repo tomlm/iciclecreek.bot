@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Unfollow",
-  "description": "Unfollow",
+  "title": "GitHub.User.Followers.Unfollow",
+  "description": "GitHub User Followers Unfollow Action",
   "type": "object",
   "required": [
     "login"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Star",
-  "description": "Star",
+  "title": "GitHub.Gist.Star",
+  "description": "GitHub Gist Star Action",
   "type": "object",
   "required": [
     "id"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "DeleteFile",
-  "description": "Delete file",
+  "title": "GitHub.Repository.Content.DeleteFile",
+  "description": "GitHub Repository Content DeleteFile Action",
   "type": "object",
   "required": [
     "path",

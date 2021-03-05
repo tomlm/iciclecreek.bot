@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetFeeds",
-  "description": "Get feeds",
+  "title": "GitHub.Activity.Feeds.GetFeeds",
+  "description": "GitHub Activity Feeds GetFeeds Action",
   "type": "object",
   "required": [],
   "properties": {

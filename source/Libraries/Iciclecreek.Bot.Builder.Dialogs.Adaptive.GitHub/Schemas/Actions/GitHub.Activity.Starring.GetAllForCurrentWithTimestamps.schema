@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllForCurrentWithTimestamps",
-  "description": "Get all for current with timestamps",
+  "title": "GitHub.Activity.Starring.GetAllForCurrentWithTimestamps",
+  "description": "GitHub Activity Starring GetAllForCurrentWithTimestamps Action",
   "type": "object",
   "required": [],
   "properties": {

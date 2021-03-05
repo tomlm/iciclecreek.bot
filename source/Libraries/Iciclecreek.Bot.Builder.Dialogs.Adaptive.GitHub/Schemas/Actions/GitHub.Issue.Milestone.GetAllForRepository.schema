@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllForRepository",
-  "description": "Get all for repository",
+  "title": "GitHub.Issue.Milestone.GetAllForRepository",
+  "description": "GitHub Issue Milestone GetAllForRepository Action",
   "type": "object",
   "required": [],
   "properties": {

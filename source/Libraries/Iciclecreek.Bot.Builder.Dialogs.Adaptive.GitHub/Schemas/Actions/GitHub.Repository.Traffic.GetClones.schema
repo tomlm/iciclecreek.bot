@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetClones",
-  "description": "Get clones",
+  "title": "GitHub.Repository.Traffic.GetClones",
+  "description": "GitHub Repository Traffic GetClones Action",
   "type": "object",
   "required": [
     "per"

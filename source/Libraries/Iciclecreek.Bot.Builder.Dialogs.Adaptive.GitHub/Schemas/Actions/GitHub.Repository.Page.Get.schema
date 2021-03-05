@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Get",
-  "description": "Get",
+  "title": "GitHub.Repository.Page.Get",
+  "description": "GitHub Repository Page Get Action",
   "type": "object",
   "required": [],
   "properties": {

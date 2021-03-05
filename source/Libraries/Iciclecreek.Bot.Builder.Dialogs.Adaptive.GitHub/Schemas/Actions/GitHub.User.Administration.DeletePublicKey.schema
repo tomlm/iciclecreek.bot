@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "DeletePublicKey",
-  "description": "Delete public key",
+  "title": "GitHub.User.Administration.DeletePublicKey",
+  "description": "GitHub User Administration DeletePublicKey Action",
   "type": "object",
   "required": [
     "keyId"

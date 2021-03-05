@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "QueueAllCode",
-  "description": "Queue all code",
+  "title": "GitHub.Enterprise.SearchIndexing.QueueAllCode",
+  "description": "GitHub Enterprise SearchIndexing QueueAllCode Action",
   "type": "object",
   "required": [
     "owner"

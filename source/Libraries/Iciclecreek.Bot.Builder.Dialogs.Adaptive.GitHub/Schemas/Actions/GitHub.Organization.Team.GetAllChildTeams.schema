@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllChildTeams",
-  "description": "Get all child teams",
+  "title": "GitHub.Organization.Team.GetAllChildTeams",
+  "description": "GitHub Organization Team GetAllChildTeams Action",
   "type": "object",
   "required": [
     "id"

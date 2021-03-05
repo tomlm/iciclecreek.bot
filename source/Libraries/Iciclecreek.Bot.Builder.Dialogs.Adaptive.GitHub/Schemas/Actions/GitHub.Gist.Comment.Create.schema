@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Create",
-  "description": "Create",
+  "title": "GitHub.Gist.Comment.Create",
+  "description": "GitHub Gist Comment Create Action",
   "type": "object",
   "required": [
     "gistId",

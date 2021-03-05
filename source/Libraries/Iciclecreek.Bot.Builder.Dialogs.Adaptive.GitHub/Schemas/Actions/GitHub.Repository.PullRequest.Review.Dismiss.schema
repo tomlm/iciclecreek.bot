@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Dismiss",
-  "description": "Dismiss",
+  "title": "GitHub.Repository.PullRequest.Review.Dismiss",
+  "description": "GitHub Repository PullRequest Review Dismiss Action",
   "type": "object",
   "required": [
     "number",

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "DeleteProtectedBranchUserRestrictions",
-  "description": "Delete protected branch user restrictions",
+  "title": "GitHub.Repository.Branch.DeleteProtectedBranchUserRestrictions",
+  "description": "GitHub Repository Branch DeleteProtectedBranchUserRestrictions Action",
   "type": "object",
   "required": [
     "branch",

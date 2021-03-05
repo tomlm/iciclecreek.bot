@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllForUserWithTimestamps",
-  "description": "Get all for user with timestamps",
+  "title": "GitHub.Activity.Starring.GetAllForUserWithTimestamps",
+  "description": "GitHub Activity Starring GetAllForUserWithTimestamps Action",
   "type": "object",
   "required": [
     "user"

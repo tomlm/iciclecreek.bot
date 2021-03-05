@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Create",
-  "description": "Create",
+  "title": "GitHub.Reaction.PullRequestReviewComment.Create",
+  "description": "GitHub Reaction PullRequestReviewComment Create Action",
   "type": "object",
   "required": [
     "number",

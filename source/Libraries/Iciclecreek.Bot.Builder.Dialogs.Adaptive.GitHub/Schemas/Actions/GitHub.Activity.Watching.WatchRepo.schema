@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "WatchRepo",
-  "description": "Watch repo",
+  "title": "GitHub.Activity.Watching.WatchRepo",
+  "description": "GitHub Activity Watching WatchRepo Action",
   "type": "object",
   "required": [
     "newSubscription"

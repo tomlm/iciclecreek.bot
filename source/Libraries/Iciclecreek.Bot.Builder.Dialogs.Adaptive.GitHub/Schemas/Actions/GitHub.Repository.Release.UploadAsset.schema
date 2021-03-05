@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "UploadAsset",
-  "description": "Upload asset",
+  "title": "GitHub.Repository.Release.UploadAsset",
+  "description": "GitHub Repository Release UploadAsset Action",
   "type": "object",
   "required": [
     "release",

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "ConvertFromMember",
-  "description": "Convert from member",
+  "title": "GitHub.Organization.OutsideCollaborator.ConvertFromMember",
+  "description": "GitHub Organization OutsideCollaborator ConvertFromMember Action",
   "type": "object",
   "required": [
     "org",

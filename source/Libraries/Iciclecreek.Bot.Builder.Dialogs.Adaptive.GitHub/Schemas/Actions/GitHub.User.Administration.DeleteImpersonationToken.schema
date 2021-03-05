@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "DeleteImpersonationToken",
-  "description": "Delete impersonation token",
+  "title": "GitHub.User.Administration.DeleteImpersonationToken",
+  "description": "GitHub User Administration DeleteImpersonationToken Action",
   "type": "object",
   "required": [
     "login"

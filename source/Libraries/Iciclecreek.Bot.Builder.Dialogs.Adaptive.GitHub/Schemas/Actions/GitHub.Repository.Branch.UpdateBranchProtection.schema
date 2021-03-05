@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "UpdateBranchProtection",
-  "description": "Update branch protection",
+  "title": "GitHub.Repository.Branch.UpdateBranchProtection",
+  "description": "GitHub Repository Branch UpdateBranchProtection Action",
   "type": "object",
   "required": [
     "branch",

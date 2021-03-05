@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetStatisticsHooks",
-  "description": "Get statistics hooks",
+  "title": "GitHub.Enterprise.AdminStats.GetStatisticsHooks",
+  "description": "GitHub Enterprise AdminStats GetStatisticsHooks Action",
   "type": "object",
   "required": [],
   "properties": {

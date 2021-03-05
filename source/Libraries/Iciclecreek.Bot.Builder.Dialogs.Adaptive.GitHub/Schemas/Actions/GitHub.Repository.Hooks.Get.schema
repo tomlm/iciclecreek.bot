@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Get",
-  "description": "Get",
+  "title": "GitHub.Repository.Hooks.Get",
+  "description": "GitHub Repository Hooks Get Action",
   "type": "object",
   "required": [
     "hookId"

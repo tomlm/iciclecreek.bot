@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetBranchProtection",
-  "description": "Get branch protection",
+  "title": "GitHub.Repository.Branch.GetBranchProtection",
+  "description": "GitHub Repository Branch GetBranchProtection Action",
   "type": "object",
   "required": [
     "branch"

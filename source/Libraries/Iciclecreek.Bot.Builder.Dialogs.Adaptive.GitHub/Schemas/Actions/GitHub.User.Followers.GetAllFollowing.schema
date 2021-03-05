@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllFollowing",
-  "description": "Get all following",
+  "title": "GitHub.User.Followers.GetAllFollowing",
+  "description": "GitHub User Followers GetAllFollowing Action",
   "type": "object",
   "required": [
     "login"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllFollowingForCurrent",
-  "description": "Get all following for current",
+  "title": "GitHub.User.Followers.GetAllFollowingForCurrent",
+  "description": "GitHub User Followers GetAllFollowingForCurrent Action",
   "type": "object",
   "required": [],
   "properties": {

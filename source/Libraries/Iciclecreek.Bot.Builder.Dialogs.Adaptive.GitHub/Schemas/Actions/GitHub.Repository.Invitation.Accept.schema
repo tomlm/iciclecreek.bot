@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Accept",
-  "description": "Accept",
+  "title": "GitHub.Repository.Invitation.Accept",
+  "description": "GitHub Repository Invitation Accept Action",
   "type": "object",
   "required": [
     "invitationId"

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "Update",
-  "description": "Update",
+  "title": "GitHub.Issue.Comment.Update",
+  "description": "GitHub Issue Comment Update Action",
   "type": "object",
   "required": [
     "id",

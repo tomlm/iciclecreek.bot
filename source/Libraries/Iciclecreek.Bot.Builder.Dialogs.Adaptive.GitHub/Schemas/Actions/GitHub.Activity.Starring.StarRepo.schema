@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "StarRepo",
-  "description": "Star repo",
+  "title": "GitHub.Activity.Starring.StarRepo",
+  "description": "GitHub Activity Starring StarRepo Action",
   "type": "object",
   "required": [
     "owner",

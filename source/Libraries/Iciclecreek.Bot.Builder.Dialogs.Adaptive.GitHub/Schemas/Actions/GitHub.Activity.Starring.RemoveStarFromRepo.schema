@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "RemoveStarFromRepo",
-  "description": "Remove star from repo",
+  "title": "GitHub.Activity.Starring.RemoveStarFromRepo",
+  "description": "GitHub Activity Starring RemoveStarFromRepo Action",
   "type": "object",
   "required": [
     "owner",

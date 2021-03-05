@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllPaths",
-  "description": "Get all paths",
+  "title": "GitHub.Repository.Traffic.GetAllPaths",
+  "description": "GitHub Repository Traffic GetAllPaths Action",
   "type": "object",
   "required": [],
   "properties": {

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "RemoveMembership",
-  "description": "Remove membership",
+  "title": "GitHub.Organization.Team.RemoveMembership",
+  "description": "GitHub Organization Team RemoveMembership Action",
   "type": "object",
   "required": [
     "id",

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "DeleteArchive",
-  "description": "Delete archive",
+  "title": "GitHub.Migration.Migrations.DeleteArchive",
+  "description": "GitHub Migration Migrations DeleteArchive Action",
   "type": "object",
   "required": [
     "org",

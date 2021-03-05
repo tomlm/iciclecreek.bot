@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetRawContent",
-  "description": "Get raw content",
+  "title": "GitHub.Repository.Content.GetRawContent",
+  "description": "GitHub Repository Content GetRawContent Action",
   "type": "object",
   "required": [
     "owner",

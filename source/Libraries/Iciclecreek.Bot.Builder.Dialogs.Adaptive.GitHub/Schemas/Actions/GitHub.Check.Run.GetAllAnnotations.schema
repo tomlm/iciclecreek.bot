@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllAnnotations",
-  "description": "Get all annotations",
+  "title": "GitHub.Check.Run.GetAllAnnotations",
+  "description": "GitHub Check Run GetAllAnnotations Action",
   "type": "object",
   "required": [
     "checkRunId"

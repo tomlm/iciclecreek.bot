@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetAllInstallationsForCurrentUser",
-  "description": "Get all installations for current user",
+  "title": "GitHub.GitHubApps.GetAllInstallationsForCurrentUser",
+  "description": "GitHub GitHubApps GetAllInstallationsForCurrentUser Action",
   "type": "object",
   "required": [],
   "properties": {

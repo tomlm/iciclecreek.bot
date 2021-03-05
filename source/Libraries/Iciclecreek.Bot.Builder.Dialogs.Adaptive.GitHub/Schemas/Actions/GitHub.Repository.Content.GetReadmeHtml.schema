@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "GetReadmeHtml",
-  "description": "Get readme html",
+  "title": "GitHub.Repository.Content.GetReadmeHtml",
+  "description": "GitHub Repository Content GetReadmeHtml Action",
   "type": "object",
   "required": [],
   "properties": {

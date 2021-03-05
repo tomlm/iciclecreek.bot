@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "AddRepository",
-  "description": "Add repository",
+  "title": "GitHub.Organization.Team.AddRepository",
+  "description": "GitHub Organization Team AddRepository Action",
   "type": "object",
   "required": [
     "id",

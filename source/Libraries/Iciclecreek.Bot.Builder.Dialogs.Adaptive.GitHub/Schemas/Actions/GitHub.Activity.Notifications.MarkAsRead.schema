@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
-  "title": "MarkAsRead",
-  "description": "Mark as read",
+  "title": "GitHub.Activity.Notifications.MarkAsRead",
+  "description": "GitHub Activity Notifications MarkAsRead Action",
   "type": "object",
   "required": [],
   "properties": {
