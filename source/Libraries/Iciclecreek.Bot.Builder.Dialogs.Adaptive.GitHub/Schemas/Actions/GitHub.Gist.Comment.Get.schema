@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
   "title": "Get",
   "description": "Get",
@@ -9,6 +9,17 @@
     "commentId"
   ],
   "properties": {
+    "gistId": {
+      "title": "Gist id",
+      "description": "Gist id",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "commentId": {
+      "title": "Comment id",
+      "description": "Comment id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
     "disabled": {
       "title": "Disabled",
       "description": "Disabled",
@@ -20,15 +31,28 @@
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "gistId": {
-      "title": "Gist id",
-      "description": "Gist id",
+    "ProductName": {
+      "title": "Product name",
+      "description": "Product name",
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "commentId": {
-      "title": "Comment id",
-      "description": "Comment id"
+    "githubPrivateKey": {
+      "title": "Git hub private key",
+      "description": "Git hub private key",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "githubAppId": {
+      "title": "Git hub app id",
+      "description": "Git hub app id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
+    "oauthToken": {
+      "title": "O auth token",
+      "description": "O auth token",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
   "title": "Delete",
   "description": "Delete",
@@ -9,6 +9,17 @@
     "hookId"
   ],
   "properties": {
+    "org": {
+      "title": "Org",
+      "description": "Org",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "hookId": {
+      "title": "Hook id",
+      "description": "Hook id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
     "disabled": {
       "title": "Disabled",
       "description": "Disabled",
@@ -20,15 +31,28 @@
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "org": {
-      "title": "Org",
-      "description": "Org",
+    "ProductName": {
+      "title": "Product name",
+      "description": "Product name",
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "hookId": {
-      "title": "Hook id",
-      "description": "Hook id"
+    "githubPrivateKey": {
+      "title": "Git hub private key",
+      "description": "Git hub private key",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "githubAppId": {
+      "title": "Git hub app id",
+      "description": "Git hub app id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
+    "oauthToken": {
+      "title": "O auth token",
+      "description": "O auth token",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     }
   }
 }

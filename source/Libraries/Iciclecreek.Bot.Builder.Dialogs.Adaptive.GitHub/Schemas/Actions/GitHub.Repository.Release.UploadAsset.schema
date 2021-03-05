@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
   "title": "UploadAsset",
   "description": "Upload asset",
@@ -9,6 +9,16 @@
     "data"
   ],
   "properties": {
+    "release": {
+      "title": "Release",
+      "description": "Release",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
+    "data": {
+      "title": "Data",
+      "description": "Data",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
     "disabled": {
       "title": "Disabled",
       "description": "Disabled",
@@ -20,15 +30,28 @@
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "release": {
-      "title": "Release",
-      "description": "Release",
-      "$ref": "schema:#/definitions/objectExpression"
+    "ProductName": {
+      "title": "Product name",
+      "description": "Product name",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     },
-    "data": {
-      "title": "Data",
-      "description": "Data",
-      "$ref": "schema:#/definitions/objectExpression"
+    "githubPrivateKey": {
+      "title": "Git hub private key",
+      "description": "Git hub private key",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
+    },
+    "githubAppId": {
+      "title": "Git hub app id",
+      "description": "Git hub app id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
+    "oauthToken": {
+      "title": "O auth token",
+      "description": "O auth token",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     }
   }
 }

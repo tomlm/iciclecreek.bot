@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
   "$role": "implements(Microsoft.IDialog)",
   "title": "GetAll",
   "description": "Get all",
@@ -8,6 +8,21 @@
     "columnId"
   ],
   "properties": {
+    "columnId": {
+      "title": "Column id",
+      "description": "Column id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
+    "request": {
+      "title": "Request",
+      "description": "Request",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
+    "options": {
+      "title": "Options",
+      "description": "Options",
+      "$ref": "schema:#/definitions/objectExpression"
+    },
     "disabled": {
       "title": "Disabled",
       "description": "Disabled",
@@ -19,19 +34,28 @@
       "$ref": "schema:#/definitions/stringExpression",
       "type": "string"
     },
-    "columnId": {
-      "title": "Column id",
-      "description": "Column id"
+    "ProductName": {
+      "title": "Product name",
+      "description": "Product name",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     },
-    "request": {
-      "title": "Request",
-      "description": "Request",
-      "$ref": "schema:#/definitions/objectExpression"
+    "githubPrivateKey": {
+      "title": "Git hub private key",
+      "description": "Git hub private key",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     },
-    "options": {
-      "title": "Options",
-      "description": "Options",
-      "$ref": "schema:#/definitions/objectExpression"
+    "githubAppId": {
+      "title": "Git hub app id",
+      "description": "Git hub app id",
+      "$ref": "schema:#/definitions/integerExpression"
+    },
+    "oauthToken": {
+      "title": "O auth token",
+      "description": "O auth token",
+      "$ref": "schema:#/definitions/stringExpression",
+      "type": "string"
     }
   }
 }
