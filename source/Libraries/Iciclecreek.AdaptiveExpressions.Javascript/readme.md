@@ -30,7 +30,7 @@ var javascript = File.ReadAllText("myfunctions.js");
 JavasacriptFunctions.RegisterFunction("contoso", javascript);
 ```
 
-### (Option 2) Load functions with Bot Framework Resource Explorer (DEFAULT for Composer)
+### (Option 2) Load functions with Bot Framework Resource Explorer 
 If you call Register with a ResourceExplorer then all files of extension ".function.js" will
 be automatically mounted with the file name (minus .function.js) will be used as the namespace.
 ResourceExplorer change detection will reload the functions if the file changes.
@@ -40,6 +40,9 @@ ResourceExplorer change detection will reload the functions if the file changes.
     ResourceExplorer resourceExplorer = new ResourceExplorer(...) ... ;
     JavascriptFunctions.AddJavascriptFunctions(resourceExplorer);
 ``` 
+
+> NOTE: As of 4.12 you do not need to modify your startup if you are using the new runtime component
+> It will automatically be registered in resourceExplorer mode.
 
 ## To call a function that has been added
 Every top level function in myfunctions.js will be mounted in the given namespace (the default namespace will be filename if you are using resource explorer). To call 
