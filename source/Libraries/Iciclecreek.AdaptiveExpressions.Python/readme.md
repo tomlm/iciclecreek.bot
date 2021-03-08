@@ -29,6 +29,9 @@ If you call Register with a ResourceExplorer then all files of extension ".funct
 be automatically mounted with the file name (minus .function.py) will be used as the namespace.
 ResourceExplorer change detection will reload the functions if the file changes.
 
+> NOTE: As of 4.12 with new Runtime Integration you do NOT need to modify startup, it automatically
+> registers .py files 
+
 *In startup*
 ```
     ResourceExplorer resourceExplorer = new ResourceExplorer(...) ... ;
@@ -40,9 +43,14 @@ Every top level function in myfunctions.py will be mounted in the given namespac
 a function you simply use the namespace+function name with args.
 
 
-*Example Expression*
+*Example Expression calling function added via AddPythonFunctions*
 
 ```contoso.Add2Numbers(user.age, 7)```
+
+*Example Expression calling function defined in a myfunctions.py*
+
+```myfunctions.Add2Numbers(user.age, 7)```
+
 
 *Example Expression parsing from C#*
 
