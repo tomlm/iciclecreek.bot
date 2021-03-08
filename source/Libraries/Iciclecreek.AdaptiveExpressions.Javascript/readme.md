@@ -46,11 +46,11 @@ Every top level function in myfunctions.js will be mounted in the given namespac
 a function you simply use the namespace+function name with args.
 
 
-*Example Expression*
+*Example Expression calling function registered with **RegisterFunction** and a namespace 'contoso'*
 
 ```contoso.Add2Numbers(user.age, 7)```
 
-*Example Expression defined in resource file myfunctions.js*
+*Example Expression defined as resource file **myfunctions.js** * 
 
 ```myfunctions.Add2Numbers(user.age, 7)```
 
