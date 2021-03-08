@@ -42,13 +42,18 @@ ResourceExplorer change detection will reload the functions if the file changes.
 ``` 
 
 ## To call a function that has been added
-Every top level function in myfunctions.js will be mounted in the given namespace. To call 
+Every top level function in myfunctions.js will be mounted in the given namespace (the default namespace will be filename if you are using resource explorer). To call 
 a function you simply use the namespace+function name with args.
 
 
 *Example Expression*
 
 ```contoso.Add2Numbers(user.age, 7)```
+
+*Example Expression defined in resource file myfunctions.js*
+
+```myfunctions.Add2Numbers(user.age, 7)```
+
 
 *Example Expression parsing from C#*
 
