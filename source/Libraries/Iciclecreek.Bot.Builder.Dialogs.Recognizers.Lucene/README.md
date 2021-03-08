@@ -32,4 +32,4 @@ Register the classes in startup.cs
     }
 }
 ```
-
+See https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cognitiveservices.language.luis.runtime.models.dynamiclist.-ctor?view=azure-dotnet for shape of dynamiclist
