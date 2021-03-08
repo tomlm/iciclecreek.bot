@@ -13,6 +13,8 @@ To install
 In your startup code call:
 ``` HumanizerFunctions.Register() ```
 
+> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
+
 ## Library
 This library creates expression functions which are bound to humanizer functions. 
 
