@@ -3,6 +3,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.Runtime.Plugins;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
     /// <summary>
     /// Class which contains registration of components for CosmosDB.
     /// </summary>
-    public class CosmosComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class CosmosComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes, IBotPlugin
     {
+        public void Load(IBotPluginLoadContext context)
+        {
+            ComponentRegistration.Add(new CosmosComponentRegistration());
+        }
+
         /// <summary>
         /// Gets declarative type registrations for QnAMAker.
         /// </summary>

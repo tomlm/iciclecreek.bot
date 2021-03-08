@@ -1,50 +1,50 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
-  "$role": "implements(Microsoft.IDialog)",
-  "title": "CreateItem",
-  "description": "Create item in a container",
-  "type": "object",
-  "required": [
-    "connectionString",
-    "database",
-    "container",
-    "item"
-  ],
-  "properties": {
-    "disabled": {
-      "$ref": "schema:#/definitions/booleanExpression",
-      "title": "Disabled",
-      "description": "Disable action"
-    },
-    "connectionString": {
-      "$ref": "schema:#/definitions/stringExpression",
-      "title": "Connection string",
-      "description": "Connection string for cosmosdb."
-    },
-    "database": {
-      "$ref": "schema:#/definitions/stringExpression",
-      "title": "Database",
-      "description": "Database name."
-    },
-    "container": {
-      "$ref": "schema:#/definitions/stringExpression",
-      "title": "Container",
-      "description": "Name of the Container."
-    },
-    "item": {
-      "$ref": "schema:#/definitions/objectExprssion",
-      "title": "Item",
-      "description": "Item to create."
-    },
-    "partitionKey": {
-      "$ref": "schema:#/definitions/stringExpression",
-      "title": "Partition key",
-      "description": "Partition key"
-    },
-    "resultProperty": {
-      "$ref": "schema:#/definitions/stringExpression",
-      "title": "Result property",
-      "description": "Result property"
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IDialog)",
+    "title": "CreateItem",
+    "description": "Create item in a container",
+    "type": "object",
+    "required": [
+        "connectionString",
+        "database",
+        "container",
+        "item"
+    ],
+    "properties": {
+        "disabled": {
+            "$ref": "schema:#/definitions/booleanExpression",
+            "title": "Disabled",
+            "description": "Disable action"
+        },
+        "connectionString": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Connection string",
+            "description": "Connection string for cosmosdb."
+        },
+        "database": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Database",
+            "description": "Database name."
+        },
+        "container": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Container",
+            "description": "Name of the Container."
+        },
+        "item": {
+            "$ref": "schema:#/definitions/objectExpression",
+            "title": "Item",
+            "description": "Item to create."
+        },
+        "partitionKey": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Partition key",
+            "description": "Partition key"
+        },
+        "resultProperty": {
+            "$ref": "schema:#/definitions/stringExpression",
+            "title": "Result property",
+            "description": "Result property"
+        }
     }
-  }
 }

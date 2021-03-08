@@ -2,7 +2,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>        
+        <Title>ConsoleBot</Title>
+        <Authors></Authors>
+        <Company></Company>
+        <PackageType>Template</PackageType>
+        <PackageVersion>1.0</PackageVersion>
+        <PackageId>ConsoleBot</PackageId>
+        <PackageIconUrl></PackageIconUrl>
+        <PackageIcon></PackageIcon>
+        <PackageProjectUrl></PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Company></Company>
+        <Description></Description>
+        <PackageTags></PackageTags>
+
+        <IncludeContentInPack>true</IncludeContentInPack>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <ContentTargetFolders>content</ContentTargetFolders>
     </PropertyGroup>
 
     <ItemGroup>

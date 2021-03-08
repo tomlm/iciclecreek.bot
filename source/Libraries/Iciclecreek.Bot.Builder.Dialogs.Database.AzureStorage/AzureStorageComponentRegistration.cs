@@ -3,6 +3,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.Runtime.Plugins;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
     /// <summary>
     /// Class which contains registration of components for CosmosDB.
     /// </summary>
-    public class AzureStorageComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class AzureStorageComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes, IBotPlugin
     {
+        public void Load(IBotPluginLoadContext context)
+        {
+            ComponentRegistration.Add(new AzureStorageComponentRegistration());
+        }
+
         /// <summary>
         /// Gets declarative type registrations for QnAMAker.
         /// </summary>

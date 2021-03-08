@@ -4,6 +4,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.Runtime.Plugins;
 using Newtonsoft.Json;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
@@ -11,8 +12,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers
     /// <summary>
     /// Class which contains registration of components for Icicilecreek custom recognizers
     /// </summary>
-    public class RecognizersComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class RecognizersComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes, IBotPlugin
     {
+        public void Load(IBotPluginLoadContext context)
+        {
+            ComponentRegistration.Add(new RecognizersComponentRegistration());
+        }
+
         /// <summary>
         /// Gets declarative type registrations.
         /// </summary>

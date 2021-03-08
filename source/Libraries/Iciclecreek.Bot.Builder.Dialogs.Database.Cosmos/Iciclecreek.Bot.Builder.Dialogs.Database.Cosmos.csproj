@@ -1,41 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.11.1</Version>
-        <Description>Adds CosmosDB actions to Bot Framework composer</Description>
-        <Company>Iciclecreek</Company>
-        <Authors>Tom Laird-McConnell</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos</PackageProjectUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>bot,adaptive</PackageTags>
-        <AssemblyVersion>4.11.1.0</AssemblyVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
-        <Copyright></Copyright>
-        <ContentTargetFolders>content</ContentTargetFolders>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.12.0</Version>
+    <Description>Adds CosmosDB actions to Bot Framework composer</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,bf-component</PackageTags>
+    <AssemblyVersion>4.12.0.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Content Include="**/*.dialog" />
-        <Content Include="**/*.lg" />
-        <Content Include="**/*.lu" />
-        <Content Include="**/*.schema" />
-        <Content Include="**/*.qna" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.9.0" />
-        <PackageReference Include="Microsoft.Azure.Cosmos.Direct" Version="3.9.0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.1" />
-        <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.17.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos.Direct" Version="3.17.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="4.12.0-preview" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
 
 </Project>

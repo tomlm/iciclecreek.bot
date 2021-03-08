@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.11.2</Version>
+    <Version>4.12.0</Version>
     <Description>ConsoleAdapter for writing command line interfaces using natural language.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -11,12 +11,13 @@
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>bot,adaptive</PackageTags>
-    <AssemblyVersion>4.11.2.0</AssemblyVersion>
+    <PackageTags>bot,adaptive,bf-component</PackageTags>
+    <AssemblyVersion>4.12.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
     <RootNamespace>Iciclecreek.Bot.Builder.Adapters</RootNamespace>
+    <ContentTargetFolders>content</ContentTargetFolders>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
     <Content Include="**/*.lg" />
     <Content Include="**/*.lu" />
     <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
     <Content Include="**/*.qna" />
     <Content Include="**/*.yaml" />
   </ItemGroup>
@@ -33,10 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveExpressions" Version="4.11.1" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.11.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.11.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.1" />
+    <PackageReference Include="AdaptiveExpressions" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="4.12.0-preview" />
   </ItemGroup>
 
 </Project>

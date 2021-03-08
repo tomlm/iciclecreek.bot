@@ -1,0 +1,68 @@
+﻿{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "implements(Microsoft.IRecognizer)",
+    "title": "DynamicList Recognizer",
+    "description": "Recognizer which uses Lucene Token Analysis to recognize DynamicLists.",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Optional unique id using with RecognizerSet.  Other recognizers should return 'DeferToRecognizer_{Id}' intent when cross training data for this recognizer."
+        },
+        "fuzzyMatch": {
+            "$ref": "schema:#/definitions/booleanExpression",
+            "title": "Fuzzy Match",
+            "description": "Boolean expression which determines whether to use sounds-like fuzzy matching for tokens.",
+            "default": true
+        },
+        "dynamicLists": {
+            "$ref": "schema:#/definitions/arrayExpression",
+            "title": "Dynamic lists",
+            "description": "Runtime defined entity lists.",
+            "items": {
+                "title": "Entity list",
+                "description": "Lists of canonical values and synonyms for an entity.",
+                "type": "object",
+                "properties": {
+                    "entity": {
+                        "title": "Entity",
+                        "description": "Entity to extend with a dynamic list.",
+                        "type": "string"
+                    },
+                    "list": {
+                        "title": "Dynamic list",
+                        "description": "List of canonical forms and synonyms.",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "title": "List entry",
+                            "description": "Canonical form and synonynms.",
+                            "properties": {
+                                "canonicalForm": {
+                                    "title": "Canonical form",
+                                    "description": "Resolution if any synonym matches.",
+                                    "type": "string"
+                                },
+                                "synonyms": {
+                                    "title": "Synonyms",
+                                    "description": "List of synonyms for a canonical form.",
+                                    "type": "array",
+                                    "items": {
+                                        "title": "Synonym",
+                                        "description": "Synonym for canonical form.",
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "dynamicLists"
+    ]
+}

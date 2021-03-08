@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.12.0</Version>
+    <Description>Adds actions for reading writing and deleting files.</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Files</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,bf-component</PackageTags>
+    <AssemblyVersion>4.12.0.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+    <RootNamespace>Iciclecreek.Bot.Builder.Dialogs.Files</RootNamespace>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+    <Content Include="**/*.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Schemas\Iciclecreek.DeleteFile.schema" />
+    <None Remove="Schemas\Iciclecreek.DeleteFile.uischema" />
+    <None Remove="Schemas\Iciclecreek.ReadTextFile.schema" />
+    <None Remove="Schemas\Iciclecreek.ReadTextFile.uischema" />
+    <None Remove="Schemas\Iciclecreek.WriteTextFile.schema" />
+    <None Remove="Schemas\Iciclecreek.WriteTextFile.uischema" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AdaptiveExpressions" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="4.12.0-preview" />
+  </ItemGroup>
+
+</Project>

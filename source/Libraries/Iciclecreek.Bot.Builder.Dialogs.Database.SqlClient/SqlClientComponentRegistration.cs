@@ -2,6 +2,7 @@
 using Microsoft.Bot.Builder.Dialogs.Debugging;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.Runtime.Plugins;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
     /// <summary>
     /// Class which contains registration of components for SqlClient.
     /// </summary>
-    public class SqlClientComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes
+    public class SqlClientComponentRegistration : ComponentRegistration, IComponentDeclarativeTypes, IBotPlugin
     {
+        public void Load(IBotPluginLoadContext context)
+        {
+            ComponentRegistration.Add(new SqlClientComponentRegistration());
+        }
+
         /// <summary>
         /// Gets declarative type registrations for QnAMAker.
         /// </summary>

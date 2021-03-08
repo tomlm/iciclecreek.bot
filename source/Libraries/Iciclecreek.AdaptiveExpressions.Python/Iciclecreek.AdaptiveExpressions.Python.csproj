@@ -1,32 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.11.1</Version>
-        <Description>Adds Python functions to AdaptiveExpressions</Description>
-        <Company>Iciclecreek</Company>
-        <Authors>Tom Laird-McConnell</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.AdaptiveExpressions.Python</PackageProjectUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>bot,adaptive,python</PackageTags>
-        <AssemblyVersion>4.11.1.0</AssemblyVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
-        <Copyright></Copyright>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.12.0</Version>
+    <Description>Adds Python functions to AdaptiveExpressions</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.AdaptiveExpressions.Python</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,python,bf-component</PackageTags>
+    <AssemblyVersion>4.12.0.0</AssemblyVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="IronPython" Version="2.7.10" />
-        <PackageReference Include="IronPython.StdLib" Version="2.7.10" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.11.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+    <Content Include="**/*.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IronPython" Version="2.7.11" />
+    <PackageReference Include="IronPython.StdLib" Version="2.7.11" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="4.12.0-preview" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
 
 </Project>
