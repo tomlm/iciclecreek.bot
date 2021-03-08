@@ -10,6 +10,9 @@ See
 Add ```Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy``` nuget reference to your project.
 
 # Register
+> 
+> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
+> 
 Register the classes in startup.cs
 ```
             ComponentRegistration.Add(new LucyComponentRegistration());
