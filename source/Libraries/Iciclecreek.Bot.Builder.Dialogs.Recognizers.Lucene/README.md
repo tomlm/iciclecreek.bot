@@ -1,93 +1,35 @@
-# LucyRecognizer
-[Lucy](https://github.com/tomlm/lucy) is an Entity Recognition engine which defines a simple syntax for recognizing entities in text.  
-See 
-* [Lucy Documentation ](https://github.com/tomlm/lucy/blob/main/help.md) 
-* [LucyPad2](https://lucypad2.azurewebsites.net) - online editor for working with Lucy models.
+# DynamicListRecognizer
+Dynamic lists are lists which are contextual and so not cannot be built into a model like LUIS Recognizer.  LUIS Recognizer allows you to define an **external recognizer** which is executed first. The results of the external recognizer can be passed to a recognizer like LUIS for it to consume.
+
+This is super useful in situations where you need to recognize something contextual, like the names of people partipating in a conversation.
+
+The DyanmicListRecognizer allows you to specify a list of entities to recgonize, and uses Lucene to do the recognition.
 
 # Usage 
 
 # Add nuget package
-Add ```Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy``` nuget reference to your project.
+Add ```Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene``` nuget reference to your project.
 
 # Register
+> NOTE: as of 4.12 if you are using the new runtime integration you do not need to modify startup.cs, it is autoregistered.
+
 Register the classes in startup.cs
 ```
             ComponentRegistration.Add(new LucyComponentRegistration());
 ```
 
-# Defining a model 
-This package adds a new recognizer kind **Iciclecreek.LucyRecognizer**.  
-
-Declaratively in .dialog files you can define the Lucy model in 3 ways:
-
-## Define as JSON inline to the .dialog file
+## Define a dynamic list recognizer as input to a luis recognizer
 ```json
-"recognizer": {
-    "$kind": "Iciclecreek.LucyRecognizer",
-    "model": {
-        "locale": "en",
-        "entities": [
-            {
-                "name": "colors",
-                "patterns": [
-                    [ "red", "rojo" ],
-                    "green",
-                    "blue",
-                    "yellow",
-                    "purple",
-                    "white",
-                    "orange"
-                ]
-            },
-            ...
-        ]
+{
+    "$kind": "Microsoft.LuisRecognizer",
+    ...
+    "externalEntityRecognizer": {
+        "$kind": "Iciclecreek.DynamicListRecognizer",
+        "dynamicList": {
+        ...
+        },
+        "fuzzyMatch":false
     }
-},
+}
 ```
-
-## Storing model in a seperate a resource 
-Or you can put the model in a .json resource such as **example.json** 
-
-```json
-"recognizer": {
-    "$kind": "Iciclecreek.LucyRecognizer",
-    "resourceId": "example.json"
-},
-```
-
-Or in a .yaml resource such as **example.yaml**. 
-example.yaml:
-```yaml
-locale: en
-entities:
-  - name: '@colors'
-    patterns:
-       - [red, rojo]
-       - green
-       - blue
-       - yellow
-       - purple
-       - white
-       - orange
-```
-
-
-```json
-"recognizer": {
-    "$kind": "Iciclecreek.LucyRecognizer",
-    "resourceId": "example.yaml"
-},
-```
-
-## Intents
-The default is that if any entities are found then an intent of "Matched" is returned.
-
-You can promote any named entity to an intent by adding it to the the **intents** array.
-
-```json
-"recognizer": {
-    "$kind": "Iciclecreek.LucyRecognizer",
-    "resourceId": "example.yaml",
-    "intents": [ "drinkOrder",... ] 
-},
-```
+See https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cognitiveservices.language.luis.runtime.models.dynamiclist.-ctor?view=azure-dotnet for shape of dynamiclist

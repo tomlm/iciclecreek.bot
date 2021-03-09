@@ -12,6 +12,8 @@ dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
 
 In your startup code add:
 
+> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
+> 
 ```csharp
 ComponentRegistration.Add(new AzureStorageComponentRegistration());
 ```
