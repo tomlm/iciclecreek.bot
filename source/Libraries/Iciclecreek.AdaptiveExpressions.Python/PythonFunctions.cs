@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using AdaptiveExpressions;
 using IronPython.Hosting;
 using IronPython.Runtime;
-using IronPython.Runtime.Types;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
-using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
 using Newtonsoft.Json.Linq;
 

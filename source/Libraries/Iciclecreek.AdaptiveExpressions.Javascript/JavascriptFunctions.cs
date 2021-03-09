@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AdaptiveExpressions;
 using Jint;
 using Jint.Native;
 using Jint.Native.Json;
-using Jint.Runtime.Interop;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
