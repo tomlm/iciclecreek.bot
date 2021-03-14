@@ -23,8 +23,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Iciclecreek.Bot.Builder.Adapters.Console" Version="4.11.1" />
-    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.11.8-preview" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Adapters.Console" Version="4.12.0" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.12.2" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.12.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Debugging" Version="4.11.1-preview" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.12.0" />
