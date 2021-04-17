@@ -107,7 +107,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
                 dc.State.SetValue(this.ResultProperty.GetValue(dc.State), result.Resource);
             }
 
-            return await dc.EndDialogAsync(result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await dc.EndDialogAsync(result: result.Resource, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

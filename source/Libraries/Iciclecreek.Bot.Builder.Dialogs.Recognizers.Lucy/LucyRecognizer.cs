@@ -64,6 +64,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
                 if (this.Model == null)
                 {
                     var resourceExplorer = dialogContext.Context.TurnState.Get<ResourceExplorer>() ?? throw new ArgumentException("No resource Explorer was found in dialog context");
+                    resourceExplorer.AddResourceType("yaml");
                     var modelId = ResourceId.GetValue(dialogContext.State);
                     var modelResource = resourceExplorer.GetResource(modelId) ?? throw new ArgumentException($"{modelId} not found");
                     var yamlOrJson = await modelResource.ReadTextAsync();

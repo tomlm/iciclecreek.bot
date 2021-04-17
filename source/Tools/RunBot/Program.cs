@@ -1,14 +1,11 @@
 ﻿using Iciclecreek.Bot.Builder;
 using Iciclecreek.Bot.Builder.Adapters;
-using Iciclecreek.Bot.Builder.Dialogs.Adaptive;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive;
-using Microsoft.Bot.Builder.Dialogs.Declarative;
-using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,35 +25,29 @@ namespace RunBot
             string rootDialog = Path.GetFileName(args[0]);
             string text = args.Skip(1).FirstOrDefault();
             string folder = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, args[0])));
-
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
-                .AddJsonFile(Path.Combine(folder, "settings", "appsettings.json"))
-                .Build();
-
-            ComponentRegistration.Add(new DialogsComponentRegistration());
-            ComponentRegistration.Add(new DeclarativeComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveComponentRegistration());
-            ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
-            ComponentRegistration.Add(new LucyComponentRegistration());
-            ComponentRegistration.Add(new ConsoleComponentRegistration());
-
             var userStoragePath = Path.Combine(Path.GetTempPath(), rootDialog);
             Directory.CreateDirectory(userStoragePath);
-            var adapter = new ConsoleAdapter()
-                .Use(new RegisterClassMiddleware<IConfiguration>(configuration))
-                .UseStorage(new MemoryStorage())
-                .UseBotState(new ConversationState(new MemoryStorage()), new UserState(new FileStorage(userStoragePath)));
 
-            var resourceExplorer = new ResourceExplorer()
-                .AddFolder(folder);
+            //setup our DI
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .AddInMemoryCollection(new Dictionary<string, string>()
+                {
+                    { "defaultRootDialog", rootDialog },
+                    { "applicationRoot", folder}
+                })
+                .AddCommandLine(args)
+                .Build();
 
-            var bot = new DialogManager() { RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource(rootDialog)) }
-                .UseResourceExplorer(resourceExplorer)
-                .UseLanguageGeneration();
+            IServiceCollection services = new ServiceCollection();
+            // use file storage for userstate, memory for conversationstate
+            services.AddSingleton((sp) => new UserState(new FileStorage(userStoragePath)));
+            services.AddBotRuntime(configuration);
+            var sp = services.BuildServiceProvider();
 
-            await ((ConsoleAdapter)adapter).StartConversation(bot.OnTurnAsync, text);
+            // run bot on console adapter
+            await new ConsoleAdapter()
+                .StartConversation((tc, ct) => sp.GetService<IBot>().OnTurnAsync(tc, ct), text);
         }
     }
 }

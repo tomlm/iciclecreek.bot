@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RunBot": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\scratch\\empty4\\empty4\\empty4.dialog"
+    }
+  }
+}

@@ -1,15 +1,15 @@
-﻿using Microsoft.Bot.Builder.Runtime.Plugins;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using Microsoft.Bot.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Iciclecreek.Bot.Expressions.Humanizer
 {
     /// <summary>
     /// Class which contains registration of components for CosmosDB.
     /// </summary>
-    public class HumanizerComponentRegistration : IBotPlugin
+    public class HumanizerComponentRegistration : BotComponent
     {
-        public void Load(IBotPluginLoadContext context)
+        public override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             HumanizerFunctions.Register();
         }

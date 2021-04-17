@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.12.1</Version>
-    <AssemblyVersion>4.12.1.0</AssemblyVersion>
+    <Version>4.13.0</Version>
+    <AssemblyVersion>4.13.0.0</AssemblyVersion>
     <Description>Adds ability to write .js files to add custom functions to AdaptiveExpressions</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -12,7 +12,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>bot,adaptive,javascript,bf-component</PackageTags>
+    <PackageTags>bot,adaptive,javascript,,msbot-component,msbot-function</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
@@ -34,8 +34,8 @@
 
   <ItemGroup>
     <PackageReference Include="Jint" Version="3.0.0-beta-1778" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.12.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Runtime.Plugins" Version="4.12.0-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.13.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.12" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>

@@ -10,10 +10,13 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing;
 using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
@@ -33,12 +36,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         [ClassInitialize]
         public static async Task ClassInitialize(TestContext context)
         {
-            ComponentRegistration.Add(new DeclarativeComponentRegistration());
-            ComponentRegistration.Add(new DialogsComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveComponentRegistration());
-            ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
-            ComponentRegistration.Add(new LucyComponentRegistration());
+            // Setup
+            IServiceCollection services = new ServiceCollection();
+            IConfiguration configuration = new ConfigurationBuilder().Build();
+            services.AddSingleton(configuration);
+            services.AddBotRuntime(configuration);
 
             var parent = Environment.CurrentDirectory;
             while (!string.IsNullOrEmpty(parent))

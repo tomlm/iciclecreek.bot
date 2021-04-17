@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Iciclecreek.Bot.Builder.Adapters;
 using System.Linq;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Microsoft.Bot.Builder.Dialogs.Declarative.Obsolete;
 
 namespace Iciclecreek.Bot.Builder.Adapters.Tests
 {
@@ -26,7 +27,7 @@ namespace Iciclecreek.Bot.Builder.Adapters.Tests
             ComponentRegistration.Add(new DialogsComponentRegistration());
             ComponentRegistration.Add(new AdaptiveComponentRegistration());
             ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
-            ComponentRegistration.Add(new LucyComponentRegistration());
+            ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LucyBotComponent>());
 
             ResourceExplorer = new ResourceExplorer()
                 .AddFolder(@"..\..\..\TestBot");

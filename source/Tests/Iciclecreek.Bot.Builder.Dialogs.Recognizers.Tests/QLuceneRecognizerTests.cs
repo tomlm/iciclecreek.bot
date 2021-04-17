@@ -5,21 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene;
 using Lucene.Net.Store;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Adapters;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Actions;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Conditions;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Templates;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing.TestActions;
-using Microsoft.Bot.Builder.Dialogs.Declarative;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
 {
@@ -37,13 +33,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         [ClassInitialize]
         public static async Task ClassInitialize(TestContext context)
         {
-            ComponentRegistration.Add(new DeclarativeComponentRegistration());
-            ComponentRegistration.Add(new DialogsComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveComponentRegistration());
-            ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
-            ComponentRegistration.Add(new QLuceneComponentRegistration());
-
             var parent = Environment.CurrentDirectory;
             while (!string.IsNullOrEmpty(parent))
             {
@@ -67,7 +56,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         }
 
         [TestMethod]
-        public async Task TestQlucene()
+        public void TestQlucene()
         {
             var qlu = new QLuceneEngine(IndexDirectory);
 
