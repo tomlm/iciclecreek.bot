@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene.csproj" />
     <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy\Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy.csproj" />
     <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers\Iciclecreek.Bot.Builder.Dialogs.Recognizers.csproj" />
     <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene\Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene.csproj" />
@@ -38,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="DynamicListRecognizer.test.dialog" />
     <None Remove="Lucy_TestRecognizer_Inline.test.dialog" />
     <None Remove="Lucy_TestRecognizer_Resource.test.dialog" />
     <None Remove="QLucene_TestRecognizer_cached.test.dialog" />

@@ -1,0 +1,108 @@
+﻿{
+    "$kind": "Microsoft.Test.Script",
+    "dialog": {
+        "$kind": "Microsoft.AdaptiveDialog",
+        "recognizer": {
+            "$kind": "Microsoft.LuisRecognizer",
+            "externalEntityRecognizer": {
+                "$kind": "Iciclecreek.DynamicListRecognizer",
+                "dynamicLists": [
+                    {
+                        "entity": "alphaEntity",
+                        "list": [
+                            {
+                                "canonicalForm": "a",
+                                "synonyms": [
+                                    "a",
+                                    "aa"
+                                ]
+                            },
+                            {
+                                "canonicalForm": "b",
+                                "synonyms": [
+                                    "b",
+                                    "bb"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "entity": "numberEntity",
+                        "list": [
+                            {
+                                "canonicalForm": "1",
+                                "synonyms": [
+                                    "1",
+                                    "one"
+                                ]
+                            },
+                            {
+                                "canonicalForm": "2",
+                                "synonyms": [
+                                    "2",
+                                    "two"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "fuzzyMatch": false
+            }
+        },
+        "triggers": [
+            {
+                "$kind": "Microsoft.OnIntent",
+                "intent": "intent",
+                "entities": [
+                    "alphaEntity"
+                ],
+                "actions": [
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "alphaEntity"
+                    }
+                ]
+            },
+            {
+                "$kind": "Microsoft.OnIntent",
+                "intent": "intent",
+                "entities": [
+                    "numberEntity"
+                ],
+                "actions": [
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "numberEntity"
+                    }
+                ]
+            }
+        ]
+    },
+    "locale": "en-us",
+    "script": [
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "a"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "alphaEntity"
+        },
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "three"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "numberEntity"
+        },
+        {
+            "$kind": "Microsoft.Test.UserSays",
+            "text": "one"
+        },
+        {
+            "$kind": "Microsoft.Test.AssertReply",
+            "text": "numberEntity"
+        }
+    ]
+}
