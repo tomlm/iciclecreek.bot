@@ -27,7 +27,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
 
 
         [ClassInitialize]
-        public static async Task ClassInitialize(TestContext context)
+        public static void ClassInitialize(TestContext context)
         {
             var parent = Environment.CurrentDirectory;
             while (!string.IsNullOrEmpty(parent))

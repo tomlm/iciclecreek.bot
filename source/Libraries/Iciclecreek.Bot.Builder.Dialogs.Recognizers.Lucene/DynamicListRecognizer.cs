@@ -143,7 +143,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
             }
 
             // if no match return None intent
-            recognizerResult.Intents.Add("None", new IntentScore() { Score = 1.0 });
+            recognizerResult.Intents.Add("intent", new IntentScore() { Score = 1.0 });
 
             await dialogContext.Context.TraceActivityAsync(nameof(DynamicListRecognizer), JObject.FromObject(recognizerResult), "RecognizerResult", "DynamicListRecognizerResult", cancellationToken).ConfigureAwait(false);
 

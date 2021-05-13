@@ -3,8 +3,6 @@
     "dialog": {
         "$kind": "Microsoft.AdaptiveDialog",
         "recognizer": {
-            "$kind": "Microsoft.LuisRecognizer",
-            "externalEntityRecognizer": {
                 "$kind": "Iciclecreek.DynamicListRecognizer",
                 "dynamicLists": [
                     {
@@ -46,8 +44,7 @@
                         ]
                     }
                 ],
-                "fuzzyMatch": false
-            }
+                "fuzzyMatch": true
         },
         "triggers": [
             {
@@ -78,23 +75,14 @@
             }
         ]
     },
-    "locale": "en-us",
     "script": [
         {
             "$kind": "Microsoft.Test.UserSays",
-            "text": "a"
+            "text": "bb"
         },
         {
             "$kind": "Microsoft.Test.AssertReply",
             "text": "alphaEntity"
-        },
-        {
-            "$kind": "Microsoft.Test.UserSays",
-            "text": "three"
-        },
-        {
-            "$kind": "Microsoft.Test.AssertReply",
-            "text": "numberEntity"
         },
         {
             "$kind": "Microsoft.Test.UserSays",
