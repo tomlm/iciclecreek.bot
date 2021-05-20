@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="DynamicListRecognizer.test.dialog" />
+    <None Remove="LuceneDynamicListRecognizer.test.dialog" />
     <None Remove="Lucy_TestRecognizer_Inline.test.dialog" />
     <None Remove="Lucy_TestRecognizer_Resource.test.dialog" />
     <None Remove="QLucene_TestRecognizer_cached.test.dialog" />

@@ -3,7 +3,7 @@
     "dialog": {
         "$kind": "Microsoft.AdaptiveDialog",
         "recognizer": {
-                "$kind": "Iciclecreek.DynamicListRecognizer",
+                "$kind": "Iciclecreek.LuceneDynamicListRecognizer",
                 "dynamicLists": [
                     {
                         "entity": "alphaEntity",
@@ -49,7 +49,7 @@
         "triggers": [
             {
                 "$kind": "Microsoft.OnIntent",
-                "intent": "intent",
+                "intent": "None",
                 "entities": [
                     "alphaEntity"
                 ],
@@ -62,7 +62,7 @@
             },
             {
                 "$kind": "Microsoft.OnIntent",
-                "intent": "intent",
+                "intent": "None",
                 "entities": [
                     "numberEntity"
                 ],
