@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
 {
     [TestClass]
-    public class LuceneDynamicListRecognizerTests
+    public class DynamicListRecognizerTests
     {
         public static ResourceExplorer ResourceExplorer { get; set; }
 
@@ -49,7 +49,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Tests
         [TestMethod]
         public async Task TestDynamicListRecognizer()
         {
-            var script = ResourceExplorer.LoadType<TestScript>("LuceneDynamicListRecognizer.test.dialog");
+            var script = ResourceExplorer.LoadType<TestScript>("DynamicListRecognizer.test.dialog");
             await script.ExecuteAsync(ResourceExplorer);
         }
     }

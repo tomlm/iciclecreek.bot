@@ -8,14 +8,7 @@
 ${formImport('form.en-us.lg')}
 ${formImport('form-Choose.en-us.lg')}
 ${propertyEntityValue()}
-${chooseEntity()}
 ```
-
-# chooseEntity
--```
-# ${entity}_chooseEntity()
-> Choose between '${entity}' values
-- \${chooseEnumEntity()}```
 
 # propertyEntityValue
 -```

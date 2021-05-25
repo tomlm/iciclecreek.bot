@@ -41,9 +41,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Tests
             ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
             ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<QLuceneBotComponent>());
             ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LucyBotComponent>());
-            ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LuceneDynamicListBotComponent>());
+            ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<DynamicListBotComponent>());
             ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LuisBotComponent>());
-#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -51,8 +50,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Tests
             // Adding IConfiguration in sample test server.  Otherwise this appears to be 
             // registered.
             services.AddSingleton<IConfiguration>(this.Configuration);
-/*            LuceneDynamicListBotComponent lucene = new LuceneDynamicListBotComponent();
-            lucene.ConfigureServices(services, this.Configuration);*/
         }
     }
 }

@@ -3,7 +3,7 @@
     "dialog": {
         "$kind": "Microsoft.AdaptiveDialog",
         "recognizer": {
-                "$kind": "Iciclecreek.LuceneDynamicListRecognizer",
+                "$kind": "Iciclecreek.DynamicListRecognizer",
                 "dynamicLists": [
                     {
                         "entity": "alphaEntity",

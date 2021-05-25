@@ -29,7 +29,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
     /// Recognizer implementation which uses Lucene TokenAnalyzer to recognize DynamicLists client side. 
     /// This supports fuzzy "sounds-like" matching using Beider-Morse techniques.
     /// </summary>
-    public class LuceneDynamicListRecognizer : Recognizer
+    public class DynamicListRecognizer : Recognizer
     {
         private Analyzer exactAnalyzer;
         private Analyzer fuzzyAnalyzer;
@@ -38,7 +38,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
         /// Class identifier.
         /// </summary>
         [JsonProperty("$kind")]
-        public const string Kind = "Iciclecreek.LuceneDynamicListRecognizer";
+        public const string Kind = "Iciclecreek.DynamicListRecognizer";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexRecognizer"/> class.
@@ -46,7 +46,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
         /// <param name="callerPath">Optional, source file full path.</param>
         /// <param name="callerLine">Optional, line number in source file.</param>
         [JsonConstructor]
-        public LuceneDynamicListRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
+        public DynamicListRecognizer([CallerFilePath] string callerPath = "", [CallerLineNumber] int callerLine = 0)
             : base(callerPath, callerLine)
         {
             this.exactAnalyzer = new StandardAnalyzer(Utils.LuceneVersion.LUCENE_48);
@@ -145,7 +145,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
             // if no match return None intent
             recognizerResult.Intents.Add("None", new IntentScore() { Score = 1.0 });
 
-            await dialogContext.Context.TraceActivityAsync(nameof(LuceneDynamicListRecognizer), JObject.FromObject(recognizerResult), "RecognizerResult", "DynamicListRecognizerResult", cancellationToken).ConfigureAwait(false);
+            await dialogContext.Context.TraceActivityAsync(nameof(DynamicListRecognizer), JObject.FromObject(recognizerResult), "RecognizerResult", "DynamicListRecognizerResult", cancellationToken).ConfigureAwait(false);
 
             this.TrackRecognizerResult(dialogContext, "DynamicListRecognizerResult", this.FillRecognizerResultTelemetryProperties(recognizerResult, telemetryProperties), telemetryMetrics);     
 
