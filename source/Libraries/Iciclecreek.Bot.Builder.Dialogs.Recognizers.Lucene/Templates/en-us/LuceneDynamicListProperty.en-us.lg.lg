@@ -14,19 +14,19 @@ ${confirmationTemplates(expectedSetDefault(),
                         unexpectedUpdateDefault(),
                         removeDefault(),
                         clearDefault())}
-${helpTemplates(repromptEnum(), helpEnum())}
+${helpTemplates(repromptDynamicListValue(), helpDynamicListValue())}
 ${showTemplate(showDefault())}
 ${nameTemplate()}
 ${dynamicValueTemplate()}
 ```
 
-# repromptEnum()
+# repromptDynamicListValue()
 - IF: ${isArrayProperty(property)}
     - ${propertyName()} includes multiple values from: \${possibleValuesForDynamiclist(`${property}`)}
 - ELSE:
     - Possible values for ${propertyName()} include: \${possibleValuesForDynamiclist(`${property}`)}
 
-# helpEnum()
+# helpDynamicListValue()
 - IF: ${isArrayProperty(property)}
     - ${propertyName()} includes multiple values from: \${possibleValuesForDynamiclist(`${property}`)}
 - ELSE:
