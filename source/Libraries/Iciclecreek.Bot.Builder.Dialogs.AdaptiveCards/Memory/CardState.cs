@@ -38,7 +38,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.AdaptiveCards.Memory
         protected override string GetStorageKey(ITurnContext turnContext)
         {
             dynamic value = turnContext.Activity?.Value;
-            if (value?.action?.cardId != null)
+            if (value?.action?.data?.cardId != null)
             {
                 return $"cards/{value?.action?.cardId}";
             }

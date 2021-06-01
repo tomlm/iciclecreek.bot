@@ -166,14 +166,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.AdaptiveCards.Dialogs
             var cardJson = this.Template.Expand(data);
             var card = !String.IsNullOrEmpty(cardJson) ? JObject.Parse(cardJson) : null;
 
-            // stamp cardId on all Action.Execute nodes.
-            if (!String.IsNullOrEmpty(cardId))
+            // stamp dialogId and cardId on all Action.Execute nodes.
+            // set data.cardId = cardId on Action.Execute Nodes
+            foreach (var action in card.SelectTokens("$..[?(@.type=='Action.Execute')]").OfType<JObject>())
             {
-                // set data.cardId = cardId on Action.Execute Nodes
-                foreach (var action in card.SelectTokens("$..[?(@.type=='Action.Execute')]").OfType<JObject>())
-                {
-                    ObjectPath.SetPathValue(action, "data.cardId", cardId);
-                }
+                ObjectPath.SetPathValue(action, "data.dialogId", this.Id);
+                ObjectPath.SetPathValue(action, "data.cardId", cardId);
             }
 
             // Send invoke response (new card)
