@@ -1,0 +1,36 @@
+[generator.lg](generator.lg)
+
+# transforms()
+- ${'setLuceneDynamicList'}
+
+# setLuceneDynamicList(ref, body)
+> Set lucene dynamiclist
+- ${transformVerify(ref, body, propertySchema.$template == "LuceneDynamicList", 'addLuceneDynamicList')}
+
+# addLuceneDynamicList()
+- ${
+[
+    {   "$kind": "Microsoft.OnBeginDialog",
+        "actions": [${setPropertyAction()}]
+    }
+]}
+
+# setPropertyAction()
+-```
+{
+    "$kind": "Microsoft.SetProperty",
+    "property": "dialog.${property}Value",
+    "value":  {
+    "entity": "${property}Value",
+    "list": [
+        ${listElements()}
+        ]
+    }
+}
+```
+
+# listElements()
+- IF: ${examples}
+    - ${join(foreach(indicesAndValues(examples)), entity, `{"canonicalForm": "${entity.index}", "synonyms": [${synonymsForDynamicList(entity.value)}] }`), `, ${EOL()}`)}
+- ELSE:
+    -
