@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.13.0" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.14.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
         <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
@@ -17,7 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs.Annotations\Iciclecreek.Bot.Builder.Dialogs.Annotations.csproj" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.13.0" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.14.1" />
 
     </ItemGroup>
 

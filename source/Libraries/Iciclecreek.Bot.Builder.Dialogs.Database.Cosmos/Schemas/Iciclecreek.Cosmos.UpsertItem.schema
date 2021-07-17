@@ -39,7 +39,7 @@
         "partitionKey": {
             "$ref": "schema:#/definitions/stringExpression",
             "title": "Partition key",
-            "description": "PartitionKey of iem to upsert."
+            "description": "PartitionKey of item to upsert."
         },
         "resultProperty": {
             "$ref": "schema:#/definitions/stringExpression",

@@ -163,7 +163,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.QLucene
             var topAnswer = qluceneEngine.GetAnswers(activity.Text,
                 strictFilters: strictFilters.ToArray(),
                 context: context,
-                threshold: threshold,
+                threshold: (float)threshold,
                 rankerType: rankerType,
                 strictFiltersCompoundOperationType: strictFiltersCompoundOperationType);
 

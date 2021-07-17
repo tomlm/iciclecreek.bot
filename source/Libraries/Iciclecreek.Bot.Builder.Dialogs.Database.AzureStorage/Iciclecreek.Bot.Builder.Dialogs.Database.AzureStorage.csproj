@@ -1,41 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.13.0</Version>
-        <Description>Adds custom actions to Bot Framework and Composer to work with Azure storage tables.</Description>
-        <Company>Iciclecreek</Company>
-        <Authors>Tom Laird-McConnell</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage</PackageProjectUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>bot,adaptive,msbot-component,msbot-action</PackageTags>
-        <AssemblyVersion>4.13.0.0</AssemblyVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
-        <Copyright></Copyright>
-        <ContentTargetFolders>content</ContentTargetFolders>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.14.0</Version>
+    <AssemblyVersion>4.14.0.0</AssemblyVersion>
+    <Description>Adds custom actions to Bot Framework and Composer to work with Azure storage tables.</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,msbot-component,msbot-action</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Content Include="**/*.dialog" />
-        <Content Include="**/*.lg" />
-        <Content Include="**/*.lu" />
-        <Content Include="**/*.schema" />
-        <Content Include="**/*.uischema" />
-        <Content Include="**/*.qna" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
-        <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.13.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.14.1" />
+  </ItemGroup>
 
 </Project>

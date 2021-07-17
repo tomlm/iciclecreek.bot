@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.13.0</Version>
+    <Version>4.14.0</Version>
+    <AssemblyVersion>4.14.0.0</AssemblyVersion>
     <Description>Adds actions for reading writing and deleting files.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -12,7 +13,6 @@
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <PackageTags>bot,adaptive,msbot-component,msbot-action</PackageTags>
-    <AssemblyVersion>4.13.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
@@ -44,10 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveExpressions" Version="4.13.0" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.13.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.13.0" />
+    <PackageReference Include="AdaptiveExpressions" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.14.1" />
   </ItemGroup>
 
 </Project>

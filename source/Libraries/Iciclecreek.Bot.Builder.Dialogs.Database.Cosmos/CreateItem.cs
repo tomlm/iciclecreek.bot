@@ -92,7 +92,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
             var databaseName = Database.GetValue(dc.State);
             var containerName = Container.GetValue(dc.State);
             var item = Item.GetValue(dc.State);
-            var partitionKeyValue = PartitionKey.GetValue(dc.State);
+            var partitionKeyValue = PartitionKey?.GetValue(dc.State);
             PartitionKey? partitionKey = (!String.IsNullOrEmpty(partitionKeyValue)) ? new PartitionKey(partitionKeyValue) : (PartitionKey?)null;
             var client = CosmosClientCache.GetClient(connectionString);
             var database = client.GetDatabase(databaseName);

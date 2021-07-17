@@ -1,10 +1,19 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
-  "menu": {
-    "label": "RetrieveEntity",
-    "submenu": [
-        "Azure",
-        "Table"
-    ]
-  }
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "menu": {
+        "label": "RetrieveEntity",
+        "submenu": [
+            "Azure",
+            "Table"
+        ]
+    },
+    "flow": {
+        "widget": "ActionCard",
+        "body": "RetrieveEntity- Table: ${action.table} PartitionKey: ${action.partitionKey} RowKey: ${action.rowKey}",
+        "footer": {
+            "widget": "PropertyDescription",
+            "property": "=action.resultProperty",
+            "description": "= (Entity)"
+        }
+    }
 }

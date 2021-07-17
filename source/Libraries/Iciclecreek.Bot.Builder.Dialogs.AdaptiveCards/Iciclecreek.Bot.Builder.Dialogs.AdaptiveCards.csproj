@@ -1,42 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>4.13.0-preview</Version>
-        <Description>Adds custom trigger handlers to Bot Framework and Composer to make it easy to work with Adaptive Cards.</Description>
-        <Company>Iciclecreek</Company>
-        <Authors>Tom Laird-McConnell</Authors>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Adaptive.Cards</PackageProjectUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
-        <PackageIcon>icon.png</PackageIcon>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>bot,adaptive,msbot-component,msbot-triggers,msbot-memory</PackageTags>
-        <AssemblyVersion>4.13.0.0</AssemblyVersion>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
-        <Copyright></Copyright>
-        <ContentTargetFolders>content</ContentTargetFolders>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>4.14.0-preview</Version>
+    <AssemblyVersion>4.14.0.0</AssemblyVersion>
+    <Description>Adds custom trigger handlers to Bot Framework and Composer to make it easy to work with Adaptive Cards.</Description>
+    <Company>Iciclecreek</Company>
+    <Authors>Tom Laird-McConnell</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Adaptive.Cards</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bot,adaptive,msbot-component,msbot-triggers,msbot-memory</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
+    <Copyright></Copyright>
+    <ContentTargetFolders>content</ContentTargetFolders>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Content Include="**/*.dialog" />
-        <Content Include="**/*.lg" />
-        <Content Include="**/*.lu" />
-        <Content Include="**/*.schema" />
-        <Content Include="**/*.uischema" />
-        <Content Include="**/*.qna" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="**/*.dialog" />
+    <Content Include="**/*.lg" />
+    <Content Include="**/*.lu" />
+    <Content Include="**/*.schema" />
+    <Content Include="**/*.uischema" />
+    <Content Include="**/*.qna" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="AdaptiveCards" Version="2.7.1" />
-        <PackageReference Include="AdaptiveCards.Templating" Version="1.2.1" />
-        <PackageReference Include="Microsoft.Bot.Builder" Version="4.13.0" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.13.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AdaptiveCards" Version="2.7.1" />
+    <PackageReference Include="AdaptiveCards.Templating" Version="1.2.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.14.1" />
+  </ItemGroup>
 
 </Project>

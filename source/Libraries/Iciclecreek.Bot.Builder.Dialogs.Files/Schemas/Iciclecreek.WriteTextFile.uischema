@@ -1,9 +1,13 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
-  "menu": {
-    "label": "WriteTextFile",
-    "submenu": [
-      "File"
-    ]
-  }
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "menu": {
+        "label": "WriteTextFile",
+        "submenu": [
+            "File"
+        ]
+    },
+    "flow": {
+        "widget": "ActionCard",
+        "body": "WriteTextFile(${action.path}, ${action.text})"
+    }
 }

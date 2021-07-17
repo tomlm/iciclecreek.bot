@@ -38,7 +38,7 @@ namespace Iciclecreek.AdaptiveExpressions.Tests
                 Assert.AreEqual("THIS IS A TEST", Expression.Parse($"humanizer.allCaps('this is a test')").TryEvaluate(state).value);
                 Assert.AreEqual("this is a test", Expression.Parse($"humanizer.lowerCase('THIS IS A TEST')").TryEvaluate(state).value);
                 Assert.AreEqual("This is a test", Expression.Parse($"humanizer.sentence('this is a test')").TryEvaluate(state).value);
-                Assert.AreEqual("This Is A Test", Expression.Parse($"humanizer.title('this is a test')").TryEvaluate(state).value);
+                Assert.AreEqual("This Is a Test", Expression.Parse($"humanizer.title('this is a test')").TryEvaluate(state).value);
             });
         }
 

@@ -1,9 +1,13 @@
 {
-  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
-  "menu": {
-    "label": "DeleteFile",
-    "submenu": [
-      "File"
-    ]
-  }
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "menu": {
+        "label": "DeleteFile",
+        "submenu": [
+            "File"
+        ]
+    },
+    "flow": {
+        "widget": "ActionCard",
+        "body": "DeleteFile(${action.path})"
+    }
 }

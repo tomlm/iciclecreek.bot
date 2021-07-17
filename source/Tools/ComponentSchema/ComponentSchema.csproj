@@ -27,9 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Humanizer" Version="2.8.26" />
+        <PackageReference Include="Humanizer" Version="2.11.10" />
         <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Annotations" Version="4.9.1" />
-        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.13.0" />
+        <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.14.1" />
     </ItemGroup>
 
 </Project>

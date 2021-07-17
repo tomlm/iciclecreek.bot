@@ -64,8 +64,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         [Description("ItemId of the item to delete.")]
         public StringExpression ItemId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the PartitionKey value to delete.
+        /// </summary>
         [JsonProperty("partitionKey")]
-        [Description("PartitionKey of the item to delete.")]
+        [Description("PartitionKey value of the item to delete.")]
         public StringExpression PartitionKey{ get; set; }
 
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default(CancellationToken))
