@@ -2,8 +2,10 @@
 // Licensed under the MIT License.
 
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Testing;
@@ -39,7 +41,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Tests
             ComponentRegistration.Add(new AdaptiveTestingComponentRegistration());
             ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<QLuceneBotComponent>());
             ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LucyBotComponent>());
-#pragma warning restore CS0618 // Type or member is obsolete
+            ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<DynamicListBotComponent>());
+            ComponentRegistration.Add(new DeclarativeComponentRegistrationBridge<LuisBotComponent>());
         }
 
         public void ConfigureServices(IServiceCollection services)

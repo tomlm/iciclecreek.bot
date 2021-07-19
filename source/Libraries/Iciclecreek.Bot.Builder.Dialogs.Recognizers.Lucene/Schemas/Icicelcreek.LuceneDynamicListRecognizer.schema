@@ -1,7 +1,7 @@
 ﻿{
     "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
     "$role": "implements(Microsoft.IRecognizer)",
-    "title": "DynamicList Recognizer",
+    "title": "Lucene DynamicList Recognizer",
     "description": "Recognizer which uses Lucene Token Analysis to recognize DynamicLists.",
     "type": "object",
     "additionalProperties": false,

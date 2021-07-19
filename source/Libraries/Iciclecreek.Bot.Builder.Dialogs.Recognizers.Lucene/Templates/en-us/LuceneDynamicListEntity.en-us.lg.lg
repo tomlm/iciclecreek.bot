@@ -1,0 +1,17 @@
+[standard.en-us.lg](standard.en-us.lg)
+
+# filename
+- ${entityLGFilename()}
+
+# template
+-```
+${formImport('form.en-us.lg')}
+${formImport('form-Choose.en-us.lg')}
+${propertyEntityValue()}
+```
+
+# propertyEntityValue
+-```
+# ${entity}_Value(entity) 
+> Display value for '${entity}'
+- \${value(entity.value)}```

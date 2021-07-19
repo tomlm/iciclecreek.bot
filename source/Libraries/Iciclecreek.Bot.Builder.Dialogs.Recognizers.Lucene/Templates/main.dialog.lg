@@ -1,0 +1,31 @@
+[generator.lg](generator.lg)
+
+# filename
+- ${prefix}.dialog
+
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.AdaptiveDialog",
+    "recognizer": {
+        "$kind": "Microsoft.RecognizerSet",
+         "recognizers": [
+                    "${prefix}.lu",
+                    {"$kind": "Iciclecreek.DynamicListRecognizer",
+                      "dynamicLists": "=${addList()}",
+                      "fuzzyMatch": true
+                    }
+                ]
+    },
+    "autoEndDialog": false,
+    "generator": "${prefix}.lg",
+    "schema": "${prefix}.json",
+    "triggers": [ 
+        ${join(foreach(where(templates.dialog, dialog, !contains(dialog.name, '.')), dialog, `"${dialog.name}"`), `,${EOL()}`)}
+    ]
+}
+```
+
+# addList
+- [${join(foreach(where(schema.properties, property, property.value.$template == "LuceneDynamicList"), result, `dialog.${result.key}Value`), `,`)}]
