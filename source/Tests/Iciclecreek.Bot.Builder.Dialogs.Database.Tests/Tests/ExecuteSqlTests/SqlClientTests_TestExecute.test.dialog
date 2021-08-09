@@ -8,8 +8,21 @@
                 "$kind": "Microsoft.OnBeginDialog",
                 "actions": [
                     {
-                        "$kind":"Iciclecreek.Sql.Execute",
-                        "connectionString" : "=settings.connectionString",
+                        "$kind": "Microsoft.SetProperty",
+                        "property": "turn.name",
+                        "value": "Paul"
+                    },
+                    {
+                        "disabled": true,
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
+                        "statements": [
+                            "DROP TABLE COMPANY;"
+                        ]
+                    },
+                    {
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
                         "statements": [
                             "CREATE TABLE COMPANY(",
                             "   ID INT PRIMARY KEY     NOT NULL,",
@@ -18,28 +31,39 @@
                         ]
                     },
                     {
-                        "$kind":"Iciclecreek.Sql.Execute",
-                        "connectionString" : "=settings.connectionString",
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
                         "statements": [
-                            "INSERT INTO COMPANY (ID,NAME)",
-                            "VALUES (1, 'Paul');"
+                            "INSERT INTO COMPANY (ID,NAME) VALUES (1, '${turn.name}');"
                         ]
                     },
                     {
-                        "$kind":"Iciclecreek.Sql.Execute",
-                        "connectionString" : "=settings.connectionString",
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
                         "statements": [
                             "SELECT NAME FROM COMPANY;"
                         ],
-                        "resultProperty":"$names"
+                        "resultProperty": "turn.results"
                     },
                     {
                         "$kind": "Microsoft.SendActivity",
-                        "activity": "Hi ${$names[0]}"
+                        "activity": "Hi ${turn.results[0]}"
                     },
                     {
-                        "$kind":"Iciclecreek.Sql.Execute",
-                        "connectionString" : "=settings.connectionString",
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
+                        "statements": [
+                            "SELECT * FROM COMPANY;"
+                        ],
+                        "resultProperty": "turn.results"
+                    },
+                    {
+                        "$kind": "Microsoft.SendActivity",
+                        "activity": "Hi ${turn.results[0].name}"
+                    },
+                    {
+                        "$kind": "Iciclecreek.Sql.Execute",
+                        "connectionString": "=settings.connectionString",
                         "statements": [
                             "DROP TABLE COMPANY;"
                         ]

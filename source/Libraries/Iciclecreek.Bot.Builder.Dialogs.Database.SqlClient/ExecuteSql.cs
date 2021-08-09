@@ -1,4 +1,6 @@
-﻿using AdaptiveExpressions.Properties;
+﻿using System;
+using System.Linq;
+using AdaptiveExpressions.Properties;
 using Microsoft.Bot.Builder.Dialogs;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -6,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
 {
@@ -36,10 +39,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
         public StringExpression ConnectionString { get; set; }
 
         /// <summary>
-        /// SQL operation
+        /// SQL operations
         /// </summary>
         [JsonProperty("statements")]
-        public List<string> Statements{ get; set; }
+        public List<StringExpression> Statements { get; set; }
 
         /// <summary>
         /// Gets or sets the property path to store the query result in.
@@ -58,7 +61,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
             }
 
             var connectionString = ConnectionString.GetValue(dc.State);
-            var sqlText = string.Join("\n", Statements);
+            var sqlText = string.Join("\n", Statements.Select(s => s.GetValue(dc.State)));
+
+            System.Diagnostics.Trace.TraceInformation(sqlText);
 
             // Best practice is to scope the SqlConnection to a "using" block
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -68,7 +73,30 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
 
                 // Read rows
                 SqlCommand selectCommand = new SqlCommand(sqlText, conn);
-                SqlDataReader results = selectCommand.ExecuteReader();
+                SqlDataReader sqlResults = selectCommand.ExecuteReader();
+                dynamic results = null;
+
+                if (sqlResults.HasRows)
+                {
+                    results = new JArray();
+                    while (sqlResults.Read())
+                    {
+                        if (sqlResults.FieldCount == 1)
+                        {
+                            results.Add(JToken.FromObject(sqlResults[0]));
+                        }
+                        else
+                        {
+                            var result = new JObject();
+                            for (int i = 0; i < sqlResults.FieldCount; i++)
+                            {
+                                result[sqlResults.GetName(i)] = JToken.FromObject(sqlResults[i]);
+                            }
+                            results.Add(results);
+                        }
+                    }
+                }
+                sqlResults.Close();
 
                 if (this.ResultProperty != null)
                 {

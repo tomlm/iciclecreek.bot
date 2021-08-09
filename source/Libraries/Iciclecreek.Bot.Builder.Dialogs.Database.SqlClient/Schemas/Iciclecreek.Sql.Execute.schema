@@ -33,7 +33,7 @@
             "title": "Statements",
             "description": "SQL statements to execute.",
             "items": {
-                "type": "string",
+                "$ref": "schema:#/definitions/stringExpression",
                 "title": "Statement",
                 "description": "SQL statement to execute."
             }
