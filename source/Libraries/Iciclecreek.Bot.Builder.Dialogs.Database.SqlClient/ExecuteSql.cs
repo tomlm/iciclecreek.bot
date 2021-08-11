@@ -92,7 +92,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient
                             {
                                 result[sqlResults.GetName(i)] = JToken.FromObject(sqlResults[i]);
                             }
-                            results.Add(results);
+                            results.Add(result);
                         }
                     }
                 }
