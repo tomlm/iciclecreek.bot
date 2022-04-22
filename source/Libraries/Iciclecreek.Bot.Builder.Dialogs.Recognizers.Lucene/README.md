@@ -10,12 +10,10 @@ The DyanmicListRecognizer allows you to specify a list of entities to recgonize,
 # Add nuget package
 Add ```Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene``` nuget reference to your project.
 
-# Register
-> NOTE: as of 4.12 if you are using the new runtime integration you do not need to modify startup.cs, it is autoregistered.
+To add to your schema for usage in Bot Framework Composer from cli:
 
-Register the classes in startup.cs
-```
-            ComponentRegistration.Add(new LucyComponentRegistration());
+```shell
+bf dialog:merge -p yourproj.proj -o your.schema
 ```
 
 ## Define a dynamic list recognizer as input to a luis recognizer

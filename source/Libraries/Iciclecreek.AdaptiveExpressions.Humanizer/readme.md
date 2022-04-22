@@ -10,10 +10,11 @@ This library provides humanizer functions to AdaptiveExpressions
 To install 
 ```dotnet install Iciclecreek.AdaptiveExpressions.Humanizer```
 
-In your startup code call:
-``` HumanizerFunctions.Register() ```
+To add to your schema for usage in Bot Framework Composer from cli:
 
-> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
+```shell
+bf dialog:merge -p yourproj.proj -o your.schema
+```
 
 ## Library
 This library creates expression functions which are bound to humanizer functions. 

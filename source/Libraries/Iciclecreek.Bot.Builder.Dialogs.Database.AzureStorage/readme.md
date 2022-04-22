@@ -10,14 +10,6 @@ To install into your project run the cli:
 dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.AzureStorage
 ```
 
-In your startup code add:
-
-> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
-> 
-```csharp
-ComponentRegistration.Add(new AzureStorageComponentRegistration());
-```
-
 To add to your schema for usage in Bot Framework Composer from cli:
 
 ```shell

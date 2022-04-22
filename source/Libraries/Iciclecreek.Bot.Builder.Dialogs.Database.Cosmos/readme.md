@@ -8,12 +8,6 @@ To install into your project run the cli:
 
 ```dotnet add package Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos```
 
-> NOTE: As of 4.12 with new runtime integration you do not need to modify startup.cs, it will auto register itself.
-> 
-In your startup code add:
-
-```ComponentRegistration.Add(new CosmosComponentRegistration());```
-
 To add to your schema for usage in Bot Framework Composer from cli:
 
 ```bf dialog:merge -p yourproj.proj -o your.schema```

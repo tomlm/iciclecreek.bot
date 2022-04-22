@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.11.1</Version>
-    <AssemblyVersion>4.11.1.0</AssemblyVersion>
+    <Version>4.16.1</Version>
+    <AssemblyVersion>4.16.1.0</AssemblyVersion>
     <Description>Adds custom attributes for annotating dialog classes for ComponentSchema tool.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Annotations</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <PackageTags>bot,adaptive</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
+    <None Include="readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -33,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.14.1" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.16.0" />
   </ItemGroup>
 
 </Project>
