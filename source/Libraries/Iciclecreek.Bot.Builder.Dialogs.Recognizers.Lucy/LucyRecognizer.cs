@@ -130,11 +130,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 
                 instancesObject[grp.Key] = JArray.FromObject(grp.Select(lucyEntity =>
                 {
-                    dynamic instance = new JObject();
-                    instance.type = lucyEntity.Type;
-                    instance.startIndex = lucyEntity.Start;
-                    instance.endIndex = lucyEntity.End;
-                    instance.text = lucyEntity.Text;
+                    var instance = new JObject()
+                    {
+                        { "type", lucyEntity.Type },
+                        { "startIndex", lucyEntity.Start },
+                        { "endIndex",lucyEntity.End},
+                        { "text", lucyEntity.Text }
+                    };
                     return instance;
                 }));
             }

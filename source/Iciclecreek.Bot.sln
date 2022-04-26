@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{77F111DA-C9CA-47C8-8632-A62AF8C27B8D}"
 EndProject
@@ -68,6 +68,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Files", "libraries\Iciclecreek.Bot.Builder.Dialogs.Files\Iciclecreek.Bot.Builder.Dialogs.Files.csproj", "{510AD34C-DFD6-4AA0-9633-68EFEE00CB3C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.AdaptiveCards", "Libraries\Iciclecreek.Bot.Builder.Dialogs.AdaptiveCards\Iciclecreek.Bot.Builder.Dialogs.AdaptiveCards.csproj", "{27983D9A-9A75-4625-B818-5962B9C97448}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs", "Libraries\Iciclecreek.Bot.Builder.Dialogs\Iciclecreek.Bot.Builder.Dialogs.csproj", "{B82A9ED2-C8F3-4410-B805-DD479BA17658}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.Bot.Builder.Dialogs.Tests", "Tests\Iciclecreek.Bot.Builder.Dialogs.Tests\Iciclecreek.Bot.Builder.Dialogs.Tests.csproj", "{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +179,14 @@ Global
 		{27983D9A-9A75-4625-B818-5962B9C97448}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27983D9A-9A75-4625-B818-5962B9C97448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27983D9A-9A75-4625-B818-5962B9C97448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B82A9ED2-C8F3-4410-B805-DD479BA17658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B82A9ED2-C8F3-4410-B805-DD479BA17658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B82A9ED2-C8F3-4410-B805-DD479BA17658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B82A9ED2-C8F3-4410-B805-DD479BA17658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -206,6 +218,8 @@ Global
 		{B020C639-9BEB-4F71-933F-253B6A728357} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{510AD34C-DFD6-4AA0-9633-68EFEE00CB3C} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
 		{27983D9A-9A75-4625-B818-5962B9C97448} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{B82A9ED2-C8F3-4410-B805-DD479BA17658} = {77F111DA-C9CA-47C8-8632-A62AF8C27B8D}
+		{EA2A95E9-DC47-4219-A461-C0B7FB6F73FF} = {94ECDBC2-C0D1-4067-A209-A548BD3B39D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E6BDA9D-98FE-49C6-9593-F0A6C2188A50}
