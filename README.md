@@ -37,7 +37,7 @@ Library which adds components to Bot Framework and Bot Composer for custom recog
 
 ## Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
 Library which implements a recognizer that uses Lucy.NET language understanding library to process text into intents and entities.
-[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recgonizers.Lucy)
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy)
 
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
