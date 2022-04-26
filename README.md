@@ -24,6 +24,10 @@ Library which adds components to Bot Framework and Bot Composer for doing CRUD o
 Library which adds components to Bot Framework and Bot Composer for executing SQL statements using Microsoft.Data.SqlClient library.
 [More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Database.SqlClient/)
 
+## Iciclecreek.Bot.Builder.Dialogs
+Library which adds IcyBot and IcyDialog code-first dialogs with recognizer and strongly typed signatures for activities.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs)
+
 ## Iciclecreek.Bot.Builder.Dialogs.Recognizers
 Library which adds components to Bot Framework and Bot Composer for custom recognizers.
 * **PersonNameEntityRecognizer** - Recognizes common @givenName @surname, @fullname entities (like "John Smith"=> GivenName:"john" Surname:"Smith", fullname:"John Smith")
@@ -31,6 +35,9 @@ Library which adds components to Bot Framework and Bot Composer for custom recog
 * **CsvTextEntityRecognizer** - Uses a .CSV file to define tokens to match to entities
 [More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recognizers/)
 
+## Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy
+Library which implements a recognizer that uses Lucy.NET language understanding library to process text into intents and entities.
+[More Details](source/Libraries/Iciclecreek.Bot.Builder.Dialogs.Recgonizers.Lucy)
 
 ## Iciclecreek.AdaptiveExpression.Humanizer
  Library which extends AdaptiveExpressions with [Humanizer.Net](https://humanizr.net/) functions.
