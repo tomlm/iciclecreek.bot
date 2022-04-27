@@ -1,15 +1,16 @@
 ﻿using Iciclecreek.Bot.Builder;
 using Iciclecreek.Bot.Builder.Adapters;
-using Iciclecreek.Bot.Builder.Dialogs.Adaptive;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive;
-using Microsoft.Bot.Builder.Dialogs.Declarative;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Extensions;
 using Microsoft.Bot.Builder.Dialogs.Declarative.Resources;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace ConsoleBot
@@ -18,30 +19,41 @@ namespace ConsoleBot
     {
         static async Task Main(string[] args)
         {
-             var configuration = new ConfigurationBuilder().AddEnvironmentVariables().AddCommandLine(args).Build();
-            ComponentRegistration.Add(new DialogsComponentRegistration());
-            ComponentRegistration.Add(new DeclarativeComponentRegistration());
-            ComponentRegistration.Add(new AdaptiveComponentRegistration());
-            ComponentRegistration.Add(new LanguageGenerationComponentRegistration());
-            ComponentRegistration.Add(new LucyComponentRegistration());
-            ComponentRegistration.Add(new ConsoleComponentRegistration());
-
-            var appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            var assembly = Assembly.GetExecutingAssembly();
+            var appRoot = Path.GetDirectoryName(assembly.Location);
+            var resourceRoot = Path.Combine(appRoot, "ConsoleBot");
+            var appName = assembly.GetName().Name;
             var userStoragePath = Path.Combine(Path.GetTempPath(), appName);
             Directory.CreateDirectory(userStoragePath);
-            var adapter = new ConsoleAdapter()
-                .Use(new RegisterClassMiddleware<IConfiguration>(configuration))
-                .UseStorage(new MemoryStorage())
-                .UseBotState(new ConversationState(new MemoryStorage()), new UserState(new FileStorage(userStoragePath)));
 
-            var resourceExplorer = new ResourceExplorer()
-                .AddFolder(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "ConsoleBot"));
+            var configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)
+                .AddBotRuntimeConfiguration(resourceRoot, Path.Combine(resourceRoot, "settings"), string.Empty)
+                .Build();
 
-            var bot = new DialogManager() { RootDialog = resourceExplorer.LoadType<AdaptiveDialog>(resourceExplorer.GetResource("ConsoleBot.dialog")) }
-                .UseResourceExplorer(resourceExplorer)
-                .UseLanguageGeneration();
+            var services = new ServiceCollection();
+            services.AddLogging()
+                .AddSingleton<IStorage, MemoryStorage>()
+                .AddSingleton<ConversationState>()
+                .AddSingleton<UserState>(sp => new UserState(new FileStorage(userStoragePath)))
+                .AddSingleton<ResourceExplorer>(sp =>
+                {
+                    var resourcePath = Path.Combine(appRoot, "ConsoleBot");
+                    var resourceExplorer = new ResourceExplorer()
+                        .AddFolder(resourcePath);
+                    resourceExplorer.AddResourceType(".yaml");
+                    return resourceExplorer;
+                })
+                .AddSingleton<ConsoleAdapter>();
 
-            await ((ConsoleAdapter)adapter).StartConversation(bot.OnTurnAsync, String.Join(" ", args));
+            services
+                .AddBotRuntime(configuration);
+
+            var sp = services.BuildServiceProvider();
+            var bot = sp.GetService<IBot>();
+            var consoleAdapter = sp.GetService<ConsoleAdapter>();
+            await consoleAdapter.StartConversation(bot.OnTurnAsync, String.Join(" ", args));
         }
     }
 }

@@ -5,10 +5,10 @@ This library provides two base clases
 * **IcyDialog** - A base dialog which simplifies the creation of code based recognizer based dialogs 
 
 ## IBot
-The library provides a default IBot implementation that uses Dependency Injection to get the dialogs.
+The library provides a default IBot implementation that uses dependency injection to get the dialogs.
 The root dialog is the first Dialog registered in DI.
 
-There is a helper extension **AddBot()** which registers the bot and ensures that state/memory scopes are registered.
+There is a service extension **AddBot()** which registers the bot and ensures that state/memory scopes are registered.
  
 ```C#
 var sp = new ServiceCollection()
@@ -27,14 +27,14 @@ IcyDialog encapsulates a number of patterns together to make a great base class 
 
 1. hides **BeginDialog/ContinueDialog** and models the dialog simply as **OnTurnAsync()**
     - dialog Options are autoamtically captured via dc.SaveOptions() and available via dc.GetOptions() on any turn.
-2. The default OnTurnAsync() will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
+2. The default **OnTurnAsync()** implementation will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
     - **OnMessageActivityAsync(dc)**
     - **OnEndOfConversationAsync(dc)**
     - **OnMessageReactionActivityAsync(dc)**
     - **OnAdaptiveCardInvoke(dc)** 
     - etc.
      
-3. The default **OnMessageActivity** will invoke the Recognizer and route the activity using **OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync()** methods
+3. The default **OnMessageActivity()** implementation will invoke the Recognizer and route the activity using **OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync()** methods
 4. The default **OnRecognizedIntentAsync()** implementation will resolve methods to intent handlers using the following naming pattern:
 
 ```C#
