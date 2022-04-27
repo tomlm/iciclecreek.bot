@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Memory;
-using Microsoft.Bot.Builder.Dialogs.Memory.PathResolvers;
 using Microsoft.Bot.Builder.Dialogs.Memory.Scopes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,12 +29,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <param name="conversationState">A dependency injected <see cref="ConversationState"/> implementation.</param>
         /// <param name="userState">A dependency injected <see cref="UserState"/> implementation.</param>
+        /// <param name="dialogs">dialogs</param>
         /// <param name="pathResolvers">dependcy injected path resolvers (AddBotRuntime())</param>
         /// <param name="memoryScopes">dependency injected memory scopes (AddBotRuntime())</param>
         /// <param name="logger">An <see cref="ILogger"/> instance.</param>
         public IcyBot(
             ConversationState conversationState,
             UserState userState,
+            IEnumerable<Dialog> dialogs = null,
             IEnumerable<IPathResolver> pathResolvers = null,
             IEnumerable<MemoryScope> memoryScopes = null,
             ILogger logger = null)
@@ -46,7 +47,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             _dialogStateManagerConfiguration = new DialogStateManagerConfiguration();
 
             var services = new ServiceCollection()
-                .AddBotRuntime()
+                .AddBot()
                 .BuildServiceProvider();
 
             if (pathResolvers == null || !pathResolvers.Any())
@@ -59,14 +60,22 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                 memoryScopes = services.GetServices<MemoryScope>();
             }
 
-            foreach(var pathResolver in pathResolvers)
+            foreach (var pathResolver in pathResolvers)
             {
                 _dialogStateManagerConfiguration.PathResolvers.Add(pathResolver);
             }
 
-            foreach(var memoryScope in memoryScopes)
+            foreach (var memoryScope in memoryScopes)
             {
                 _dialogStateManagerConfiguration.MemoryScopes.Add(memoryScope);
+            }
+
+            if (dialogs != null)
+            {
+                foreach (var dialog in dialogs)
+                {
+                    AddDialog(dialog);
+                }
             }
         }
 

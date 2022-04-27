@@ -1,36 +1,26 @@
 
 # Overview
 This library provides two base clases
-* IcyBot - A simplified IBot implementation for code first bots without adaptive infrastructure dependencies.
-* IcyDialog - A base dialog which simplifies the creation of code based recognizer based dialogs 
+* **IcyBot** - An IBot implementation for code first bots without adaptive infrastructure dependencies.
+* **IcyDialog** - A base dialog which simplifies the creation of code based recognizer based dialogs 
 
-## IcyBot
-To use IcyBot to create an IBot simply derive from IcyBot and add your dialogs. 
+## IBot
+The library provides a default IBot implementation that uses Dependency Injection to get the dialogs.
+The root dialog is the first Dialog registered in DI.
 
-Bot definition:
-```C#
-    public class MyBot : IcyBot
-    {
-        public MyBot(ConversationState conversationState, UserState userState, IEnumerable<IPathResolver> pathResolvers = null, IEnumerable<MemoryScope> scopes = null, ILogger logger = null)
-            : base(conversationState, userState, pathResolvers, scopes, logger)
-        {
-            this.AddDialog<TestDialog>();
-            this.AddDialog<FooDialog>();
-        }
-    }
-```
-
-Dependency injection
+There is a helper extension **AddBot()** which registers the bot and ensures that state/memory scopes are registered.
+ 
 ```C#
 var sp = new ServiceCollection()
-    .AddSingleton<IStorage>(new MemoryStorage()) // or whatever storage you want.
-    .AddBotRuntime()
-    .AddSingleton<IBot, MyBot>()
+    .AddSingleton<IStorage,MemoryStorage>() // or whatever storage you want.
+    .AddSingleton<Dialog, TestDialog>()
+    .AddSingleton<Dialog, FooDialog>()
+    .AddBot()
     .BuildServiceProvider();
 ```
 
 > NOTE: This bot is not set up to handle skills, lg, etc.  If you want all of that stuff you should use an the Adaptive.Runtime
-> This bot is a very simple bot suitable for environments that are less complex (such as console apps).
+> This bot is a suitable for simple bots that don't need multi-language declarative support, etc.
 
 ## IcyDialog
 IcyDialog encapsulates a number of patterns together to make a great base class for creating code-first dialogs.
@@ -38,14 +28,14 @@ IcyDialog encapsulates a number of patterns together to make a great base class 
 1. hides **BeginDialog/ContinueDialog** and models the dialog simply as **OnTurnAsync()**
     - dialog Options are autoamtically captured via dc.SaveOptions() and available via dc.GetOptions() on any turn.
 2. The default OnTurnAsync() will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
-    - OnMessageActivityAsync(dc)
-    - OnEndOfConversationAsync(dc)
-    - OnMessageReactionActivityAsync(dc)
-    - OnAdaptiveCardInvoke(dc) 
+    - **OnMessageActivityAsync(dc)**
+    - **OnEndOfConversationAsync(dc)**
+    - **OnMessageReactionActivityAsync(dc)**
+    - **OnAdaptiveCardInvoke(dc)** 
     - etc.
      
-3. The default OnMessageActivity will invoke a Recognizer and route the activity using OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync() methods
-4. The default OnRecognizedIntentAsync() implementation will resolve methods using the following naming pattern:
+3. The default **OnMessageActivity** will invoke the Recognizer and route the activity using **OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync()** methods
+4. The default **OnRecognizedIntentAsync()** implementation will resolve methods to intent handlers using the following naming pattern:
 
 ```C#
 protected Task<DialogTurnResult> OnXXXIntent(DialogContext dc, IMessageActivity messageActivity, TopScore topSCore, CancellationToken ct);

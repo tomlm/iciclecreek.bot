@@ -15,20 +15,36 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         private static DialogTurnResult waiting = new DialogTurnResult(DialogTurnStatus.Waiting);
 
         /// <summary>
-        /// Registers basic bot runtime components like UserState, ConversationState, Memory, Path 
+        /// Registers IcyBot and UserState, ConversationState, Memory, PathResolvers 
         /// </summary>
         /// <remarks>
-        /// You still need to register
-        /// * IStorage
-        /// * IBot
+        /// You still need to register IStorage, Dialogs
         /// </remarks>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        public static IServiceCollection AddBotRuntime(this IServiceCollection services)
+        public static IServiceCollection AddBot(this IServiceCollection services)
         {
             services.TryAddSingleton<UserState>();
             services.TryAddSingleton<ConversationState>();
             new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
+            services.TryAddSingleton<IBot, IcyBot>();
+            return services;
+        }
+
+        /// <summary>
+        /// Registers bot and UserState, ConversationState, Memory, PathResolvers 
+        /// </summary>
+        /// <remarks>
+        /// You still need to register IStorage
+        /// </remarks>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        public static IServiceCollection AddBot<BotT>(this IServiceCollection services)
+            where BotT : IcyBot
+        {
+            services.TryAddSingleton<UserState>();
+            services.TryAddSingleton<ConversationState>();
+            new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
+            services.TryAddSingleton<IBot, BotT>();
             return services;
         }
 
