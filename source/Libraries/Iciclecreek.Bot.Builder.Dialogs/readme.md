@@ -13,8 +13,8 @@ There is a service extension **AddBot()** which registers the bot and ensures th
 ```C#
 var sp = new ServiceCollection()
     .AddSingleton<IStorage,MemoryStorage>() // or whatever storage you want.
-    .AddSingleton<Dialog, TestDialog>()
-    .AddSingleton<Dialog, FooDialog>()
+    .AddDialog<TestDialog>()
+    .AddDialog<FooDialog>()
     .AddBot()
     .BuildServiceProvider();
 ```

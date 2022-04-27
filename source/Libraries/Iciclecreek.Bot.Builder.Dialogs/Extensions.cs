@@ -49,6 +49,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
 
         /// <summary>
+        /// Add dialog to dependency injection
+        /// </summary>
+        /// <typeparam name="DialogT"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services)
+            where DialogT : Dialog
+        {
+            services.AddSingleton<Dialog, DialogT>();
+            return services;
+        }
+
+        /// <summary>
         /// Get saved options
         /// </summary>
         /// <typeparam name="T">Options type</typeparam>

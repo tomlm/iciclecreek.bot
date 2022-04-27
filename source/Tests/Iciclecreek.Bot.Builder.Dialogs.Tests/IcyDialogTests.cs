@@ -40,8 +40,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
         {
             var sp = new ServiceCollection()
                 .AddSingleton<IStorage>(new MemoryStorage())
-                .AddSingleton<Dialog, TestDialog>()
-                .AddSingleton<Dialog, FooDialog>()
+                .AddDialog<TestDialog>()
+                .AddDialog<FooDialog>()
                 .AddBot()
                 .BuildServiceProvider();
 
