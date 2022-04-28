@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
     <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
+    <UserSecretsId>baa7c826-7d5e-4efa-89b7-b4a538779e0b</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.1-preview" />
@@ -18,14 +19,14 @@
     <PackageReference Include="YamlConvert" Version="2.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="host.json" />
-    <None Remove="local.settings.json" />
-    <Content Include="host.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Update="local.settings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
-    <Content Include="local.settings.json">
+    <None Include="wwwroot/**/*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Dialogs\RootDialog.yaml" />
   </ItemGroup>
   <ItemGroup>

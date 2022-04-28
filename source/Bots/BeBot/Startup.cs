@@ -1,4 +1,4 @@
-using LucyBot.Dialogs;
+using BeBot.Dialogs;
 using Iciclecreek.Bot.Builder.Dialogs;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Bot.Builder;
@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 
-[assembly: FunctionsStartup(typeof(LucyBot.Startup))]
+[assembly: FunctionsStartup(typeof(BeBot.Startup))]
 
-namespace LucyBot
+namespace BeBot
 {
 
     public class Startup : FunctionsStartup
@@ -21,7 +21,7 @@ namespace LucyBot
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services
-                .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(LucyBot).ToLower()))
+                .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(BeBot).ToLower()))
                 .AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>()
                 .AddSingleton<IBotFrameworkHttpAdapter, FunctionAdapter>()
                 .AddSingleton<Dialog, RootDialog>()

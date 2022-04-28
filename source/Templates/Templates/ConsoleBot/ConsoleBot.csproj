@@ -24,17 +24,18 @@
 
   <ItemGroup>
     <PackageReference Include="Iciclecreek.Bot.Builder.Adapters.Console" Version="4.16.0" />
-    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.16.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime" Version="4.16.0" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.1-preview" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.16.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.22" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.24" />
+    <PackageReference Include="YamlConvert" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="ConsoleBot/**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Dialogs\RootDialog.yaml" />
   </ItemGroup>
+
 </Project>

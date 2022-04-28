@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LucyBot.Triggers
+namespace BeBot.Triggers
 {
     public class StorageQueueTrigger
     {

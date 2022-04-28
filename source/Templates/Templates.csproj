@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Title>Iciclecreek Bot Templates</Title>
@@ -6,12 +6,13 @@
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
     <PackageType>Template</PackageType>
-    <PackageVersion>1.19</PackageVersion>
+    <PackageVersion>2.0.1</PackageVersion>
     <PackageId>Iciclecreek.Bot.Templates</PackageId>
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/tomlm/iciclecreek.bot/tree/master/source/Templates</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Company>Iciclecreek</Company>
     <Description>Templates for creating bot assets.</Description>
     <PackageTags>dotnet-new;templates;bot</PackageTags>
@@ -27,8 +28,10 @@
     <Compile Remove="**\*" />
   </ItemGroup>
 
-    <ItemGroup>
-        <None Include="icon.png" Pack="true" PackagePath="" />
-    </ItemGroup>
-   
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="" />
+    <None Include="readme.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>

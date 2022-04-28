@@ -1,0 +1,26 @@
+﻿# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound entity result.
+locale: en
+externalEntities: [age, boolean, currency, datetime, dimension, email, guid, hashtag, ip, mention, 
+  integer, number, numberrange, ordinal, percentage, phonenumber, temperature, url, quotedtext]
+entities:
+  - name: Greeting
+    patterns:
+    - hi
+    - hello
+    - howdy
+
+  - name: Goodbye
+    patterns:
+    - bye
+    - goodbye
+    - good bye
+    - see (you|ya)
+    - catch (you|ya) later
+        

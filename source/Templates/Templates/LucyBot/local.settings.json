@@ -1,10 +1,7 @@
 {
-    "IsEncrypted": false,
-    "Values": {
-        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-        "BotId": "LucyBot",
-        "MicrosoftAppId": "",
-        "MicrosoftAppPassword": "NOTE: should be in keyvault or dotnet user-secrets"
-    }
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+  }
 }

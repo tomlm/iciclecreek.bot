@@ -1,0 +1,45 @@
+﻿locale: en
+externalEntities: [ datetime]
+macros:
+entities:
+  - name: Greeting
+    patterns:
+    - hi
+    - hello
+    - howdy
+
+  - name: Goodbye
+    patterns:
+    - bye
+    - goodbye
+    - good bye
+    - see (you|ya)
+    - catch (you|ya) later
+        
+  - name: WhereQuery
+    patterns:
+      - where (will|is|are) (my)? (personRef:___|and)+ (going|planning|be|to|working)* (@dates)*
+  
+  - name: WhoQuery
+    patterns:
+      - who (___)* (at|to|in|the|from|be)+ (Place:___)* (@dates)? 
+
+  - name : '@SetPlan'
+    patterns:
+      - '@PlanPhrases (___)* (at|to|in|the|from)+ (Place:___)* (@dates)'
+      - '@dates @PlanPhrases (___)* (at|to|in|the|from)+ (Place:___)*'
+
+  - name: '@PlanPhrases'
+    patterns:
+      - I plan
+      - I am planning
+      - I am thinking
+      - My plan
+      - My schedule
+      - I'll be 
+      - I will be
+
+  - name: '@dates'
+    patterns:
+      - (on)? (@datetime)+ (@datetime|and|or)*
+
