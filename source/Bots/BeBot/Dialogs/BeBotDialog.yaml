@@ -1,6 +1,16 @@
-﻿locale: en
+﻿# match on any token with ___, you can name a wildcard slot by using (entityName:___)
+# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound entity result.
+locale: en
 externalEntities: [ datetime]
 macros:
+  $placeRef: (be|at|in|the|from)+ (Place:___)*
 entities:
   - name: Greeting
     patterns:
@@ -18,28 +28,42 @@ entities:
         
   - name: WhereQuery
     patterns:
-      - where (will|is|are) (my)? (personRef:___|and)+ (going|planning|be|to|working)* (@dates)*
+      - "@WherePhrase (my)? (Person:___|and)+ (at|be|to|working)* (@dates)*"
+      - "@WherePhrase (my)? (Person:___|and)+ (at|be|to|working)* on (@dates)+"
   
   - name: WhoQuery
     patterns:
-      - who (___)* (at|to|in|the|from|be)+ (Place:___)* (@dates)? 
+      - "@WhoPhrase (___)* $placeRef (on)? (@dates)?"
 
   - name : '@SetPlan'
     patterns:
-      - '@PlanPhrases (___)* (at|to|in|the|from)+ (Place:___)* (@dates)'
-      - '@dates @PlanPhrases (___)* (at|to|in|the|from)+ (Place:___)*'
+      - "@PlanPhrase (___)* $placeRef (in|on)? (@dates)*"
+      - "@dates @PlanPhrase (___)* $placeRef"
 
-  - name: '@PlanPhrases'
+  - name: '@PlanPhrase'
     patterns:
+      - I will
       - I plan
-      - I am planning
-      - I am thinking
-      - My plan
-      - My schedule
-      - I'll be 
-      - I will be
+      - My plan 
+      - My schedule 
+      - I'll 
+      - (I'm|I am) 
+      - (I'm|I am) 
+
+  - name: '@WherePhrase'
+    patterns:
+      - where will 
+      - where is 
+      - where are
+
+  - name: "@WhoPhrase"
+    patterns:
+      - who
+      - who is 
+      - who will
+      - who'll
 
   - name: '@dates'
     patterns:
-      - (on)? (@datetime)+ (@datetime|and|or)*
-
+      - "@datetime ((and|or|also)* (@datetime)+)*"
+      

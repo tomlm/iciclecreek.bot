@@ -4,10 +4,8 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Rest.Serialization;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +23,6 @@ namespace BeBot.Triggers
             this._adapter = adapter ?? throw new ArgumentNullException(nameof(adapter)); ;
             this._bot = bot ?? throw new ArgumentNullException(nameof(bot));
         }
-
         [FunctionName("ActivitiesQueueTrigger")]
         public async Task Run([QueueTrigger("activities", Connection = "AzureWebJobsStorage")] string activityJson, ILogger log)
         {

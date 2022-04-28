@@ -1,13 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
-    <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
-    <UserSecretsId>baa7c826-7d5e-4efa-89b7-b4a538779e0b</UserSecretsId>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.1-preview" />
-    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.16.2" />
     <PackageReference Include="Lucene.Net.Store.Azure" Version="4.8.0-beta015" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.24" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.2" />
@@ -20,25 +16,12 @@
     <PackageReference Include="YamlConvert" Version="2.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="local.settings.json">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <None Include="wwwroot/**/*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dialogs\BeBotDialog.yaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="local.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 </Project>

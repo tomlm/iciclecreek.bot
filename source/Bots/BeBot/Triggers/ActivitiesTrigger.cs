@@ -11,6 +11,9 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 // using Microsoft.Bot.Builder.Dialogs.Adaptive.Runtime.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Lucene.Net.Search;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace BeBot.Triggers
 {
