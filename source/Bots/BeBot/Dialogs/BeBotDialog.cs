@@ -13,11 +13,11 @@ using YamlConverter;
 
 namespace BeBot.Dialogs
 {
-    public class RootDialog : IcyDialog
+    public class BeBotDialog : IcyDialog
     {
-        public RootDialog()
+        public BeBotDialog()
         {
-            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"BeBot.Dialogs.RootDialog.yaml")).ReadToEnd();
+            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(BeBotDialog).FullName}.yaml")).ReadToEnd();
             this.Recognizer = new LucyRecognizer()
             {
                 Intents = new List<string>() { "Greeting", "Goodbye", "WhereQuery", "WhoQuery", "SetPlan" },

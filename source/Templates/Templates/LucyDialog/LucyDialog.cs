@@ -11,13 +11,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using YamlConverter;
 
-namespace Dialogs
+namespace LucyBot.Dialogs
 {
     public class LucyDialog : IcyDialog
     {
         public LucyDialog()
         {
-            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"LucyBot.Dialogs.RootDialog.yaml")).ReadToEnd();
+            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(LucyDialog).FullName}.yaml")).ReadToEnd();
             this.Recognizer = new LucyRecognizer()
             {
                 Intents = new List<string>() { "Greeting", "Goodbye" },

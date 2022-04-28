@@ -27,9 +27,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Dialogs\RootDialog.yaml" />
+    <EmbeddedResource Include="Dialogs\BeBotDialog.yaml" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

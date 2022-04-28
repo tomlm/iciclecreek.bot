@@ -24,7 +24,7 @@ namespace BeBot
                 .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(BeBot).ToLower()))
                 .AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>()
                 .AddSingleton<IBotFrameworkHttpAdapter, FunctionAdapter>()
-                .AddSingleton<Dialog, RootDialog>()
+                .AddSingleton<Dialog, BeBotDialog>()
                 .AddBot();
         }
     }

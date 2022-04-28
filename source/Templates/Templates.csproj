@@ -6,7 +6,7 @@
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
     <PackageType>Template</PackageType>
-    <PackageVersion>2.0.1</PackageVersion>
+    <PackageVersion>2.0.2</PackageVersion>
     <PackageId>Iciclecreek.Bot.Templates</PackageId>
     <PackageIconUrl>https://raw.githubusercontent.com/tomlm/iciclecreek.bot/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>

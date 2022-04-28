@@ -17,7 +17,7 @@ namespace ConsoleBot.Dialogs
     {
         public RootDialog()
         {
-            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"ConsoleBot.Dialogs.RootDialog.yaml")).ReadToEnd();
+            var yaml = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(RootDialog).FullName}.yaml")).ReadToEnd();
             this.Recognizer = new LucyRecognizer()
             {
                 Intents = new List<string>() { "Greeting", "Goodbye"},
