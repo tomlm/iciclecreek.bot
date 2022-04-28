@@ -8,9 +8,8 @@
 #   '~' ==> use fuzzy matching for the tokens in the group.
 # Entities can be placed into a pattern with '@', creating a compound entity result.
 locale: en
-externalEntities: [ datetime]
 macros:
-  $placeRef: (be|at|in|the|from)+ (Place:___)*
+  $placeRef: (be|working|sitting|at|in|the|from)+ (Place:___)*
 entities:
   - name: Greeting
     patterns:
@@ -24,20 +23,19 @@ entities:
     - goodbye
     - good bye
     - see (you|ya)
-    - catch (you|ya) later
+    - catch (you|ya) later 
         
   - name: WhereQuery
     patterns:
       - "@WherePhrase (my)? (Person:___|and)+ (at|be|to|working)* (@dates)*"
-      - "@WherePhrase (my)? (Person:___|and)+ (at|be|to|working)* on (@dates)+"
   
   - name: WhoQuery
     patterns:
-      - "@WhoPhrase (___)* $placeRef (on)? (@dates)?"
+      - "@WhoPhrase (___)* $placeRef (@dates)?"
 
   - name : '@SetPlan'
     patterns:
-      - "@PlanPhrase (___)* $placeRef (in|on)? (@dates)*"
+      - "@PlanPhrase (___)* $placeRef (@dates)*"
       - "@dates @PlanPhrase (___)* $placeRef"
 
   - name: '@PlanPhrase'
@@ -65,5 +63,6 @@ entities:
 
   - name: '@dates'
     patterns:
-      - "@datetime ((and|or|also)* (@datetime)+)*"
+      - "(on)? @datetime ((and|or|also)* (@datetime)+)*"
+      - "@datetimeV2.set ((and|or|also)* (@datetimeV2.set)+)*"
       

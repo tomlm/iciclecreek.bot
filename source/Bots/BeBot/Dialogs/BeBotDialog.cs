@@ -116,7 +116,7 @@ namespace BeBot.Dialogs
         {
             dates = new HashSet<string>();
             timexes = new HashSet<string>();
-            foreach (var date in entities.SelectTokens("$..datetime"))
+            foreach (var date in entities.SelectTokens("$..dates"))
             {
                 foreach (var value in date.SelectTokens("$..value"))
                 {
