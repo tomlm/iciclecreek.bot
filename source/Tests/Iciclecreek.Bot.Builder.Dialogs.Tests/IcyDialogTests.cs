@@ -42,14 +42,36 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
                 .AddSingleton<IStorage>(new MemoryStorage())
                 .AddDialog<TestDialog>()
                 .AddDialog<FooDialog>()
-                .AddBot()
+                .AddIcyBot()
                 .BuildServiceProvider();
 
             await TestBot(sp);
         }
 
+        [Fact]
+        public async Task TestCallDialog()
+        {
+            var sp = new ServiceCollection()
+                .AddSingleton<IStorage>(new MemoryStorage())
+                .AddDialog<PromptTest>()
+                .AddPrompts()
+                .AddIcyBot()
+                .BuildServiceProvider();
 
-        private static async Task TestBot(ServiceProvider sp) => await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
+            await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
+                .Send("hi")
+                    .AssertReply("Hi!")
+                    .AssertReply("What is your name?")
+                .Send("Tom")
+                    .AssertReply("Nice to meet you Tom!")
+                .Send("what is my name")
+                    .AssertReply("Your name is Tom.")
+                .StartTestAsync();
+        }
+
+
+        private static async Task TestBot(ServiceProvider sp) =>
+            await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
                         // ---- TestDialog Active
                         .Send("hi")
                             // TestDialog intent

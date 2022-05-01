@@ -9,7 +9,7 @@
 # Entities can be placed into a pattern with '@', creating a compound entity result.
 locale: en
 macros:
-  $placeRef: (be|working|sitting|at|in|the|from)+ (Place:___)*
+  $placeRef: (be|sitting|at|in|the|from)+ (Place:___)*
 entities:
   - name: Greeting
     patterns:

@@ -47,7 +47,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             _dialogStateManagerConfiguration = new DialogStateManagerConfiguration();
 
             var services = new ServiceCollection()
-                .AddBot()
+                .AddIcyBot()
                 .BuildServiceProvider();
 
             if (pathResolvers == null || !pathResolvers.Any())

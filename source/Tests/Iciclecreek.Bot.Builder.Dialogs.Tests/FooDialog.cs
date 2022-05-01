@@ -31,9 +31,8 @@ entities:
             };
         }
 
-        public async override Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
+        protected async override Task<DialogTurnResult> OnBeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
         {
-            dc.SaveOptions(options);
             await dc.SendActivityAsync($"Foo {options}");
             return await dc.WaitForInputAsync();
         }

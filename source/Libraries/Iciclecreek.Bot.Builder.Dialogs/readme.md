@@ -1,41 +1,68 @@
 
 # Overview
-This library provides two base clases
+This library provides two classes
 * **IcyBot** - An IBot implementation for code first bots without adaptive infrastructure dependencies.
-* **IcyDialog** - A base dialog which simplifies the creation of code based recognizer based dialogs 
+* **IcyDialog** - A dialog which simplifies the creation of code based recognizer based dialogs 
 
 ## IBot
 The library provides a default IBot implementation that uses dependency injection to get the dialogs.
 The root dialog is the first Dialog registered in DI.
 
-There is a service extension **AddBot()** which registers the bot and ensures that state/memory scopes are registered.
+There is a service extension **AddIcyBot()** which registers the bot and ensures that state/memory scopes are registered.
+
+The **AddPrompts()** DI method injects prompts as dialog classes (the Bot Framework dialog requires you to pass in id, instead of class name.) 
  
 ```C#
 var sp = new ServiceCollection()
     .AddSingleton<IStorage,MemoryStorage>() // or whatever storage you want.
     .AddDialog<TestDialog>()
     .AddDialog<FooDialog>()
-    .AddBot()
+    .AddPrompts()
+    .AddIcyBot()
     .BuildServiceProvider();
 ```
 
-> NOTE: This bot is not set up to handle skills, lg, etc.  If you want all of that stuff you should use an the Adaptive.Runtime
-> This bot is a suitable for simple bots that don't need multi-language declarative support, etc.
+> NOTE 1: This bot is not set up to handle skills, lg, etc.  If you want all of that stuff you
+> should use an the Adaptive.Runtime
+
+> NOTE 2: IcyDialog runs fine in any IBot implementation, you do not need to use IcyBot.
 
 ## IcyDialog
 IcyDialog encapsulates a number of patterns together to make a great base class for creating code-first dialogs.
 
-1. hides **BeginDialog/ContinueDialog** and models the dialog simply as **OnTurnAsync()**
-    - dialog Options are autoamtically captured via dc.SaveOptions() and available via dc.GetOptions() on any turn.
-2. The default **OnTurnAsync()** implementation will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
+### Dialog methods
+* **OnBeginDialogAsync()** -  called when dialog is started.
+* **OnEvaluateAsync()** - called when no dialog action is taken (including WaitForInput(). This gives you a place to inspect your state
+and decide to prompt the user for information, regardless of how the state was changed.
+* **OnPromptCompletedAsync()**/**OnPromptCanceledAsync** - called when a child dialog completes with a result/canceled.
+
+There is a new helper method **PromptAsync<DialogT>(property, options)**
+
+This method is a enhancement over calling BeginDialog, because it models a dialogs purpose to gather information for a 
+property in memory.The problem with BeginDialog is you have to track what dialog was invoked when you get a resume dialog to continue execution.
+
+The **OnPromptCompletedAsync()** method is passed the property name and the default behavior for **OnPromptCompletedAsync()** is to set the property
+name to the value that is returned.  This gives you nice a clean behavior
+* you know what dialog (the one for the property) is completing
+* you get out of the box default behavior which is saves the result in the property you pass.
+* you have a natural place to acknowledge the value you just received.
+
+```C#
+    // when this prompt completes the the property "this.name" = result from the child dialog
+    await PromptAsync<TextPrompt>("this.name", new PromptOptions(){ ... });
+```
+**OnEvaluateAsync()** can then be used to decide what the next prompt is needed for the user.
+
+### Activity methods
+* **OnTurnAsync()** - The default **OnTurnAsync()** implementation will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
     - **OnMessageActivityAsync(dc)**
     - **OnEndOfConversationAsync(dc)**
     - **OnMessageReactionActivityAsync(dc)**
     - **OnAdaptiveCardInvoke(dc)** 
     - etc.
      
-3. The default **OnMessageActivity()** implementation will invoke the Recognizer and route the activity using **OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync()** methods
-4. The default **OnRecognizedIntentAsync()** implementation will resolve methods to intent handlers using the following naming pattern:
+* The default **OnMessageActivity()** implementation invokes the Recognizer and routes the activity using **OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync()** methods
+* The default **OnRecognizedIntentAsync()** implementation will resolve methods to intent handlers using the following naming pattern:
 
 ```C#
 protected Task<DialogTurnResult> OnXXXIntent(DialogContext dc, IMessageActivity messageActivity, TopScore topSCore, CancellationToken ct);
@@ -48,49 +75,119 @@ Examples:
 
 Sample dialog:
 ```C#
-    public class TestDialog : IcyDialog
+    internal class PromptTest : IcyDialog
     {
-        public TestDialog()
+        public PromptTest()
         {
-            // create a recognizer
             this.Recognizer = new LucyRecognizer()
             {
-                Intents = new string[] { "Greeting", "HighFive", "Goodbye", "Foo" },
-                Model = YamlConvert.DeserializeObject<LucyDocument>(...)
+                Intents = new List<string>() { "Greeting", "QueryName" },
+                Model = YamlConvert.DeserializeObject<LucyDocument>(
+@"
+entities:
+  - name: Greeting
+    patterns:
+      - hi
+
+  - name: QueryName
+    patterns:
+      - what is my name
+")
             };
         }
 
-        protected async Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+
+
+        protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync("Hello");
+            await dc.SendActivityAsync($"Hi!");
+            return null;
+        }
+
+        protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        {
+            var name = ObjectPath.GetPathValue<String>(dc.State, "this.name");
+            if (name == null)
+            {
+                await dc.SendActivityAsync($"I don't know your name.");
+            }
+            else
+            {
+                await dc.SendActivityAsync($"Your name is {name}.");
+            }
+            return null;
+        }
+
+        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
+        {
+            // if we are missing this.name, prompt for it.
+            ObjectPath.TryGetPathValue<String>(dc.State, "this.name", out var name);
+            if (String.IsNullOrEmpty(name))
+            {
+                return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReply("What is your name?") });
+            }
+
+            // if we are missing... prompt for it.
+            // ...
+
+            // if we are all done, let's end the dialog...
+            // return dc.EndDialogAsync(this);
+
             return await dc.WaitForInputAsync();
         }
 
-        protected async Task<DialogTurnResult> OnHighFiveIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        // hook this to use the name we got from the prompt in a greeting back to the user.
+        protected override async Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
         {
-            await dc.SendActivityAsync("Slap!");
-            return await dc.WaitForInputAsync();
-        }
-
-        protected async Task<DialogTurnResult> OnFooIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
-        {
-            return await dc.BeginDialog<FooDialog>(1, cancellationToken: cancellationToken);
-        }
-
-        protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
-        {
-            await dc.SendActivityAsync("Goodbye");
-            return await dc.EndDialogAsync();
+            switch (property)
+            {
+                case "this.name":
+                    await dc.SendActivityAsync($"Nice to meet you {result}!");
+                    break;
+            }
+            return await base.OnPromptCompletedAsync(dc, property, result, cancellationToken); ;
         }
 
         protected override async Task<DialogTurnResult> OnEndOfConversationActivityAsync(DialogContext dc, IEndOfConversationActivity endOfConversationActivity, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync("EndOfConversation");
             return await dc.CancelAllDialogsAsync();
         }
-
     }
 }
+```
+
+## Cascading call pattern
+IcyDialog splits processes input in cascading calls which will end at the point that a dailog action (BeginDailog/EndDialog/CancelDialog/WaitForInput).
+
+The method pattern processing looks like this:
+
+```
+BeginDialog()
+    => OnBeginDialog()
+        => OnTurnAsync()
+            => OnMessageActivity()
+                => OnRecognizedIntent()
+                    => OnXXXIntent()
+                        =>OnEvaluateAsync()
+                => OnUnrecognizedIntent()
+                    => OnEvaluateAsync()
+            => OnTypingActivity()
+                => OnEvaluateAsync()
+ContinueDialog()
+    => OnTurnAsync()
+        => OnMessageActivity()
+            => OnRecognizedIntent()
+                => OnXXXIntent()
+                    =>OnEvaluateAsync()
+            => OnUnrecognizedIntent()
+                => OnEvaluateAsync()
+        => OnTypingActivity()
+            => OnEvaluateAsync()
+ResumeDialog()
+    => OnPromptCompletedAsync()
+        => OnEvaluateAsync()
+    => OnPromptCanceledAsync()
+        => OnEvaluteAsync()
 ```
 
 ## Extension Helpers

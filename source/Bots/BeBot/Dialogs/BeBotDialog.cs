@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json.Linq;
 using System;
@@ -55,11 +56,11 @@ namespace BeBot.Dialogs
         {
             var entities = StripInstance(recognizerResult);
             var place = entities.SelectToken("$..Place")?.FirstOrDefault()?.ToString() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates, out var timexes);
+            ExtractDateEntities(entities, out var dates);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhoQuery");
             sb.AppendLine($"Place: {place}");
-            sb.AppendLine(VisualizeDates(dates, timexes));
+            sb.AppendLine(VisualizeDates(dates));
             await ReplyText(dc, sb.ToString());
             return await dc.WaitForInputAsync();
         }
@@ -68,11 +69,11 @@ namespace BeBot.Dialogs
         {
             var entities = StripInstance(recognizerResult);
             var person = entities.SelectToken("$..Person")?.Select(s => s.ToString()).First() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates, out var timexes);
+            ExtractDateEntities(entities, out var dates);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhereQuery");
             sb.AppendLine($"Person: {person}");
-            sb.AppendLine(VisualizeDates(dates, timexes));
+            sb.AppendLine(VisualizeDates(dates));
             await ReplyText(dc, sb.ToString());
             return await dc.WaitForInputAsync();
         }
@@ -81,29 +82,22 @@ namespace BeBot.Dialogs
         {
             var entities = StripInstance(recognizerResult);
             var place = entities.SelectToken("$..Place")?.FirstOrDefault()?.ToString() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates, out var timexes);
+            ExtractDateEntities(entities, out var dates);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## SetPlan");
             sb.AppendLine($"Place: {place}");
-            sb.AppendLine(VisualizeDates(dates, timexes));
+            sb.AppendLine(VisualizeDates(dates));
             await ReplyText(dc, sb.ToString());
             return await dc.WaitForInputAsync();
         }
 
-        private static string VisualizeDates(HashSet<string> dates, HashSet<string> timexes)
+        private static string VisualizeDates(HashSet<DateTimexValue> dates)
         {
             StringBuilder sb = new StringBuilder();
-            if (dates.Any())
-            {
-                sb.AppendLine("Dates:");
-                sb.AppendLine($"* { string.Join("\n* ", dates)}");
-            }
-            sb.AppendLine("Timex:");
-            if (timexes.Any())
-            {
-                sb.AppendLine($"* {string.Join("\n* ", timexes)}");
-            }
-
+            sb.AppendLine("Dates:");
+            sb.AppendLine("```");
+            sb.AppendLine(YamlConvert.SerializeObject(dates));
+            sb.AppendLine("```");
             return sb.ToString();
         }
 
@@ -112,50 +106,19 @@ namespace BeBot.Dialogs
             return (JObject)recognizerResult.Entities.RemoveFields("$instance");
         }
 
-        private static void ExtractDateEntities(JObject entities, out HashSet<string> dates, out HashSet<string> timexes)
+        private static void ExtractDateEntities(JObject entities, out HashSet<DateTimexValue> dates)
         {
-            dates = new HashSet<string>();
-            timexes = new HashSet<string>();
+            dates = new HashSet<DateTimexValue>(new DateTimeValueComparer());
             foreach (var date in entities.SelectTokens("$..dates"))
             {
-                foreach (var value in date.SelectTokens("$..value"))
+                foreach (var valueArray in date.SelectTokens("$..values").Cast<JArray>())
                 {
-                    if (DateTime.TryParse(value.ToString(), out var dt) && dt > DateTime.Now)
+                    foreach (var dateTimeValue in valueArray.Select(j => j.ToObject<DateTimexValue>()))
                     {
-                        dates.Add(value.ToString());
-                    }
-                    else
-                    {
-                    }
-                }
-                foreach (var value in date.SelectTokens("$..timex").Select(jt => jt.ToString()))
-                {
-                    switch (value)
-                    {
-                        case "XXXX-WXX-1":
-                            timexes.Add("Monday");
-                            break;
-                        case "XXXX-WXX-2":
-                            timexes.Add("Tuesday");
-                            break;
-                        case "XXXX-WXX-3":
-                            timexes.Add("Wednesday");
-                            break;
-                        case "XXXX-WXX-4":
-                            timexes.Add("Thursday");
-                            break;
-                        case "XXXX-WXX-5":
-                            timexes.Add("Friday");
-                            break;
-                        case "XXXX-WXX-6":
-                            timexes.Add("Saturday");
-                            break;
-                        case "XXXX-WXX-7":
-                            timexes.Add("Sunday");
-                            break;
-                        default:
-                            timexes.Add(value.ToString());
-                            break;
+                        if (dateTimeValue.Date == null || dateTimeValue.Date >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))
+                        {
+                            dates.Add(dateTimeValue);
+                        }
                     }
                 }
             }
@@ -168,6 +131,5 @@ namespace BeBot.Dialogs
             activity.Value = data;
             return dc.SendActivityAsync(activity);
         }
-
     }
 }

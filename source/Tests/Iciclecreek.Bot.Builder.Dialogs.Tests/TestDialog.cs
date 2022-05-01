@@ -52,7 +52,7 @@ entities:
 
         protected async Task<DialogTurnResult> OnFooIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            return await dc.BeginDialog<FooDialog>(1, cancellationToken: cancellationToken);
+            return await dc.BeginDialogAsync<FooDialog>(1, cancellationToken: cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)

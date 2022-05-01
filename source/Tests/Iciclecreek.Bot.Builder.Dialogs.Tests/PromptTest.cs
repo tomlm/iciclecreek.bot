@@ -1,0 +1,89 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Lucy;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Schema;
+using YamlConverter;
+
+namespace Iciclecreek.Bot.Builder.Dialogs.Tests
+{
+    internal class PromptTest : IcyDialog
+    {
+        public PromptTest()
+        {
+            this.Recognizer = new LucyRecognizer()
+            {
+                Intents = new List<string>() { "Greeting", "QueryName" },
+                Model = YamlConvert.DeserializeObject<LucyDocument>(
+@"
+entities:
+  - name: Greeting
+    patterns:
+      - hi
+
+  - name: QueryName
+    patterns:
+      - what is my name
+")
+            };
+        }
+
+
+
+        protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        {
+            await dc.SendActivityAsync($"Hi!");
+            return null;
+        }
+
+        protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        {
+            var name = ObjectPath.GetPathValue<String>(dc.State, "this.name");
+            if (name == null)
+            {
+                await dc.SendActivityAsync($"I don't know your name.");
+            }
+            else
+            {
+                await dc.SendActivityAsync($"Your name is {name}.");
+            }
+            return null;
+        }
+
+        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
+        {
+            // if we are missing this.name, prompt for it.
+            ObjectPath.TryGetPathValue<String>(dc.State, "this.name", out var name);
+            if (String.IsNullOrEmpty(name))
+            {
+                return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReply("What is your name?") });
+            }
+
+            // if we are missing... prompt for it.
+            // ...
+
+            // if we are all done, let's end the dialog...
+            // return dc.EndDialogAsync(this);
+
+            return await dc.WaitForInputAsync();
+        }
+
+        // hook this to use the name we got from the prompt in a greeting back to the user.
+        protected override async Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
+        {
+            switch (property)
+            {
+                case "this.name":
+                    await dc.SendActivityAsync($"Nice to meet you {result}!");
+                    break;
+            }
+            return await base.OnPromptCompletedAsync(dc, property, result, cancellationToken); ;
+        }
+    }
+}

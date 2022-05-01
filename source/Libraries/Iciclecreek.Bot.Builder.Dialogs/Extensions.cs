@@ -21,12 +21,32 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// You still need to register IStorage, Dialogs
         /// </remarks>
         /// <param name="services"></param>
-        public static IServiceCollection AddBot(this IServiceCollection services)
+        public static IServiceCollection AddIcyBot(this IServiceCollection services)
         {
             services.TryAddSingleton<UserState>();
             services.TryAddSingleton<ConversationState>();
             new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
+            services.AddPrompts();
             services.TryAddSingleton<IBot, IcyBot>();
+            return services;
+        }
+
+        /// <summary>
+        /// Add default prompts (Attachment, choice, DateTime, Number, Text) so you can invoke them by type instead of id
+        /// </summary>
+        /// <remarks>
+        /// dc.BeginDialog&lt;TextPrompt&gr;(new PrompOptions() {...} );
+        /// </remarks>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddPrompts(this IServiceCollection services)
+        {
+            services.TryAddDialog<IcyAttachmentPrompt>();
+            services.TryAddDialog<IcyChoicePrompt>();
+            services.TryAddDialog<IcyDateTimePrompt>();
+            services.TryAddDialog<IcyNumberPrompt<int>>();
+            services.TryAddDialog<IcyNumberPrompt<float>>();
+            services.TryAddDialog<IcyTextPrompt>();
             return services;
         }
 
@@ -60,6 +80,46 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             services.AddSingleton<Dialog, DialogT>();
             return services;
         }
+
+        /// <summary>
+        /// Add dialog to dependency injection
+        /// </summary>
+        /// <typeparam name="DialogT"></typeparam>
+        /// <param name="services"></param>a
+        /// <returns></returns>
+        public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services)
+            where DialogT : Dialog
+        {
+            services.AddSingleton<Dialog, DialogT>();
+            return services;
+        }
+
+        /// <summary>
+        /// Add dialog to dependency injection
+        /// </summary>
+        /// <typeparam name="DialogT"></typeparam>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
+            where DialogT : Dialog
+        {
+            services.AddSingleton<Dialog, DialogT>(implementationFactory);
+            return services;
+        }
+
+        /// <summary>
+        /// Add dialog to dependency injection
+        /// </summary>
+        /// <typeparam name="DialogT"></typeparam>
+        /// <param name="services"></param>a
+        /// <returns></returns>
+        public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
+            where DialogT : Dialog
+        {
+            services.AddSingleton<Dialog, DialogT>(implementationFactory);
+            return services;
+        }
+
 
         /// <summary>
         /// Get saved options
@@ -96,6 +156,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             return Task.FromResult(waiting);
         }
 
+
+        public static Activity CreateReply(this DialogContext dc, string text)
+        {
+            return dc.Context.Activity.CreateReply(text);
+        }
+
         /// <summary>
         /// Helper to send activity from dc directly
         /// </summary>
@@ -116,10 +182,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static Task<DialogTurnResult> BeginDialog<T>(this DialogContext dc, object options, CancellationToken cancellationToken = default)
+        public static Task<DialogTurnResult> BeginDialogAsync<T>(this DialogContext dc, object options, CancellationToken cancellationToken = default)
         {
             return dc.BeginDialogAsync(typeof(T).Name, options, cancellationToken);
         }
+
 
         /// <summary>
         /// Helper to add a DialogT
