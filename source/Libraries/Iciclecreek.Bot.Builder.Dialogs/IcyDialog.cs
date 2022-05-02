@@ -60,31 +60,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
         {
             dc.SaveOptions(options);
-            var dtr = await OnBeginDialogAsync(dc, options, cancellationToken);
-            if (dtr != null)
-            {
-                return dtr;
-            }
-
-            return await OnTurnAsync(dc, options, cancellationToken: cancellationToken);
+            return await OnBeginDialogAsync(dc, options, cancellationToken);
         }
 
         public override async Task<DialogTurnResult> ContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
         {
             var options = dc.GetOptions<object>();
-            return await OnTurnAsync(dc, options, cancellationToken: cancellationToken);
+            return await OnContinueDialogAsync(dc, options, cancellationToken);
         }
 
         public async override Task<DialogTurnResult> ResumeDialogAsync(DialogContext dc, DialogReason reason, object result = null, CancellationToken cancellationToken = default)
         {
-            DialogTurnResult dtr = await OnResumeDialogAsync(dc, reason, result, cancellationToken);
-
-            if (dtr == null)
-            {
-                dtr = await this.OnEvaluateAsync(dc, cancellationToken);
-            }
-
-            return dtr ?? await dc.WaitForInputAsync();
+            return await OnResumeDialogAsync(dc, reason, result, cancellationToken);
         }
         #endregion
 
@@ -93,32 +80,52 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// OnBeginDialogAsync() - Called when dialog is invoked
         /// </summary>
         /// <remarks>
-        /// Default behavior is to do nothing and continue execution
+        /// Default behavior is to call OnTurnAsync()
         ///
         /// Override this method to send an activity when dialog begins regardless of the activity that triggered it.
         /// </remarks>
         /// <param name="dc">dc</param>
         /// <param name="options">options</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnBeginDialogAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
         {
-            return null;
+            return await this.OnTurnAsync(dc, options, cancellationToken);
+        }
+
+        /// <summary>
+        /// OnContinueDialog() - Called when dialog is invoked
+        /// </summary>
+        /// <remarks>
+        /// Default behavior is to call OnTurnAsync() to process into
+        ///
+        /// Override this method to send an activity when dialog begins regardless of the activity that triggered it.
+        /// </remarks>
+        /// <param name="dc">dc</param>
+        /// <param name="options">options</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
+        protected async virtual Task<DialogTurnResult> OnContinueDialogAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
+        {
+            return await this.OnTurnAsync(dc, options, cancellationToken);
         }
 
         /// <summary>
         /// OnResumeDialogAsync() - called when child dialog is completed and this dialog is resumed
         /// </summary>
+        /// <remarks>
+        /// Default behavior is to call OnPromptCompletedAsync/OnPromptCanceledAsync, or OnEvaluateAsync()
+        /// </remarks>
         /// <param name="dc">dialog context</param>
         /// <param name="reason">reason </param>
         /// <param name="result">result </param>
         /// <param name="cancellationToken">cancellationToken </param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual async Task<DialogTurnResult> OnResumeDialogAsync(DialogContext dc, DialogReason reason, object result, CancellationToken cancellationToken)
         {
-            if (ObjectPath.TryGetPathValue<string>(dc.State, PROPERTY_KEY, out var property))
+            if (dc.State.TryGetValue<string>(PROPERTY_KEY, out var property))
             {
-                ObjectPath.RemovePathValue(dc.State, PROPERTY_KEY);
+                dc.State.RemoveValue(PROPERTY_KEY);
                 if (reason == DialogReason.EndCalled)
                 {
                     return await this.OnPromptCompletedAsync(dc, property, result, cancellationToken);
@@ -129,14 +136,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                 }
             }
 
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         /// <summary>
         /// OnPromptCompletedAsync() - Called when a child dialog completes 
         /// </summary>
         /// <remarks>
-        /// Default behavior is to use to store the result in the property name and to continue execution
+        /// Default behavior is to use to store the result in the property name and call OnEvaluateAsync()
         ///
         /// You can override this to acknolwedge the value that came back
         /// 
@@ -148,26 +155,26 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="property">resultName</param>
         /// <param name="result">result</param>
         /// <param name="cancellationToken"></param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
         {
             if (property.Contains('.'))
             {
-                ObjectPath.SetPathValue(dc.State, property, result);
+                dc.State.SetValue(property, result);
             }
             else
             {
-                ObjectPath.SetPathValue(dc.State, $"turn.{property}", result);
+                dc.State.SetValue($"turn.{property}", result);
             }
 
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         /// <summary>
         /// OnPromptCanceledAsync() - Called when a child Dialog is canceled
         /// </summary>
         /// <remarks>
-        /// default behavior is to do nothing and continue execution.
+        /// default behavior is to call OnEvaluateAsync()
         ///
         /// Override this method to handle cancellation of a given property dialog.
         /// </remarks>
@@ -177,7 +184,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         protected async virtual Task<DialogTurnResult> OnPromptCanceledAsync(DialogContext dc, string property, CancellationToken cancellationToken = default)
         {
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         /// <summary>
@@ -190,22 +197,19 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </remarks>
         /// <param name="dc">dialogcontext</param>
         /// <param name="ct">ct</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
         {
-            return null;
+            return await dc.WaitForInputAsync();
         }
 
         /// <summary>
         /// OnTurnAsync() - Default OnTurn handler for dialog maps activities to strongly typed methods, OnMessageActivityAsync(), OnTypingActivityAsync() etc.
         /// </summary>
         /// <remarks>
-        /// Default behavior is to the following 
-        /// OnTurnAsync()
-        ///     call activity handler =>
-        ///         if NULL => OnEvaluateAsync()
-        ///
-        ///  override this to add new activity types.
+        /// Default behavior is to use Activity.Type to call On{Type}ActivityAsync()
+        /// 
+        /// override this to add new activity types.
         /// </remarks>
         /// <param name="dc">dc</param>
         /// <param name="options">options used to create dialog</param>
@@ -213,60 +217,41 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialog turn result task</returns>
         public virtual async Task<DialogTurnResult> OnTurnAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
         {
-            DialogTurnResult dtr;
             switch (dc.Context.Activity.Type)
             {
                 case ActivityTypes.Message:
-                    dtr = await OnMessageActivityAsync(dc, dc.Context.Activity.AsMessageActivity(), cancellationToken);
-                    break;
+                    return await OnMessageActivityAsync(dc, dc.Context.Activity.AsMessageActivity(), cancellationToken);
 
                 case ActivityTypes.ConversationUpdate:
-                    dtr = await OnConversationUpdateActivityAsync(dc, dc.Context.Activity.AsConversationUpdateActivity(), cancellationToken);
-                    break;
+                    return await OnConversationUpdateActivityAsync(dc, dc.Context.Activity.AsConversationUpdateActivity(), cancellationToken);
 
                 case ActivityTypes.MessageReaction:
-                    dtr = await OnMessageReactionActivityAsync(dc, dc.Context.Activity.AsMessageReactionActivity(), cancellationToken);
-                    break;
+                    return await OnMessageReactionActivityAsync(dc, dc.Context.Activity.AsMessageReactionActivity(), cancellationToken);
 
                 case ActivityTypes.Event:
-                    dtr = await OnEventActivityAsync(dc, dc.Context.Activity.AsEventActivity(), cancellationToken);
-                    break;
+                    return await OnEventActivityAsync(dc, dc.Context.Activity.AsEventActivity(), cancellationToken);
 
                 case ActivityTypes.Invoke:
-                    dtr = await OnInvokeActivityAsync(dc, dc.Context.Activity.AsInvokeActivity(), cancellationToken);
-                    break;
+                    return await OnInvokeActivityAsync(dc, dc.Context.Activity.AsInvokeActivity(), cancellationToken);
 
                 case ActivityTypes.EndOfConversation:
-                    dtr = await OnEndOfConversationActivityAsync(dc, dc.Context.Activity.AsEndOfConversationActivity(), cancellationToken);
-                    break;
+                    return await OnEndOfConversationActivityAsync(dc, dc.Context.Activity.AsEndOfConversationActivity(), cancellationToken);
 
                 case ActivityTypes.Typing:
-                    dtr = await OnTypingActivityAsync(dc, dc.Context.Activity.AsTypingActivity(), cancellationToken);
-                    break;
+                    return await OnTypingActivityAsync(dc, dc.Context.Activity.AsTypingActivity(), cancellationToken);
 
                 case ActivityTypes.InstallationUpdate:
-                    dtr = await OnInstallationUpdateActivityAsync(dc, dc.Context.Activity.AsInstallationUpdateActivity(), cancellationToken);
-                    break;
+                    return await OnInstallationUpdateActivityAsync(dc, dc.Context.Activity.AsInstallationUpdateActivity(), cancellationToken);
 
                 case ActivityTypes.Command:
-                    dtr = await OnCommandActivityAsync(dc, dc.Context.Activity.AsCommandActivity(), cancellationToken);
-                    break;
+                    return await OnCommandActivityAsync(dc, dc.Context.Activity.AsCommandActivity(), cancellationToken);
 
                 case ActivityTypes.CommandResult:
-                    dtr = await OnCommandResultActivityAsync(dc, dc.Context.Activity.AsCommandResultActivity(), cancellationToken);
-                    break;
+                    return await OnCommandResultActivityAsync(dc, dc.Context.Activity.AsCommandResultActivity(), cancellationToken);
 
                 default:
-                    dtr = await OnUnrecognizedActivityTypeAsync(dc, dc.Context.Activity, cancellationToken);
-                    break;
+                    return await OnUnrecognizedActivityTypeAsync(dc, dc.Context.Activity, cancellationToken);
             }
-
-            if (dtr == null)
-            {
-                dtr = await this.OnEvaluateAsync(dc, cancellationToken);
-            }
-
-            return dtr ?? await dc.WaitForInputAsync();
         }
         #endregion
 
@@ -276,19 +261,21 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <remarks>
         /// The default implementation runs Recognizer against the message text and
-        ///     OnRecognizedIntentAsync/OnUnrecognizedIntentAsync
-        ///         if NULL => OnEvaluateAsync()
-        /// override this to specilize the calling to the recognizer.
+        ///     OnRecognizedIntentAsync()
+        ///     OnUnrecognizedIntentAsync()
+        ///     
+        /// override this to change calling to the recognizer.
         /// </remarks>
         /// <param name="dc">Dialog Context</param>
         /// <param name="messageActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
-            if (!String.IsNullOrEmpty(messageActivity.Text) && this.Recognizer != null)
+            if (!String.IsNullOrEmpty(messageActivity.Text) && this.Recognizer != null && !dc.State.GetBoolValue(TurnPath.ActivityProcessed))
             {
+                dc.State.SetValue(TurnPath.ActivityProcessed, true);
                 var recognizerResult = await Recognizer.RecognizeAsync(dc, dc.Context.Activity, cancellationToken);
                 if (recognizerResult.Intents.Any())
                 {
@@ -309,13 +296,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         ///   "none" | unrecognized => OnUnrecognizedIntent(dc, activity, ct);
         /// if intent signature is not found, it will call OnUnrecognizedIntenatAsync()
         /// 
-        /// override OnRecognizedIntentAsync method to do you own intent mapping.
+        /// override OnRecognizedIntentAsync method to do your own intent mapping.
         /// </remarks>
         /// <param name="dc">dc</param>
         /// <param name="messageActivity">messageActivity</param>
         /// <param name="recognizerResult">The intent recognizer result</param>
         /// <param name="cancellationToken">ct</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnRecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             var intent = recognizerResult.Intents.First();
@@ -333,18 +320,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <remarks>
         /// The default implementation says "I"m sorry, I didn't understand that."
-        ///     and returns NULL to continue execution
+        ///     and calls OnEvaluateAsync()
         ///  override this to change the message/behavior and/or to call into other dialogs
         /// </remarks>
         /// <param name="dc">Dialog Context</param>
         /// <param name="messageActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
             await dc.Context.SendActivityAsync("I'm sorry, I didn't understand that.");
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         /// <summary>
@@ -359,7 +346,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dc">Dialog Context</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnConversationUpdateActivityAsync(DialogContext dc, IConversationUpdateActivity conversationUpdateActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -383,7 +370,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="messageReactionActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnMessageReactionActivityAsync(DialogContext dc, IMessageReactionActivity messageReactionActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -405,7 +392,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="eventActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnEventActivityAsync(DialogContext dc, IEventActivity eventActivity, CancellationToken cancellationToken)
         {
             if (eventActivity.Name == SignInConstants.TokenResponseEventName)
@@ -428,7 +415,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="eventActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnTokenResponseEventAsync(DialogContext dc, IEventActivity eventActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -448,7 +435,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="invokeActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual async Task<DialogTurnResult> OnInvokeActivityAsync(DialogContext dc, IInvokeActivity invokeActivity, CancellationToken cancellationToken)
         {
             InvokeResponse invokeResponse = null;
@@ -554,7 +541,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="endOfConversationActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnEndOfConversationActivityAsync(DialogContext dc, IEndOfConversationActivity endOfConversationActivity, CancellationToken cancellationToken)
         {
             return dc.CancelAllDialogsAsync();
@@ -571,7 +558,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="typingActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnTypingActivityAsync(DialogContext dc, ITypingActivity typingActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -588,7 +575,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="installationUpdateActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnInstallationUpdateActivityAsync(DialogContext dc, IInstallationUpdateActivity installationUpdateActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -609,7 +596,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="commandActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnCommandActivityAsync(DialogContext dc, ICommandActivity commandActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -628,7 +615,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="commandResultActivity">A strongly-typed context object for this turn.</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnCommandResultActivityAsync(DialogContext dc, ICommandResultActivity commandResultActivity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -643,7 +630,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dc">dialog context</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
-        /// <returns>null value if no dialog action taken, otherwise dialogturnresult to indicate dialog action that was taken</returns>
+        /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual Task<DialogTurnResult> OnUnrecognizedActivityTypeAsync(DialogContext dc, Activity activity, CancellationToken cancellationToken)
         {
             return dc.WaitForInputAsync();
@@ -677,7 +664,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dtr</returns>
         protected async Task<DialogTurnResult> PromptAsync(DialogContext dc, string dialogId, string property, object options, CancellationToken cancellationToken = default)
         {
-            ObjectPath.SetPathValue(dc.State, PROPERTY_KEY, property ?? dialogId);
+            dc.State.SetValue(PROPERTY_KEY, property ?? dialogId);
             return await dc.BeginDialogAsync(dialogId, options, cancellationToken);
         }
 

@@ -101,7 +101,7 @@ entities:
         protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             await dc.SendActivityAsync($"Hi!");
-            return null;
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
@@ -115,7 +115,7 @@ entities:
             {
                 await dc.SendActivityAsync($"Your name is {name}.");
             }
-            return null;
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
@@ -173,16 +173,19 @@ BeginDialog()
                     => OnEvaluateAsync()
             => OnTypingActivity()
                 => OnEvaluateAsync()
+            => ...
 ContinueDialog()
-    => OnTurnAsync()
-        => OnMessageActivity()
-            => OnRecognizedIntent()
-                => OnXXXIntent()
-                    =>OnEvaluateAsync()
-            => OnUnrecognizedIntent()
+    => OnContinueDialog()
+        => OnTurnAsync()
+            => OnMessageActivity()
+                => OnRecognizedIntent()
+                    => OnXXXIntent()
+                        =>OnEvaluateAsync()
+                => OnUnrecognizedIntent()
+                    => OnEvaluateAsync()
+            => OnTypingActivity()
                 => OnEvaluateAsync()
-        => OnTypingActivity()
-            => OnEvaluateAsync()
+            => ...
 ResumeDialog()
     => OnPromptCompletedAsync()
         => OnEvaluateAsync()

@@ -143,7 +143,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="options"></param>
         public static void SaveOptions(this DialogContext dc, object options)
         {
-            ObjectPath.SetPathValue(dc.State, "this.options", options);
+            dc.State.SetValue("this.options", options);
         }
 
         /// <summary>

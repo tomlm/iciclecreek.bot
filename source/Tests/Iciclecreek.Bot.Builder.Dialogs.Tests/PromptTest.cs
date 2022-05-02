@@ -39,12 +39,12 @@ entities:
         protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             await dc.SendActivityAsync($"Hi!");
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            var name = ObjectPath.GetPathValue<String>(dc.State, "this.name");
+            var name = dc.State.GetValue<string>("this.name");
             if (name == null)
             {
                 await dc.SendActivityAsync($"I don't know your name.");
@@ -53,13 +53,13 @@ entities:
             {
                 await dc.SendActivityAsync($"Your name is {name}.");
             }
-            return null;
+            return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
         {
             // if we are missing this.name, prompt for it.
-            ObjectPath.TryGetPathValue<String>(dc.State, "this.name", out var name);
+            dc.State.TryGetValue<string>("this.name", out var name);
             if (String.IsNullOrEmpty(name))
             {
                 return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReply("What is your name?") });
