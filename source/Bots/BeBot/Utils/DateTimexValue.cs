@@ -77,9 +77,9 @@ namespace BeBot.Dialogs
                 case "XXXX-WXX-7":
                     return "Sunday";
                 default:
-                    if (Date != null)
+                    if (DateTime.TryParse(timex, out var dt))
                     {
-
+                        return dt.DayOfWeek.ToString();
                     }
                     return null;
             }

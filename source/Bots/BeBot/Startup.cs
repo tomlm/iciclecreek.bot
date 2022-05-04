@@ -62,7 +62,7 @@ namespace BeBot
                             IndexReader indexReader = DirectoryReader.Open(azureDirectory);
                             return new IndexSearcher(indexReader);
                         }
-                        catch(IndexNotFoundException)
+                        catch (IndexNotFoundException)
                         {
                             using (var writer = new IndexWriter(sp.GetService<AzureDirectory>(), new IndexWriterConfig(LuceneVersion.LUCENE_48, new StandardAnalyzer(LuceneVersion.LUCENE_48))))
                             {
@@ -75,7 +75,8 @@ namespace BeBot
                         }
                     });
                 })
-                .AddBot();
+                .AddPrompts()
+                .AddIcyBot();
 
         }
     }

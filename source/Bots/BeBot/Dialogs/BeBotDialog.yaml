@@ -13,9 +13,14 @@ macros:
 entities:
   - name: Greeting
     patterns:
-    - hi
-    - hello
-    - howdy
+      - hi
+      - hello
+      - howdy
+
+  - name: Thanks
+    patterns:
+      - thank you
+      - thanks
 
   - name: Goodbye
     patterns:
@@ -24,6 +29,10 @@ entities:
     - good bye
     - see (you|ya)
     - catch (you|ya) later 
+
+  - name: ChangeAlias
+    patterns:
+      - my alias (is|to) (alias:___)
         
   - name: WhereQuery
     patterns:
@@ -33,7 +42,7 @@ entities:
     patterns:
       - "@WhoPhrase (___)* $placeRef (@dates)?"
 
-  - name : '@SetPlan'
+  - name : SetPlan
     patterns:
       - "@PlanPhrase (___)* $placeRef (@dates)*"
       - "@dates @PlanPhrase (___)* $placeRef"
@@ -48,20 +57,20 @@ entities:
       - (I'm|I am) 
       - (I'm|I am) 
 
-  - name: '@WherePhrase'
+  - name: WherePhrase
     patterns:
       - where will 
       - where is 
       - where are
 
-  - name: "@WhoPhrase"
+  - name: WhoPhrase
     patterns:
       - who
       - who is 
       - who will
       - who'll
 
-  - name: '@dates'
+  - name: dates
     patterns:
       - "(on)? @datetime ((and|or|also)* (@datetime)+)*"
       - "@datetimeV2.set ((and|or|also)* (@datetimeV2.set)+)*"
