@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveExpressions;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -12,7 +14,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
 {
     public static class Extensions
     {
-        private static DialogTurnResult waiting = new DialogTurnResult(DialogTurnStatus.Waiting);
+        private const string REPLYTEXT = "turn.IcyReplyText";
+        private static DialogTurnResult _waitingResult = new DialogTurnResult(DialogTurnStatus.Waiting);
 
         /// <summary>
         /// Registers IcyBot and UserState, ConversationState, Memory, PathResolvers 
@@ -151,28 +154,113 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <param name="dc"></param>
         /// <returns></returns>
-        public static Task<DialogTurnResult> WaitForInputAsync(this DialogContext dc)
+        public static async Task<DialogTurnResult> WaitForInputAsync(this DialogContext dc, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(waiting);
+            return _waitingResult;
         }
 
 
-        public static Activity CreateReply(this DialogContext dc, string text)
+        /// <summary>
+        /// CreateReplyAtivity
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="variations">variations of adpative expressions (one will be randomly selected)</param>
+        /// <returns>messageactivity</returns>
+        public static Activity CreateReplyActivity(this DialogContext dc, params string[] variations)
         {
-            return dc.Context.Activity.CreateReply(text);
+            if (variations.Length > 0)
+            {
+
+                var index = _rnd.Next(0, variations.Length);
+                var expression = Expression.Parse($"`{variations[index]}`");
+                var (result, error) = expression.TryEvaluate<string>(dc.State);
+                return dc.Context.Activity.CreateReply(result);
+            }
+
+            return dc.Context.Activity.CreateReply();
+        }
+
+        private static Random _rnd = new Random();
+
+        /// <summary>
+        /// Append ReplyText to text any previous ReplyText to send to the user.
+        /// </summary>
+        /// <param name="dc">dc</param>
+        /// <param name="variations">Adaptive Exprssion string variations (one will be randomly selected)</param>
+        public static void AppendReplyText(this DialogContext dc, params string[] variations)
+        {
+            if (variations.Length > 0)
+            {
+                string replyText = dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+
+                var index = _rnd.Next(0, variations.Length);
+                var expression = Expression.Parse($"`{variations[index]}`");
+                var (result, error) = expression.TryEvaluate<string>(dc.State);
+                if (!String.IsNullOrWhiteSpace(result))
+                {
+                    dc.State.SetValue("turn.IcyReplyText", $"{replyText}{result}");
+                }
+            }
         }
 
         /// <summary>
-        /// Helper to send activity from dc directly
+        /// GetReplyText
         /// </summary>
-        public static Task<ResourceResponse> SendActivityAsync(this DialogContext dc, string textReplyToSend, string speak = null, string inputHint = "acceptingInput", CancellationToken cancellationToken = default(CancellationToken))
-            => dc.Context.SendActivityAsync(textReplyToSend, speak, inputHint, cancellationToken);
+        /// <param name="dc"></param>
+        /// <returns>current ReplyText</returns>
+        public static string GetReplyText(this DialogContext dc)
+        {
+            return dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+        }
 
         /// <summary>
-        /// Helper to send activity from dc directly
+        /// AddReplyText and send
         /// </summary>
-        public static Task<ResourceResponse> SendActivityAsync(this DialogContext dc, IActivity activity, CancellationToken cancellationToken = default(CancellationToken))
-            => dc.Context.SendActivityAsync(activity, cancellationToken);
+        /// <param name="dc">dc</param>
+        /// <param name="variations">1..N expression variations to pick randomly between</param>
+        /// <returns></returns>
+        public static async Task<ResourceResponse> SendReplyText(this DialogContext dc, params string[] variations)
+        {
+            if (variations.Length > 0)
+            {
+                dc.AppendReplyText(variations);
+            }
+            return await dc.SendReplyText(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// AddReplyText and send
+        /// </summary>
+        /// <param name="dc">dc</param>
+        /// <param name="variations">1..N expression variations to pick randomly between</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<ResourceResponse> SendReplyText(this DialogContext dc, CancellationToken cancellationToken, params string[] variations)
+        {
+            if (variations != null)
+            {
+                dc.AppendReplyText(variations);
+            }
+            return await dc.SendReplyText(cancellationToken);
+        }
+
+
+        /// <summary>
+        /// Send any queued up reply text.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<ResourceResponse> SendReplyText(this DialogContext dc, CancellationToken cancellationToken)
+        {
+            string replyText = dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+            if (!String.IsNullOrWhiteSpace(replyText))
+            {
+                dc.State.RemoveValue(REPLYTEXT);
+                return await dc.Context.SendActivityAsync(dc.CreateReplyActivity(replyText.Trim()), cancellationToken);
+            }
+            return null;
+        }
 
         /// <summary>
         /// Begin dialog using the dialog class name as the dialog id.
@@ -194,7 +282,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <typeparam name="DialogT"></typeparam>
         /// <param name="dialogSet"></param>
         public static void Add<DialogT>(this DialogSet dialogSet)
-            where DialogT: Dialog
+            where DialogT : Dialog
         {
             dialogSet.Add(Activator.CreateInstance<DialogT>());
         }

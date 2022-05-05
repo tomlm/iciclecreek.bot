@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
 {
@@ -196,9 +194,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// Override this method to inspect memory and decide to prompt for missing data, etc.
         /// </remarks>
         /// <param name="dc">dialogcontext</param>
-        /// <param name="ct">ct</param>
+        /// <param name="cancellationToken">ct</param>
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
-        protected async virtual Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
+        protected async virtual Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             return await dc.WaitForInputAsync();
         }
@@ -665,6 +663,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         protected async Task<DialogTurnResult> PromptAsync(DialogContext dc, string dialogId, string property, object options, CancellationToken cancellationToken = default)
         {
             dc.State.SetValue(PROPERTY_KEY, property ?? dialogId);
+            await dc.SendReplyText(cancellationToken);
             return await dc.BeginDialogAsync(dialogId, options, cancellationToken);
         }
 

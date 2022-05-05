@@ -38,7 +38,7 @@ entities:
 
         protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync($"Hi!");
+            dc.AppendReplyText($"Hi!");
             return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
@@ -47,22 +47,22 @@ entities:
             var name = dc.State.GetValue<string>("this.name");
             if (name == null)
             {
-                await dc.SendActivityAsync($"I don't know your name.");
+                dc.AppendReplyText($"I don't know your name.");
             }
             else
             {
-                await dc.SendActivityAsync($"Your name is {name}.");
+                dc.AppendReplyText($"Your name is {name}.");
             }
             return await this.OnEvaluateAsync(dc, cancellationToken);
         }
 
-        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
+        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             // if we are missing this.name, prompt for it.
             dc.State.TryGetValue<string>("this.name", out var name);
             if (String.IsNullOrEmpty(name))
             {
-                return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReply("What is your name?") });
+                return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your name?") });
             }
 
             // if we are missing... prompt for it.
@@ -70,6 +70,8 @@ entities:
 
             // if we are all done, let's end the dialog...
             // return dc.EndDialogAsync(this);
+
+            await dc.SendReplyText();
 
             return await dc.WaitForInputAsync();
         }
@@ -80,7 +82,7 @@ entities:
             switch (property)
             {
                 case "this.name":
-                    await dc.SendActivityAsync($"Nice to meet you {result}!");
+                    dc.AppendReplyText($"Nice to meet you {result}!");
                     break;
             }
             return await base.OnPromptCompletedAsync(dc, property, result, cancellationToken); ;

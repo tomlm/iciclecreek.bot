@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>4.16.4</Version>
-    <AssemblyVersion>4.16.4.0</AssemblyVersion>
+    <Version>4.16.5</Version>
+    <AssemblyVersion>4.16.5.0</AssemblyVersion>
     <Description>Dialog and bot implementations for code first dialogs.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdaptiveExpressions" Version="4.16.0" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.16.0" />
   </ItemGroup>
 

@@ -53,6 +53,22 @@ name to the value that is returned.  This gives you nice a clean behavior
 ```
 **OnEvaluateAsync()** can then be used to decide what the next prompt is needed for the user.
 
+### Text Methods
+There are 2 dc extension methods for managing sending reples.
+
+* **dc.AppendReplyText()** - adds a new line of text to the response.
+* **dc.SendReplyText()** - send any reply text which has been accumlated.
+They both take variations of adaptive expression string interpolations one of which will be randonly selected and be evaluated.
+
+Example
+```C#
+   // will pick one of these and add to the replyText as a new line.
+   dc.AppendReplyText("Hi!", "Hello ${user.name}!", "Greetings");
+   dc.AppendReplyText("Now we need to gather some info!", "I need some facts!", "A couple of questions...");
+   await dc.SendReplyText("Here go!", "Let's get started..."); // send queued up text.
+```
+
+
 ### Activity methods
 * **OnTurnAsync()** - The default **OnTurnAsync()** implementation will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
     - **OnMessageActivityAsync(dc)**

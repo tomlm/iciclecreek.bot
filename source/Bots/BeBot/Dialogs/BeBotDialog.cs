@@ -4,11 +4,8 @@ using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Generators;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,7 +19,7 @@ using YamlConverter;
 
 namespace BeBot.Dialogs
 {
-    public class BeBotDialog : IcyDialog
+    public partial class BeBotDialog : IcyDialog
     {
         private readonly IConfiguration _configuration;
         private readonly IndexSearcher _searcher;
@@ -42,39 +39,41 @@ namespace BeBot.Dialogs
             this._cloudQueue = cloudQueueClient;
         }
 
+        protected override async Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
+        {
+
+            if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
+            {
+                await dc.SendReplyText(cancellationToken);
+                return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
+            }
+
+            await dc.SendReplyText(cancellationToken);
+            return await dc.WaitForInputAsync(cancellationToken);
+        }
+
         protected async Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            await dc.ReplyText("Hi ${activity.from.name}!", "Hello ${activity.from.name}!", "Hola ${activity.from.name}!", "Greetings ${activity.from.name}!");
+            dc.AppendReplyText(Greetings);
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnThanksIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            await dc.ReplyText("No problem!", "My pleasure", "You are welcome.", "De nada", "It's a pleasure to help you.");
-            return await dc.WaitForInputAsync();
+            dc.AppendReplyText(ThanksResponse);
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            await dc.ReplyText("See you later!", "Goodbye!", "Bye!", "See ya!", "Catch you later aligator...", "Hasta la pasta", "A river ditchy!");
+            dc.AppendReplyText(Goodbyes);
             return await dc.WaitForInputAsync();
-        }
-
-        protected override async Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
-        {
-            if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
-            {
-                await dc.ReplyText("I need to some information to be a good little BeBot.", "We need to do some stuff first", "Gotta get some info...");
-                return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReply("What is your alias?") });
-            }
-
-            return await base.OnEvaluateAsync(dc, ct);
         }
 
         protected override async Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
         {
             dc.State.SetValue(property, result);
-            await ReplyUserAlias(dc);
+            dc.AppendReplyText(SetAliasResponse);
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
@@ -83,16 +82,10 @@ namespace BeBot.Dialogs
             var entities = StripInstance(recognizerResult);
             var alias = entities.SelectToken("$..alias")?.FirstOrDefault()?.ToString() ?? String.Empty;
             dc.State.SetValue("user.alias", alias);
-            await ReplyUserAlias(dc);
-            return await dc.WaitForInputAsync();
+            dc.AppendReplyText(SetAliasResponse);
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
-        private static async Task ReplyUserAlias(DialogContext dc) =>
-            await dc.ReplyText("Your alias is now ${user.alias}",
-                        "Got it, ${user.alias}",
-                        "Cool, cool, cool, alias is now ${user.alias}.",
-                        "Roger dodger ${user.alias}.",
-                        "Hail ${user.alias}!");
 
         protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
@@ -104,7 +97,7 @@ namespace BeBot.Dialogs
             sb.AppendLine($"Place: {place}");
             sb.AppendLine(VisualizeDates(dates));
             await dc.ReplyData(sb.ToString());
-            return await dc.WaitForInputAsync();
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnWhereQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
@@ -117,7 +110,7 @@ namespace BeBot.Dialogs
             sb.AppendLine($"Person: {person}");
             sb.AppendLine(VisualizeDates(dates));
             await dc.ReplyData(sb.ToString());
-            return await dc.WaitForInputAsync();
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnSetPlanIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
@@ -130,7 +123,7 @@ namespace BeBot.Dialogs
             sb.AppendLine($"Place: {place}");
             sb.AppendLine(VisualizeDates(dates));
             await dc.ReplyData(sb.ToString());
-            return await dc.WaitForInputAsync();
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         private static string VisualizeDates(HashSet<DateTimexValue> dates)

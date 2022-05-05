@@ -14,22 +14,12 @@ namespace BeBot
 {
     public static class Extensions
     {
-        private static Random _rnd = new Random();
-
-        public static Task ReplyText(this DialogContext dc, params string[] variations)
-        {
-            var index = _rnd.Next(0, variations.Length);
-            var expression = Expression.Parse($"`{variations[index]}`");
-            var (result, error) = expression.TryEvaluate<string>(dc.State);
-            return dc.SendActivityAsync(result);
-        }
-
         public static Task ReplyData(this DialogContext dc, string text, object data = null)
         {
             var activity = Activity.CreateMessageActivity();
             activity.Text = text;
             activity.Value = data;
-            return dc.SendActivityAsync(activity);
+            return dc.Context.SendActivityAsync(activity);
         }
         public static JToken RemoveFields(this JToken token, params string[] fields)
         {

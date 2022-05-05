@@ -40,24 +40,25 @@ entities:
 
         protected override async Task<DialogTurnResult> OnEndOfConversationActivityAsync(DialogContext dc, IEndOfConversationActivity endOfConversationActivity, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync("EndOfConversation");
+            await dc.SendReplyText(cancellationToken, "EndOfConversation");
             return await dc.CancelAllDialogsAsync();
         }
 
         protected async Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync($"Hello {dc.GetOptions<object>()}");
-            return await dc.WaitForInputAsync();
+            await dc.SendReplyText(cancellationToken, $"Hello {dc.GetOptions<object>()}");
+            return await dc.WaitForInputAsync(cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnFooIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
+            await dc.SendReplyText(cancellationToken);
             return await dc.BeginDialogAsync<FooDialog>(1, cancellationToken: cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            await dc.SendActivityAsync($"Goodbye {dc.GetOptions<object>()}");
+            await dc.SendReplyText(cancellationToken, $"Goodbye {dc.GetOptions<object>()}");
             return await dc.EndDialogAsync();
         }
     }

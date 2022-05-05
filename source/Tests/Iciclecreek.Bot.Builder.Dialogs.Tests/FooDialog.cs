@@ -33,23 +33,23 @@ entities:
 
         protected async override Task<DialogTurnResult> OnBeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
         {
-            await dc.SendActivityAsync($"Foo {options}");
+            await dc.SendReplyText($"Foo {options}");
             return await dc.WaitForInputAsync();
         }
 
 
-        protected virtual Task<DialogTurnResult> OnYoIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        protected virtual async Task<DialogTurnResult> OnYoIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             var options = dc.GetOptions<int>();
-            dc.SendActivityAsync($"Yo {options}");
-            return dc.WaitForInputAsync();
+            await dc.SendReplyText($"Yo {options}");
+            return await dc.WaitForInputAsync();
         }
 
-        protected virtual Task<DialogTurnResult> OnEndIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        protected virtual async Task<DialogTurnResult> OnEndIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             var options = dc.GetOptions<int>();
-            dc.SendActivityAsync($"End {options}");
-            return dc.EndDialogAsync();
+            await dc.SendReplyText($"End {options}");
+            return await dc.EndDialogAsync();
         }
     }
 }

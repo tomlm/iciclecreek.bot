@@ -6,7 +6,7 @@
     <UserSecretsId>baa7c826-7d5e-4efa-89b7-b4a538779e0b</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.4" />
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.5" />
     <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.16.2" />
     <PackageReference Include="Lucene.Net.Store.Azure" Version="4.8.0-beta015" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.24" />
