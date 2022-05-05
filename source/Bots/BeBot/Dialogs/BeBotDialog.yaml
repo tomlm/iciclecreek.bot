@@ -33,6 +33,9 @@ entities:
   - name: ChangeAlias
     patterns:
       - my alias (is|to) (alias:___)
+      - (alias:___) is my alias
+      - change my alias
+      - set my alias
         
   - name: WhereQuery
     patterns:

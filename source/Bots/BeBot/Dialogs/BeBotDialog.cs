@@ -4,6 +4,7 @@ using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Adaptive.Actions;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -66,14 +67,20 @@ namespace BeBot.Dialogs
 
         protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            dc.AppendReplyText(Goodbyes);
-            return await dc.WaitForInputAsync();
+            await dc.SendReplyText(Goodbyes);
+            return await dc.WaitForInputAsync(cancellationToken);
         }
 
         protected override async Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
         {
-            dc.State.SetValue(property, result);
-            dc.AppendReplyText(SetAliasResponse);
+            switch (property)
+            {
+                case "user.alias":
+                    dc.State.SetValue(property, result);
+                    dc.AppendReplyText(SetAliasResponse);
+                    break;
+            }
+
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
@@ -81,9 +88,14 @@ namespace BeBot.Dialogs
         {
             var entities = StripInstance(recognizerResult);
             var alias = entities.SelectToken("$..alias")?.FirstOrDefault()?.ToString() ?? String.Empty;
-            dc.State.SetValue("user.alias", alias);
-            dc.AppendReplyText(SetAliasResponse);
-            return await OnEvaluateAsync(dc, cancellationToken);
+            if (!String.IsNullOrEmpty(alias))
+            {
+
+                dc.State.SetValue("user.alias", alias);
+                dc.AppendReplyText(SetAliasResponse);
+                return await OnEvaluateAsync(dc, cancellationToken);
+            }
+            return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
         }
 
 

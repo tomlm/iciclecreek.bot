@@ -32,7 +32,7 @@
 
         protected static readonly string[] ThanksResponse = new string[]
         {
-            "No problem!", "My pleasure", "You are welcome.", "De nada", "It's a pleasure to help you."
+            "No problem!", "I love being helpful.", "You are welcome.", "De nada", "It my pleasure to help you."
         };
     }
 }
