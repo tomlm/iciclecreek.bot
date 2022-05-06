@@ -88,6 +88,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnBeginDialogAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
         {
+            dc.CaptureSnapshot();
             return await this.OnTurnAsync(dc, options, cancellationToken);
         }
 
@@ -105,6 +106,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnContinueDialogAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
         {
+            dc.CaptureSnapshot();
             return await this.OnTurnAsync(dc, options, cancellationToken);
         }
 
@@ -271,7 +273,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
-            if (!String.IsNullOrEmpty(messageActivity.Text) && this.Recognizer != null && !dc.State.GetBoolValue(TurnPath.ActivityProcessed))
+            if (this.Recognizer != null && !dc.State.GetBoolValue(TurnPath.ActivityProcessed))
             {
                 dc.State.SetValue(TurnPath.ActivityProcessed, true);
                 var recognizerResult = await Recognizer.RecognizeAsync(dc, dc.Context.Activity, cancellationToken);
@@ -279,9 +281,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                 {
                     return await OnRecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
                 }
+
+                return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
             }
 
-            return await OnUnrecognizedIntentAsync(dc, messageActivity, cancellationToken);
+            return await OnEvaluateAsync(dc, cancellationToken);
         }
 
 
@@ -303,13 +307,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnRecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            var intent = recognizerResult.Intents.First();
-            if (_intentMethods.TryGetValue($"On{intent.Key}Intent", out var mi))
+            var (intent, score) = recognizerResult.GetTopScoringIntent();
+            if (_intentMethods.TryGetValue($"On{intent}Intent", out var mi))
             {
                 return await (Task<DialogTurnResult>)mi.Invoke(this, new object[] { dc, messageActivity, recognizerResult, cancellationToken });
             }
 
-            return await OnUnrecognizedIntentAsync(dc, messageActivity, cancellationToken);
+            return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
         }
 
         /// <summary>
@@ -323,10 +327,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </remarks>
         /// <param name="dc">Dialog Context</param>
         /// <param name="messageActivity">A strongly-typed context object for this turn.</param>
+        /// <param name="recognizerResult">recognizer result</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects
         /// or threads to receive notice of cancellation.</param>
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
-        protected async virtual Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
+        protected async virtual Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             await dc.Context.SendActivityAsync("I'm sorry, I didn't understand that.");
             return await this.OnEvaluateAsync(dc, cancellationToken);

@@ -86,11 +86,9 @@ namespace BeBot.Dialogs
 
         protected virtual async Task<DialogTurnResult> OnChangeAliasIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            var entities = StripInstance(recognizerResult);
-            var alias = entities.SelectToken("$..alias")?.FirstOrDefault()?.ToString() ?? String.Empty;
+            var alias = recognizerResult.GetEntities<string>("$..alias").FirstOrDefault() ?? String.Empty;
             if (!String.IsNullOrEmpty(alias))
             {
-
                 dc.State.SetValue("user.alias", alias);
                 dc.AppendReplyText(SetAliasResponse);
                 return await OnEvaluateAsync(dc, cancellationToken);
@@ -101,44 +99,41 @@ namespace BeBot.Dialogs
 
         protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            var entities = StripInstance(recognizerResult);
-            var place = entities.SelectToken("$..Place")?.FirstOrDefault()?.ToString() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates);
+            var place = recognizerResult.GetEntities<string>("$..Place").FirstOrDefault();
+            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..dates..values"));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhoQuery");
             sb.AppendLine($"Place: {place}");
-            sb.AppendLine(VisualizeDates(dates));
+            sb.AppendLine(VisualizeDates(dates.Where(dtv => dtv.GetDate() >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))));
             await dc.ReplyData(sb.ToString());
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnWhereQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            var entities = StripInstance(recognizerResult);
-            var person = entities.SelectToken("$..Person")?.Select(s => s.ToString()).First() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates);
+            var person = recognizerResult.GetEntities<string>("$..Person").FirstOrDefault();
+            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..dates..values"));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhereQuery");
             sb.AppendLine($"Person: {person}");
-            sb.AppendLine(VisualizeDates(dates));
+            sb.AppendLine(VisualizeDates(dates.Where(dtv => dtv.GetDate() >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))));
             await dc.ReplyData(sb.ToString());
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnSetPlanIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            var entities = StripInstance(recognizerResult);
-            var place = entities.SelectToken("$..Place")?.FirstOrDefault()?.ToString() ?? String.Empty;
-            ExtractDateEntities(entities, out var dates);
+            var place = recognizerResult.GetEntities<string>("$..Place").FirstOrDefault();
+            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..dates..values"));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## SetPlan");
             sb.AppendLine($"Place: {place}");
-            sb.AppendLine(VisualizeDates(dates));
+            sb.AppendLine(VisualizeDates(dates.Where(dtv => dtv.GetDate() >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))));
             await dc.ReplyData(sb.ToString());
             return await OnEvaluateAsync(dc, cancellationToken);
         }
 
-        private static string VisualizeDates(HashSet<DateTimexValue> dates)
+        private static string VisualizeDates(IEnumerable<DateTimexValue> dates)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Dates:");
@@ -146,29 +141,6 @@ namespace BeBot.Dialogs
             sb.AppendLine(YamlConvert.SerializeObject(dates));
             sb.AppendLine("```");
             return sb.ToString();
-        }
-
-        private static JObject StripInstance(RecognizerResult recognizerResult)
-        {
-            return (JObject)recognizerResult.Entities.RemoveFields("$instance");
-        }
-
-        private static void ExtractDateEntities(JObject entities, out HashSet<DateTimexValue> dates)
-        {
-            dates = new HashSet<DateTimexValue>(new DateTimeValueComparer());
-            foreach (var date in entities.SelectTokens("$..dates"))
-            {
-                foreach (var valueArray in date.SelectTokens("$..values").Cast<JArray>())
-                {
-                    foreach (var dateTimeValue in valueArray.Select(j => j.ToObject<DateTimexValue>()))
-                    {
-                        if (dateTimeValue.Date == null || dateTimeValue.Date >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))
-                        {
-                            dates.Add(dateTimeValue);
-                        }
-                    }
-                }
-            }
         }
     }
 }

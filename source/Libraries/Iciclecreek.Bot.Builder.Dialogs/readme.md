@@ -68,6 +68,22 @@ Example
    await dc.SendReplyText("Here go!", "Let's get started..."); // send queued up text.
 ```
 
+### Memory methods
+You can query for a property changing using **dc.IsStateChanged(path)** method.
+```C#
+   if (dc.IsStateChanged("dialog.name"))
+   {
+       // do something...
+   }
+```
+
+### Entities methods
+You can query for the value of an entity using GetEntities and a JsonPath.
+
+```C#
+  var age = recognizerResult.GetEntities<int?>("$..number..value").FirstOrDefault();
+```
+
 
 ### Activity methods
 * **OnTurnAsync()** - The default **OnTurnAsync()** implementation will dispatch to strongly typed virtual methods (like ActivityHandler), but with DialogContext instead of TurnContext:
@@ -216,4 +232,6 @@ The library includes some helpful extensions to reduce typing.
 * **dc.WaitForInputAsync()** - signal that your dialog is waiting input.
 * **dc.SendActivity()** - shortcut for dc.Context.SendActivity()
 * **dc.BeginDialog<DialogT>()** - begins a dialog assuming that the name of DialogT is the id of the dialog.
-* **dialogSet.Add<DialogT>()** - Add an instance of dialogT to a dialogset 
+* **dialogSet.Add<DialogT>()** - Add an instance of dialogT to a dialogset
+* **dc.IsPathChanged(path)** - well return true if the path has changed this turn.
+* **recognizer.GetEntities<T>(JsonPath)** - will return resolved value for entities. 

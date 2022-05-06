@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
 {
@@ -154,14 +157,38 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <param name="dc"></param>
         /// <returns></returns>
-        public static async Task<DialogTurnResult> WaitForInputAsync(this DialogContext dc, CancellationToken cancellationToken = default)
+        public static Task<DialogTurnResult> WaitForInputAsync(this DialogContext dc, CancellationToken cancellationToken = default)
         {
-            return _waitingResult;
+            return Task.FromResult(_waitingResult);
         }
 
+        public static void CaptureSnapshot(this DialogContext dc)
+        {
+            if (!dc.State.TryGetValue<JObject>("turn.snapshot", out var snapshot))
+            {
+                dc.State.SetValue("turn.snapshot", dc.State.GetMemorySnapshot());
+            }
+        }
 
         /// <summary>
-        /// CreateReplyAtivity
+        /// Compares memory snapshot to current state and returns true if the path is changed
+        /// </summary>
+        /// <remarks>
+        /// IcyDialog will call CaptureSnapshot() for you automatically To capture the snapshot
+        /// as early as possible call CaptureSnapshot()
+        /// </remarks>
+        /// <param name="dc">dc</param>
+        /// <param name="path">path to evaluate</param>
+        /// <returns>true if path or children are different, false if they are unchanged.</returns>
+        public static bool IsStateChanged(this DialogContext dc, string path)
+        {
+            dc.State.TryGetValue<JToken>($"turn.snapshot.{path}", out var snapshot);
+            dc.State.TryGetValue<JToken>(path, out var current);
+            return snapshot?.ToString() != current?.ToString();
+        }
+
+        /// <summary>
+        /// CreateReplyActivity
         /// </summary>
         /// <param name="dc"></param>
         /// <param name="variations">variations of adpative expressions (one will be randomly selected)</param>
@@ -285,6 +312,32 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             where DialogT : Dialog
         {
             dialogSet.Add(Activator.CreateInstance<DialogT>());
+        }
+
+        /// <summary>
+        /// GetEntities
+        /// </summary>
+        /// <typeparam name="T">type for object</typeparam>
+        /// <param name="recognizerResult">recognizerResult</param>
+        /// <param name="jsonPath">$..dates..values</param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetEntities<T>(this RecognizerResult recognizerResult, string jsonPath)
+        {
+            foreach (var token in recognizerResult.Entities.SelectTokens(jsonPath)
+                .Where(jt => !jt.Path.Contains("$instance")))
+            {
+                if (token is JArray)
+                {
+                    foreach (var entity in token)
+                    {
+                        yield return entity.ToObject<T>();
+                    }
+                }
+                else
+                {
+                    yield return token.ToObject<T>();
+                }
+            }
         }
     }
 }

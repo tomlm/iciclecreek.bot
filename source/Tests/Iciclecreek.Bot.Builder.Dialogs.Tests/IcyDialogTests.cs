@@ -49,6 +49,46 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
         }
 
         [Fact]
+        public async Task TestPathChanged()
+        {
+            var sp = new ServiceCollection()
+                .AddSingleton<IStorage>(new MemoryStorage())
+                .AddDialog<PathChangedDialog>()
+                .AddPrompts()
+                .AddIcyBot()
+                .BuildServiceProvider();
+
+            await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
+                .Send("hi")
+                    .AssertReply("Hi!\n\nWhat is your name and age?")
+                .Send("people call me Tom")
+                    .AssertReply("Your name is Tom.\n\nWhat is your age?")
+                .Send("i am 19 years old")
+                    .AssertReply("Your age is 19.")
+                .StartTestAsync();
+        }
+
+        [Fact]
+        public async Task TestPathChanged2()
+        {
+            var sp = new ServiceCollection()
+                .AddSingleton<IStorage>(new MemoryStorage())
+                .AddDialog<PathChangedDialog>()
+                .AddPrompts()
+                .AddIcyBot()
+                .BuildServiceProvider();
+
+            await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
+                .Send("hi")
+                    .AssertReply("Hi!\n\nWhat is your name and age?")
+                .Send("My name is Tom and I'm 19.")
+                    .AssertReply("Your name is Tom.\n\nYour age is 19.")
+                .Send("hi")
+                    .AssertReply("Hi!")
+                .StartTestAsync();
+        }
+
+        [Fact]
         public async Task TestCallDialog()
         {
             var sp = new ServiceCollection()

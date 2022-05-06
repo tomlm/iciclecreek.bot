@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace BeBot.Dialogs
@@ -17,44 +16,37 @@ namespace BeBot.Dialogs
         [JsonProperty("value")]
         public string Value { get; set; }
 
-        public IEnumerable<string> Days
+        public IEnumerable<string> GetDaysOfWeek()
         {
-            get
+            if (Type == "date" || Type == "set")
             {
-                if (Type == "date" || Type == "set")
-                {
-                    yield return ToDay(Timex);
-                }
+                yield return ToDay(Timex);
+            }
 
-                if (Type == "daterange")
+            if (Type == "daterange")
+            {
+                var parts = Timex.Trim('(', ')').Split(",");
+                var start = parts[0];
+                var end = parts[1];
+                if (start.StartsWith("XXXX-WXX") && end.StartsWith("XXXX-WXX"))
                 {
-                    var parts = Timex.Trim('(', ')').Split(",");
-                    var start = parts[0];
-                    var end = parts[1];
-                    if (start.StartsWith("XXXX-WXX") && end.StartsWith("XXXX-WXX"))
+                    int iStart = start.Last() - '0';
+                    int iEnd = end.Last() - '0';
+                    for (int i = iStart; i <= iEnd; i++)
                     {
-                        int iStart = start.Last() - '0';
-                        int iEnd = end.Last()-'0';
-                        for (int i = iStart; i <= iEnd; i++)
-                        {
-                            yield return ToDay($"XXXX-WXX-{i}");
-                        }
+                        yield return ToDay($"XXXX-WXX-{i}");
                     }
                 }
             }
         }
 
-        [JsonIgnore]
-        public DateTime? Date
+        public DateTime? GetDate()
         {
-            get
+            if (DateTime.TryParse(Value, out var dt))
             {
-                if (DateTime.TryParse(Value, out var dt))
-                {
-                    return dt;
-                }
-                return null;
+                return dt;
             }
+            return null;
         }
 
 
