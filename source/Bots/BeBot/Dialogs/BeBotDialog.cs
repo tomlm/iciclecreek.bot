@@ -45,7 +45,7 @@ namespace BeBot.Dialogs
 
             if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
             {
-                await dc.SendReplyText(cancellationToken);
+                await dc.SendReplyText(ExplainAlias);
                 return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
             }
 
