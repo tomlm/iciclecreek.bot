@@ -2,13 +2,12 @@
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucene.Net.Search;
 using Lucy;
+using Microsoft.AspNetCore.Mvc.WebApiCompatShim;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Actions;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,7 +30,7 @@ namespace BeBot.Dialogs
             var yaml = new StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(BeBotDialog).FullName}.yaml")).ReadToEnd();
             this.Recognizer = new LucyRecognizer()
             {
-                Intents = new List<string>() { "Greeting", "Goodbye", "ChangeAlias", "WhereQuery", "WhoQuery", "SetPlan", "Thanks" },
+                Intents = new List<string>() { "Help", "Greeting", "Goodbye", "ChangeAlias", "WhereQuery", "WhoQuery", "SetPlan", "Thanks" },
                 Model = YamlConvert.DeserializeObject<LucyDocument>(yaml)
             };
 
@@ -40,16 +39,38 @@ namespace BeBot.Dialogs
             this._cloudQueue = cloudQueueClient;
         }
 
+        protected override Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
+        {
+            if (!dc.State.TryGetValue("user.welcomed", out var val))
+            {
+                dc.SendReplyText(HelpText);
+                dc.State.SetValue("user.welcomed", true);
+            }
+            return base.OnMessageActivityAsync(dc, messageActivity, cancellationToken);
+        }
+
         protected override async Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
-
+            // --- user.alias missing 
             if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
             {
                 await dc.SendReplyText(ExplainAlias);
                 return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
             }
 
+            // --- user.alias changed
+            if (dc.IsStateChanged("user.alias"))
+            {
+                dc.AppendReplyText(AckAliasChanged);
+            }
+
             await dc.SendReplyText(cancellationToken);
+            return await dc.WaitForInputAsync(cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            await dc.SendReplyText(HelpText);
             return await dc.WaitForInputAsync(cancellationToken);
         }
 
@@ -71,31 +92,20 @@ namespace BeBot.Dialogs
             return await dc.WaitForInputAsync(cancellationToken);
         }
 
-        protected override async Task<DialogTurnResult> OnPromptCompletedAsync(DialogContext dc, string property, object result, CancellationToken cancellationToken = default)
-        {
-            switch (property)
-            {
-                case "user.alias":
-                    dc.State.SetValue(property, result);
-                    dc.AppendReplyText(SetAliasResponse);
-                    break;
-            }
-
-            return await OnEvaluateAsync(dc, cancellationToken);
-        }
-
         protected virtual async Task<DialogTurnResult> OnChangeAliasIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             var alias = recognizerResult.GetEntities<string>("$..alias").FirstOrDefault() ?? String.Empty;
             if (!String.IsNullOrEmpty(alias))
             {
                 dc.State.SetValue("user.alias", alias);
-                dc.AppendReplyText(SetAliasResponse);
                 return await OnEvaluateAsync(dc, cancellationToken);
             }
-            return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
+            else
+            {
+                // handle "I want to change my alias" with no alias specified.
+                return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
+            }
         }
-
 
         protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {

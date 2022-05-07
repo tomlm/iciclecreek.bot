@@ -11,6 +11,10 @@ locale: en
 macros:
   $placeRef: (be|sitting|at|in|the|from)+ (Place:___)*
 entities:
+  - name: Help
+    patterns:
+      - help
+
   - name: Greeting
     patterns:
       - hi
@@ -21,6 +25,7 @@ entities:
     patterns:
       - thank you
       - thanks
+      - cool
 
   - name: Goodbye
     patterns:

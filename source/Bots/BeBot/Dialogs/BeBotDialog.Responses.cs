@@ -2,6 +2,23 @@
 {
     public partial class BeBotDialog
     {
+        protected static readonly string[] HelpText = new string[]
+        {
+$@"### Welcome!
+I'm **BeBot**, the hybrid worker bot.
+
+Every Sunday I'll ask you what your plans are for the week.
+
+You can answer with natural language like:
+* I will be in city center Monday and Friday.
+
+You can then ask questions about people's schedule:
+* Who will be in city center Monday?
+* Where is sgellock today?
+
+"
+        };
+
         protected static readonly string[] Greetings = new string[]
         {
             " Hi!",
@@ -21,7 +38,7 @@
             " A river ditchy!"
         };
 
-        protected static readonly string[] SetAliasResponse = new string[]
+        protected static readonly string[] AckAliasChanged = new string[]
         {
             " Your alias is now @${user.alias}",
             " Got it, @${user.alias}",
@@ -39,7 +56,6 @@
         {
              " I need to know your alias...cause without it I'm lost",
              " I need your alias, bots aren't so good with names.",
-             " Can you give help a poor bot?"
         };
     }
 }
