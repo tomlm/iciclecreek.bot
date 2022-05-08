@@ -62,7 +62,7 @@ entities:
             dc.State.TryGetValue<string>("this.name", out var name);
             if (String.IsNullOrEmpty(name))
             {
-                return await PromptAsync<TextPrompt>(dc, "this.name", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your name?") });
+                return await dc.PromptAsync<TextPrompt>("this.name", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your name?") });
             }
 
             // if we are missing... prompt for it.

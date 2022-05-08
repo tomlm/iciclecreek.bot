@@ -15,117 +15,12 @@ using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
 {
-    public static class Extensions
+    public static class DcExtensions
     {
         private const string REPLYTEXT = "turn.IcyReplyText";
         private static DialogTurnResult _waitingResult = new DialogTurnResult(DialogTurnStatus.Waiting);
 
-        /// <summary>
-        /// Registers IcyBot and UserState, ConversationState, Memory, PathResolvers 
-        /// </summary>
-        /// <remarks>
-        /// You still need to register IStorage, Dialogs
-        /// </remarks>
-        /// <param name="services"></param>
-        public static IServiceCollection AddIcyBot(this IServiceCollection services)
-        {
-            services.TryAddSingleton<UserState>();
-            services.TryAddSingleton<ConversationState>();
-            new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
-            services.AddPrompts();
-            services.TryAddSingleton<IBot, IcyBot>();
-            return services;
-        }
-
-        /// <summary>
-        /// Add default prompts (Attachment, choice, DateTime, Number, Text) so you can invoke them by type instead of id
-        /// </summary>
-        /// <remarks>
-        /// dc.BeginDialog&lt;TextPrompt&gr;(new PrompOptions() {...} );
-        /// </remarks>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddPrompts(this IServiceCollection services)
-        {
-            services.TryAddDialog<IcyAttachmentPrompt>();
-            services.TryAddDialog<IcyChoicePrompt>();
-            services.TryAddDialog<IcyDateTimePrompt>();
-            services.TryAddDialog<IcyNumberPrompt<int>>();
-            services.TryAddDialog<IcyNumberPrompt<float>>();
-            services.TryAddDialog<IcyTextPrompt>();
-            return services;
-        }
-
-        /// <summary>
-        /// Registers bot and UserState, ConversationState, Memory, PathResolvers 
-        /// </summary>
-        /// <remarks>
-        /// You still need to register IStorage
-        /// </remarks>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        public static IServiceCollection AddBot<BotT>(this IServiceCollection services)
-            where BotT : IcyBot
-        {
-            services.TryAddSingleton<UserState>();
-            services.TryAddSingleton<ConversationState>();
-            new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
-            services.TryAddSingleton<IBot, BotT>();
-            return services;
-        }
-
-        /// <summary>
-        /// Add dialog to dependency injection
-        /// </summary>
-        /// <typeparam name="DialogT"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services)
-            where DialogT : Dialog
-        {
-            services.AddSingleton<Dialog, DialogT>();
-            return services;
-        }
-
-        /// <summary>
-        /// Add dialog to dependency injection
-        /// </summary>
-        /// <typeparam name="DialogT"></typeparam>
-        /// <param name="services"></param>a
-        /// <returns></returns>
-        public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services)
-            where DialogT : Dialog
-        {
-            services.AddSingleton<Dialog, DialogT>();
-            return services;
-        }
-
-        /// <summary>
-        /// Add dialog to dependency injection
-        /// </summary>
-        /// <typeparam name="DialogT"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
-            where DialogT : Dialog
-        {
-            services.AddSingleton<Dialog, DialogT>(implementationFactory);
-            return services;
-        }
-
-        /// <summary>
-        /// Add dialog to dependency injection
-        /// </summary>
-        /// <typeparam name="DialogT"></typeparam>
-        /// <param name="services"></param>a
-        /// <returns></returns>
-        public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
-            where DialogT : Dialog
-        {
-            services.AddSingleton<Dialog, DialogT>(implementationFactory);
-            return services;
-        }
-
+        internal const string PROPERTY_KEY = "this.property";
 
         /// <summary>
         /// Get saved options
@@ -150,6 +45,37 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static void SaveOptions(this DialogContext dc, object options)
         {
             dc.State.SetValue("this.options", options);
+        }
+
+        /// <summary>
+        /// PromptAsync() - Begins a dialog and stores the result from the dialog in property path
+        /// </summary>
+        /// <typeparam name="DialogT"></typeparam>
+        /// <param name="dc">dc</param>
+        /// <param name="property">name of the property for the dialog result (Ex: "this.name")</param>
+        /// <param name="options">options for the dialog</param>
+        /// <param name="cancellationToken">ct</param>
+        /// <returns>dtr</returns>
+        public static Task<DialogTurnResult> PromptAsync<DialogT>(this DialogContext dc, string property, object options, CancellationToken cancellationToken = default)
+            where DialogT : Dialog
+        {
+            return PromptAsync(dc, typeof(DialogT).Name, property, options, cancellationToken);
+        }
+
+        /// <summary>
+        /// PromptAsync() - Begins a dialog and stores the result from the dialog in property path
+        /// </summary>
+        /// <param name="dc">dc</param>
+        /// <param name="dialogId">dialogId</param>
+        /// <param name="property">name of the property for the dialog result (Ex: "this.name")</param>
+        /// <param name="options">options for the dialog</param>
+        /// <param name="cancellationToken">ct</param>
+        /// <returns>dtr</returns>
+        public static async Task<DialogTurnResult> PromptAsync(this DialogContext dc, string dialogId, string property, object options, CancellationToken cancellationToken = default)
+        {
+            dc.State.SetValue(PROPERTY_KEY, property ?? dialogId);
+            await dc.SendReplyText(cancellationToken);
+            return await dc.BeginDialogAsync(dialogId, options, cancellationToken);
         }
 
         /// <summary>
@@ -314,30 +240,5 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             dialogSet.Add(Activator.CreateInstance<DialogT>());
         }
 
-        /// <summary>
-        /// GetEntities
-        /// </summary>
-        /// <typeparam name="T">type for object</typeparam>
-        /// <param name="recognizerResult">recognizerResult</param>
-        /// <param name="jsonPath">$..dates..values</param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetEntities<T>(this RecognizerResult recognizerResult, string jsonPath)
-        {
-            foreach (var token in recognizerResult.Entities.SelectTokens(jsonPath)
-                .Where(jt => !jt.Path.Contains("$instance")))
-            {
-                if (token is JArray)
-                {
-                    foreach (var entity in token)
-                    {
-                        yield return entity.ToObject<T>();
-                    }
-                }
-                else
-                {
-                    yield return token.ToObject<T>();
-                }
-            }
-        }
     }
 }

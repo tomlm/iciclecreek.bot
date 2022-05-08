@@ -36,7 +36,7 @@ IcyDialog encapsulates a number of patterns together to make a great base class 
 and decide to prompt the user for information, regardless of how the state was changed.
 * **OnPromptCompletedAsync()**/**OnPromptCanceledAsync** - called when a child dialog completes with a result/canceled.
 
-There is a new helper method **PromptAsync<DialogT>(property, options)**
+There is a new dc helper method **dc.PromptAsync<DialogT>(property, options)**
 
 This method is a enhancement over calling BeginDialog, because it models a dialogs purpose to gather information for a 
 property in memory.The problem with BeginDialog is you have to track what dialog was invoked when you get a resume dialog to continue execution.

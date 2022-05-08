@@ -38,7 +38,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     /// </remarks>
     public class IcyDialog : Dialog
     {
-        private const string PROPERTY_KEY = "this.property";
         private Dictionary<string, MethodInfo> _intentMethods = new Dictionary<string, MethodInfo>();
 
         public IcyDialog(string dialogId = null)
@@ -123,9 +122,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual async Task<DialogTurnResult> OnResumeDialogAsync(DialogContext dc, DialogReason reason, object result, CancellationToken cancellationToken)
         {
-            if (dc.State.TryGetValue<string>(PROPERTY_KEY, out var property))
+            if (dc.State.TryGetValue<string>(DcExtensions.PROPERTY_KEY, out var property))
             {
-                dc.State.RemoveValue(PROPERTY_KEY);
+                dc.State.RemoveValue(DcExtensions.PROPERTY_KEY);
                 if (reason == DialogReason.EndCalled)
                 {
                     return await this.OnPromptCompletedAsync(dc, property, result, cancellationToken);
@@ -641,36 +640,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         #endregion
 
         #region HELPER METHODS
-        /// <summary>
-        /// PromptAsync() - Begins a dialog and stores the result from the dialog in property path
-        /// </summary>
-        /// <typeparam name="DialogT"></typeparam>
-        /// <param name="dc">dc</param>
-        /// <param name="property">name of the property for the dialog result (Ex: "this.name")</param>
-        /// <param name="options">options for the dialog</param>
-        /// <param name="cancellationToken">ct</param>
-        /// <returns>dtr</returns>
-        protected Task<DialogTurnResult> PromptAsync<DialogT>(DialogContext dc, string property, object options, CancellationToken cancellationToken = default)
-            where DialogT : Dialog
-        {
-            return PromptAsync(dc, typeof(DialogT).Name, property, options, cancellationToken);
-        }
-
-        /// <summary>
-        /// PromptAsync() - Begins a dialog and stores the result from the dialog in property path
-        /// </summary>
-        /// <param name="dc">dc</param>
-        /// <param name="dialogId">dialogId</param>
-        /// <param name="property">name of the property for the dialog result (Ex: "this.name")</param>
-        /// <param name="options">options for the dialog</param>
-        /// <param name="cancellationToken">ct</param>
-        /// <returns>dtr</returns>
-        protected async Task<DialogTurnResult> PromptAsync(DialogContext dc, string dialogId, string property, object options, CancellationToken cancellationToken = default)
-        {
-            dc.State.SetValue(PROPERTY_KEY, property ?? dialogId);
-            await dc.SendReplyText(cancellationToken);
-            return await dc.BeginDialogAsync(dialogId, options, cancellationToken);
-        }
 
         /// <summary>
         /// An <see cref="InvokeResponse"/> factory that initializes the body to the parameter passed and status equal to OK.
