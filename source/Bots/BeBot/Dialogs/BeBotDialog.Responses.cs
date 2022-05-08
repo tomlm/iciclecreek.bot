@@ -12,9 +12,9 @@ Every Sunday I'll ask you what your plans are for the week.
 You can answer with natural language like:
 * I will be in city center Monday and Friday.
 
-You can then ask questions about people's schedule:
+You can then ask questions about other people's schedule:
 * Who will be in city center Monday?
-* Where is sgellock today?
+* Where are lilich and sgellock today?
 
 "
         };
@@ -42,20 +42,20 @@ You can then ask questions about people's schedule:
         {
             " Your alias is now @${user.alias}",
             " Got it, @${user.alias}",
-            " Cool, cool, cool, alias is now @${user.alias}.",
-            " Roger dodger @${user.alias}.",
+            " Cool, cool, cool, I know your alias is @${user.alias}.",
+            " Roger dodger @${user.alias} is it.",
             " Hail @${user.alias}!"
         };
 
         protected static readonly string[] ThanksResponse = new string[]
         {
-            " No problem!", " I love being helpful.", " You are welcome.", " De nada", " It my pleasure to help you."
+            " No problem!", " I love being helpful.", " You are welcome.", " De nada", " It is my pleasure to help you."
         };
 
         protected static readonly string[] ExplainAlias = new string[]
         {
-             " I need to know your alias...cause without it I'm lost",
-             " I need your alias, bots aren't so good with names.",
+             " I need to know your alias...cause without it I'm lost.",
+             " I need your alias, bots like me aren't so good with names.",
         };
     }
 }

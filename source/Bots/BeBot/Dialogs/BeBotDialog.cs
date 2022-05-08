@@ -2,7 +2,6 @@
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
 using Lucene.Net.Search;
 using Lucy;
-using Microsoft.AspNetCore.Mvc.WebApiCompatShim;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -102,7 +101,7 @@ namespace BeBot.Dialogs
             }
             else
             {
-                // handle "I want to change my alias" with no alias specified.
+                // handle intent with no alias specified.
                 return await PromptAsync<TextPrompt>(dc, "user.alias", new PromptOptions() { Prompt = dc.CreateReplyActivity("What is your alias?") });
             }
         }
