@@ -32,7 +32,7 @@ IcyDialog encapsulates a number of patterns together to make a great base class 
 
 ### Dialog methods
 * **OnBeginDialogAsync()** -  called when dialog is started.
-* **OnEvaluateAsync()** - called when no dialog action is taken (including WaitForInput(). This gives you a place to inspect your state
+* **OnEvaluateStateAsync()** - called when no dialog action is taken (including WaitForInput(). This gives you a place to inspect your state
 and decide to prompt the user for information, regardless of how the state was changed.
 * **OnPromptCompletedAsync()**/**OnPromptCanceledAsync** - called when a child dialog completes with a result/canceled.
 
@@ -51,7 +51,7 @@ name to the value that is returned.  This gives you nice a clean behavior
     // when this prompt completes the the property "this.name" = result from the child dialog
     await PromptAsync<TextPrompt>("this.name", new PromptOptions(){ ... });
 ```
-**OnEvaluateAsync()** can then be used to decide what the next prompt is needed for the user.
+**OnEvaluateStateAsync()** can then be used to decide what the next prompt is needed for the user.
 
 ### Text Methods
 There are 2 dc extension methods for managing sending reples.
@@ -133,7 +133,7 @@ entities:
         protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             await dc.SendActivityAsync($"Hi!");
-            return await OnEvaluateAsync(dc, cancellationToken);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
@@ -147,10 +147,10 @@ entities:
             {
                 await dc.SendActivityAsync($"Your name is {name}.");
             }
-            return await OnEvaluateAsync(dc, cancellationToken);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
-        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken ct)
+        protected async override Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken ct)
         {
             // if we are missing this.name, prompt for it.
             ObjectPath.TryGetPathValue<String>(dc.State, "this.name", out var name);
@@ -200,11 +200,11 @@ BeginDialog()
             => OnMessageActivity()
                 => OnRecognizedIntent()
                     => OnXXXIntent()
-                        =>OnEvaluateAsync()
+                        =>OnEvaluateStateAsync()
                 => OnUnrecognizedIntent()
-                    => OnEvaluateAsync()
+                    => OnEvaluateStateAsync()
             => OnTypingActivity()
-                => OnEvaluateAsync()
+                => OnEvaluateStateAsync()
             => ...
 ContinueDialog()
     => OnContinueDialog()
@@ -212,17 +212,19 @@ ContinueDialog()
             => OnMessageActivity()
                 => OnRecognizedIntent()
                     => OnXXXIntent()
-                        =>OnEvaluateAsync()
+                        =>OnEvaluateStateAsync()
                 => OnUnrecognizedIntent()
-                    => OnEvaluateAsync()
+                    => OnEvaluateStateAsync()
             => OnTypingActivity()
-                => OnEvaluateAsync()
+                => OnEvaluateStateAsync()
             => ...
 ResumeDialog()
-    => OnPromptCompletedAsync()
-        => OnEvaluateAsync()
-    => OnPromptCanceledAsync()
-        => OnEvaluteAsync()
+    => OnResumeDialog()
+        => OnPromptCompletedAsync() 
+            => OnEvaluateStateAsync()
+        => OnPromptCanceledAsync() 
+            => OnEvaluteAsync()
+        => OnEvaluateStateAsync()
 ```
 
 ## Extension Helpers

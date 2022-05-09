@@ -48,6 +48,33 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
 
         /// <summary>
+        /// RouteDialogAsync() - route activity to dialog to be processed.
+        /// </summary>
+        /// <remarks>
+        /// if you use a recognizer (IcyDialog or AdaptiveDialog) it will set a flag signalling that the activity is processed
+        /// When BeginDialog() is called the called dialog by default will not process the input again.
+        ///
+        /// An example of this is the outer dialog has a list of numbered options.  The user picks option "1". You don't want
+        /// the called dialog to process "1" as input.  BeginDialog() behaves this way.
+        /// 
+        /// But if the outer dialog is routing the activity it has a model which indicates which dialog to route the activity to be
+        /// processed.  The RouteDialogAsync() method is just like BeginDialog only it clears the recognizer flag so that target
+        /// dialog will attempt to interpret the activity.
+        /// </remarks>
+        /// <typeparam name="DialogT">dialog to beginDialog on</typeparam>
+        /// <param name="dc"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static Task<DialogTurnResult> RouteDialogAsync<DialogT>(this DialogContext dc, object options, CancellationToken cancellationToken)
+            where DialogT: Dialog
+        {
+            // signal that activity has not been recognized and the IcyDialog/AdaptiveDialog/... 
+            dc.State.SetValue(TurnPath.ActivityProcessed, false);
+            return dc.BeginDialogAsync<DialogT>(options, cancellationToken);
+        }
+
+        /// <summary>
         /// PromptAsync() - Begins a dialog and stores the result from the dialog in property path
         /// </summary>
         /// <typeparam name="DialogT"></typeparam>
@@ -238,6 +265,28 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             where DialogT : Dialog
         {
             dialogSet.Add(Activator.CreateInstance<DialogT>());
+        }
+
+        public static Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, params string[] variations)
+        {
+            return dc.AskQuestionAsync(label, CancellationToken.None, variations);
+        }
+
+        public static async Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, CancellationToken cancellationToken, params string[] variations)
+        {
+            dc.State.SetValue("dialog.lastquestion", label);
+            await dc.SendReplyText(cancellationToken, variations);
+            return await dc.WaitForInputAsync(cancellationToken);
+        }
+
+        public static string GetLastQuestion(this DialogContext dc)
+        {
+            return dc.State.GetValue<string>("dialog.lastquestion");
+        }
+
+        public static void ClearQuestion(this DialogContext dc)
+        {
+            dc.State.RemoveValue("dialog.lastquestion");
         }
 
     }

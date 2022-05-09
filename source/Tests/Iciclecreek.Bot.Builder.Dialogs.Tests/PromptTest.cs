@@ -39,7 +39,7 @@ entities:
         protected async virtual Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             dc.AppendReplyText($"Hi!");
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         protected async virtual Task<DialogTurnResult> OnQueryNameIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
@@ -53,10 +53,10 @@ entities:
             {
                 dc.AppendReplyText($"Your name is {name}.");
             }
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
-        protected async override Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
+        protected async override Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             // if we are missing this.name, prompt for it.
             dc.State.TryGetValue<string>("this.name", out var name);

@@ -43,7 +43,7 @@ entities:
             };
         }
 
-        protected override async Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
+        protected override async Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             // greet user if we haven't yet.
             if (!dc.State.TryGetValue<bool>("dialog.greeted", out var greeted))
@@ -92,7 +92,7 @@ entities:
         {
             dc.AppendReplyText("Hi!");
             dc.State.SetValue("dialog.greeted", true);
-            return await OnEvaluateAsync(dc, cancellationToken);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         protected virtual async Task<DialogTurnResult> OnChangeInfoIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
@@ -113,7 +113,7 @@ entities:
                 dc.State.SetValue("dialog.age", age.Value);
             }
 
-            return await OnEvaluateAsync(dc, cancellationToken);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
         }
     }
 }

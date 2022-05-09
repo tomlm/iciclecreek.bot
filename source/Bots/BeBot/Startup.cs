@@ -37,8 +37,10 @@ namespace BeBot
                 .AddMemoryCache()
                 .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(BeBot).ToLower()))
                 .AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>()
+                .AddSingleton<IMiddleware, NormalizeMentionsMiddleware>()
                 .AddSingleton<IBotFrameworkHttpAdapter, FunctionAdapter>()
-                .AddSingleton<Dialog, BeBotDialog>()
+                .AddDialog<BeBotDialog>()
+                .AddDialog<SetPlanDialog>()
                 .AddSingleton<CloudStorageAccount>((sp) => CloudStorageAccount.Parse(builder.GetContext().Configuration.GetValue<string>("AzureWebJobsStorage")))
                 .AddSingleton<CloudQueueClient>((sp) => sp.GetService<CloudStorageAccount>().CreateCloudQueueClient())
                 .AddSingleton<AzureDirectory>((sp) =>

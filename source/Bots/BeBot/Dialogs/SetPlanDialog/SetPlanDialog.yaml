@@ -1,0 +1,43 @@
+﻿# match on any token with ___, you can name a wildcard slot by using (entityName:___)
+# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound entity result.
+locale: en
+macros:
+  $placeRef: (be|sitting|at|in|the|from)+ (working at)? (Place:___)*
+entities:
+  - name: Help
+    patterns:
+      - help
+
+  - name: Cancel
+    patterns:
+      - cancel
+      - stop
+      - end
+        
+  - name : SetPlan
+    patterns:
+      - "@PlanPhrase (___)* $placeRef (@Dates)*"
+      - "@Dates @PlanPhrase (___)* $placeRef"
+
+  - name: '@PlanPhrase'
+    patterns:
+      - I will
+      - I plan
+      - My plan 
+      - My schedule 
+      - I'll 
+      - (I'm|I am) 
+      - (I'm|I am) 
+
+  - name: Dates
+    patterns:
+      - "(on)? @datetime ((and|or|also)* (@datetime)+)*"
+      - "@datetimeV2.set ((and|or|also)* (@datetimeV2.set)+)*"
+      

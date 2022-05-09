@@ -1,8 +1,8 @@
 ﻿namespace BeBot.Dialogs
 {
-    public partial class BeBotDialog
+    public static class BeBotDialogText
     {
-        protected static readonly string[] HelpText = new string[]
+        public static readonly string[] Help = new string[]
         {
 $@"### Welcome!
 I'm **BeBot**, the hybrid worker bot.
@@ -19,7 +19,7 @@ You can then ask questions about other people's schedule:
 "
         };
 
-        protected static readonly string[] Greetings = new string[]
+        public static readonly string[] GreetingReplies = new string[]
         {
             " Hi!",
             " Hello!",
@@ -27,7 +27,15 @@ You can then ask questions about other people's schedule:
             " Greetings!"
         };
 
-        protected static readonly string[] Goodbyes = new string[]
+        public static readonly string[] CancelReplies = new string[]
+        {
+            " OK, starting over...",
+            " Got it. Let's start fresh.",
+            " Cancellation accomplished.",
+            " Woops. Was I stuck? Let's reset."
+        };
+
+        public static readonly string[] GoodbyeReplies = new string[]
         {
             " See you later!",
             " Goodbye!",
@@ -38,7 +46,18 @@ You can then ask questions about other people's schedule:
             " A river ditchy!"
         };
 
-        protected static readonly string[] AckAliasChanged = new string[]
+        public static readonly string[] HelpUserAlias = new string[]
+        {
+             " I need to know your alias...cause without it I'm lost.",
+             " I need your alias, bots like me aren't so good with names.",
+        };
+        public static readonly string[] AskUserAlias = new string[]
+        {
+            " What is your alias?",
+            " I need to know your alias. Can you please provide it?"
+        };
+
+        public static readonly string[] UserAliasChangedReplies = new string[]
         {
             " Your alias is now @${user.alias}",
             " Got it, @${user.alias}",
@@ -47,15 +66,9 @@ You can then ask questions about other people's schedule:
             " Hail @${user.alias}!"
         };
 
-        protected static readonly string[] ThanksResponse = new string[]
+        public static readonly string[] ThanksReplies = new string[]
         {
             " No problem!", " I love being helpful.", " You are welcome.", " De nada", " It is my pleasure to help you."
-        };
-
-        protected static readonly string[] ExplainAlias = new string[]
-        {
-             " I need to know your alias...cause without it I'm lost.",
-             " I need your alias, bots like me aren't so good with names.",
         };
     }
 }

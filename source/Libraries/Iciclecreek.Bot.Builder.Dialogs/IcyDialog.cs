@@ -38,13 +38,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     /// </remarks>
     public class IcyDialog : Dialog
     {
-        private Dictionary<string, MethodInfo> _intentMethods = new Dictionary<string, MethodInfo>();
+        private Dictionary<string, MethodInfo> _autoMethods = new Dictionary<string, MethodInfo>();
 
         public IcyDialog(string dialogId = null)
             : base(dialogId)
         {
-            _intentMethods = this.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-                .Where(mi => mi.Name.StartsWith("On") && mi.Name.EndsWith("Intent") && mi.GetParameters().Count() == 4)
+            _autoMethods = this.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                .Where(mi =>
+                    mi.Name.StartsWith("On") &&
+                    (mi.Name.EndsWith("Intent") || mi.Name.EndsWith("Answer")) &&
+                    mi.GetParameters().Count() == 4)
                 .ToDictionary(mi => mi.Name, mi => mi);
         }
 
@@ -135,7 +138,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                 }
             }
 
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         /// <summary>
@@ -166,7 +169,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                 dc.State.SetValue($"turn.{property}", result);
             }
 
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         /// <summary>
@@ -183,7 +186,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         protected async virtual Task<DialogTurnResult> OnPromptCanceledAsync(DialogContext dc, string property, CancellationToken cancellationToken = default)
         {
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         /// <summary>
@@ -197,7 +200,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dc">dialogcontext</param>
         /// <param name="cancellationToken">ct</param>
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
-        protected async virtual Task<DialogTurnResult> OnEvaluateAsync(DialogContext dc, CancellationToken cancellationToken)
+        protected async virtual Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             return await dc.WaitForInputAsync();
         }
@@ -281,10 +284,16 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                     return await OnRecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
                 }
 
+                if (!String.IsNullOrEmpty(dc.GetLastQuestion()))
+                {
+                    dc.ClearQuestion();
+                    return await OnAnswerAsync(dc, messageActivity, recognizerResult, cancellationToken);
+                }
+
                 return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
             }
 
-            return await OnEvaluateAsync(dc, cancellationToken);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
 
@@ -307,11 +316,39 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         protected async virtual Task<DialogTurnResult> OnRecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             var (intent, score) = recognizerResult.GetTopScoringIntent();
-            if (_intentMethods.TryGetValue($"On{intent}Intent", out var mi))
+            if (_autoMethods.TryGetValue($"On{intent}Intent", out var mi))
             {
                 return await (Task<DialogTurnResult>)mi.Invoke(this, new object[] { dc, messageActivity, recognizerResult, cancellationToken });
             }
 
+            if (!String.IsNullOrEmpty(dc.GetLastQuestion()))
+            {
+                var dtr = await OnAnswerAsync(dc, messageActivity, recognizerResult, cancellationToken);
+                return dtr;
+            }
+
+            return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
+        }
+
+        /// <summary>
+        /// OnAnswerAsync() - models an unrecognized intent in context of an answer
+        /// </summary>
+        /// <remarks>
+        /// Default behavior is to route to OnXXXXAnswer() method if defined, else fall back to OnUnrecognizedResult
+        /// </remarks>
+        /// <param name="dc"></param>
+        /// <param name="messageActivity"></param>
+        /// <param name="recognizerResult"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected async virtual Task<DialogTurnResult> OnAnswerAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            var lastQuestion = dc.GetLastQuestion();
+            if (_autoMethods.TryGetValue($"On{lastQuestion.Replace(".",String.Empty)}Answer", out var mi))
+            {
+                dc.ClearQuestion();
+                return await (Task<DialogTurnResult>)mi.Invoke(this, new object[] { dc, messageActivity, recognizerResult, cancellationToken });
+            }
             return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
         }
 
@@ -333,7 +370,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         protected async virtual Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             await dc.Context.SendActivityAsync("I'm sorry, I didn't understand that.");
-            return await this.OnEvaluateAsync(dc, cancellationToken);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
         /// <summary>

@@ -89,6 +89,28 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
         }
 
         [Fact]
+        public async Task TestAnswer()
+        {
+            var sp = new ServiceCollection()
+                .AddSingleton<IStorage>(new MemoryStorage())
+                .AddDialog<AnswerTestDialog>()
+                .AddPrompts()
+                .AddIcyBot()
+                .BuildServiceProvider();
+
+            await new TestFlow(new TestAdapter(), sp.GetService<IBot>())
+                .Send("hi")
+                    .AssertReply("Hi!\n\nWhat is your name?")
+                .Send("My name is Tom")
+                    .AssertReply("Hello Tom!")
+                .Send("change my name")
+                    .AssertReply("What is your name?")
+                .Send("Bob")
+                    .AssertReply("Hello Bob!")
+                .StartTestAsync();
+        }
+
+        [Fact]
         public async Task TestCallDialog()
         {
             var sp = new ServiceCollection()
