@@ -1,20 +1,11 @@
 ﻿using Iciclecreek.Bot.Builder.Dialogs;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
-using Lucene.Net.Search;
-using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage.Queue;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using YamlConverter;
 
 namespace BeBot.Dialogs
 {
@@ -33,8 +24,8 @@ namespace BeBot.Dialogs
             {
                 if (alias.Contains(" "))
                 {
-                    dc.AppendReplyText("\n\nI didn't understand your response as an alias.  I'm looking for something like 'tomlm' or '@tomlm'");
-                    return await dc.AskQuestionAsync("UserAlias", "\n\nWhat is your alias?");
+                    dc.AppendReplyText(BeBotDialogText.UserAlias_Bad);
+                    return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
                 }
                 dc.State.SetValue("user.alias", alias.TrimStart('@'));
             }
@@ -52,14 +43,14 @@ namespace BeBot.Dialogs
             }
             else
             {
-                dc.AppendReplyText("\n\nI didn't understand your response as dates.  I'm looking for something like 'monday and friday'");
-                return await dc.AskQuestionAsync("SetPlanWhen", "\n\nWhen will you be in this week?");
+                dc.AppendReplyText(BeBotDialogText.SetPlanWhen_Bad);
+                return await dc.AskQuestionAsync("SetPlanWhen", BeBotDialogText.SetPlanWhen_Ask);
             }
 
             return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
-        protected async Task<DialogTurnResult> OnSetPlanLocationAnswer(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        protected async Task<DialogTurnResult> OnSetPlanWhereAnswer(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             // interpret text as location answer.
             string where = GetPlace(recognizerResult);
@@ -74,8 +65,8 @@ namespace BeBot.Dialogs
             }
             else
             {
-                dc.AppendReplyText("\n\nI didn't understand your response as a location.  I'm looking for something like 'work' or 'building 123'");
-                return await dc.AskQuestionAsync("SetPlanWhere", "\n\nWhere will you be? (home, work, ...)");
+                dc.AppendReplyText(BeBotDialogText.SetPlanWhere_Bad);
+                return await dc.AskQuestionAsync("SetPlanWhere", BeBotDialogText.SetPlanWhere_Ask);
             }
 
             return await OnEvaluateStateAsync(dc, cancellationToken);

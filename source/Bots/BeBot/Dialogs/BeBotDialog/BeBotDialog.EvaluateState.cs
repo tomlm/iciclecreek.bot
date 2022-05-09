@@ -15,7 +15,7 @@ namespace BeBot.Dialogs
                 await OnEvaluateSetPlanStateAsync(dc, cancellationToken) ??
                 await Task.Run<DialogTurnResult>(async () =>
                 {
-                    await dc.SendReplyText(cancellationToken, "What can I do for you?");
+                    await dc.SendReplyText(cancellationToken, BeBotDialogText.OpenQuestion);
                     return await dc.WaitForInputAsync(cancellationToken);
                 });
         }
@@ -25,13 +25,13 @@ namespace BeBot.Dialogs
             // --- user.alias missing 
             if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
             {
-                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.AskUserAlias);
+                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
             }
 
             // --- user.alias changed
             if (dc.IsStateChanged("user.alias"))
             {
-                dc.AppendReplyText(BeBotDialogText.UserAliasChangedReplies);
+                dc.AppendReplyText(BeBotDialogText.UserAlias_Changed);
             }
             return null;
         }
@@ -44,13 +44,13 @@ namespace BeBot.Dialogs
                 var dates = dc.State.GetStringValue("dialog.SetPlan.When");
                 if (dates == null)
                 {
-                    return await dc.AskQuestionAsync("SetPlanWhen", "When will you be in this week?");
+                    return await dc.AskQuestionAsync("SetPlanWhen", BeBotDialogText.SetPlanWhen_Ask);
                 }
 
                 var location = dc.State.GetStringValue("dialog.SetPlan.Where");
                 if (location == null)
                 {
-                    return await dc.AskQuestionAsync("SetPlanWhere", "Where will you be? (home, work, ...)");
+                    return await dc.AskQuestionAsync("SetPlanWhere", BeBotDialogText.SetPlanWhere_Ask);
                 }
                 // do setplan work;
 

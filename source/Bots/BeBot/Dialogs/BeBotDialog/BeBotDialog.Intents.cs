@@ -1,31 +1,30 @@
 ﻿using Iciclecreek.Bot.Builder.Dialogs;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
-using Lucene.Net.Search;
-using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage.Queue;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using YamlConverter;
 
 namespace BeBot.Dialogs
 {
     public partial class BeBotDialog : IcyDialog
     {
+        protected async override Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        {
+            dc.AppendReplyText(BeBotDialogText.UnrecognizedResponse);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
+        }
+
         protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             switch (dc.GetLastQuestion())
             {
                 case "UserAlias":
-                    await dc.SendReplyText(BeBotDialogText.HelpUserAlias);
+                    await dc.SendReplyText(BeBotDialogText.UserAlias_Help);
                     break;
 
                 default:
@@ -72,7 +71,7 @@ namespace BeBot.Dialogs
             else
             {
                 // we have intent but no name, prompt for it.
-                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.AskUserAlias);
+                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
             }
 
             return await OnEvaluateStateAsync(dc, cancellationToken);
