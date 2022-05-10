@@ -97,7 +97,7 @@ namespace BeBot.Dialogs
                 dc.State.SetValue("dialog.SetPlan.Where", where);
             }
 
-            var when = GetDateEntities(recognizerResult);
+            var when = GetDateEntities(recognizerResult).Where(en => en.GetDate().HasValue || en.GetDate().HasValue == false || en.GetDate() >= DateTime.Now);
             if (when.Any())
             {
                 dc.State.SetValue("dialog.SetPlan.When", when);
@@ -109,7 +109,7 @@ namespace BeBot.Dialogs
         protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             var place = recognizerResult.GetEntities<string>("$..Place").FirstOrDefault();
-            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..dates..values"));
+            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..Dates..values"));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhoQuery");
             sb.AppendLine($"Place: {place}");
@@ -121,7 +121,7 @@ namespace BeBot.Dialogs
         protected async Task<DialogTurnResult> OnWhereQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             var person = recognizerResult.GetEntities<string>("$..Person").FirstOrDefault();
-            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..dates..values"));
+            var dates = new HashSet<DateTimexValue>(recognizerResult.GetEntities<DateTimexValue>("$..Dates..values"));
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"## WhereQuery");
             sb.AppendLine($"Person: {person}");

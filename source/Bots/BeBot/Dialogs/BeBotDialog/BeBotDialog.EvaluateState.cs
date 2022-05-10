@@ -1,6 +1,8 @@
 ﻿using Iciclecreek.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,18 +11,6 @@ namespace BeBot.Dialogs
     public partial class BeBotDialog : IcyDialog
     {
         protected override async Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
-        {
-            return
-                await OnEvaluateUserAliasStateAsync(dc, cancellationToken) ??
-                await OnEvaluateSetPlanStateAsync(dc, cancellationToken) ??
-                await Task.Run<DialogTurnResult>(async () =>
-                {
-                    await dc.SendReplyText(cancellationToken, BeBotDialogText.OpenQuestion);
-                    return await dc.WaitForInputAsync(cancellationToken);
-                });
-        }
-
-        protected virtual async Task<DialogTurnResult> OnEvaluateUserAliasStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             // --- user.alias missing 
             if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
@@ -33,16 +23,12 @@ namespace BeBot.Dialogs
             {
                 dc.AppendReplyText(BeBotDialogText.UserAlias_Changed);
             }
-            return null;
-        }
 
-        protected virtual async Task<DialogTurnResult> OnEvaluateSetPlanStateAsync(DialogContext dc, CancellationToken cancellationToken)
-        {
             // -- look for setPlan record
             if (dc.State.GetValue<object>("dialog.SetPlan") != null)
             {
-                var dates = dc.State.GetStringValue("dialog.SetPlan.When");
-                if (dates == null)
+                var dates = dc.State.GetValue<JArray>("dialog.SetPlan.When");
+                if (dates == null || !dates.Any())
                 {
                     return await dc.AskQuestionAsync("SetPlanWhen", BeBotDialogText.SetPlanWhen_Ask);
                 }
@@ -60,8 +46,8 @@ namespace BeBot.Dialogs
                 dc.State.RemoveValue("dialog.SetPlan");
             }
 
-            return null;
+            await dc.SendReplyText(cancellationToken, BeBotDialogText.OpenQuestion);
+            return await dc.WaitForInputAsync(cancellationToken);
         }
-
     }
 }

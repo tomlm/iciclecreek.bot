@@ -36,7 +36,7 @@ namespace BeBot.Dialogs
         protected async Task<DialogTurnResult> OnSetPlanWhenAnswer(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             // interpret text as dates answer
-            var when = GetDateEntities(recognizerResult);
+            var when = GetDateEntities(recognizerResult).Where(en => en.GetDate().HasValue || en.GetDate() >= DateTime.Now);
             if (when.Any())
             {
                 dc.State.SetValue("dialog.SetPlan.When", when);

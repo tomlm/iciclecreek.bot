@@ -51,7 +51,7 @@ namespace BeBot.Dialogs
         }
 
         private static IEnumerable<DateTimexValue> GetDateEntities(RecognizerResult recognizerResult)
-            => recognizerResult.GetEntities<DateTimexValue>("$..dates..values");
+            => recognizerResult.GetEntities<DateTimexValue>("$..Dates..values");
 
         private static string GetPlace(RecognizerResult recognizerResult)
         {
