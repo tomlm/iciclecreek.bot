@@ -45,7 +45,8 @@ namespace BeBot.Dialogs
             this._cloudQueue = cloudQueueClient;
 
         }
-
+        // ------------------------ INTENTS ----------------------
+        #region INTENTS
         protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             await dc.SendReplyText(HelpText);
@@ -137,6 +138,10 @@ namespace BeBot.Dialogs
 
             return await OnEvaluateStateAsync(dc, cancellationToken);
         }
+        #endregion
+
+        // ------------------------ EVALUATE ----------------------
+        #region EVALUATE
 
         protected override async Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
@@ -162,39 +167,10 @@ namespace BeBot.Dialogs
             dc.AppendReplyText("Plan: ${dialog.SetPlan}");
             return await dc.EndDialogAsync(null, cancellationToken);
         }
-
-        private static string NormalizePlace(string place)
-        {
-            if (place != null)
-            {
-                // normalize home and work
-                if (place.Contains("home"))
-                {
-                    place = "Home";
-                }
-
-                if (place.Contains("work"))
-                {
-                    place = "Work";
-                }
-            }
-
-            return place;
-        }
-
-
-
-        private static string VisualizeDates(IEnumerable<DateTimexValue> dates)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Dates:");
-            sb.AppendLine("```");
-            sb.AppendLine(YamlConvert.SerializeObject(dates));
-            sb.AppendLine("```");
-            return sb.ToString();
-        }
+        #endregion
 
         // ----------------------- TEXT -----------------------
+        #region TEXT
         public static readonly string[] HelpText = new string[]
         {
 $@"
@@ -243,6 +219,39 @@ Examples:
         {
             "\n\nWhere: ${where}",
         };
+        #endregion
+
+
+        private static string NormalizePlace(string place)
+        {
+            if (place != null)
+            {
+                // normalize home and work
+                if (place.Contains("home"))
+                {
+                    place = "Home";
+                }
+
+                if (place.Contains("work"))
+                {
+                    place = "Work";
+                }
+            }
+
+            return place;
+        }
+
+
+
+        private static string VisualizeDates(IEnumerable<DateTimexValue> dates)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Dates:");
+            sb.AppendLine("```");
+            sb.AppendLine(YamlConvert.SerializeObject(dates));
+            sb.AppendLine("```");
+            return sb.ToString();
+        }
 
     }
 }

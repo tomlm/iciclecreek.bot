@@ -39,6 +39,7 @@ namespace BeBot.Dialogs
         }
 
         // ----------------------- INTENTS ------------------------
+        #region INTENTS
         protected async override Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             dc.AppendReplyText("I'm sorry, I didn't understand that.");
@@ -75,8 +76,10 @@ namespace BeBot.Dialogs
             dc.AppendReplyText(SharedText.CancelReplies);
             return await dc.EndDialogAsync(null, cancellationToken);
         }
+        #endregion
 
         // ----------------------- TEXT ------------------------
+        #region TEXT
         public static readonly string[] HelpText = new string[]
         {
 $@"
@@ -88,6 +91,6 @@ Examples:
 * *who will be in city center on Friday?*
 "
         };
-
+        #endregion
     }
 }

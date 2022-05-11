@@ -1,12 +1,9 @@
 ﻿using Iciclecreek.Bot.Builder.Dialogs;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
-using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage.Queue;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +37,7 @@ namespace BeBot.Dialogs
         }
 
         // ----------------------- ACTIVITIES -----------------------
+        #region ACTIVITIES
         protected async override Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
             if (!dc.State.TryGetValue("user.welcomed", out var val))
@@ -51,8 +49,10 @@ namespace BeBot.Dialogs
 
             return await base.OnMessageActivityAsync(dc, messageActivity, cancellationToken);
         }
+        #endregion
 
         // ----------------------- EVALUATE -----------------------
+        #region EVALUATE
         protected override async Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
             // --- user.alias missing 
@@ -70,9 +70,11 @@ namespace BeBot.Dialogs
             await dc.SendReplyText(cancellationToken, WhatNext);
             return await dc.WaitForInputAsync(cancellationToken);
         }
+        #endregion
 
         // ----------------------- INTENTS ------------------------
-        protected async override Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
+        #region INTENTS
+        protected override async Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             dc.AppendReplyText(UnrecognizedResponse);
             await dc.SendReplyText(Help);
@@ -86,18 +88,13 @@ namespace BeBot.Dialogs
         }
 
         protected async Task<DialogTurnResult> OnSetPlanIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
-        {
-            return await dc.RouteDialogAsync<SetPlanDialog>(null, cancellationToken);
-        }
+            => await dc.RouteDialogAsync<SetPlanDialog>(null, cancellationToken);
 
-        protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
-        {
-            return await dc.RouteDialogAsync<WhoQueryDialog>(null, cancellationToken);
-        }
+        protected async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+            => await dc.RouteDialogAsync<WhoQueryDialog>(null, cancellationToken);
+
         protected async Task<DialogTurnResult> OnWhereQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
-        {
-            return await dc.RouteDialogAsync<WhereQueryDialog>(null, cancellationToken);
-        }
+            => await dc.RouteDialogAsync<WhereQueryDialog>(null, cancellationToken);
 
         protected virtual async Task<DialogTurnResult> OnChangeAliasIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
@@ -174,8 +171,10 @@ namespace BeBot.Dialogs
             await dc.SendReplyText(SharedText.GoodbyeReplies);
             return await dc.WaitForInputAsync(cancellationToken);
         }
+        #endregion
 
         // ----------------------- TEXT ------------------------
+        #region TEXT
         public static string[] Welcome = new string[]
         {
 @"### Welcome!
@@ -245,6 +244,6 @@ You can ask **who** and **where** questions about your coworkers schedule:
         {
             "\n\nI didn't understand your response as an alias.  I'm looking for something like *tomlm* or *@tomlm*"
         };
-
+        #endregion
     }
 }
