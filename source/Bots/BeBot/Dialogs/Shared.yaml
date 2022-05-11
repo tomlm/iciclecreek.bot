@@ -1,0 +1,29 @@
+﻿  - name: Help
+    patterns:
+      - help
+      - why
+
+  - name: Cancel
+    patterns:
+      - cancel
+
+  - name: Greeting
+    patterns:
+      - hi
+      - hello
+      - howdy
+
+  - name: Thanks
+    patterns:
+      - thank you
+      - thanks
+      - cool
+
+  - name: Goodbye
+    patterns:
+    - bye
+    - goodbye
+    - good bye
+    - see (you|ya)
+    - catch (you|ya) later 
+

@@ -8,35 +8,22 @@
 #   '~' ==> use fuzzy matching for the tokens in the group.
 # Entities can be placed into a pattern with '@', creating a compound entity result.
 locale: en
-externalEntities: [datetime]
+externalEntities: [mention, datetime]
 macros:
   $placeRef: (be|sitting|at|in|the|from)+ (working at)? (Place:___)*
 entities:
-  - name: SetPlan
+  - name: WhereQuery
     patterns:
-      - "@Plan (and|@Plan)*"
-      - "@Plan (and (Place:___)+ (@Dates)+|@Plan)*"
-
-  - name: Plan
+      - "@WherePhrase (my)? (@mention|and|Person:___)+ (at|be|to|working)* (@Dates)*"
+  
+  - name: WherePhrase
     patterns:
-      - "@PlanPhrase (___)* $placeRef (@Dates)*"
-      - "@Dates @PlanPhrase (___)* $placeRef"
-      - "@PlanPhrase"
-      - "$placeRef (@Dates)*"
-
-  - name: '@PlanPhrase'
-    patterns:
-      - I will
-      - I plan
-      - My plan 
-      - My schedule 
-      - I'll 
-      - (I'm|I am) 
-      - (I'm|I am) 
-      - set my plan
+      - where will 
+      - where is 
+      - where are
 
   - name: Dates
     patterns:
       - "(on)? @datetime ((and|or|also)* (@datetime)+)*"
       - "@datetimeV2.set ((and|or|also)* (@datetimeV2.set)+)*"
-      
+    

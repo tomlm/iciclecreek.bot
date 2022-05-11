@@ -35,17 +35,19 @@ namespace BeBot
         {
             builder.Services
                 .AddMemoryCache()
-                .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(BeBot).ToLower()))
+                .AddSingleton<IStorage>(sp => new BlobsStorage(Environment.GetEnvironmentVariable("AzureWebJobsStorage"), nameof(BeBotHelp).ToLower()))
                 .AddSingleton<BotFrameworkAuthentication, ConfigurationBotFrameworkAuthentication>()
                 .AddSingleton<IMiddleware, NormalizeMentionsMiddleware>()
                 .AddSingleton<IBotFrameworkHttpAdapter, FunctionAdapter>()
                 .AddDialog<BeBotDialog>()
                 .AddDialog<SetPlanDialog>()
+                .AddDialog<WhoQueryDialog>()
+                .AddDialog<WhereQueryDialog>()
                 .AddSingleton<CloudStorageAccount>((sp) => CloudStorageAccount.Parse(builder.GetContext().Configuration.GetValue<string>("AzureWebJobsStorage")))
                 .AddSingleton<CloudQueueClient>((sp) => sp.GetService<CloudStorageAccount>().CreateCloudQueueClient())
                 .AddSingleton<AzureDirectory>((sp) =>
                 {
-                    string catalog = nameof(BeBot).ToLower();
+                    string catalog = nameof(BeBotHelp).ToLower();
                     var tempFolder = Path.Combine(Path.GetTempPath(), catalog);
                     if (!System.IO.Directory.Exists(tempFolder))
                         System.IO.Directory.CreateDirectory(tempFolder);

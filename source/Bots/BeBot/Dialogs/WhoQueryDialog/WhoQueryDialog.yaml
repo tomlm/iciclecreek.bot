@@ -12,28 +12,16 @@ externalEntities: [datetime]
 macros:
   $placeRef: (be|sitting|at|in|the|from)+ (working at)? (Place:___)*
 entities:
-  - name: SetPlan
+  - name: WhoQuery
     patterns:
-      - "@Plan (and|@Plan)*"
-      - "@Plan (and (Place:___)+ (@Dates)+|@Plan)*"
+      - "@WhoPhrase (___)* $placeRef (@Dates)?"
 
-  - name: Plan
+  - name: WhoPhrase
     patterns:
-      - "@PlanPhrase (___)* $placeRef (@Dates)*"
-      - "@Dates @PlanPhrase (___)* $placeRef"
-      - "@PlanPhrase"
-      - "$placeRef (@Dates)*"
-
-  - name: '@PlanPhrase'
-    patterns:
-      - I will
-      - I plan
-      - My plan 
-      - My schedule 
-      - I'll 
-      - (I'm|I am) 
-      - (I'm|I am) 
-      - set my plan
+      - who
+      - who is 
+      - who will
+      - who'll
 
   - name: Dates
     patterns:

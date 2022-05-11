@@ -9,56 +9,32 @@
 # Entities can be placed into a pattern with '@', creating a compound entity result.
 locale: en
 externalEntities: [mention, datetime]
-macros:
-  $placeRef: (be|sitting|at|in|the|from)+ (working at)? (Place:___)*
 entities:
-  - name: Help
-    patterns:
-      - help
-
-  - name: Cancel
-    patterns:
-      - cancel
-
-  - name: Greeting
-    patterns:
-      - hi
-      - hello
-      - howdy
-
-  - name: Thanks
-    patterns:
-      - thank you
-      - thanks
-      - cool
-
-  - name: Goodbye
-    patterns:
-    - bye
-    - goodbye
-    - good bye
-    - see (you|ya)
-    - catch (you|ya) later 
-
   - name: ChangeAlias
     patterns:
       - my alias (is|to) (alias:___)
       - (alias:___) is my alias
       - change my alias
       - set my alias
+      - reset my alias
         
   - name: WhereQuery
     patterns:
-      - "@WherePhrase (my)? (Person:___|@mention|and)+ (at|be|to|working)* (@Dates)*"
+      - where will 
+      - where is 
+      - where are
   
   - name: WhoQuery
     patterns:
-      - "@WhoPhrase (___)* $placeRef (@Dates)?"
+      - who
+      - who is 
+      - who will
+      - who'll
 
-  - name : SetPlan
+  - name: SetPlan
     patterns:
-      - "@PlanPhrase (___)* $placeRef (@Dates)*"
-      - "@Dates @PlanPhrase (___)* $placeRef"
+      - "@PlanPhrase (___)* ((@datetime|@datetimeV2.set))*"
+      - "(@datetime|@datetimeV2.set) @PlanPhrase"
       - "@PlanPhrase"
 
   - name: '@PlanPhrase'
@@ -72,21 +48,3 @@ entities:
       - (I'm|I am) 
       - set my plan
 
-  - name: WherePhrase
-    patterns:
-      - where will 
-      - where is 
-      - where are
-
-  - name: WhoPhrase
-    patterns:
-      - who
-      - who is 
-      - who will
-      - who'll
-
-  - name: Dates
-    patterns:
-      - "(on)? @datetime ((and|or|also)* (@datetime)+)*"
-      - "@datetimeV2.set ((and|or|also)* (@datetimeV2.set)+)*"
-      

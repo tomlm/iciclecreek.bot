@@ -4,14 +4,13 @@ using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage.Queue;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YamlConverter;
@@ -26,12 +25,19 @@ namespace BeBot.Dialogs
 
         public BeBotDialog(IConfiguration configuration, CloudQueueClient cloudQueueClient, IndexSearcher searcher)
         {
+
             var yaml = new StreamReader(typeof(BeBotDialog).Assembly.GetManifestResourceStream($"{typeof(BeBotDialog).FullName}.{typeof(BeBotDialog).Name}.yaml")).ReadToEnd();
+            var yamlShared = new StreamReader(typeof(BeBotDialog).Assembly.GetManifestResourceStream($"BeBot.Dialogs.Shared.yaml")).ReadToEnd();
+
             this.Recognizer = new LucyRecognizer()
             {
-                ExternalEntityRecognizer = new ChannelMentionEntityRecognizer(),
-                Intents = new List<string>() { "Help", "Cancel", "Greeting", "Goodbye", "ChangeAlias", "WhereQuery", "WhoQuery", "SetPlan", "Thanks" },
-                Model = YamlConvert.DeserializeObject<LucyDocument>(yaml)
+                ExternalEntityRecognizer = BeBotHelp.GetSharedRecognizer(),
+                Intents = new List<string>()
+                {
+                    "Help", "Cancel", "Greeting", "Goodbye", "Thanks",
+                    "ChangeAlias", "SetPlan", "WhoQuery", "WhereQuery"
+                },
+                Model = YamlConvert.DeserializeObject<LucyDocument>($"{yaml}\n\n{yamlShared}")
             };
 
             this._configuration = configuration;
@@ -39,10 +45,12 @@ namespace BeBot.Dialogs
             this._cloudQueue = cloudQueueClient;
         }
 
+        // ----------------------- ACTIVITIES -----------------------
         protected async override Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
             if (!dc.State.TryGetValue("user.welcomed", out var val))
             {
+                dc.AppendReplyText(BeBotDialogText.Welcome);
                 await dc.SendReplyText(BeBotDialogText.Help);
                 dc.State.SetValue("user.welcomed", true);
             }
@@ -50,42 +58,127 @@ namespace BeBot.Dialogs
             return await base.OnMessageActivityAsync(dc, messageActivity, cancellationToken);
         }
 
-        private static IEnumerable<DateTimexValue> GetDateEntities(RecognizerResult recognizerResult)
-            => recognizerResult.GetEntities<DateTimexValue>("$..Dates..values");
-
-        private static string GetPlace(RecognizerResult recognizerResult)
+        // ----------------------- EVALUATE -----------------------
+        protected override async Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
-            var place = recognizerResult.GetEntities<string>("$..Place").FirstOrDefault();
-            return NormalizePlace(place);
-        }
-
-        private static string NormalizePlace(string place)
-        {
-            if (place != null)
+            // --- user.alias missing 
+            if (String.IsNullOrEmpty(dc.State.GetStringValue("user.alias")))
             {
-                // normalize home and work
-                if (place.Contains("home"))
-                {
-                    place = "Home";
-                }
-
-                if (place.Contains("work"))
-                {
-                    place = "Work";
-                }
+                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
             }
 
-            return place;
+            // --- user.alias changed
+            if (dc.IsStateChanged("user.alias"))
+            {
+                dc.AppendReplyText(BeBotDialogText.UserAlias_Changed);
+            }
+
+            await dc.SendReplyText(cancellationToken, BeBotDialogText.WhatNext);
+            return await dc.WaitForInputAsync(cancellationToken);
         }
 
-        private static string VisualizeDates(IEnumerable<DateTimexValue> dates)
+        // ----------------------- INTENTS ------------------------
+        protected async override Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Dates:");
-            sb.AppendLine("```");
-            sb.AppendLine(YamlConvert.SerializeObject(dates));
-            sb.AppendLine("```");
-            return sb.ToString();
+            dc.AppendReplyText(BeBotDialogText.UnrecognizedResponse);
+            await dc.SendReplyText(BeBotDialogText.Help);
+            return await this.OnEvaluateStateAsync(dc, cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnCancelIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            dc.ClearQuestion();
+            return await dc.WaitForInputAsync();
+        }
+
+        protected async Task<DialogTurnResult> OnSetPlanIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            return await dc.RouteDialogAsync<SetPlanDialog>(null, cancellationToken);
+        }
+
+        protected virtual async Task<DialogTurnResult> OnWhoQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            return await dc.RouteDialogAsync<WhoQueryDialog>(null, cancellationToken);
+        }
+        protected async Task<DialogTurnResult> OnWhereQueryIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            return await dc.RouteDialogAsync<WhereQueryDialog>(null, cancellationToken);
+        }
+
+        protected virtual async Task<DialogTurnResult> OnChangeAliasIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            var alias = recognizerResult.GetEntities<string>("$..alias").FirstOrDefault() ?? String.Empty;
+            if (!String.IsNullOrEmpty(alias))
+            {
+                dc.State.SetValue("user.alias", alias);
+            }
+            else
+            {
+                // we have intent but no name, ask for it.
+                return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
+            }
+
+            return await OnEvaluateStateAsync(dc, cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnUserAliasAnswer(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            // look for a @mention
+            var alias = recognizerResult.GetEntities<string>("$..mention..value").FirstOrDefault();
+            if (alias == null)
+            {
+                alias = messageActivity.Text.Trim();
+            }
+
+            if (!String.IsNullOrEmpty(alias))
+            {
+                // assume it is a text response with single word
+                if (alias.Contains(" "))
+                {
+                    dc.AppendReplyText(BeBotDialogText.UserAlias_Bad);
+                    return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
+                }
+
+                // save new alias
+                dc.State.SetValue("user.alias", alias.TrimStart('@'));
+            }
+
+            return await OnEvaluateStateAsync(dc, cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            switch (dc.GetLastQuestion())
+            {
+                case "UserAlias":
+                    dc.AppendReplyText(BeBotDialogText.UserAlias_Help);
+                    return await dc.AskQuestionAsync("UserAlias", BeBotDialogText.UserAlias_Ask);
+
+                default:
+                    dc.AppendReplyText(BeBotDialogText.Help);
+                    break;
+            }
+
+            await dc.SendReplyText(cancellationToken);
+            return await dc.WaitForInputAsync(cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnGreetingIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            dc.AppendReplyText(SharedText.GreetingReplies);
+            return await OnEvaluateStateAsync(dc, cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnThanksIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            dc.AppendReplyText(SharedText.ThanksReplies);
+            return await dc.WaitForInputAsync(cancellationToken);
+        }
+
+        protected async Task<DialogTurnResult> OnGoodbyeIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
+        {
+            await dc.SendReplyText(SharedText.GoodbyeReplies);
+            return await dc.WaitForInputAsync(cancellationToken);
         }
     }
 }

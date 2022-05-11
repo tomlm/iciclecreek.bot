@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BeBot.Dialogs
 {
-    internal class DateTimexValue
+    public class DateTimexValue
     {
         [JsonProperty("type")]
         public string Type { get; set; }

@@ -29,10 +29,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Dialogs\SetPlanDialog.yaml" />
+    <None Remove="Dialogs\Shared.yaml" />
+    <None Remove="Dialogs\WhereQueryDialog\WhoQueryDialog.yaml" />
+    <None Remove="Dialogs\WhoQueryDialog\SetPlanDialog.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Shared.yaml" />
     <EmbeddedResource Include="Dialogs\SetPlanDialog\SetPlanDialog.yaml" />
     <EmbeddedResource Include="Dialogs\BeBotDialog\BeBotDialog.yaml" />
+    <EmbeddedResource Include="Dialogs\WhoQueryDialog\WhoQueryDialog.yaml" />
+    <EmbeddedResource Include="Dialogs\WhereQueryDialog\WhereQueryDialog.yaml" />
   </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
