@@ -7,19 +7,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using Iciclecreek.Bot.Builder.Dialogs;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Conditions;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json.Linq;
 using YamlConverter;
 
 namespace BeBot.Dialogs
 {
-    public partial class SetPlanDialog : IcyDialog
+    public class SetPlanDialog : IcyDialog
     {
-        public SetPlanDialog()
+        private readonly IConfiguration _configuration;
+        private readonly IndexSearcher _searcher;
+        private readonly CloudQueueClient _cloudQueue;
+
+        public SetPlanDialog(IConfiguration configuration, CloudQueueClient cloudQueueClient)
         {
             var yaml = new StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(SetPlanDialog).FullName}.{typeof(SetPlanDialog).Name}.yaml")).ReadToEnd();
             var yamlShared = new StreamReader(typeof(BeBotDialog).Assembly.GetManifestResourceStream($"BeBot.Dialogs.Shared.yaml")).ReadToEnd();
@@ -33,11 +40,15 @@ namespace BeBot.Dialogs
                 },
                 Model = YamlConvert.DeserializeObject<LucyDocument>($"{yaml}\n\n{yamlShared}")
             };
+
+            this._configuration = configuration;
+            this._cloudQueue = cloudQueueClient;
+
         }
 
         protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            await dc.SendReplyText(SetPlanDialogText.HelpText);
+            await dc.SendReplyText(HelpText);
             return await dc.WaitForInputAsync(cancellationToken);
         }
 
@@ -98,8 +109,8 @@ namespace BeBot.Dialogs
             }
             else
             {
-                dc.AppendReplyText(SetPlanDialogText.When_Bad);
-                return await dc.AskQuestionAsync("When", SetPlanDialogText.When_Ask);
+                dc.AppendReplyText(When_Bad);
+                return await dc.AskQuestionAsync("When", When_Ask);
             }
 
             return await this.OnEvaluateStateAsync(dc, cancellationToken);
@@ -120,8 +131,8 @@ namespace BeBot.Dialogs
             }
             else
             {
-                dc.AppendReplyText(SetPlanDialogText.Where_Bad);
-                return await dc.AskQuestionAsync("Where", SetPlanDialogText.Where_Ask);
+                dc.AppendReplyText(Where_Bad);
+                return await dc.AskQuestionAsync("Where", Where_Ask);
             }
 
             return await OnEvaluateStateAsync(dc, cancellationToken);
@@ -131,20 +142,20 @@ namespace BeBot.Dialogs
         {
             if (dc.IsStateChanged("this.When") || dc.IsStateChanged("this.Where"))
             {
-                dc.AppendReplyText(SetPlanDialogText.When_Changed);
+                dc.AppendReplyText(When_Changed);
             }
 
             // -- look for setPlan record
             var dates = dc.State.GetValue<JArray>("this.When");
             if (dates == null || !dates.Any())
             {
-                return await dc.AskQuestionAsync("When", SetPlanDialogText.When_Ask);
+                return await dc.AskQuestionAsync("When", When_Ask);
             }
 
             var location = dc.State.GetStringValue("this.Where");
             if (location == null)
             {
-                return await dc.AskQuestionAsync("Where", SetPlanDialogText.Where_Ask);
+                return await dc.AskQuestionAsync("Where", Where_Ask);
             }
 
             // do setplan work;
@@ -182,5 +193,56 @@ namespace BeBot.Dialogs
             sb.AppendLine("```");
             return sb.ToString();
         }
+
+        // ----------------------- TEXT -----------------------
+        public static readonly string[] HelpText = new string[]
+        {
+$@"
+
+### Setting a plan 
+To set the plan for the week you need to tell me when and where you are going to be.
+
+Examples:
+* *I'll be in City Center on Monday, Tuesday and Friday*
+* *I'll be at work on Mondays and Tuesdays*
+* *I will be in city center on Monday and in red west c on thursdays.*
+"
+        };
+
+        public static readonly string[] When_Ask = new string[]
+        {
+            "\n\nWhen will you be in this week?",
+            "\n\nWhen do you think you will be in this week?",
+            "\n\nWhat days are we talking about?"
+        };
+
+        public static readonly string[] When_Bad = new string[]
+        {
+            "\n\nI didn't understand your response as dates.  I'm looking for something like *monday and friday*",
+            "\n\nHmmm, I didn't find a date.  A typical response would be like *monday and friday*"
+        };
+
+        public static readonly string[] When_Changed = new string[]
+        {
+            "\n\nWhen: ${this.when}",
+        };
+
+        public static readonly string[] Where_Ask = new string[]
+        {
+            "\n\nWhere will you be? (home, work, ...)",
+            "\n\nWhich location are you going to? (home, work, ...)",
+            "\n\nGive me a hint...what location will be working at? (home, work, ...)"
+        };
+
+        public static readonly string[] Where_Bad = new string[]
+        {
+            "\n\nI didn't understand your response as a location.  I'm looking for something like 'work' or 'building 123'"
+        };
+
+        public static readonly string[] Where_Changed = new string[]
+        {
+            "\n\nWhere: ${where}",
+        };
+
     }
 }

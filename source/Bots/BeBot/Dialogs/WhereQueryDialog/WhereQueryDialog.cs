@@ -4,17 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using Iciclecreek.Bot.Builder.Dialogs;
 using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
+using Lucene.Net.Search;
 using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage.Queue;
 using YamlConverter;
 
 namespace BeBot.Dialogs
 {
-    public partial class WhereQueryDialog : IcyDialog
+    public class WhereQueryDialog : IcyDialog
     {
-        public WhereQueryDialog()
+        private readonly IConfiguration _configuration;
+        private readonly IndexSearcher _searcher;
+        private readonly CloudQueueClient _cloudQueue;
+
+        public WhereQueryDialog(IConfiguration configuration, CloudQueueClient cloudQueueClient, IndexSearcher searcher)
         {
             var yaml = new StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream($"{typeof(WhereQueryDialog).FullName}.{typeof(WhereQueryDialog).Name}.yaml")).ReadToEnd();
             var yamlShared = new StreamReader(typeof(BeBotDialog).Assembly.GetManifestResourceStream($"BeBot.Dialogs.Shared.yaml")).ReadToEnd();
@@ -24,6 +31,11 @@ namespace BeBot.Dialogs
                 Intents = new List<string>() { "Help", "Cancel", "Greeting", "Goodbye", "Thanks", "WhoQuery", "Dates" },
                 Model = YamlConvert.DeserializeObject<LucyDocument>($"{yaml}\n\n{yamlShared}")
             };
+
+            this._configuration = configuration;
+            this._searcher = searcher;
+            this._cloudQueue = cloudQueueClient;
+
         }
 
         // ----------------------- INTENTS ------------------------
@@ -31,13 +43,13 @@ namespace BeBot.Dialogs
         protected async override Task<DialogTurnResult> OnUnrecognizedIntentAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken)
         {
             dc.AppendReplyText("I'm sorry, I didn't understand that.");
-            await dc.SendReplyText(WhereQueryDialogText.HelpText);
+            await dc.SendReplyText(HelpText);
             return await dc.EndDialogAsync(null, cancellationToken);
         }
 
         protected async Task<DialogTurnResult> OnHelpIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            await dc.SendReplyText(WhereQueryDialogText.HelpText);
+            await dc.SendReplyText(HelpText);
             return await dc.WaitForInputAsync(cancellationToken);
         }
 
@@ -64,6 +76,19 @@ namespace BeBot.Dialogs
             dc.AppendReplyText(SharedText.CancelReplies);
             return await dc.EndDialogAsync(null, cancellationToken);
         }
+
+        // ----------------------- TEXT ------------------------
+        public static readonly string[] HelpText = new string[]
+{
+$@"
+
+### Where Query
+You can ask for locations where people will be by using a **where** query.
+
+Examples:
+* *Where will Lili and Scott be on Friday?*
+"
+};
 
     }
 }
