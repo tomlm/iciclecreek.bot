@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Lucy.net" Version="1.0.12-preview" />
     <PackageReference Include="Microsoft.Bot.Builder" Version="4.16.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.16.0" />
   </ItemGroup>
