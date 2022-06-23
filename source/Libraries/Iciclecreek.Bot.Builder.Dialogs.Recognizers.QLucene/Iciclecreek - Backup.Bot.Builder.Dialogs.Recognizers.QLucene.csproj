@@ -30,7 +30,7 @@
   <ItemGroup>
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00011" />
     <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.11.0-rc0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.11.0-rc0" />
   </ItemGroup>
 
