@@ -45,8 +45,11 @@ namespace KnowBot.Triggers
  
 body{margin:0}
 iframe {
-  width: 50%;
-  height:  99vh;
+    position: fixed;
+    width: 600px;
+    height:95vh;
+    left: 50%;
+    transform: translate(-50%, 0%); 
 }
 </style>
 
