@@ -128,7 +128,12 @@ namespace KnowBot.Dialogs
                 {
                     CompletionResult result = await GetAnswer(facts, questions);
                     var answer = result.Completions.FirstOrDefault() ?? "Hmmm. I guess I don't have an answer for that";
-                    dc.AppendReplyText(answer.Replace("my", "your").Replace("I am", "You are"));
+                    dc.AppendReplyText(answer
+                            .Replace("I am ", "You are ")
+                            .Replace("My ", "Your ")
+                            .Replace("my ", "your ")
+                            .Replace("myself ", "you ")
+                            .Replace("I ", "You "));
                 }
                 else if (needResponse)
                 {
