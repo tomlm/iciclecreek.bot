@@ -58,7 +58,7 @@ namespace KnowBot.Dialogs
             if (!dc.State.TryGetValue("user.welcomed", out var val))
             {
                 await dc.SendReplyText(Welcome);
-                await dc.SendReplyText(Prompts);
+                await dc.SendReplyText("Tell me about yourself! What are your interests, backgrounds, etc?");
                 dc.State.SetValue("user.welcomed", true);
             }
 
