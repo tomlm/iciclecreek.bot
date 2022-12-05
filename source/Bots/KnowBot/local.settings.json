@@ -1,0 +1,8 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+        "MicrosoftAppId": "2e9ca871-5f00-4925-9e2a-b35ab0e2b5a5"
+    }
+}
