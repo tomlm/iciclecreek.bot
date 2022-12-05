@@ -152,8 +152,8 @@ namespace KnowBot.Dialogs
         {
             Prompt = $"{facts}\n{String.Join('\n', questions)}",
             Temperature = 0.4,
-            TopP = 1,
-            MaxTokens = 64,
+            TopP = 1,  
+            MaxTokens = 300,
             FrequencyPenalty = 0,
             PresencePenalty = 0,
         });
