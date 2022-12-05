@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using KnowBot.Dialogs;
 using Iciclecreek.Bot.Builder.Dialogs;
-using Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy;
-using Lucy;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Adaptive.Recognizers;
 using Microsoft.Bot.Schema;
-using Newtonsoft.Json.Linq;
 using YamlConverter;
 
 namespace KnowBot

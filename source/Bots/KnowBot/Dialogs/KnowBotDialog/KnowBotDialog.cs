@@ -72,10 +72,10 @@ namespace KnowBot.Dialogs
             if (text.EndsWith("?"))
                 return true;
 
-            if (text.Contains("who ") ||
-                text.Contains("what ") ||
-                text.Contains("where ") ||
-                text.Contains("how "))
+            if (text.StartsWith("who ") ||
+                text.StartsWith("what ") ||
+                text.StartsWith("where ") ||
+                text.StartsWith("how "))
                 return true;
 
             return false;
@@ -97,9 +97,13 @@ namespace KnowBot.Dialogs
                 {
                     facts = "";
 
-                    if (!String.IsNullOrEmpty(messageActivity.From.Name) && messageActivity.From.Name != "User")
+                    if (!String.IsNullOrEmpty(messageActivity.From.Name))
                     {
-                        facts = $"My name is {messageActivity.From.Name}";
+                        string name = messageActivity.From.Name.ToLower();
+                        if (name != "user" && name != "you")
+                        {
+                            facts = $"My name is {messageActivity.From.Name}";
+                        }
                     }
                 }
 
@@ -124,7 +128,7 @@ namespace KnowBot.Dialogs
                 {
                     CompletionResult result = await GetAnswer(facts, questions);
                     var answer = result.Completions.FirstOrDefault() ?? "Hmmm. I guess I don't have an answer for that";
-                    dc.AppendReplyText(answer.Replace("my", "your"));
+                    dc.AppendReplyText(answer.Replace("my", "your").Replace("I am", "You are"));
                 }
                 else if (needResponse)
                 {
