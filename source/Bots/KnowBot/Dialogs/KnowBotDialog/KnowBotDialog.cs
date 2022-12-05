@@ -124,7 +124,7 @@ namespace KnowBot.Dialogs
                 {
                     CompletionResult result = await GetAnswer(facts, questions);
                     var answer = result.Completions.FirstOrDefault() ?? "Hmmm. I guess I don't have an answer for that";
-                    dc.AppendReplyText(answer.Replace("my","your"));
+                    dc.AppendReplyText(answer.Replace("my", "your"));
                 }
                 else if (needResponse)
                 {
@@ -151,17 +151,20 @@ namespace KnowBot.Dialogs
 
         protected async Task<DialogTurnResult> OnShowFactsIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
-            if (!dc.State.TryGetValue("user.facts", out string factsText))
+            if (dc.State.TryGetValue("user.facts", out string factsText) && !String.IsNullOrEmpty(factsText))
             {
-                factsText = "";
+                var facts = Segmenter.Segment(factsText);
+                foreach (var fact in facts)
+                {
+                    dc.AppendReplyText($"* {fact}\n");
+                }
+                await dc.SendReplyText();
             }
-            var facts = Segmenter.Segment(factsText);
-
-            foreach (var fact in facts)
+            else
             {
-                dc.AppendReplyText($"* {fact}\n");
+                dc.AppendReplyText("I don't know anything about you yet.");
+                await dc.SendReplyText(Prompts);
             }
-            await dc.SendReplyText();
             return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
@@ -214,25 +217,28 @@ Any facts you tell me I will remember.  Any questions you ask I will answer from
 {
     "Tell me more...",
     "Super interesting, can you tell me more?",
-    "Tell me about your family...",
     "I'd love to learn more about your work...",
-    "Do you have siblings?",
-    "Who are your parents?",
-    "Where do you live?",
-    "Where did you grow up?",
-    "Where did you go to school?",
-    "Where did you grow up?",
-    "What do you want to do in your life?",
-    "Where would you like to travel?",
-    "What do you do for fun?",
-    "What are your interests?",
-    "What hobbies do you have?",
-    "When did you graduate?",
-    "How do you like your coffee?",
-    "What is your favorite food?",
-    "What is your favorite movie?",
-    "What is your favorite book?",
-    "What is your favorite place?",
+    "Tell me about where you live...",
+    "Tell me about where you are from...",
+    "Tell me about your hobbies...",
+    "Tell me about your work...",
+    "Tell me about your parents...",
+    "Tell me about your family...",
+    //"Where do you live?",
+    //"Where did you grow up?",
+    //"Where did you go to school?",
+    //"Where did you grow up?",
+    //"What do you want to do in your life?",
+    //"Where would you like to travel?",
+    //"What do you do for fun?",
+    //"What are your interests?",
+    //"What hobbies do you have?",
+    //"When did you graduate?",
+    //"How do you like your coffee?",
+    //"What is your favorite food?",
+    //"What is your favorite movie?",
+    //"What is your favorite book?",
+    //"What is your favorite place?",
 };
 
         public static readonly string[] Help = new string[]
