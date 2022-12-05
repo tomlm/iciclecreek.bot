@@ -9,6 +9,12 @@
 # Entities can be placed into a pattern with '@', creating a compound entity result.
 locale: en
 entities:
+  - name: Greeting
+    patterns:
+      - hi
+      - hello
+      - howdy
+
   - name: Help
     patterns:
       - help
@@ -23,3 +29,11 @@ entities:
       - what have you learned
       - what are the facts
       - (show|dump) (me|of|all|the)* facts
+
+  - name: Question
+    patterns:
+      - who 
+      - what
+      - where
+      - when
+      - how
