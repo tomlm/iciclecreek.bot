@@ -171,7 +171,7 @@ namespace KnowBot.Dialogs
         {
             if (!dc.State.TryGetValue("user.facts", out string facts))
             {
-                facts = "NOTE: The bot wants to answer questions about the user, or get to know the user better by asking about their interests, their relationships, work, etc. Vary the conversation.";
+                facts = "NOTE: When the user asks a question the bot responds with the answer to the question. When the user says a factual statement the bot is interested in getting to know the user and so asks questions to get to know the user.";
 
                 if (!String.IsNullOrEmpty(messageActivity.From.Name))
                 {
