@@ -36,7 +36,7 @@ namespace KnowBot.Dialogs
                 ExternalEntityRecognizer = BotHelp.GetSharedRecognizer(),
                 Intents = new List<string>()
                 {
-                    "Help", "Reset", "ShowFacts","Greeting"
+                    "Help", "Reset", "ShowFacts" //,"Greeting"
                 },
                 Model = YamlConvert.DeserializeObject<LucyDocument>($"{yaml}\n\n{yamlShared}")
             };
@@ -93,6 +93,24 @@ namespace KnowBot.Dialogs
                     text += ".";
                 }
 
+#if !gen1
+                string facts = GetFacts(dc, messageActivity);
+                facts += $"User: {text}\n";
+
+                CompletionResult result = await GetAnswer(facts);
+                var answer = result.Completions.FirstOrDefault();
+                if (answer != null)
+                {
+                    facts += $"{answer.Text}\n";
+                    var answerText = answer.Text.Trim();
+                    if (answerText.StartsWith("Bot:"))
+                        dc.AppendReplyText(answerText.Substring(4).TrimStart());
+                    else
+                        dc.AppendReplyText(answerText);
+                }
+                dc.State.SetValue("user.facts", facts);
+
+#else
                 if (!dc.State.TryGetValue("user.facts", out string facts))
                 {
                     facts = "";
@@ -143,16 +161,36 @@ namespace KnowBot.Dialogs
                     dc.AppendReplyText(answer);
                 }
 
+#endif
             }
             await dc.SendReplyText();
             return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
-        private async Task<CompletionResult> GetAnswer(string facts, IEnumerable<string> questions) => await _openAI.CompletionEndpoint.CreateCompletionAsync(new CompletionRequest()
+        private static string GetFacts(DialogContext dc, IMessageActivity messageActivity)
         {
-            Prompt = $"{facts}\n{String.Join('\n', questions)}",
+            if (!dc.State.TryGetValue("user.facts", out string facts))
+            {
+                facts = "NOTE: The bot wants to answer questions about the user, or get to know the user better by asking about their interests, their relationships, work, etc. Vary the conversation.";
+
+                if (!String.IsNullOrEmpty(messageActivity.From.Name))
+                {
+                    string name = messageActivity.From.Name.ToLower();
+                    if (name != "user" && name != "you")
+                    {
+                        facts += $"User: My name is {messageActivity.From.Name}.\n";
+                    }
+                }
+            }
+
+            return facts;
+        }
+
+        private async Task<CompletionResult> GetAnswer(string prompt) => await _openAI.CompletionEndpoint.CreateCompletionAsync(new CompletionRequest()
+        {
+            Prompt = prompt,
             Temperature = 0.4,
-            TopP = 1,  
+            TopP = 1,
             MaxTokens = 300,
             FrequencyPenalty = 0,
             PresencePenalty = 0,
@@ -160,20 +198,37 @@ namespace KnowBot.Dialogs
 
         protected async Task<DialogTurnResult> OnShowFactsIntent(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
+#if !gen1
+            string facts = GetFacts(dc, messageActivity);
+            facts += $"User: Please summarize everything you know about user as a bulleted list grouped by person name.\n";
+
+            CompletionResult result = await GetAnswer(facts);
+            var answer = result.Completions.FirstOrDefault();
+            if (answer != null)
+            {
+                var answerText = answer.Text.Trim();
+                if (answerText.StartsWith("Bot:"))
+                    dc.AppendReplyText(answerText.Substring(4).TrimStart());
+                else
+                    dc.AppendReplyText(answerText);
+                await dc.SendReplyText();
+            }
+#else
             if (dc.State.TryGetValue("user.facts", out string factsText) && !String.IsNullOrEmpty(factsText))
             {
-                var facts = Segmenter.Segment(factsText);
-                foreach (var fact in facts)
-                {
-                    dc.AppendReplyText($"* {fact}\n");
-                }
-                await dc.SendReplyText();
+                //var facts = Segmenter.Segment(factsText);
+                //foreach (var fact in facts)
+                //{
+                //    dc.AppendReplyText($"* {fact}\n");
+                //}
+                await dc.SendReplyText(factsText);
             }
             else
             {
                 dc.AppendReplyText("I don't know anything about you yet.");
                 await dc.SendReplyText(Prompts);
             }
+#endif
             return await this.OnEvaluateStateAsync(dc, cancellationToken);
         }
 
@@ -205,10 +260,10 @@ namespace KnowBot.Dialogs
                 return await OnUnrecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
             }
         }
-        #endregion
+#endregion
 
         // ----------------------- TEXT ------------------------
-        #region TEXT
+#region TEXT
         public static string[] Welcome = new string[]
         {
 @"# Welcome!
@@ -266,6 +321,6 @@ Any facts you tell me I will remember.  Any questions you ask I will answer from
             "Hi!","Hello!","Good Day!", "Greetings!"
         };
 
-        #endregion
+#endregion
     }
 }
