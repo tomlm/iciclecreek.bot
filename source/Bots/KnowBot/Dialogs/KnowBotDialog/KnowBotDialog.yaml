@@ -1,0 +1,39 @@
+﻿# match on any token with ___, you can name a wildcard slot by using (entityName:___)
+# group alternate tokens together using '(' ')' and '|' ==> (token1|token2|token3)
+# put quantifiers on any token grouping...
+#   '?' ==> zero or one
+#   '*' ==> zero or more
+#   '+' ==> one or more
+#   '#' ==> max number of tokens to consume
+#   '~' ==> use fuzzy matching for the tokens in the group.
+# Entities can be placed into a pattern with '@', creating a compound entity result.
+locale: en
+entities:
+  - name: Greeting
+    patterns:
+      - hi
+      - hello
+      - howdy
+
+  - name: Help
+    patterns:
+      - help
+
+  - name: Reset
+    patterns:
+      - reset
+
+  - name: ShowFacts
+    patterns:
+      - what do you know
+      - what have you learned
+      - what are the facts
+      - (show|dump) (me|of|all|the)* facts
+
+  - name: Question
+    patterns:
+      - who 
+      - what
+      - where
+      - when
+      - how

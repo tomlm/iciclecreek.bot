@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+    <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
+    <UserSecretsId>E56EABC8-F17B-4F94-913E-96BCA37FA599</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--<PackageReference Include="Iciclecreek.Bot.Builder.Dialogs" Version="4.16.6" />-->
+    <PackageReference Include="Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucy" Version="4.16.2" />
+    <PackageReference Include="Lucene.Net.Store.Azure" Version="4.8.0-beta015" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.24" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.5.2" />
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure.Blobs" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.1.0" />
+    <PackageReference Include="OpenAI-DotNet" Version="3.0.1" />
+    <PackageReference Include="PragmaticSegmenterNet" Version="1.0.5" />
+    <PackageReference Include="YamlConvert" Version="2.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="local.settings.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+    <None Include="wwwroot/**/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Dialogs\SetPlanDialog.yaml" />
+    <None Remove="Dialogs\Shared.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Shared.yaml" />
+    <EmbeddedResource Include="Dialogs\KnowBotDialog\KnowBotDialog.yaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Iciclecreek.Bot.Builder.Dialogs\Iciclecreek.Bot.Builder.Dialogs.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
