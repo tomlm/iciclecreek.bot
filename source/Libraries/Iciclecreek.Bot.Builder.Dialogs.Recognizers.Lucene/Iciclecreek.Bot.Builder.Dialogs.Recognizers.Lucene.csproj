@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>4.16.0</Version>
-    <AssemblyVersion>4.16.0.0</AssemblyVersion>
+    <Version>4.19.0</Version>
+    <AssemblyVersion>4.19.0.0</AssemblyVersion>
     <Description>Adds custom recognizers (DynamicList) which use Lucene.Net to Bot Framework and Bot Composer.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -21,20 +21,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AdaptiveExpressions" Version="4.16.0" />
+    <PackageReference Include="AdaptiveExpressions" Version="4.19.3" />
     <PackageReference Include="F23.StringSimilarity" Version="5.0.0" />
     <PackageReference Include="Lucene.Net.Analysis.Phonetic" Version="4.8.0-beta00012" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.16.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.16.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.16.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.16.0" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.16.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.19.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="" />
-    <None Include="readme.md" Pack="true" PackagePath="\"/>
+    <None Include="readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

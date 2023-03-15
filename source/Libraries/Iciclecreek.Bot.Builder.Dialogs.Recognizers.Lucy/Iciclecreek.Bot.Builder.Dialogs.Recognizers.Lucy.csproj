@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>4.16.2</Version>
-    <AssemblyVersion>4.16.2.0</AssemblyVersion>
+    <Version>4.19.0</Version>
+    <AssemblyVersion>4.19.0.0</AssemblyVersion>
     <Description>Adds custom LucyRecognizer (using Lucy.Net entity recognition) to Bot Framework and Bot Composer.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -22,10 +22,10 @@
 
   <ItemGroup>
     <PackageReference Include="Lucy.net" Version="1.0.12-preview" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.16.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.19.3" />
   </ItemGroup>
 
   <ItemGroup>
