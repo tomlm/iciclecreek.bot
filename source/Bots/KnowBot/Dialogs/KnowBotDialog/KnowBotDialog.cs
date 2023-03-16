@@ -7,6 +7,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using OpenAI;
+using OpenAI.Completions;
 using PragmaticSegmenterNet;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace KnowBot.Dialogs
         public KnowBotDialog(IConfiguration configuration)
         {
             var openAIKey = configuration.GetValue<string>("OpenAIKey");
-            _openAI = new OpenAIClient(new OpenAIAuthentication(openAIKey), new Engine("text-davinci-003"));
+            _openAI = new OpenAIClient(new OpenAIAuthentication(openAIKey), new OpenAIClientSettings("text-davinci-003"));
 
             var yaml = new StreamReader(typeof(KnowBotDialog).Assembly.GetManifestResourceStream($"{typeof(KnowBotDialog).FullName}.{typeof(KnowBotDialog).Name}.yaml")).ReadToEnd();
             var yamlShared = new StreamReader(typeof(KnowBotDialog).Assembly.GetManifestResourceStream($"KnowBot.Dialogs.Shared.yaml")).ReadToEnd();
@@ -186,7 +187,7 @@ namespace KnowBot.Dialogs
             return facts;
         }
 
-        private async Task<CompletionResult> GetAnswer(string prompt) => await _openAI.CompletionEndpoint.CreateCompletionAsync(new CompletionRequest()
+        private async Task<CompletionResult> GetAnswer(string prompt) => await _openAI.CompletionsEndpoint.CreateCompletionAsync(new CompletionRequest()
         {
             Prompt = prompt,
             Temperature = 0.4,

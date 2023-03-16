@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Linq;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
@@ -267,11 +260,27 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             dialogSet.Add(Activator.CreateInstance<DialogT>());
         }
 
+        /// <summary>
+        /// Ask a question, remembering the question and waiting for input.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="label">label to use for the question.</param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="variations">variations of the question.</param>
+        /// <returns></returns>
         public static Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, params string[] variations)
         {
             return dc.AskQuestionAsync(label, CancellationToken.None, variations);
         }
 
+        /// <summary>
+        /// Ask a question, remembering the question and waiting for input.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="label">label to use for the question.</param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="variations">variations of the question.</param>
+        /// <returns></returns>
         public static async Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, CancellationToken cancellationToken, params string[] variations)
         {
             dc.State.SetValue("dialog.lastquestion", label);
@@ -279,11 +288,20 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             return await dc.WaitForInputAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Get the label of the last question asked.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <returns></returns>
         public static string GetLastQuestion(this DialogContext dc)
         {
             return dc.State.GetValue<string>("dialog.lastquestion");
         }
 
+        /// <summary>
+        /// Clear out the last question asked.
+        /// </summary>
+        /// <param name="dc"></param>
         public static void ClearQuestion(this DialogContext dc)
         {
             dc.State.RemoveValue("dialog.lastquestion");
