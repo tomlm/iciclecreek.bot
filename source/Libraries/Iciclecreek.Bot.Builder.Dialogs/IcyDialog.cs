@@ -202,7 +202,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnEvaluateStateAsync(DialogContext dc, CancellationToken cancellationToken)
         {
-            return await dc.WaitForInputAsync();
+            await dc.SendReplyText(cancellationToken);
+            return await dc.WaitForInputAsync(cancellationToken);
         }
 
         /// <summary>
