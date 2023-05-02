@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -106,6 +107,20 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static Task<DialogTurnResult> WaitForInputAsync(this DialogContext dc, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_waitingResult);
+        }
+
+        /// <summary>
+        /// End the conversation (and all dialogs) 
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async static Task<DialogTurnResult> EndConversationAsync(this DialogContext dc, CancellationToken cancellationToken = default)
+        {
+            var activity = dc.Context.Activity.CreateReply();
+            activity.Type = ActivityTypes.EndOfConversation;
+            await dc.Context.SendActivityAsync(activity);
+            return await dc.CancelAllDialogsAsync(cancellationToken);
         }
 
         public static void CaptureSnapshot(this DialogContext dc)
@@ -283,7 +298,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static async Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, CancellationToken cancellationToken, params string[] variations)
         {
-            dc.State.SetValue("dialog.lastquestion", label);
+            dc.State.SetValue("this.lastquestion", label);
             await dc.SendReplyText(cancellationToken, variations);
             return await dc.WaitForInputAsync(cancellationToken);
         }
@@ -295,7 +310,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static string GetLastQuestion(this DialogContext dc)
         {
-            return dc.State.GetValue<string>("dialog.lastquestion");
+            return dc.State.GetValue<string>("this.lastquestion");
         }
 
         /// <summary>
@@ -304,7 +319,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dc"></param>
         public static void ClearQuestion(this DialogContext dc)
         {
-            dc.State.RemoveValue("dialog.lastquestion");
+            dc.State.RemoveValue("this.lastquestion");
         }
 
     }
