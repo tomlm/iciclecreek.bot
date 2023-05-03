@@ -17,7 +17,6 @@ var sp = new ServiceCollection()
     .AddSingleton<IStorage,MemoryStorage>() // or whatever storage you want.
     .AddDialog<TestDialog>()
     .AddDialog<FooDialog>()
-    .AddPrompts()
     .AddIcyBot()
     .BuildServiceProvider();
 ```
