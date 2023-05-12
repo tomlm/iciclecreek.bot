@@ -36,7 +36,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     ///     - "None" or empty intents => OnUnrecognizedIntent(dc, IMessageActivity, cancallationToken)
     ///  5. Adds PromptAsync(propertyName,...) and OnPromptCompletedAsync() and OnPromptCanceldAsync() methods as replacement for BeginDialog/ResumeDialog()
     /// </remarks>
-    public class IcyDialog : Dialog
+    public class IcyDialog : ComponentDialog
     {
         private Dictionary<string, MethodInfo> _autoMethods = new Dictionary<string, MethodInfo>();
 
@@ -280,6 +280,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             {
                 dc.State.SetValue(TurnPath.ActivityProcessed, true);
                 var recognizerResult = await Recognizer.RecognizeAsync(dc, dc.Context.Activity, cancellationToken);
+
                 if (recognizerResult.Intents.Any())
                 {
                     return await OnRecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -14,8 +15,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
 {
     public class MyBot : IcyBot
     {
-        public MyBot(ConversationState conversationState, UserState userState, IEnumerable<Dialog> dialogs, IEnumerable<IPathResolver> pathResolvers = null, IEnumerable<MemoryScope> scopes = null, ILogger logger = null)
-            : base(conversationState, userState, dialogs, pathResolvers, scopes, logger)
+        public MyBot(ConversationState conversationState, UserState userState, IEnumerable<Dialog> dialogs, IEnumerable<IPathResolver> pathResolvers = null, IEnumerable<MemoryScope> scopes = null, IServiceProvider serviceProvider = null, ILogger logger = null)
+            : base(conversationState, userState, dialogs, pathResolvers, scopes, serviceProvider, logger)
         {
             this.AddDialog<TestDialog>();
             this.AddDialog<FooDialog>();

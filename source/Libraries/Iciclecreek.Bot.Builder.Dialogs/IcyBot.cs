@@ -22,6 +22,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         private readonly DialogStateManagerConfiguration _dialogStateManagerConfiguration;
         private readonly ConversationState _conversationState;
         private readonly UserState _userState;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dialogs">dialogs</param>
         /// <param name="pathResolvers">dependcy injected path resolvers (AddBotRuntime())</param>
         /// <param name="memoryScopes">dependency injected memory scopes (AddBotRuntime())</param>
+        /// <param name="serviceProvider">servicePRovider</param>
         /// <param name="logger">An <see cref="ILogger"/> instance.</param>
         public IcyBot(
             ConversationState conversationState,
@@ -39,10 +41,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             IEnumerable<Dialog> dialogs = null,
             IEnumerable<IPathResolver> pathResolvers = null,
             IEnumerable<MemoryScope> memoryScopes = null,
+            IServiceProvider serviceProvider = null,
             ILogger logger = null)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
+            _serviceProvider = serviceProvider;
             _logger = logger ?? NullLogger<IcyBot>.Instance;
             _dialogStateManagerConfiguration = new DialogStateManagerConfiguration();
 
@@ -86,7 +90,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public void AddDialog<T>()
             where T : Dialog
         {
-            this.AddDialog(Activator.CreateInstance<T>());
+            this.AddDialog(ActivatorUtilities.CreateInstance<T>(_serviceProvider));
         }
 
         /// <inheritdoc/>
@@ -94,6 +98,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         {
             _logger.LogInformation($"IBot.OnTurn");
 
+            turnContext.TurnState.Add(_serviceProvider);
             turnContext.TurnState.Add(_conversationState);
             turnContext.TurnState.Add(_userState);
             turnContext.TurnState.Add(_dialogStateManagerConfiguration);
