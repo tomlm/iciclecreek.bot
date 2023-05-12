@@ -279,7 +279,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             if (this.Recognizer != null && !dc.State.GetBoolValue(TurnPath.ActivityProcessed))
             {
                 dc.State.SetValue(TurnPath.ActivityProcessed, true);
-                var recognizerResult = await Recognizer.RecognizeAsync(dc, dc.Context.Activity, cancellationToken);
+                RecognizerResult recognizerResult = await RecognizeAsync(dc, messageActivity, cancellationToken);
 
                 if (recognizerResult.Intents.Any())
                 {
@@ -298,6 +298,37 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             return await OnEvaluateStateAsync(dc, cancellationToken);
         }
 
+        /// <summary>
+        /// Perform recognition on text
+        /// </summary>
+        /// <remarks>Default is to create an activity and call RecognizerAsync(Activity)</remarks>
+        /// <param name="dc"></param>
+        /// <param name="text">text</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual Task<RecognizerResult> RecognizeAsync(DialogContext dc, string text, CancellationToken cancellationToken = default)
+        {
+            return this.RecognizeAsync(dc, (Activity)dc.Context.Activity.CreateReply(text).CreateReply(text), cancellationToken);
+        }
+
+        /// <summary>
+        /// Perform recognition on an activity
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="activity"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual async Task<RecognizerResult> RecognizeAsync(DialogContext dc, IMessageActivity activity, CancellationToken cancellationToken = default)
+        {
+            if (Recognizer != null)
+            {
+                return await Recognizer.RecognizeAsync(dc, (Activity)activity, cancellationToken);
+            }
+
+            var recognizerResult = new RecognizerResult();
+            recognizerResult.Intents.Add("None", new IntentScore() { Score = 1.0 });
+            return recognizerResult;
+        }
 
         /// <summary>
         /// OnRecognizedIntentAsync() - called when an intent is recogized using the Recognizer
@@ -346,7 +377,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         protected async virtual Task<DialogTurnResult> OnAnswerAsync(DialogContext dc, IMessageActivity messageActivity, RecognizerResult recognizerResult, CancellationToken cancellationToken = default)
         {
             var lastQuestion = dc.GetLastQuestion();
-            if (_autoMethods.TryGetValue($"On{lastQuestion.Replace(".",String.Empty)}Answer", out var mi))
+            if (_autoMethods.TryGetValue($"On{lastQuestion.Replace(".", String.Empty)}Answer", out var mi))
             {
                 dc.ClearQuestion();
                 return await (Task<DialogTurnResult>)mi.Invoke(this, new object[] { dc, messageActivity, recognizerResult, cancellationToken });
