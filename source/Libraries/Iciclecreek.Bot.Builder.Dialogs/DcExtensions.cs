@@ -17,7 +17,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         internal const string OPTIONS_PATH = "this.icy.options";
         internal const string SNAPSHOT_PATH = "turn.icy.snapshot";
         internal const string LASTQUESTION_PATH = "this.icy.lastquestion";
-        internal const string LASTRESULT_PATH = "this.icy.lastresult";
+        internal const string LASTRESULT_PATH = "turn.icy.lastresult";
 
         /// <summary>
         /// Get saved options
