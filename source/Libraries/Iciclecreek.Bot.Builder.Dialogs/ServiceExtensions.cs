@@ -22,7 +22,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             services.TryAddSingleton<ConversationState>();
             new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
             services.AddPrompts();
-            services.TryAddSingleton<IBot, IcyBot>();
+            services.AddSingleton<IcyBot>();
+            services.AddSingleton<IBot, IcyBot>();
             return services;
         }
 
@@ -36,12 +37,12 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static IServiceCollection AddPrompts(this IServiceCollection services)
         {
-            services.TryAddDialog<IcyAttachmentPrompt>();
-            services.TryAddDialog<IcyChoicePrompt>();
-            services.TryAddDialog<IcyDateTimePrompt>();
-            services.TryAddDialog<IcyNumberPrompt<int>>();
-            services.TryAddDialog<IcyNumberPrompt<float>>();
-            services.TryAddDialog<IcyTextPrompt>();
+            services.AddDialog<IcyAttachmentPrompt>();
+            services.AddDialog<IcyChoicePrompt>();
+            services.AddDialog<IcyDateTimePrompt>();
+            services.AddDialog<IcyNumberPrompt<int>>();
+            services.AddDialog<IcyNumberPrompt<float>>();
+            services.AddDialog<IcyTextPrompt>();
             return services;
         }
 
@@ -59,7 +60,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             services.TryAddSingleton<UserState>();
             services.TryAddSingleton<ConversationState>();
             new DialogsBotComponent().ConfigureServices(services, new ConfigurationBuilder().Build());
-            services.TryAddSingleton<IBot, BotT>();
+            services.AddSingleton<IBot, BotT>();
             return services;
         }
 
@@ -72,6 +73,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services)
             where DialogT : Dialog
         {
+            services.AddSingleton<DialogT>();
             services.AddSingleton<Dialog, DialogT>();
             return services;
         }
@@ -85,7 +87,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services)
             where DialogT : Dialog
         {
-            services.AddSingleton<Dialog, DialogT>();
+            services.TryAddSingleton<DialogT>();
+            services.TryAddSingleton<Dialog, DialogT>();
             return services;
         }
 
@@ -98,6 +101,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static IServiceCollection AddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
             where DialogT : Dialog
         {
+            services.AddSingleton<DialogT>(implementationFactory);
             services.AddSingleton<Dialog, DialogT>(implementationFactory);
             return services;
         }
@@ -111,10 +115,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         public static IServiceCollection TryAddDialog<DialogT>(this IServiceCollection services, Func<IServiceProvider, DialogT> implementationFactory)
             where DialogT : Dialog
         {
+            services.TryAddSingleton<DialogT>(implementationFactory);
             services.AddSingleton<Dialog, DialogT>(implementationFactory);
             return services;
         }
-
-
     }
 }

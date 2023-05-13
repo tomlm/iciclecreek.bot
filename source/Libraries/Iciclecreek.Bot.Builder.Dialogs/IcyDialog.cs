@@ -40,6 +40,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     {
         private Dictionary<string, MethodInfo> _autoMethods = new Dictionary<string, MethodInfo>();
 
+        public const string LASTRESULT = "turn._lastResult";
+
         public IcyDialog(string dialogId = null)
             : base(dialogId)
         {
@@ -125,6 +127,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual async Task<DialogTurnResult> OnResumeDialogAsync(DialogContext dc, DialogReason reason, object result, CancellationToken cancellationToken)
         {
+            dc.State.SetValue(DcExtensions.LASTRESULT_PATH, result);
             if (dc.State.TryGetValue<string>(DcExtensions.PROPERTY_KEY, out var property))
             {
                 dc.State.RemoveValue(DcExtensions.PROPERTY_KEY);
@@ -276,19 +279,18 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected async virtual Task<DialogTurnResult> OnMessageActivityAsync(DialogContext dc, IMessageActivity messageActivity, CancellationToken cancellationToken)
         {
-            if (this.Recognizer != null && !dc.State.GetBoolValue(TurnPath.ActivityProcessed))
+            if (!dc.State.GetBoolValue(TurnPath.ActivityProcessed))
             {
                 dc.State.SetValue(TurnPath.ActivityProcessed, true);
                 RecognizerResult recognizerResult = await RecognizeAsync(dc, messageActivity, cancellationToken);
-
-                if (recognizerResult.Intents.Any())
+                var topIntent = recognizerResult.GetTopScoringIntent();
+                if (topIntent.intent.ToLower() != "none")
                 {
                     return await OnRecognizedIntentAsync(dc, messageActivity, recognizerResult, cancellationToken);
                 }
 
                 if (!String.IsNullOrEmpty(dc.GetLastQuestion()))
                 {
-                    dc.ClearQuestion();
                     return await OnAnswerAsync(dc, messageActivity, recognizerResult, cancellationToken);
                 }
 

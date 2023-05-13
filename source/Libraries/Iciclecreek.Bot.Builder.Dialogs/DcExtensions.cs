@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AdaptiveExpressions;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Newtonsoft.Json.Linq;
@@ -11,10 +10,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs
 {
     public static class DcExtensions
     {
-        private const string REPLYTEXT = "turn.IcyReplyText";
         private static DialogTurnResult _waitingResult = new DialogTurnResult(DialogTurnStatus.Waiting);
 
-        internal const string PROPERTY_KEY = "this.property";
+        internal const string REPLYTEXT_PATH = "turn.icy.ReplyText";
+        internal const string PROPERTY_KEY = "this.icy.property";
+        internal const string OPTIONS_PATH = "this.icy.options";
+        internal const string SNAPSHOT_PATH = "turn.icy.snapshot";
+        internal const string LASTQUESTION_PATH = "this.icy.lastquestion";
+        internal const string LASTRESULT_PATH = "this.icy.lastresult";
 
         /// <summary>
         /// Get saved options
@@ -24,7 +27,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>instance of optionsT</returns>
         public static T GetOptions<T>(this DialogContext dc)
         {
-            if (ObjectPath.TryGetPathValue<T>(dc.State, "this.options", out var result))
+            if (ObjectPath.TryGetPathValue<T>(dc.State, OPTIONS_PATH, out var result))
             {
                 return result;
             }
@@ -38,7 +41,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="options"></param>
         public static void SaveOptions(this DialogContext dc, object options)
         {
-            dc.State.SetValue("this.options", options);
+            dc.State.SetValue(OPTIONS_PATH, options);
         }
 
         /// <summary>
@@ -125,9 +128,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs
 
         public static void CaptureSnapshot(this DialogContext dc)
         {
-            if (!dc.State.TryGetValue<JObject>("turn.snapshot", out var snapshot))
+            if (!dc.State.TryGetValue<JObject>(SNAPSHOT_PATH, out var snapshot))
             {
-                dc.State.SetValue("turn.snapshot", dc.State.GetMemorySnapshot());
+                dc.State.SetValue(SNAPSHOT_PATH, dc.State.GetMemorySnapshot());
             }
         }
 
@@ -143,7 +146,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>true if path or children are different, false if they are unchanged.</returns>
         public static bool IsStateChanged(this DialogContext dc, string path)
         {
-            dc.State.TryGetValue<JToken>($"turn.snapshot.{path}", out var snapshot);
+            dc.State.TryGetValue<JToken>($"{SNAPSHOT_PATH}.{path}", out var snapshot);
             dc.State.TryGetValue<JToken>(path, out var current);
             return snapshot?.ToString() != current?.ToString();
         }
@@ -179,14 +182,14 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         {
             if (variations.Length > 0)
             {
-                string replyText = dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+                string replyText = dc.State.GetStringValue(REPLYTEXT_PATH) ?? string.Empty;
 
                 var index = _rnd.Next(0, variations.Length);
                 var expression = Expression.Parse($"`{variations[index]}`");
                 var (result, error) = expression.TryEvaluate<string>(dc.State);
                 if (!String.IsNullOrWhiteSpace(result))
                 {
-                    dc.State.SetValue("turn.IcyReplyText", $"{replyText}{result}");
+                    dc.State.SetValue(REPLYTEXT_PATH, $"{replyText}{result}");
                 }
             }
         }
@@ -198,7 +201,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>current ReplyText</returns>
         public static string GetReplyText(this DialogContext dc)
         {
-            return dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+            return dc.State.GetStringValue(REPLYTEXT_PATH) ?? string.Empty;
         }
 
         /// <summary>
@@ -241,10 +244,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static async Task<ResourceResponse> SendReplyText(this DialogContext dc, CancellationToken cancellationToken)
         {
-            string replyText = dc.State.GetStringValue(REPLYTEXT) ?? string.Empty;
+            string replyText = dc.State.GetStringValue(REPLYTEXT_PATH) ?? string.Empty;
             if (!String.IsNullOrWhiteSpace(replyText))
             {
-                dc.State.RemoveValue(REPLYTEXT);
+                dc.State.RemoveValue(REPLYTEXT_PATH);
                 return await dc.Context.SendActivityAsync(dc.CreateReplyActivity(replyText.Trim()), cancellationToken);
             }
             return null;
@@ -298,7 +301,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static async Task<DialogTurnResult> AskQuestionAsync(this DialogContext dc, string label, CancellationToken cancellationToken, params string[] variations)
         {
-            dc.State.SetValue("this.lastquestion", label);
+            dc.State.SetValue(LASTQUESTION_PATH, label);
             await dc.SendReplyText(cancellationToken, variations);
             return await dc.WaitForInputAsync(cancellationToken);
         }
@@ -310,7 +313,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static string GetLastQuestion(this DialogContext dc)
         {
-            return dc.State.GetValue<string>("this.lastquestion");
+            return dc.State.GetValue<string>(LASTQUESTION_PATH);
         }
 
         /// <summary>
@@ -319,7 +322,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="dc"></param>
         public static void ClearQuestion(this DialogContext dc)
         {
-            dc.State.RemoveValue("this.lastquestion");
+            dc.State.RemoveValue(LASTQUESTION_PATH);
+        }
+
+        /// <summary>
+        /// Get the last result returned to ResumeDialog
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <returns></returns>
+        public static T GetLastResult<T>(this DialogContext dc)
+        {
+            return dc.State.GetValue<T>(LASTRESULT_PATH);
         }
 
     }
