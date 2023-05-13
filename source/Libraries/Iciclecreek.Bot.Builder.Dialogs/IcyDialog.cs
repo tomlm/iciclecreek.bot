@@ -40,8 +40,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     {
         private Dictionary<string, MethodInfo> _autoMethods = new Dictionary<string, MethodInfo>();
 
-        public const string LASTRESULT = "turn._lastResult";
-
         public IcyDialog(string dialogId = null)
             : base(dialogId)
         {
@@ -127,7 +125,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
         protected virtual async Task<DialogTurnResult> OnResumeDialogAsync(DialogContext dc, DialogReason reason, object result, CancellationToken cancellationToken)
         {
-            dc.State.SetValue(DcExtensions.LASTRESULT_PATH, result);
             if (dc.State.TryGetValue<string>(DcExtensions.PROPERTY_KEY, out var property))
             {
                 dc.State.RemoveValue(DcExtensions.PROPERTY_KEY);

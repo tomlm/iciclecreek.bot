@@ -17,7 +17,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         internal const string OPTIONS_PATH = "this.icy.options";
         internal const string SNAPSHOT_PATH = "turn.icy.snapshot";
         internal const string LASTQUESTION_PATH = "this.icy.lastquestion";
-        internal const string LASTRESULT_PATH = "turn.icy.lastresult";
 
         /// <summary>
         /// Get saved options
@@ -332,7 +331,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <returns></returns>
         public static T GetLastResult<T>(this DialogContext dc)
         {
-            return dc.State.GetValue<T>(LASTRESULT_PATH);
+            return dc.State.GetValue<T>(TurnPath.LastResult);
         }
 
     }
