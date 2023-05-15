@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 namespace Iciclecreek.Bot.Builder.Dialogs
 {
     /// <summary>
-    /// IcyDialog - A Slick dialog for creating pure code based dialogs with recognizers and strong type handlers
+    /// IcyDialog - A code first dialog for with recognizers and strong type handlers
     /// </summary>
     /// <remarks>
     ///  1. hides BeginDialog/ContinueDialog and models the dialog simply as OnTurnAsync()
@@ -25,16 +25,17 @@ namespace Iciclecreek.Bot.Builder.Dialogs
     ///     - OnMessageReactionActivityAsync(dc)
     ///     - OnAdaptiveCardInvoke(dc) 
     ///     - etc.
-    ///  3. The default OnMessageActivity will invoke Recognizer and route them using OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync() method
+    ///  3. The default OnMessageActivity will invoke Recognizer and route them using OnRecognizedIntentAsync()/OnUnrecognizedIntentAsync() methods
     ///  4. The default OnRecognizedIntentAsync() implementation will find methods using the following naming pattern:
-    ///     
     ///     protected Task&ltDialogTurnResult&gt; OnXXXIntent(DialogContext dc, IMessageActivity messageActivity, TopScore topSCore, CancellationToken ct);
     ///     
     ///     Examples:
     ///     - "Greeting" intent => OnGreetingIntent(dc, IMessageActivity, topScore, cancellationToken)
     ///     - "Goodbye" intent => OnGoodbyeIntent(dc, IMessageActivity, topScore, cancellationToken)
     ///     - "None" or empty intents => OnUnrecognizedIntent(dc, IMessageActivity, cancallationToken)
-    ///  5. Adds PromptAsync(propertyName,...) and OnPromptCompletedAsync() and OnPromptCanceldAsync() methods as replacement for BeginDialog/ResumeDialog()
+    ///  5. Adds PromptAsync(propertyName,...) and OnPromptCompletedAsync() and OnPromptCanceledAsync() methods as replacement for BeginDialog/ResumeDialog()
+    ///     This allows you to simply call PromptAsync(fooDialog, "this.foo",...) and the result of calling fooDialog will be stored in dc.State["this.foo"]
+    ///  6. Adds OnEvaluateStateAsync() method is called at the end of every turn to allow you to evaluate the state of the dialog and take action based on the state of the memory.
     /// </remarks>
     public class IcyDialog : ComponentDialog
     {

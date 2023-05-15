@@ -15,8 +15,15 @@ namespace Iciclecreek.Bot.Builder.Dialogs
 {
 
     /// <summary>
-    /// A Simple Bot implementation which just hosts a code first dialog without complexity of adaptive infrastructure (lg, skills, declarative)
+    /// A alternative Bot implementation which hosts a code first dialog without complexity of adaptive infrastructure (lg, skills, declarative)
     /// </summary>
+    /// <remarks>
+    /// This is a bot uses Dependency Injection to resolve:
+    /// * MemoryScopes/User/ConversationState
+    /// * PathResolvers
+    /// * Dialogs
+    /// The first dialog found in the DI container is used as the root dialog.
+    /// </remarks>
     public class IcyBot : ComponentDialog, IBot
     {
         private readonly DialogStateManagerConfiguration _dialogStateManagerConfiguration;

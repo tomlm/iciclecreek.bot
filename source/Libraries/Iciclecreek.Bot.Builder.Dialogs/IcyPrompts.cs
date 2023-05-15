@@ -6,6 +6,10 @@ using Microsoft.Extensions.Options;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
 {
+    /// <summary>
+    /// Dependency injection for AttachmentPrompt
+    /// </summary>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;AttachmentPrompt&gt;(...) </remarks>
     public class IcyAttachmentPrompt : AttachmentPrompt
     {
         public IcyAttachmentPrompt()
@@ -13,6 +17,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         { }
     }
 
+    /// <summary>
+    /// Dependency injection for ChoicePrompt
+    /// </summary>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;ChoicePrompt&gt;(...)</remarks>
     public class IcyChoicePrompt : ChoicePrompt
     {
         public IcyChoicePrompt()
@@ -22,6 +30,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dependency injection for ConfirmPrompt
+    /// </summary>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;ConfirmPrompt&gt;(...)</remarks>
     public class IcyConfirmPrompt : ConfirmPrompt
     {
         public IcyConfirmPrompt()
@@ -30,6 +42,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dependency injection for DateTimePrompt
+    /// </summary>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;DateTimePrompt&gt;(...)</remarks>
     public class IcyDateTimePrompt : DateTimePrompt
     {
         public IcyDateTimePrompt()
@@ -37,6 +53,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         { }
     }
 
+    /// <summary>
+    /// Dependency injection for NumberPrompt
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;NumberPrompt&gt;(...)</remarks>
     public class IcyNumberPrompt<T> : NumberPrompt<T>
         where T : struct
     {
@@ -46,6 +67,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
     }
 
+    /// <summary>
+    /// Dependency injection for TextPrompt
+    /// </summary>
+    /// <remarks>you can invoke like this: dc.Prompt&lt;TextPrompt&gt;(...)</remarks>
     public class IcyTextPrompt : TextPrompt
     {
         public IcyTextPrompt()
