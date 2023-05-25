@@ -50,11 +50,9 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             IEnumerable<Dialog> dialogs = null,
             IEnumerable<IPathResolver> pathResolvers = null,
             IEnumerable<MemoryScope> memoryScopes = null,
-            IConfiguration configuration = null,
             IServiceProvider serviceProvider = null,
             ILogger logger = null)
         {
-            _configuration = configuration;
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
             _serviceProvider = serviceProvider;
@@ -110,7 +108,6 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             _logger.LogInformation($"IBot.OnTurn");
 
             turnContext.TurnState.Add(_serviceProvider);
-            turnContext.TurnState.Add(_configuration);
             turnContext.TurnState.Add(_conversationState);
             turnContext.TurnState.Add(_userState);
             turnContext.TurnState.Add(_dialogStateManagerConfiguration);
