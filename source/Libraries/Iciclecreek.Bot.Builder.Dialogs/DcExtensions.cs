@@ -44,6 +44,60 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         }
 
         /// <summary>
+        /// Cancel the current dialog only and return cancelled dialogturnstatus.
+        /// </summary>
+        /// <param name="dc"></param>
+        /// <param name="result">result to return</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>DialogTurnStatus.Canceled</returns>
+        public async static Task<DialogTurnResult> CancelDialogAsync(this DialogContext dc, object result = null, CancellationToken cancellationToken = default)
+        {
+            if (result is CancellationToken)
+            {
+                throw new ArgumentException($"{dc.ActiveDialog.Id}.EndDialogAsync() You can't pass a cancellation token as the result of a dialog when calling EndDialog.");
+            }
+
+            // End the active dialog
+            if (result is CancellationToken)
+            {
+                throw new ArgumentException($"{nameof(result)} cannot be a cancellation token");
+            }
+
+            var instance = dc.ActiveDialog;
+            if (instance != null)
+            {
+                // Lookup dialog
+                var dialog = dc.Dialogs.Find(instance.Id);
+                if (dialog != null)
+                {
+                    // Notify dialog of end
+                    await dialog.EndDialogAsync(dc.Context, instance, DialogReason.CancelCalled, cancellationToken).ConfigureAwait(false);
+                }
+
+                // Pop dialog off stack
+                dc.Stack.RemoveAt(0);
+            }
+
+            // Resume parent dialog
+            if (dc.ActiveDialog != null)
+            {
+                // Lookup dialog
+                var dialog = dc.FindDialog(dc.ActiveDialog.Id);
+                if (dialog == null)
+                {
+                    throw new InvalidOperationException($"DialogContext.EndDialogAsync(): Can't resume previous dialog. A dialog with an id of '{dc.ActiveDialog.Id}' wasn't found.");
+                }
+
+                // Return result to previous dialog
+                return await dialog.ResumeDialogAsync(dc, DialogReason.CancelCalled, result: result, cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                return new DialogTurnResult(DialogTurnStatus.Complete, result);
+            }
+        }
+
+        /// <summary>
         /// RouteDialogAsync() - route activity to dialog to be processed.
         /// </summary>
         /// <remarks>
@@ -63,7 +117,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static Task<DialogTurnResult> RouteDialogAsync<DialogT>(this DialogContext dc, object options, CancellationToken cancellationToken)
-            where DialogT: Dialog
+            where DialogT : Dialog
         {
             // signal that activity has not been recognized and the IcyDialog/AdaptiveDialog/... 
             dc.State.SetValue(TurnPath.ActivityProcessed, false);

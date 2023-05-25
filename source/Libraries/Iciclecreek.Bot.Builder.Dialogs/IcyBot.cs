@@ -7,6 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Memory;
 using Microsoft.Bot.Builder.Dialogs.Memory.Scopes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -31,6 +32,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         private readonly UserState _userState;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdaptiveDialogBot"/> class.
@@ -48,9 +50,11 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             IEnumerable<Dialog> dialogs = null,
             IEnumerable<IPathResolver> pathResolvers = null,
             IEnumerable<MemoryScope> memoryScopes = null,
+            IConfiguration configuration = null,
             IServiceProvider serviceProvider = null,
             ILogger logger = null)
         {
+            _configuration = configuration;
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
             _serviceProvider = serviceProvider;
@@ -106,6 +110,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             _logger.LogInformation($"IBot.OnTurn");
 
             turnContext.TurnState.Add(_serviceProvider);
+            turnContext.TurnState.Add(_configuration);
             turnContext.TurnState.Add(_conversationState);
             turnContext.TurnState.Add(_userState);
             turnContext.TurnState.Add(_dialogStateManagerConfiguration);
