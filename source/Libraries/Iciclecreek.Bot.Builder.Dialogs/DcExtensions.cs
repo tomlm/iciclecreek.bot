@@ -13,10 +13,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         private static DialogTurnResult _waitingResult = new DialogTurnResult(DialogTurnStatus.Waiting);
 
         internal const string REPLYTEXT_PATH = "turn.icy.ReplyText";
-        internal const string PROPERTY_KEY = "this.icy.property";
-        internal const string OPTIONS_PATH = "this.icy.options";
+        internal const string PROPERTY_KEY = "dialog.icy.property";
+        internal const string OPTIONS_PATH = "dialog.icy.options";
         internal const string SNAPSHOT_PATH = "turn.icy.snapshot";
-        internal const string LASTQUESTION_PATH = "this.icy.lastquestion";
+        internal const string LASTQUESTION_PATH = "dialog.icy.lastquestion";
 
         /// <summary>
         /// Get saved options

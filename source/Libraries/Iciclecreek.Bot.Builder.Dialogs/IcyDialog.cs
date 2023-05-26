@@ -50,6 +50,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs
                     (mi.Name.EndsWith("Intent") || mi.Name.EndsWith("Answer")) &&
                     mi.GetParameters().Count() == 4)
                 .ToDictionary(mi => mi.Name, mi => mi);
+
+            AddDialog(new RunnerDialog(this));
         }
 
         /// <summary>
@@ -60,18 +62,35 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         #region DIALOG METHODS
         public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
         {
-            dc.SaveOptions(options);
-            return await OnBeginDialogAsync(dc, options, cancellationToken);
+            var innerDC = CreateChildContext(dc);
+            await OnInitializeAsync(innerDC);
+            innerDC.SaveOptions(options);
+            var result = await innerDC.BeginDialogAsync($"_inner" , options, cancellationToken);
+            if (result.Status != DialogTurnStatus.Waiting)
+            {
+                // Return result to calling dialog
+                return await dc.EndDialogAsync(result.Result, cancellationToken).ConfigureAwait(false);
+            }
+            return Dialog.EndOfTurn;
         }
 
-        public override async Task<DialogTurnResult> ContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
+        public async override Task<DialogTurnResult> ContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
         {
-            var options = dc.GetOptions<object>();
-            return await OnContinueDialogAsync(dc, options, cancellationToken);
+
+            var innerDC = CreateChildContext(dc);
+            await OnInitializeAsync(innerDC);
+            var result = await innerDC.ContinueDialogAsync(cancellationToken);
+            if (result.Status != DialogTurnStatus.Waiting)
+            {
+                // Return result to calling dialog
+                return await dc.EndDialogAsync(result.Result, cancellationToken).ConfigureAwait(false);
+            }
+            return Dialog.EndOfTurn;
         }
 
         public async override Task<DialogTurnResult> ResumeDialogAsync(DialogContext dc, DialogReason reason, object result = null, CancellationToken cancellationToken = default)
         {
+            await OnInitializeAsync(dc);
             return await OnResumeDialogAsync(dc, reason, result, cancellationToken);
         }
         #endregion
@@ -107,9 +126,10 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// <param name="options">options</param>
         /// <param name="cancellationToken"></param>
         /// <returns>dialogturnresult to indicate dialog action that was taken</returns>
-        protected async virtual Task<DialogTurnResult> OnContinueDialogAsync(DialogContext dc, object options, CancellationToken cancellationToken = default)
+        protected async virtual Task<DialogTurnResult> OnContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
         {
             dc.CaptureSnapshot();
+            var options = dc.GetOptions<object>();
             return await this.OnTurnAsync(dc, options, cancellationToken);
         }
 
@@ -841,6 +861,13 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             };
         }
 
+        //public override DialogContext CreateChildContext(DialogContext dc)
+        //{
+        //    var state = new DialogState(dc.Stack);
+        //    var childDc = new DialogContext(this.Dialogs, dc, state) { State = dc.State };
+        //    return childDc;
+        //}
+
         /// <summary>
         /// A custom exception for invoke response errors.
         /// </summary>
@@ -902,5 +929,41 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             }
         }
         #endregion
+
+
+        /// <summary>
+        /// Dialog which wraps a IcyDialog as a leaf node. 
+        /// </summary>
+        internal class RunnerDialog : Dialog
+        {
+            private readonly IcyDialog _dialog;
+
+            internal RunnerDialog(IcyDialog dialog)
+                : base($"_inner")
+            {
+                _dialog = dialog;
+            }
+
+            public override async Task<DialogTurnResult> BeginDialogAsync(DialogContext dc, object options = null, CancellationToken cancellationToken = default)
+            {
+                await _dialog.EnsureInitializedAsync(dc);
+
+                return await _dialog.OnBeginDialogAsync(dc, options, cancellationToken);
+            }
+
+            public async override Task<DialogTurnResult> ContinueDialogAsync(DialogContext dc, CancellationToken cancellationToken = default)
+            {
+                await _dialog.EnsureInitializedAsync(dc);
+
+                return await _dialog.OnContinueDialogAsync(dc, cancellationToken);
+            }
+
+            public async override Task<DialogTurnResult> ResumeDialogAsync(DialogContext dc, DialogReason reason, object result = null, CancellationToken cancellationToken = default)
+            {
+                await _dialog.EnsureInitializedAsync(dc);
+                return await _dialog.OnResumeDialogAsync(dc, reason, result, cancellationToken);
+            }
+        }
+
     }
 }

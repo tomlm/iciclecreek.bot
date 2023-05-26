@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Adapters;
@@ -19,12 +21,23 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
             : base(conversationState, userState, dialogs, pathResolvers, scopes, serviceProvider, logger)
         {
             this.AddDialog<TestDialog>();
-            this.AddDialog<FooDialog>();
         }
     }
 
     public class IcyDialogTests
     {
+        [Fact]
+        public async Task MyNestedDialogTest()
+        {
+            var sp = new ServiceCollection()
+                .AddSingleton<IStorage>(new MemoryStorage())
+                .AddDialog<TestDialog>()
+                .AddIcyBot()
+                .BuildServiceProvider();
+
+            await TestBot(sp);
+        }
+
         [Fact]
         public async Task MyBotTest()
         {

@@ -13,6 +13,8 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Tests
     {
         public TestDialog()
         {
+            AddDialog(new FooDialog());
+
             // create a recognizer
             this.Recognizer = new LucyRecognizer()
             {
@@ -37,6 +39,9 @@ entities:
 ")
             };
         }
+
+        protected override Task<RecognizerResult> RecognizeAsync(DialogContext dc, IMessageActivity activity, CancellationToken cancellationToken = default)
+            => base.RecognizeAsync(dc, activity, cancellationToken);
 
         protected override async Task<DialogTurnResult> OnEndOfConversationActivityAsync(DialogContext dc, IEndOfConversationActivity endOfConversationActivity, CancellationToken cancellationToken)
         {
