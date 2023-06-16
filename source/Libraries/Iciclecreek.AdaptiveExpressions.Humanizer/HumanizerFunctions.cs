@@ -15,6 +15,9 @@ namespace Iciclecreek.Bot.Expressions.Humanizer
     {
         public static void Register()
         {
+            // Humanize function
+            Expression.Functions.Add($"humanizer.humanize", (args) => StringHumanizeExtensions.Humanize(args[0]));
+
             // case functions
             Expression.Functions.Add($"humanizer.allCaps", (args) => CasingExtensions.ApplyCase(args[0], LetterCasing.AllCaps));
             Expression.Functions.Add($"humanizer.lowerCase", (args) => CasingExtensions.ApplyCase(args[0], LetterCasing.LowerCase));

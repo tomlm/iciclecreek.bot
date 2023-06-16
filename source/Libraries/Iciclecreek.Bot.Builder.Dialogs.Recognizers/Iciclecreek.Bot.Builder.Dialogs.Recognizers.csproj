@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.19.0</Version>
-    <AssemblyVersion>4.19.0.0</AssemblyVersion>
+    <Version>4.20.0</Version>
+    <AssemblyVersion>4.20.0.0</AssemblyVersion>
     <Description>Adds custom PersonName, QuotedText and Threshold recognizers to Bot Framework and Bot Composer.</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -46,8 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.20.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Adaptive" Version="4.20.0" />
   </ItemGroup>
 
 </Project>

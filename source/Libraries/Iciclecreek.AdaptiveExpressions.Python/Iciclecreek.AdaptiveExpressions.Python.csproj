@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>4.19.0</Version>
-    <AssemblyVersion>4.19.0.0</AssemblyVersion>
+    <Version>4.20.0</Version>
+    <AssemblyVersion>4.20.0.0</AssemblyVersion>
     <Description>Adds Python functions to AdaptiveExpressions</Description>
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
@@ -37,8 +37,8 @@
   <ItemGroup>
     <PackageReference Include="IronPython" Version="2.7.11" />
     <PackageReference Include="IronPython.StdLib" Version="2.7.11" />
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.19.3" />
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.19.3" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.20.0" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs.Declarative" Version="4.20.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.22" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
