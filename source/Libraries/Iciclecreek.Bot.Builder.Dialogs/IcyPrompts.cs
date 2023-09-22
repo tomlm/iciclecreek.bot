@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Bot.Builder.Dialogs;
 
 namespace Iciclecreek.Bot.Builder.Dialogs
 {

@@ -65,7 +65,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
             var innerDC = CreateChildContext(dc);
             await OnInitializeAsync(innerDC);
             innerDC.SaveOptions(options);
-            var result = await innerDC.BeginDialogAsync($"_inner" , options, cancellationToken);
+            var result = await innerDC.BeginDialogAsync($"_inner", options, cancellationToken);
             if (result.Status != DialogTurnStatus.Waiting)
             {
                 // Return result to calling dialog

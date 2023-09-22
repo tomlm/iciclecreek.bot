@@ -249,7 +249,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs
         /// </summary>
         /// <param name="reply">ResourceResponse returned from sendActivity.</param>
         /// <returns>A ConversationReference that can be stored and used later to delete or update the activity.</returns>
-        public static ConversationReference GetReplyConversationReference(this IActivity activity,ResourceResponse reply)
+        public static ConversationReference GetReplyConversationReference(this IActivity activity, ResourceResponse reply)
         {
             return ((Activity)activity).GetReplyConversationReference(reply);
         }
