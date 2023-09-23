@@ -8,7 +8,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene
     /// <summary>
     /// Class which contains registration of components for Icicilecreek custom recognizers
     /// </summary>
-    public class LuceneBotComponent : BotComponent
+    public class DynamicListBotComponent : BotComponent
     {
         public override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {

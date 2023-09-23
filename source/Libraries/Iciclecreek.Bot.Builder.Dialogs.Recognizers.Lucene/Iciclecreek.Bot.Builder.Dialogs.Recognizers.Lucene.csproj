@@ -18,6 +18,10 @@
     <RepositoryUrl>https://github.com/tomlm/iciclecreek.bot</RepositoryUrl>
     <Copyright></Copyright>
     <ContentTargetFolders>content</ContentTargetFolders>
+    <PackageId>Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene</PackageId>
+    <Product>Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene</Product>
+    <AssemblyName>Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene</AssemblyName>
+    <RootNamespace>Iciclecreek.Bot.Builder.Dialogs.Recognizers.Lucene</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
