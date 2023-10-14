@@ -61,7 +61,7 @@ namespace Iciclecreek.Bot.Builder.Dialogs.Database.Cosmos
         /// PartitionKey (example: "/LastName")
         /// </summary>
         [JsonProperty("partitionKey")]
-        [Description("Name of the Container.")]
+        [Description("Name of the Partition Key.")]
         [Required]
         public StringExpression PartitionKey { get; set; }
 
